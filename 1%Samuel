@@ -12,7 +12,8 @@ Frame.Parent = ScreenGui
 Frame.AnchorPoint = Vector2.new(0.5, 0.5)
 Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
 Frame.Size = UDim2.new(0, 450, 0, 370)
-Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 112)
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BackgroundTransparency = 0.5
 
 UICorner.CornerRadius = UDim.new(0, 20)
 UICorner.Parent = Frame
@@ -26,8 +27,8 @@ ScrollingFrame.Size = UDim2.new(1, -20, 1, -20)
 ScrollingFrame.Position = UDim2.new(0, 10, 0, 10)
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 2.2, 0)
 ScrollingFrame.ScrollBarThickness = 8
-ScrollingFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 112)
-ScrollingFrame.BackgroundTransparency = 0.1
+ScrollingFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ScrollingFrame.BackgroundTransparency = 0.5
 
 UIGridLayout.Parent = ScrollingFrame
 UIGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -54,7 +55,7 @@ local function createButton(scriptInfo)
     local Button = Instance.new("TextButton")
     Button.Parent = ScrollingFrame
     Button.Text = scriptInfo[1]
-    Button.BackgroundColor3 = Color3.fromRGB(0, 191, 255)
+    Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     Button.BorderSizePixel = 0
     Button.TextColor3 = Color3.fromRGB(255, 255, 255)
     Button.Font = Enum.Font.SourceSansBold
@@ -71,8 +72,8 @@ local function createButton(scriptInfo)
 
     local ButtonGradient = Instance.new("UIGradient")
     ButtonGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(50, 50, 50)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 200, 200))
     }
     ButtonGradient.Parent = Button
 
@@ -82,7 +83,7 @@ local function createButton(scriptInfo)
 
     local tweenService = game:GetService("TweenService")
     local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, -1, true)
-    local goal = {BackgroundColor3 = Color3.fromRGB(0, 0, 255)}
+    local goal = {BackgroundColor3 = Color3.fromRGB(200, 200, 200)}
     local tween = tweenService:Create(Button, tweenInfo, goal)
     tween:Play()
 end
