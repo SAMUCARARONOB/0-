@@ -86,7 +86,19 @@ local scripts = {
     {"Fish Release", "https://raw.githubusercontent.com/yolobradda/fischjvrre/refs/heads/main/fishrelease"},
     {"InfiniteWare", "https://raw.githubusercontent.com/Kitler69/InfiniteWare/refs/heads/main/Launcher", true},
     {"Block Tales Auto Guard", "https://raw.githubusercontent.com/TexRBLX/Roblox-stuff/refs/heads/main/block%20tales/Block-Tales-Auto-Guard.lua"},
-    {"Damonvip", "https://raw.githubusercontent.com/daucobonhi/seagame/main/Damonvip.lua"}
+    {"Damonvip", "https://raw.githubusercontent.com/daucobonhi/seagame/main/Damonvip.lua"},
+    {"Pastebin Script", "https://pastebin.com/raw/z7TFbGEL"},
+    {"Skinwalker Hub", "https://raw.githubusercontent.com/lucas021ajds/theskinwalkerhub/main/script"},
+    {"X Script", "https://raw.githubusercontent.com/NICKISBAD/RM/main/xscript.lua"},
+    {"Wrestling Legends", "https://raw.githubusercontent.com/ToraScript/Script/main/WrestlingLegends"},
+    {"MainMenu", "https://raw.githubusercontent.com/SkibidiCen/MainMenu/main/Code"},
+    {"Vapa v2 Arsenal", "https://raw.githubusercontent.com/Nickyangtpe/Vapa-v2/refs/heads/main/Vapav2-Arsenal.lua"},
+    {"PetsGo", "https://raw.githubusercontent.com/RenceeeX/PetsGo/refs/heads/main/RenceeXHub"},
+    {"rybowescripts", "https://raw.githubusercontent.com/rybowe/rybowescripts/main/release.lua"},
+    {"XenonHub", "https://www.xenonhub.xyz/loader.lua"},
+    {"Pastebin Script 2", "https://pastebin.com/raw/n4pvk1Nk"},
+    {"Linux Hub", "https://raw.githubusercontent.com/wannagrindlikepablo/Linux-Hub/refs/heads/main/Linux%20Hub"},
+    {"OhhMyGehlee Script", "https://raw.githubusercontent.com/OhhMyGehlee/rel/refs/heads/main/el"}
 }
 local function createDetailedButton(scriptInfo)
     local Button = Instance.new("TextButton")
