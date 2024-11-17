@@ -63,9 +63,28 @@ local scripts = {
     {"Pendulum Hub", "https://scriptblox.com/raw/Universal-Script-Op-PENDULUM-HUB-Gui-R6-6490"},
     {"SCRIPTHUBV3", "https://raw.githubusercontent.com/scripthubekitten/SCRIPTHUBV3/main/SCRIPTHUBV3"},
     {"UTG V3", "https://raw.githubusercontent.com/Blukez/Scripts/main/UTG%20V3%20RAW"},
-    {"Speed-Hub", "https://raw.githubusercontent.com/KSA2LbopceHtudepr0l8lkgGlzJds2hwQhn/Speed-Hub-Main-Releases-B-Y-R-E-N/refs/heads/main/Speed-Hub-Bladeball-Update-Lite-V2.txt"}
+    {"Speed-Hub", "https://raw.githubusercontent.com/KSA2LbopceHtudepr0l8lkgGlzJds2hwQhn/Speed-Hub-Main-Releases-B-Y-R-E-N/refs/heads/main/Speed-Hub-Bladeball-Update-Lite-V2.txt"},
+    {"YT", "https://raw.githubusercontent.com/OhhMyGehlee/at/refs/heads/main/yt"},
+    {"Azure V3", "https://raw.githubusercontent.com/BasementHub/BH-Blox-fruit/main/W-Azure-V3"},
+    {"Zen Hub", "https://raw.githubusercontent.com/Zenhubtop/zen_hub_pr/main/zennewwwwui.lua", true},
+    {"XAZM Script List", "https://raw.githubusercontent.com/YogaProjectRblx/XAZM-Script-List/refs/heads/main/Protected_8192991545688583.txt"},
+    {"Baldy To Sorcerer", "https://raw.githubusercontent.com/skibiditoiletfan2007/BaldyToSorcerer/refs/heads/main/LatestV2.lua"},
+    {"Skibidi Toilet War", "https://raw.githubusercontent.com/ExploiterGuy/Scriptblox-ExploitFin/refs/heads/main/Skibidi%20Toilet%20War"},
+    {"K1aPFVCp", "https://pastebin.com/raw/k1aPFVCp", true},
+    {"Zenith Hub Obfuscado", "https://raw.githubusercontent.com/LookP/Roblox/refs/heads/main/ZenithHubObsfucado.lua"},
+    {"Zenith Hub Knight Demons", "https://raw.githubusercontent.com/LookP/Roblox/refs/heads/main/ZenithHub%20Knight%20Demons.lua"},
+    {"Classic Nations OBF", "https://raw.githubusercontent.com/Gamer-3/ClassicNationsOBF/refs/heads/main/latest_version.lua", true},
+    {"QQt4pVtu", "https://pastebin"},
+    {"Burgeria Tycoon", "https://raw.githubusercontent.com/ExploiterGuy/Scriptblox-ExploitFin/refs/heads/main/Burgeria%20Tycoon.txt"},
+    {"DungeonRNG", "https://raw.githubusercontent.com/ProjectpopCat/ywxoscripts/main/DungeonRNG231.lua"},
+    {"XeraUltron", "https://raw.githubusercontent.com/luascriptsROBLOX/BladeBallXera/main/XeraUltron"},
+    {"Anime", "https://raw.githubusercontent.com/LHking123456/nsX94GqZju2km/refs/heads/main/Anime"},
+    {"Noname Hub", "https://noname-hub.fun/loader.lua"},
+    {"Fish Release", "https://raw.githubusercontent.com/yolobradda/fischjvrre/refs/heads/main/fishrelease"},
+    {"InfiniteWare", "https://raw.githubusercontent.com/Kitler69/InfiniteWare/refs/heads/main/Launcher", true},
+    {"Block Tales Auto Guard", "https://raw.githubusercontent.com/TexRBLX/Roblox-stuff/refs/heads/main/block%20tales/Block-Tales-Auto-Guard.lua"},
+    {"Damonvip", "https://raw.githubusercontent.com/daucobonhi/seagame/main/Damonvip.lua"}
 }
-
 local function createDetailedButton(scriptInfo)
     local Button = Instance.new("TextButton")
     Button.Parent = ScrollingFrame
