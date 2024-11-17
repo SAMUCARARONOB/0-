@@ -90,15 +90,16 @@ local scripts = {
     {"Pastebin Script", "https://pastebin.com/raw/z7TFbGEL"},
     {"Skinwalker Hub", "https://raw.githubusercontent.com/lucas021ajds/theskinwalkerhub/main/script"},
     {"X Script", "https://raw.githubusercontent.com/NICKISBAD/RM/main/xscript.lua"},
-    {"Wrestling Legends", "https://raw.githubusercontent.com/ToraScript/Script/main/WrestlingLegends"},
-    {"MainMenu", "https://raw.githubusercontent.com/SkibidiCen/MainMenu/main/Code"},
+    {"PizzeriaTycoon", "https://raw.githubusercontent.com/ToraScript/Script/main/PizzeriaTycoon"},
+    {"NovBoatR1", "https://raw.githubusercontent.com/novakoolhub/Scripts/main/Scripts/NovBoatR1"},
     {"Vapa v2 Arsenal", "https://raw.githubusercontent.com/Nickyangtpe/Vapa-v2/refs/heads/main/Vapav2-Arsenal.lua"},
     {"PetsGo", "https://raw.githubusercontent.com/RenceeeX/PetsGo/refs/heads/main/RenceeXHub"},
     {"rybowescripts", "https://raw.githubusercontent.com/rybowe/rybowescripts/main/release.lua"},
     {"XenonHub", "https://www.xenonhub.xyz/loader.lua"},
     {"Pastebin Script 2", "https://pastebin.com/raw/n4pvk1Nk"},
     {"Linux Hub", "https://raw.githubusercontent.com/wannagrindlikepablo/Linux-Hub/refs/heads/main/Linux%20Hub"},
-    {"OhhMyGehlee Script", "https://raw.githubusercontent.com/OhhMyGehlee/rel/refs/heads/main/el"}
+    {"OhhMyGehlee Script", "https://raw.githubusercontent.com/OhhMyGehlee/rel/refs/heads/main/el"},
+    {Zephyr", "https://raw.githubusercontent.com/Unknownlodfc/Zephyr/refs/heads/main/Zephyr%20%7C%20Nanny"}
 }
 local function createDetailedButton(scriptInfo)
     local Button = Instance.new("TextButton")
