@@ -12,13 +12,13 @@ Frame.Parent = ScreenGui
 Frame.AnchorPoint = Vector2.new(0.5, 0.5)
 Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
 Frame.Size = UDim2.new(0, 450, 0, 370)
-Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(0, 255, 255) -- Neon color
 Frame.BackgroundTransparency = 0.5
 
 UICorner.CornerRadius = UDim.new(0, 20)
 UICorner.Parent = Frame
 
-UIStroke.Color = Color3.fromRGB(0, 255, 255)
+UIStroke.Color = Color3.fromRGB(0, 255, 255) -- Neon color
 UIStroke.Thickness = 2
 UIStroke.Parent = Frame
 
@@ -27,7 +27,7 @@ ScrollingFrame.Size = UDim2.new(1, -20, 1, -20)
 ScrollingFrame.Position = UDim2.new(0, 10, 0, 10)
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 2.2, 0)
 ScrollingFrame.ScrollBarThickness = 8
-ScrollingFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ScrollingFrame.BackgroundColor3 = Color3.fromRGB(0, 255, 255) -- Neon color
 ScrollingFrame.BackgroundTransparency = 0.5
 
 UIGridLayout.Parent = ScrollingFrame
@@ -48,16 +48,17 @@ local scripts = {
     {"MurderersVsSheriffs", "https://raw.githubusercontent.com/RenceeeX/MVSD/refs/heads/main/MurderersVsSheriffs", true},
     {"Pendulum Hub", "https://scriptblox.com/raw/Universal-Script-Op-PENDULUM-HUB-Gui-R6-6490"},
     {"SCRIPTHUBV3", "https://raw.githubusercontent.com/scripthubekitten/SCRIPTHUBV3/main/SCRIPTHUBV3"},
-    {"UTG V3", "https://raw.githubusercontent.com/Blukez/Scripts/main/UTG%20V3%20RAW"}
+    {"UTG V3", "https://raw.githubusercontent.com/Blukez/Scripts/main/UTG%20V3%20RAW"},
+    {"Speed-Hub", "https://raw.githubusercontent.com/KSA2LbopceHtudepr0l8lkgGlzJds2hwQhn/Speed-Hub-Main-Releases-B-Y-R-E-N/refs/heads/main/Speed-Hub-Bladeball-Update-Lite-V2.txt"}
 }
 
 local function createButton(scriptInfo)
     local Button = Instance.new("TextButton")
     Button.Parent = ScrollingFrame
     Button.Text = scriptInfo[1]
-    Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    Button.BackgroundColor3 = Color3.fromRGB(0, 0, 255) -- Blue color
     Button.BorderSizePixel = 0
-    Button.TextColor3 = Color3.fromRGB(138, 43, 226) -- Cor roxa neon
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
     Button.Font = Enum.Font.SourceSansBold
     Button.TextScaled = true
 
@@ -83,7 +84,7 @@ local function createButton(scriptInfo)
 
     local tweenService = game:GetService("TweenService")
     local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, -1, true)
-    local goal = {BackgroundColor3 = Color3.fromRGB(200, 200, 200)}
+    local goal = {BackgroundColor3 = Color3.fromRGB(128, 0, 128)} -- Purple color for glow
     local tween = tweenService:Create(Button, tweenInfo, goal)
     tween:Play()
 end
