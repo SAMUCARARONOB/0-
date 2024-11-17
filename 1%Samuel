@@ -58,7 +58,7 @@ local function createButton(scriptInfo)
     Button.Text = scriptInfo[1]
     Button.BackgroundColor3 = Color3.fromRGB(0, 0, 255) -- Blue color
     Button.BorderSizePixel = 0
-    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.TextColor3 = Color3.fromRGB(0, 255, 0) -- Green color
     Button.Font = Enum.Font.SourceSansBold
     Button.TextScaled = true
 
@@ -67,14 +67,14 @@ local function createButton(scriptInfo)
     ButtonCorner.Parent = Button
 
     local ButtonStroke = Instance.new("UIStroke")
-    ButtonStroke.Color = Color3.fromRGB(0, 255, 127)
+    ButtonStroke.Color = Color3.fromRGB(255, 0, 0) -- Red color
     ButtonStroke.Thickness = 2
     ButtonStroke.Parent = Button
 
     local ButtonGradient = Instance.new("UIGradient")
     ButtonGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(50, 50, 50)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 200, 200))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 255)),  -- Neon ciano
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 200, 200)) -- Tom ciano
     }
     ButtonGradient.Parent = Button
 
