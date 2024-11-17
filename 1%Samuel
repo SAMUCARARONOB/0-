@@ -84,7 +84,7 @@ local function createButton(scriptInfo)
 
     local tweenService = game:GetService("TweenService")
     local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, -1, true)
-    local goal = {BackgroundColor3 = Color3.fromRGB(128, 0, 128)} -- Purple color for glow
+    local goal = {BackgroundColor3 = Color3.fromRGB(200, 200, 200)}
     local tween = tweenService:Create(Button, tweenInfo, goal)
     tween:Play()
 end
