@@ -98,9 +98,8 @@ local scripts = {
     {"XenonHub", "https://www.xenonhub.xyz/loader.lua"},
     {"Pastebin Script 2", "https://pastebin.com/raw/n4pvk1Nk"},
     {"Linux Hub", "https://raw.githubusercontent.com/wannagrindlikepablo/Linux-Hub/refs/heads/main/Linux%20Hub"},
-    {"OhhMyGehlee Script", "https://raw.githubusercontent.com/OhhMyGehlee/rel/refs/heads/main/el"},
-    {Zephyr", "https://raw.githubusercontent.com/Unknownlodfc/Zephyr/refs/heads/main/Zephyr%20%7C%20Nanny"}
-}
+    {"OhhMyGehlee Script", "https://raw.githubusercontent.com/OhhMyGehlee/rel/refs/heads/main/el"}
+    }
 local function createDetailedButton(scriptInfo)
     local Button = Instance.new("TextButton")
     Button.Parent = ScrollingFrame
