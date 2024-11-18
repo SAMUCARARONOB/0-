@@ -67,9 +67,9 @@ local scripts = {
     {"SCRIPTHUBV3 (Universal)", "https://raw.githubusercontent.com/scripthubekitten/SCRIPTHUBV3/main/SCRIPTHUBV3"},
     {"UTG V3 (Universal)", "https://raw.githubusercontent.com/Blukez/Scripts/main/UTG%20V3%20RAW"},
     {"Speed-Hub (Blade Ball)", "https://raw.githubusercontentudepr0l8lkgGlzJds2hwQhn/Speed-Hub-Main-Releases-B-Y-R-E-N/refs/heads/main/Speed-Hub-Bladeball-Update-Lite-V2.txt"},
-    {"YT", "https://raw.githubusercontent.com/OhhMyGehlee/at/refs/heads/main/yt"},
+    {"R6 Animations for R15", "https://raw.githubusercontent.com/Imagnir/r6_anims_for_r15/main/r6_anims.lua"},
+    {"Fe Bypass", "https://raw.githubusercontent.com/g00lXploiter/g00lXploiter/main/Fe%20bypass"},
     {"Azure V3 (Blox Fruit)", "https://raw.githubusercontent.com/BasementHub/BH-Blox-fruit/main/W-Azure-V3"},
-    {"Zen Hub (Universal)", "https://raw.githubusercontent.com/Zenhubtop/zen_hub_pr/main/zennewwwwui.lua", true},
     {"XAZM Script List (Universal)", "https://raw.githubusercontent.com/YogaProjectRblx/XAZM-Script-List/refs/heads/main/Protected_8192991545688583.txt"},
     {"Baldy To Sorcerer", "https://raw.githubusercontent.com/skibiditoiletfan2007/BaldyToSorcerer/refs/heads/main/LatestV2.lua"},
     {"Skibidi Toilet War", "https://raw.githubusercontent.com/ExploiterGuy/Scriptblox-ExploitFin/refs/heads/main/Skibidi%20Toilet%20War"},
@@ -98,7 +98,9 @@ local scripts = {
     {"XenonHub", "https://www.xenonhub.xyz/loader.lua"},
     {"Pastebin Script 2", "https://pastebin.com/raw/n4pvk1Nk"},
     {"Linux Hub", "https://raw.githubusercontent.com/wannagrindlikepablo/Linux-Hub/refs/heads/main/Linux%20Hub"},
-    {"OhhMyGehlee Script", "https://raw.githubusercontent.com/OhhMyGehlee/rel/refs/heads/main/el"}
+    {"OhhMyGehlee Script", "https://raw.githubusercontent.com/OhhMyGehlee/rel/refs/heads/main/el"},
+    {"YT", "https://raw.githubusercontent.com/OhhMyGehlee/at/refs/heads/main/yt"},
+    {"Zen Hub (Universal)", "https://raw.githubusercontent.com/Zenhubtop/zen_hub_pr/main/zennewwwwui.lua", true}
 }
 local function createDetailedButton(scriptInfo)
     local Button = Instance.new("TextButton")
