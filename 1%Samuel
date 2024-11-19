@@ -39,7 +39,7 @@ UICorner.Parent = TitleLabel
 ScrollingFrame.Parent = MainFrame
 ScrollingFrame.Size = UDim2.new(1, -40, 1, -80)
 ScrollingFrame.Position = UDim2.new(0, 20, 0, 60)
-local maxButtons = 70
+local maxButtons = 130
 local buttonHeight = 60
 local spacing = 10
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, maxButtons * (buttonHeight + spacing))
@@ -140,7 +140,46 @@ local scripts = {
     {"Amythest Ninja Blade", "https://bit.ly/3wAvlQN"},
     {"PUBG Pan", "https://bit.ly/371egFu"},
     {"Grab Knife V3 - Recommended", "https://bit.ly/3MBauma"},
-    {"Grab Knife V4", "https://bit.ly/35zXBIm"}
+    {"Grab Knife V4", "https://bit.ly/35zXBIm"},
+    {"Hidden blades - From AC", "https://bit.ly/3vOxqbA"},
+    {"Despira", "https://bit.ly/3MyUAZe"},
+    {"Golden Fireball God", "https://bit.ly/3KI6j6j"},
+    {"Energy Blade Slapper", "https://bit.ly/364fyi8"},
+    {"Sniper", "https://bit.ly/3sRLBdU"},
+    {"Echo Banisher", "https://bit.ly/3pN5il3"},
+    {"What do I even name this?", "https://bit.ly/3Ktz4Ua"},
+    {"Incension Reborn", "https://bit.ly/3tB3w80"},
+    {"The Sun Is A Deadly laser", "https://bit.ly/35IeDUt"},
+    {"John Doe Blaster", "https://bit.ly/3hKeXER"},
+    {"The Distorted", "https://bit.ly/3KtVYdJ"},
+    {"Brutal Anti Furry", "https://bit.ly/3HLqxdm"},
+    {"Omni God", "https://bit.ly/3Cq1nQc"},
+    {"Baldi", "https://bit.ly/3Kpj1GH"},
+    {"Shedletsky Rage", "https://bit.ly/3pLSf3E"},
+    {"Nebula Star Glitcher", "https://bit.ly/3IUb8ZC"},
+    {"Lustris PURPLE", "https://bit.ly/3MzAGxq"},
+    {"Touhou Magic", "https://bit.ly/3pNw3Wz"},
+    {"Excalibur", "https://bit.ly/3tB2Qzu"},
+    {"John Doe", "https://bit.ly/3HWSAX7"},
+    {"What another one", "https://bit.ly/3IUKqjB"},
+    {"Ether", "https://bit.ly/3KhwWyC"},
+    {"Uncle Parlo The Redneck", "https://bit.ly/3tCGkpF"},
+    {"Eyo Zen", "https://bit.ly/3tB2UPK"},
+    {"Cop", "https://bit.ly/3CnvhEK"},
+    {"Verlex", "https://bit.ly/361hjws"},
+    {"Lost Hope", "https://bit.ly/3pLoUX1"},
+    {"The Assasian", "https://bit.ly/3Cm5lJI"},
+    {"Dragonian Pyramus", "https://bit.ly/3HRNuvi"},
+    {"Grappler", "https://bit.ly/3pIMKmg"},
+    {"Groundbreaker Gauntlets", "https://bit.ly/35JnOUC"},
+    {"Sexy Staff Girl", "https://bit.ly/35FwHyH"},
+    {"Jojo Super Gauntlets", "https://bit.ly/35Fwyv5"},
+    {"The Pacifist", "https://bit.ly/361hKH6"},
+    {"Sakura Blade", "https://bit.ly/3pLoShL"},
+    {"M41451", "https://bit.ly/35FwKKT"},
+    {"Master Of Elements", "https://bit.ly/3IROgtC"},
+    {"AK47", "https://bit.ly/3hPAdJi"},
+    {"AKV", "https://bit.ly/35z9zC3"}
 }
 local function createDetailedButton(scriptInfo)
     local Button = Instance.new("TextButton")
