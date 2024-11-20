@@ -39,7 +39,7 @@ UICorner.Parent = TitleLabel
 ScrollingFrame.Parent = MainFrame
 ScrollingFrame.Size = UDim2.new(1, -40, 1, -80)
 ScrollingFrame.Position = UDim2.new(0, 20, 0, 60)
-local maxButtons = 130
+local maxButtons = 50
 local buttonHeight = 60
 local spacing = 10
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, maxButtons * (buttonHeight + spacing))
@@ -100,7 +100,8 @@ local scripts = {
     {"Linux Hub", "https://raw.githubusercontent.com/wannagrindlikepablo/Linux-Hub/refs/heads/main/Linux%20Hub"},
     {"OhhMyGehlee Script", "https://raw.githubusercontent.com/OhhMyGehlee/rel/refs/heads/main/el"},
     {"YT", "https://raw.githubusercontent.com/OhhMyGehlee/at/refs/heads/main/yt"},
-    {"Zen Hub (Universal)", "https://raw.githubusercontent.com/Zenhubtop/zen_hub_pr/main/zennewwwwui.lua", true}
+    {"Zen Hub (Universal)", "https://raw.githubusercontent.com/Zenhubtop/zen_hub_pr/main/zennewwwwui.lua", true},
+    {"AutoParry", "https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua"}
 }
 local function createDetailedButton(scriptInfo)
     local Button = Instance.new("TextButton")
