@@ -39,7 +39,7 @@ UICorner.Parent = TitleLabel
 ScrollingFrame.Parent = MainFrame
 ScrollingFrame.Size = UDim2.new(1, -40, 1, -80)
 ScrollingFrame.Position = UDim2.new(0, 20, 0, 60)
-local maxButtons = 130
+local maxButtons = 49
 local buttonHeight = 60
 local spacing = 10
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, maxButtons * (buttonHeight + spacing))
@@ -51,7 +51,7 @@ ScrollingFrame.BackgroundTransparency = 1 -- Torna o fundo transparente
 local ImageLabel = Instance.new("ImageLabel")
 ImageLabel.Parent = ScrollingFrame
 ImageLabel.Size = UDim2.new(1, 0, 1, 0)
-ImageLabel.Image = "rbxassetid://6014261993"
+ImageLabel.Image = "rbxassetid://18394732434"
 ImageLabel.BackgroundTransparency = 1
 ImageLabel.ZIndex = 0
 
