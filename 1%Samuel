@@ -39,30 +39,13 @@ UICorner.Parent = TitleLabel
 ScrollingFrame.Parent = MainFrame
 ScrollingFrame.Size = UDim2.new(1, -40, 1, -80)
 ScrollingFrame.Position = UDim2.new(0, 20, 0, 60)
-local maxButtons = 49
+local maxButtons = 50
 local buttonHeight = 60
 local spacing = 10
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, maxButtons * (buttonHeight + spacing))
 ScrollingFrame.ScrollBarThickness = 8
 ScrollingFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Preto
-ScrollingFrame.BackgroundTransparency = 1 -- Torna o fundo transparente
-
--- Adiciona a imagem de fundo
-local ImageLabel = Instance.new("ImageLabel")
-ImageLabel.Parent = ScrollingFrame
-ImageLabel.Size = UDim2.new(1, 0, 1, 0)
-ImageLabel.Image = "rbxassetid://18394732434"
-ImageLabel.BackgroundTransparency = 1
-ImageLabel.ZIndex = 0
-
--- Adiciona um gradiente de cor
-local UIGradient = Instance.new("UIGradient")
-UIGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 255)),  -- Neon ciano
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 200, 200)) -- Tom ciano
-}
-UIGradient.Rotation = 45
-UIGradient.Parent = ImageLabel
+ScrollingFrame.BackgroundTransparency = 0.2
 
 UIGridLayout.Parent = ScrollingFrame
 UIGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
