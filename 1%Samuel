@@ -101,7 +101,26 @@ local scripts = {
     {"OhhMyGehlee Script", "https://raw.githubusercontent.com/OhhMyGehlee/rel/refs/heads/main/el"},
     {"YT", "https://raw.githubusercontent.com/OhhMyGehlee/at/refs/heads/main/yt"},
     {"Zen Hub (Universal)", "https://raw.githubusercontent.com/Zenhubtop/zen_hub_pr/main/zennewwwwui.lua", true},
-    {"AutoParry", "https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua"}
+    {"AutoParry", "https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua"},
+    {"Infinite Yield", "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"},
+    {"Remote Spy", "https://raw.githubusercontent.com/exxtremestuffs/SimpleSpySource/master/SimpleSpy.lua"},
+    {"Dark Dex", "https://raw.githubusercontent.com/peyton2465/Dex/master/out.lua"},
+    {"Reviz Admin", "https://pastebin.com/raw/vbA4iJg7"},
+    {"Fates Admin", "https://raw.githubusercontent.com/fatesc/fates-admin/main/main.lua"},
+    {"CMD-X", "https://pastebin.com/raw/siXbUFH4"},
+    {"Zyrex Hub", "https://pastebin.com/raw/S8tBq0je"},
+    {"FE Script Hub", "https://pastebin.com/raw/yCrBkMny"},
+    {"ESP Script", "https://raw.githubusercontent.com/Qlitzuwu/ESP/main/ESP.lua"},
+    {"Noclip Script", "https://pastebin.com/raw/7K3v7C85"},
+    {"Fly Script", "https://pastebin.com/raw/kPMFNm5g"},
+    {"Aimbot Script", "https://pastebin.com/raw/X7SViQZf"},
+    {"Speed Hack", "https://pastebin.com/raw/vdeJtK5T"},
+    {"Jump Hack", "https://pastebin.com/raw/X7kp5m4Y"},
+    {"God Mode Script", "https://pastebin.com/raw/8L8ByfBp"},
+    {"BTools Script", "https://pastebin.com/raw/Z3fGbcqz"},
+    {"Teleport Script", "https://pastebin.com/raw/yEwtDsRV"},
+    {"Anti AFK", "https://pastebin.com/raw/TpTpKFhu"},
+    {"Save/Load Position", "https://pastebin.com/raw/7KJv5by7"}
 }
 local function createDetailedButton(scriptInfo)
     local Button = Instance.new("TextButton")
