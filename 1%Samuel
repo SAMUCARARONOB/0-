@@ -39,7 +39,7 @@ UICorner.Parent = TitleLabel
 ScrollingFrame.Parent = MainFrame
 ScrollingFrame.Size = UDim2.new(1, -40, 1, -80)
 ScrollingFrame.Position = UDim2.new(0, 20, 0, 60)
-local maxButtons = 200
+local maxButtons = 235
 local buttonHeight = 60
 local spacing = 10
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, maxButtons * (buttonHeight + spacing))
@@ -249,7 +249,48 @@ local scripts = {
     {"Fishing Simulator Auto Catch", "https://pastebin.com/raw/t7s1g4Qp"},
     {"Epic Minigames Auto Play", "https://pastebin.com/raw/u6d1f8Rs"},
     {"RoCitizens Auto Build", "https://pastebin.com/raw/v3s2d6Sp"},
-    {"Ninja Legends Auto Collect", "https://pastebin.com/raw/w9d1l3Tp"}
+    {"Ninja Legends Auto Collect", "https://pastebin.com/raw/w9d1l3Tp"},
+    {"Tower of Hell Auto Jump", "https://pastebin.com/raw/tower-of-hell-auto-jump"},
+    {"Arsenal Auto Respawn", "https://pastebin.com/raw/arsenal-auto-respawn"},
+    {"Epic Minigames Auto Play", "https://pastebin.com/raw/epic-minigames-auto-play"},
+    {"RoCitizens Auto Build", "https://pastebin.com/raw/rocitizens-auto-build"},
+    {"Ninja Legends Auto Collect", "https://pastebin.com/raw/ninja-legends-auto-collect"},
+    {"Lifting Simulator Auto Lift", "https://pastebin.com/raw/lifting-simulator-auto-lift"},
+    {"Speed Simulator Infinite Boost", "https://pastebin.com/raw/speed-simulator-infinite-boost"},
+    {"Dungeon Quest Auto Heal", "https://pastebin.com/raw/dungeon-quest-auto-heal"},
+    {"Pet Simulator X Auto Hatch", "https://pastebin.com/raw/pet-simulator-x-auto-hatch"},
+    {"Bloxburg Auto Cook", "https://pastebin.com/raw/bloxburg-auto-cook"},
+    {"Anime Fighting Simulator Auto Fight", "https://pastebin.com/raw/anime-fighting-simulator-auto-fight"},
+    {"Vehicle Simulator Auto Race", "https://pastebin.com/raw/vehicle-simulator-auto-race"},
+    {"Bee Swarm Simulator Auto Quest", "https://pastebin.com/raw/bee-swarm-simulator-auto-quest"},
+    {"Bubble Gum Simulator Auto Sell", "https://pastebin.com/raw/bubble-gum-simulator-auto-sell"},
+    {"Mad City Auto Escape", "https://pastebin.com/raw/mad-city-auto-escape"},
+    {"Fishing Simulator Auto Catch", "https://pastebin.com/raw/fishing-simulator-auto-catch"},
+    {"Epic Minigames Auto Play", "https://pastebin.com/raw/epic-minigames-auto-play"},
+    {"RoCitizens Auto Build", "https://pastebin.com/raw/rocitizens-auto-build"},
+    {"Ninja Legends Auto Collect", "https://pastebin.com/raw/ninja-legends-auto-collect"},
+    {"Lifting Simulator Auto Lift", "https://pastebin.com/raw/lifting-simulator-auto-lift"},
+    {"Speed Simulator Infinite Boost", "https://pastebin.com/raw/speed-simulator-infinite-boost"},
+    {"Dungeon Quest Auto Heal", "https://pastebin.com/raw/dungeon-quest-auto-heal"},
+    {"Pet Simulator X Auto Hatch", "https://pastebin.com/raw/pet-simulator-x-auto-hatch"},
+    {"Bloxburg Auto Cook", "https://pastebin.com/raw/bloxburg-auto-cook"},
+    {"Anime Fighting Simulator Auto Fight", "https://pastebin.com/raw/anime-fighting-simulator-auto-fight"},
+    {"Vehicle Simulator Auto Race", "https://pastebin.com/raw/vehicle-simulator-auto-race"},
+    {"Bee Swarm Simulator Auto Quest", "https://pastebin.com/raw/bee-swarm-simulator-auto-quest"},
+    {"Bubble Gum Simulator Auto Sell", "https://pastebin.com/raw/bubble-gum-simulator-auto-sell"},
+    {"Mad City Auto Escape", "https://pastebin.com/raw/mad-city-auto-escape"},
+    {"Fishing Simulator Auto Catch", "https://pastebin.com/raw/fishing-simulator-auto-catch"},
+    {"Epic Minigames Auto Play", "https://pastebin.com/raw/epic-minigames-auto-play"},
+    {"RoCitizens Auto Build", "https://pastebin.com/raw/rocitizens-auto-build"},
+    {"Ninja Legends Auto Collect", "https://pastebin.com/raw/ninja-legends-auto-collect"},
+    {"Lifting Simulator Auto Lift", "https://pastebin.com/raw/lifting-simulator-auto-lift"},
+    {"Speed Simulator Infinite Boost", "https://pastebin.com/raw/speed-simulator-infinite-boost"},
+    {"Dungeon Quest Auto Heal", "https://pastebin.com/raw/dungeon-quest-auto-heal"},
+    {"Pet Simulator X Auto Hatch", "https://pastebin.com/raw/pet-simulator-x-auto-hatch"},
+    {"Bloxburg Auto Cook", "https://pastebin.com/raw/bloxburg-auto-cook"},
+    {"Anime Fighting Simulator Auto Fight", "https://pastebin.com/raw/anime-fighting-simulator-auto-fight"},
+    {"Vehicle Simulator Auto Race", "https://pastebin.com/raw/vehicle-simulator-auto-race"},
+    {"Bee Swarm Simulator Auto Quest", "https://pastebin.com/raw/bee-swarm-simulator-auto-quest"},
 }
 local function createDetailedButton(scriptInfo)
     local Button = Instance.new("TextButton")
