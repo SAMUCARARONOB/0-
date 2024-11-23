@@ -12,14 +12,14 @@ ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 MainFrame.Parent = ScreenGui
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-MainFrame.Size = UDim2.new(0, 500, 0, 500)
+MainFrame.Size = UDim2.new(0, 600, 0, 400)
 MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Preto
 MainFrame.BackgroundTransparency = 0.3
 
 UICorner.CornerRadius = UDim.new(0, 20)
 UICorner.Parent = MainFrame
 
-UIStroke.Color = Color3.fromRGB(255, 255, 0) -- Cor neon
+UIStroke.Color = Color3.fromRGB(255, 255, 255) -- Cor neon
 UIStroke.Thickness = 2
 UIStroke.Parent = MainFrame
 
@@ -29,7 +29,7 @@ TitleLabel.Position = UDim2.new(0, 0, 0, -50)
 TitleLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 TitleLabel.BackgroundTransparency = 0.5
 TitleLabel.Text = "SCRIPTS-OP v1.0"
-TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 0) -- Cor neon
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- Cor neon
 TitleLabel.Font = Enum.Font.SourceSansBold
 TitleLabel.TextSize = 30
 
@@ -102,7 +102,7 @@ local scripts = {
     {"YT", "https://raw.githubusercontent.com/OhhMyGehlee/at/refs/heads/main/yt"},
     {"Zen Hub (Universal)", "https://raw.githubusercontent.com/Zenhubtop/zen_hub_pr/main/zennewwwwui.lua", true},
     {"AutoParry", "https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua"},
-    {"Samuel Script", "https://raw.githubusercontent.com/SAMUCARARONOB/Inf/refs/heads/main/Samuel"}
+    {"RNG Scripts", "https://raw.githubusercontent.com/SAMUCARARONOB/Inf/refs/heads/main/Samuel"}
 }
 local function createDetailedButton(scriptInfo)
     local Button = Instance.new("TextButton")
@@ -119,14 +119,14 @@ local function createDetailedButton(scriptInfo)
     ButtonCorner.Parent = Button
 
     local ButtonStroke = Instance.new("UIStroke")
-    ButtonStroke.Color = Color3.fromRGB(255, 0, 0) -- Vermelho
+    ButtonStroke.Color = Color3.fromRGB(255, 255, 255) -- Vermelho
     ButtonStroke.Thickness = 2
     ButtonStroke.Parent = Button
 
     local ButtonGradient = Instance.new("UIGradient")
     ButtonGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 0)),  -- Neon ciano
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0)) -- Tom ciano
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),  -- Neon ciano
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0)) -- Tom ciano
     }
     ButtonGradient.Rotation = 45
     ButtonGradient.Parent = Button
