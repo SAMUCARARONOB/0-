@@ -19,7 +19,7 @@ MainFrame.BackgroundTransparency = 0.3
 UICorner.CornerRadius = UDim.new(0, 20)
 UICorner.Parent = MainFrame
 
-UIStroke.Color = Color3.fromRGB(0, 255, 255) -- Cor neon
+UIStroke.Color = Color3.fromRGB(255, 255, 255) -- Cor neon
 UIStroke.Thickness = 2
 UIStroke.Parent = MainFrame
 
@@ -108,9 +108,9 @@ local function createDetailedButton(scriptInfo)
     local Button = Instance.new("TextButton")
     Button.Parent = ScrollingFrame
     Button.Text = scriptInfo[1]
-    Button.BackgroundColor3 = Color3.fromRGB(0, 0, 255) -- Azul
+    Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- Branco
     Button.BorderSizePixel = 0
-    Button.TextColor3 = Color3.fromRGB(0, 255, 0) -- Verde
+    Button.TextColor3 = Color3.fromRGB(0, 0, 0) -- Verde
     Button.Font = Enum.Font.SourceSansBold
     Button.TextScaled = true
 
@@ -132,11 +132,11 @@ local function createDetailedButton(scriptInfo)
     ButtonGradient.Parent = Button
 
     Button.MouseEnter:Connect(function()
-        Button.TextColor3 = Color3.fromRGB(255, 255, 0) -- Amarelo ao passar o mouse
+        Button.TextColor3 = Color3.fromRGB(255, 0, 0) -- Amarelo ao passar o mouse
     end)
 
     Button.MouseLeave:Connect(function()
-        Button.TextColor3 = Color3.fromRGB(0, 255, 0) -- Volta ao verde
+        Button.TextColor3 = Color3.fromRGB(0, 0, 0) -- Volta ao verde
     end)
 
     Button.MouseButton1Click:Connect(function()
