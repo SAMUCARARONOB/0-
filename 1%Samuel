@@ -19,17 +19,17 @@ MainFrame.BackgroundTransparency = 0.3
 UICorner.CornerRadius = UDim.new(0, 20)
 UICorner.Parent = MainFrame
 
-UIStroke.Color = Color3.fromRGB(0, 0, 255) -- Cor neon
+UIStroke.Color = Color3.fromRGB(255, 255, 255) -- Cor neon
 UIStroke.Thickness = 2
 UIStroke.Parent = MainFrame
 
 TitleLabel.Parent = MainFrame
 TitleLabel.Size = UDim2.new(1, 0, 0, 50)
 TitleLabel.Position = UDim2.new(0, 0, 0, -50)
-TitleLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TitleLabel.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 TitleLabel.BackgroundTransparency = 0.3
 TitleLabel.Text = "SCRIPTS-OP v1.0"
-TitleLabel.TextColor3 = Color3.fromRGB(255, 0, 0) -- Cor neon
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- Cor neon
 TitleLabel.Font = Enum.Font.SourceSansBold
 TitleLabel.TextSize = 30
 
@@ -110,7 +110,7 @@ local function createDetailedButton(scriptInfo)
     Button.Text = scriptInfo[1]
     Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- Branco
     Button.BorderSizePixel = 0
-    Button.TextColor3 = Color3.fromRGB(0, 0, 0) -- Verde
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255) -- preto
     Button.Font = Enum.Font.SourceSansBold
     Button.TextScaled = true
 
@@ -119,14 +119,14 @@ local function createDetailedButton(scriptInfo)
     ButtonCorner.Parent = Button
 
     local ButtonStroke = Instance.new("UIStroke")
-    ButtonStroke.Color = Color3.fromRGB(255, 255, 255) -- Vermelho
+    ButtonStroke.Color = Color3.fromRGB(0, 0, 0) -- Vermelho
     ButtonStroke.Thickness = 2
     ButtonStroke.Parent = Button
 
     local ButtonGradient = Instance.new("UIGradient")
     ButtonGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),  -- Neon ciano
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 255)) -- Tom ciano
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),  -- Neon ciano
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 50)) -- Tom ciano
     }
     ButtonGradient.Rotation = 45
     ButtonGradient.Parent = Button
