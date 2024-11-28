@@ -101,7 +101,7 @@ local scripts = {
     {"OhhMyGehlee Script", "https://raw.githubusercontent.com/OhhMyGehlee/rel/refs/heads/main/el"},
     {"YT", "https://raw.githubusercontent.com/OhhMyGehlee/at/refs/heads/main/yt"},
     {"Zen Hub (Universal)", "https://raw.githubusercontent.com/Zenhubtop/zen_hub_pr/main/zennewwwwui.lua", true},
-    {"AutoParry", "https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua"},
+    {"SCRIPTS BROOKHAVEN", "https://raw.githubusercontent.com/SAMUCARARONOB/FLY/refs/heads/main/%40yahoo.com"},
     {"RNG Scripts", "https://raw.githubusercontent.com/SAMUCARARONOB/Inf/refs/heads/main/Samuel"}
 }
 local function createDetailedButton(scriptInfo)
