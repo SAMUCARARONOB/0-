@@ -102,7 +102,8 @@ local scripts = {
     {"YT", "https://raw.githubusercontent.com/OhhMyGehlee/at/refs/heads/main/yt"},
     {"Zen Hub (Universal)", "https://raw.githubusercontent.com/Zenhubtop/zen_hub_pr/main/zennewwwwui.lua", true},
     {"SCRIPTS BROOKHAVEN", "https://raw.githubusercontent.com/SAMUCARARONOB/FLY/refs/heads/main/%40yahoo.com"},
-    {"RNG Scripts", "https://raw.githubusercontent.com/SAMUCARARONOB/Inf/refs/heads/main/Samuel"}
+    {"RNG SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/Inf/refs/heads/main/Samuel"},
+    {"BLOX FRUITS SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/NOCLIP/refs/heads/main/Slk"}
 }
 local function createDetailedButton(scriptInfo)
     local Button = Instance.new("TextButton")
