@@ -39,7 +39,7 @@ UICorner.Parent = TitleLabel
 ScrollingFrame.Parent = MainFrame
 ScrollingFrame.Size = UDim2.new(1, -40, 1, -80)
 ScrollingFrame.Position = UDim2.new(0, 20, 0, 60)
-local maxButtons = 51
+local maxButtons = 52
 local buttonHeight = 60
 local spacing = 10
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, maxButtons * (buttonHeight + spacing))
@@ -103,7 +103,8 @@ local scripts = {
     {"Zen Hub (Universal)", "https://raw.githubusercontent.com/Zenhubtop/zen_hub_pr/main/zennewwwwui.lua", true},
     {"SCRIPTS BROOKHAVEN", "https://raw.githubusercontent.com/SAMUCARARONOB/FLY/refs/heads/main/%40yahoo.com"},
     {"RNG SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/Inf/refs/heads/main/Samuel"},
-    {"BLOX FRUITS SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/NOCLIP/refs/heads/main/Slk"}
+    {"BLOX FRUITS SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/NOCLIP/refs/heads/main/Slk"},
+    {"PETS GO! SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/Samielop1/refs/heads/main/Samuel-opscripts?token=GHSAT0AAAAAAC2PEBSVWOY7NLPSWWOQH4VKZ2LH5FQ"}
 }
 local function createDetailedButton(scriptInfo)
     local Button = Instance.new("TextButton")
