@@ -104,7 +104,7 @@ local scripts = {
     {"SCRIPTS BROOKHAVEN", "https://raw.githubusercontent.com/SAMUCARARONOB/FLY/refs/heads/main/%40yahoo.com"},
     {"RNG SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/Inf/refs/heads/main/Samuel"},
     {"BLOX FRUITS SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/NOCLIP/refs/heads/main/Slk"},
-    {"PETS GO! SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/Samielop1/refs/heads/main/Samuel-opscripts?token=GHSAT0AAAAAAC2PEBSVWOY7NLPSWWOQH4VKZ2LH5FQ"}
+    {"PETS GO! SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/-829-1-9IWN1O/refs/heads/main/Saia%20e%20n%C3%A3o%20roube%20minha%20URL"}
 }
 local function createDetailedButton(scriptInfo)
     local Button = Instance.new("TextButton")
