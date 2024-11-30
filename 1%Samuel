@@ -36,21 +36,26 @@ TitleLabel.TextSize = 30
 UICorner.CornerRadius = UDim.new(0, 10)
 UICorner.Parent = TitleLabel
 
+local ScrollingFrame = Instance.new("ScrollingFrame")
+local UIGridLayout = Instance.new("UIGridLayout")
+
 ScrollingFrame.Parent = MainFrame
 ScrollingFrame.Size = UDim2.new(1, -40, 1, -80)
 ScrollingFrame.Position = UDim2.new(0, 20, 0, 60)
 local maxButtons = 52
 local buttonHeight = 60
 local spacing = 10
-ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, maxButtons * (buttonHeight + spacing))
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, math.ceil(maxButtons / 3) * (buttonHeight + spacing))
 ScrollingFrame.ScrollBarThickness = 8
-ScrollingFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Preto
+ScrollingFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 ScrollingFrame.BackgroundTransparency = 0.3
 
 UIGridLayout.Parent = ScrollingFrame
 UIGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIGridLayout.CellSize = UDim2.new(1, 0, 0, 60)
-UIGridLayout.CellPadding = UDim2.new(0, 0, 0, 10)
+UIGridLayout.CellSize = UDim2.new(0.3, -5, 0, 60)
+UIGridLayout.CellPadding = UDim2.new(0, 5, 0, 10)
+UIGridLayout.FillDirectionMaxCells = 3
+UIGridLayout.FillDirection = Enum.FillDirection.Horizontal
 
 local scripts = {
     {"Rochips Universal", "https://glot.io/snippets/gzrux646yj/raw/main.ts"},
