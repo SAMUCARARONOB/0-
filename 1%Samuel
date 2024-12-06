@@ -64,7 +64,8 @@ local scripts = {
     {"RNG SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/Inf/refs/heads/main/Samuel"},
     {"BLOX FRUITS SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/NOCLIP/refs/heads/main/Slk"},
     {"PETS GO! SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/-829-1-9IWN1O/refs/heads/main/Saia%20e%20n%C3%A3o%20roube%20minha%20URL"},
-    {"BLADE BALL SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/SUPER-OP/refs/heads/main/AOPA%20D%20BOA%20MEU%20CHAPA"}
+    {"BLADE BALL SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/SUPER-OP/refs/heads/main/AOPA%20D%20BOA%20MEU%20CHAPA"},
+    {"EM BREVE", ""}
 }
 for _, script in ipairs(scripts) do
     Tab:CreateButton({
