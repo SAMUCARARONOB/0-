@@ -78,19 +78,55 @@ for _, script in ipairs(scripts) do
     })
 end
 
--- Adicionando um botão de configuração
+-- Adicionando uma aba de configurações
 local SettingsTab = Window:CreateTab("Settings") -- Nova aba para configurações
 local SettingsSection = SettingsTab:CreateSection("Configuration")
-local SettingsButton = SettingsTab:CreateButton({
-    Name = "Configure Settings",
-    Callback = function()print("Settings button clicked!") -- Substituir pela lógica real das configurações
+
+-- Continuando a partir da seção de configurações
+
+-- Adicionando alguns elementos de configuração
+local SettingsToggle = SettingsSection:CreateToggle({
+    Name = "Enable Feature X",
+    CurrentValue = false,
+    Flag = "FeatureX",
+    Callback = function(Value)
+        print("Feature X:", Value) -- Substituir pela lógica real da Feature X
     end
 })
 
--- Alternativamente, adicione o botão à aba principal
-local SettingsButtonMain = Tab:CreateButton({
-    Name = "Configure Settings",
-    Callback = function()
-        print("Settings button clicked!") -- Substituir pela lógica real das configurações
+local SettingsSlider = SettingsSection:CreateSlider({
+    Name = "Adjust Volume",
+    Min = 0,
+    Max = 100,
+    Increment = 1,
+    CurrentValue = 50,
+    Flag = "Volume",
+    Callback = function(Value)
+        print("Volume:", Value) -- Substituir pela lógica real do ajuste de volume
     end
 })
+
+local SettingsDropdown = SettingsSection:CreateDropdown({
+    Name = "Select Mode",
+    Options = {"Mode 1", "Mode 2", "Mode 3"},
+    CurrentOption = "Mode 1",
+    Flag = "Mode",
+    Callback = function(Option)
+        print("Selected Mode:", Option) -- Substituir pela lógica real de seleção de modo
+    end
+})
+
+local SettingsButton = SettingsSection:CreateButton({
+    Name = "Save Settings",
+    Callback = function()
+        print("Settings saved!") -- Substituir pela lógica real de salvar configurações
+    end
+})
+
+-- Alternativamente, adicionar outro botão na aba principal se necessário
+--local SettingsButtonMain = Tab:CreateButton({
+--    Name = "Configure Settings",
+--    Callback = function()
+--        print("Settings button clicked!") -- Substituir pela lógica real das configurações
+--    end
+--})
