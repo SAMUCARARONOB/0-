@@ -1,3 +1,4 @@
+-- Definindo os elementos GUI como antes
 local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua'))()
 getgenv().SecureMode = true
 
@@ -11,6 +12,7 @@ local Tab = Window:CreateTab("Main GUI's")
 local Section = Tab:CreateSection("OP SCRIPTS Main GUI's")
 local Label = Tab:CreateLabel("Thanks for using OP SCRIPTS☠️")
 
+-- Adicionando os botões existentes
 local scripts = {
     {"Rochips Universal", "https://glot.io/snippets/gzrux646yj/raw/main.ts"},
     {"GhostHub", "https://raw.githubusercontent.com/GhostPlayer352/Test4/main/GhostHub"},
@@ -75,3 +77,20 @@ for _, script in ipairs(scripts) do
         end
     })
 end
+
+-- Adicionando um botão de configuração
+local SettingsTab = Window:CreateTab("Settings") -- Nova aba para configurações
+local SettingsSection = SettingsTab:CreateSection("Configuration")
+local SettingsButton = SettingsTab:CreateButton({
+    Name = "Configure Settings",
+    Callback = function()print("Settings button clicked!") -- Substituir pela lógica real das configurações
+    end
+})
+
+-- Alternativamente, adicione o botão à aba principal
+local SettingsButtonMain = Tab:CreateButton({
+    Name = "Configure Settings",
+    Callback = function()
+        print("Settings button clicked!") -- Substituir pela lógica real das configurações
+    end
+})
