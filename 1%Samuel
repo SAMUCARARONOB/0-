@@ -1,3 +1,4 @@
+-- Definindo os elementos GUI como antes
 local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua'))()
 getgenv().SecureMode = true
 
@@ -7,60 +8,11 @@ local Window = Rayfield:CreateWindow({
     LoadingSubtitle = "Brought to you by SCRIPTS OP",
 })
 
-local MainTab = Window:CreateTab("Main GUI's")
-local MainSection = MainTab:CreateSection("OP SCRIPTS Main GUI's")
-local MainLabel = MainTab:CreateLabel("Thanks for using OP SCRIPTS☠️")
+local Tab = Window:CreateTab("Main GUI's")
+local Section = Tab:CreateSection("OP SCRIPTS Main GUI's")
+local Label = Tab:CreateLabel("Thanks for using OP SCRIPTS☠️")
 
-local addedScripts = {}
-
-local function createScriptButton(scriptName, scriptUrl)
-    if not addedScripts[scriptUrl] then
-        MainTab:CreateButton({
-            Name = scriptName,
-            Callback = function()
-                loadstring(game:HttpGet(scriptUrl))()
-            end
-        })
-        addedScripts[scriptUrl] = true
-    end
-end
-
-local function extractUrl(text)
-    return text:match("https?://[%w%./_%-]+")
-end
-
-local function getScriptName(scriptUrl)
-    local parts = {}
-    for part in scriptUrl:gmatch("[^/]+") do
-        table.insert(parts, part)
-    end
-    return parts[#parts] or "Custom Script"
-end
-
-local KeyInput = MainTab:CreateInput({
-    Name = "Enter Code",
-    PlaceholderText = "Your Code Here",
-    Flag = "Code",
-    Callback = function(Text)
-        local scriptUrl = extractUrl(Text)
-        if scriptUrl then
-            local scriptName = getScriptName(scriptUrl)
-            createScriptButton(scriptName, scriptUrl)
-            MainTab:CreateLabel("Code added! Check the main tab for your script.")
-        else
-            MainTab:CreateLabel("Invalid Code. Please enter a valid URL.")
-        end
-        KeyInput:SetText("") -- Clear the input field after each entry
-    end
-})
-
-KeyInput.Focused:Connect(function()
-    KeyInput:SetText("") -- Clear the input field when focused to write again
-end)
-
-local scriptsTab = Window:CreateTab("SCRIPTS")
-local scriptsSection = scriptsTab:CreateSection("Available Scripts")
-
+-- Adicionando os botões existentes
 local scripts = {
     {"Rochips Universal", "https://glot.io/snippets/gzrux646yj/raw/main.ts"},
     {"GhostHub", "https://raw.githubusercontent.com/GhostPlayer352/Test4/main/GhostHub"},
@@ -71,11 +23,11 @@ local scripts = {
     {"Orca (Universal)", "https://raw.githubusercontent.com/richie0866/orca/master/public/latest.lua"},
     {"ProjectPastel (Universal)", "https://raw.githubusercontent.com/NUTellaVING/ProjectPastel/main/Loader.lua"},
     {"Wrestling Legends", "https://raw.githubusercontent.com/ToraScript/Script/main/WrestlingLegends"},
-    {"MurderersVsSheriffs", "https://raw.githubusercontent.com/RenceeeX/MVSD/refs/heads/main/MurderersVsSheriffs"},
+    {"MurderersVsSheriffs", "https://raw.githubusercontent.com/RenceeeX/MVSD/refs/heads/main/MurderersVsSheriffs", true},
     {"Pendulum Hub (Universal)", "https://scriptblox.com/raw/Universal-Script-Op-PENDULUM-HUB-Gui-R6-6490"},
     {"SCRIPTHUBV3 (Universal)", "https://raw.githubusercontent.com/scripthubekitten/SCRIPTHUBV3/main/SCRIPTHUBV3"},
     {"UTG V3 (Universal)", "https://raw.githubusercontent.com/Blukez/Scripts/main/UTG%20V3%20RAW"},
-    {"Speed-Hub (Blade Ball)", "https://raw.githubusercontent.com/depr0l8lkgGlzJds2hwQhn/Speed-Hub-Main-Releases-B-Y-R-E-N/refs/heads/main/Speed-Hub-Bladeball-Update-Lite-V2.txt"},
+    {"Speed-Hub (Blade Ball)", "https://raw.githubusercontentudepr0l8lkgGlzJds2hwQhn/Speed-Hub-Main-Releases-B-Y-R-E-N/refs/heads/main/Speed-Hub-Bladeball-Update-Lite-V2.txt"},
     {"R6 Animations for R15", "https://raw.githubusercontent.com/Imagnir/r6_anims_for_r15/main/r6_anims.lua"},
     {"Fe Bypass", "https://raw.githubusercontent.com/g00lXploiter/g00lXploiter/main/Fe%20bypass"},
     {"Azure V3 (Blox Fruit)", "https://raw.githubusercontent.com/BasementHub/BH-Blox-fruit/main/W-Azure-V3"},
@@ -85,7 +37,7 @@ local scripts = {
     {"TOILET TOWER", "https://raw.githubusercontent.com/LOLking123456/TTD/main/ToiletDefense"},
     {"Zenith Hub Obfuscado", "https://raw.githubusercontent.com/LookP/Roblox/refs/heads/main/ZenithHubObsfucado.lua"},
     {"Zenith Hub Knight Demons", "https://raw.githubusercontent.com/LookP/Roblox/refs/heads/main/ZenithHub%20Knight%20Demons.lua"},
-    {"Classic Nations OBF", "https://raw.githubusercontent.com/Gamer-3/ClassicNationsOBF/refs/heads/main/latest_version.lua"},
+    {"Classic Nations OBF", "https://raw.githubusercontent.com/Gamer-3/ClassicNationsOBF/refs/heads/main/latest_version.lua", true},
     {"BOLA DA MORTE", "https://raw.githubusercontent.com/kiciahook/kiciahook/refs/heads/main/loader.lua"},
     {"Burgeria Tycoon", "https://raw.githubusercontent.com/ExploiterGuy/Scriptblox-ExploitFin/refs/heads/main/Burgeria%20Tycoon.txt"},
     {"DungeonRNG", "https://raw.githubusercontent.com/ProjectpopCat/ywxoscripts/main/DungeonRNG231.lua"},
@@ -93,7 +45,7 @@ local scripts = {
     {"Anime", "https://raw.githubusercontent.com/LHking123456/nsX94GqZju2km/refs/heads/main/Anime"},
     {"Noname Hub (Universal)", "https://noname-hub.fun/loader.lua"},
     {"Fish Release", "https://raw.githubusercontent.com/yolobradda/fischjvrre/refs/heads/main/fishrelease"},
-    {"InfiniteWare (Universal)", "https://raw.githubusercontent.com/Kitler69/InfiniteWare/refs/heads/main/Launcher"},
+    {"InfiniteWare (Universal)", "https://raw.githubusercontent.com/Kitler69/InfiniteWare/refs/heads/main/Launcher", true},
     {"Block Tales Auto Guard (Block Tales)", "https://raw.githubusercontent.com/TexRBLX/Roblox-stuff/refs/heads/main/block%20tales/Block-Tales-Auto-Guard.lua"},
     {"Damonvip", "https://raw.githubusercontent.com/daucobonhi/seagame/main/Damonvip.lua"},
     {"TOILET BATTLE", "https://raw.githubusercontent.com/ToraScript/Script/main/SkibidiToiletBattle"},
@@ -117,12 +69,64 @@ local scripts = {
     {"BLADE BALL SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/SUPER-OP/refs/heads/main/AOPA%20D%20BOA%20MEU%20CHAPA"},
     {"EM BREVE", "ODNifKTBirOHHIrFJ78IyRJ"}
 }
-
 for _, script in ipairs(scripts) do
-    scriptsTab:CreateButton({
+    Tab:CreateButton({
         Name = script[1],
         Callback = function()
             loadstring(game:HttpGet(script[2]))()
         end
     })
 end
+
+-- Adicionando uma aba de configurações
+local SettingsTab = Window:CreateTab("Settings") -- Nova aba para configurações
+local SettingsSection = SettingsTab:CreateSection("Configuration")
+
+-- Continuando a partir da seção de configurações
+
+-- Adicionando alguns elementos de configuração
+local SettingsToggle = SettingsSection:CreateToggle({
+    Name = "Enable Feature X",
+    CurrentValue = false,
+    Flag = "FeatureX",
+    Callback = function(Value)
+        print("Feature X:", Value) -- Substituir pela lógica real da Feature X
+    end
+})
+
+local SettingsSlider = SettingsSection:CreateSlider({
+    Name = "Adjust Volume",
+    Min = 0,
+    Max = 100,
+    Increment = 1,
+    CurrentValue = 50,
+    Flag = "Volume",
+    Callback = function(Value)
+        print("Volume:", Value) -- Substituir pela lógica real do ajuste de volume
+    end
+})
+
+local SettingsDropdown = SettingsSection:CreateDropdown({
+    Name = "Select Mode",
+    Options = {"Mode 1", "Mode 2", "Mode 3"},
+    CurrentOption = "Mode 1",
+    Flag = "Mode",
+    Callback = function(Option)
+        print("Selected Mode:", Option) -- Substituir pela lógica real de seleção de modo
+    end
+})
+
+local SettingsButton = SettingsSection:CreateButton({
+    Name = "Save Settings",
+    Callback = function()
+        print("Settings saved!") -- Substituir pela lógica real de salvar configurações
+    end
+})
+
+-- Alternativamente, adicionar outro botão na aba principal se necessário
+--local SettingsButtonMain = Tab:CreateButton({
+--    Name = "Configure Settings",
+--    Callback = function()
+--        print("Settings button clicked!") -- Substituir pela lógica real das configurações
+--    end
+--})
