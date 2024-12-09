@@ -1,4 +1,3 @@
--- Definindo os elementos GUI como antes
 local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua'))()
 getgenv().SecureMode = true
 
@@ -8,11 +7,133 @@ local Window = Rayfield:CreateWindow({
     LoadingSubtitle = "Brought to you by SCRIPTS OP",
 })
 
-local Tab = Window:CreateTab("Main GUI's")
-local Section = Tab:CreateSection("OP SCRIPTS Main GUI's")
-local Label = Tab:CreateLabel("Thanks for using OP SCRIPTS☠️")
+local MainTab = Window:CreateTab("Main GUI's")
+local MainSection = MainTab:CreateSection("OP SCRIPTS Main GUI's")
+local MainLabel = MainTab:CreateLabel("Thanks for using OP SCRIPTS☠️")
 
--- Adicionando os botões existentes
+local ExtraTab = Window:CreateTab("Extra GUI's")
+local ExtraSection = ExtraTab:CreateSection("OP SCRIPTS Extra GUI's")
+local ExtraLabel = ExtraTab:CreateLabel("This is the Extra GUI's tab.")
+
+local SettingsTab = Window:CreateTab("Settings")
+local SettingsSection = SettingsTab:CreateSection("Settings")
+local SettingsLabel = SettingsTab:CreateLabel("This is the Settings tab.")
+
+-- Funções de Configuração usando toggles
+local DarkModeToggle = SettingsTab:CreateToggle({
+    Name = "Modo Escuro",
+    CurrentValue = false,
+    Flag = "DarkMode",
+    Callback = function(Value)
+        if Value then
+            game:GetService("Lighting").Brightness = 0
+            print("Modo Escuro ativado!")
+        else
+            game:GetService("Lighting").Brightness = 2
+            print("Modo Escuro desativado!")
+        end
+    end
+})
+
+local originalSpeed = nil
+
+local SpeedToggle = SettingsTab:CreateToggle({
+    Name = "Aumentar Velocidade do Jogador",
+    CurrentValue = false,
+    Flag = "Speed",
+    Callback = function(Value)
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        if Value then
+            if not originalSpeed then
+                originalSpeed = character.Humanoid.WalkSpeed
+            end
+            character.Humanoid.WalkSpeed = character.Humanoid.WalkSpeed * 2
+            print("Velocidade do jogador aumentada para " .. character.Humanoid.WalkSpeed)
+        else
+            character.Humanoid.WalkSpeed = originalSpeed or character.Humanoid.WalkSpeed
+            print("Velocidade do jogador resetada para " .. character.Humanoid.WalkSpeed)
+        end
+    end
+})
+
+local MouseSensitivityToggle = SettingsTab:CreateToggle({
+    Name = "Aumentar Sensibilidade do Mouse",
+    CurrentValue = false,
+    Flag = "MouseSensitivity",
+    Callback = function(Value)
+        if Value then
+            game:GetService("UserInputService").MouseDeltaSensitivity = 2
+            print("Sensibilidade do mouse aumentada!")
+        else
+            game:GetService("UserInputService").MouseDeltaSensitivity = 1
+            print("Sensibilidade do mouse normalizada!")
+        end
+    end
+})
+
+-- Entrada de texto para SPEED IFN
+local SpeedIFNLabel = SettingsTab:CreateLabel("SPEED IFN")
+
+local SpeedIFNInput = SettingsTab:CreateInput({
+    Name = "Velocidade",
+    PlaceholderText = "Digite a velocidade desejada",
+    Flag = "SpeedIFN",
+    Callback = function(Text)
+        local newSpeed = tonumber(Text)
+        if newSpeed then
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            if not originalSpeed then
+                originalSpeed = character.Humanoid.WalkSpeed
+            end
+            character.Humanoid.WalkSpeed = newSpeed
+            print("Velocidade do jogador definida para " .. newSpeed .. "! Nova velocidade: " .. character.Humanoid.WalkSpeed)
+        else
+            print("Valor inválido. Por favor, insira um número.")
+        end
+        SpeedIFNInput:SetText("")
+    end
+})
+-- Botão para resetar a velocidade do jogador
+local ResetSpeedButton = SettingsTab:CreateButton({
+    Name = "Resetar Velocidade",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        if originalSpeed then
+            character.Humanoid.WalkSpeed = originalSpeed
+            print("Velocidade do jogador resetada para " .. originalSpeed)
+        else
+            print("Velocidade original não definida.")
+        end
+    end
+})
+
+-- Criar aba EXECUTE INFINITE-YIELD
+local CommandTab = Window:CreateTab("EXECUTE INFINITE-YIELD")
+local CommandSection = CommandTab:CreateSection("Comandos Gerais")
+local CommandLabel = CommandTab:CreateLabel("Esta é a nova aba de comandos")
+
+local InfiniteYieldButton = CommandTab:CreateButton({
+    Name = "Executar Infinite Yield",
+    Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+        print("Infinite Yield executado!")
+    end
+})
+
+local CommandTextLabel = MainTab:CreateLabel("Clique aqui para acessar o canal do YouTube")
+
+-- Botão na aba principal para copiar o link do canal do YouTube
+MainTab:CreateButton({
+    Name = "CANAL DO YOUTUBE",
+    Callback = function()
+        setclipboard("https://www.youtube.com/@XROBLOSCRIPTS")
+        print("Link do canal do YouTube copiado!")
+    end
+})
+
 local scripts = {
     {"Rochips Universal", "https://glot.io/snippets/gzrux646yj/raw/main.ts"},
     {"GhostHub", "https://raw.githubusercontent.com/GhostPlayer352/Test4/main/GhostHub"},
@@ -23,7 +144,7 @@ local scripts = {
     {"Orca (Universal)", "https://raw.githubusercontent.com/richie0866/orca/master/public/latest.lua"},
     {"ProjectPastel (Universal)", "https://raw.githubusercontent.com/NUTellaVING/ProjectPastel/main/Loader.lua"},
     {"Wrestling Legends", "https://raw.githubusercontent.com/ToraScript/Script/main/WrestlingLegends"},
-    {"MurderersVsSheriffs", "https://raw.githubusercontent.com/RenceeeX/MVSD/refs/heads/main/MurderersVsSheriffs", true},
+    {"MurderersVsSheriffs", "https://raw.githubusercontent.com/RenceeeX/MVSD/refs/heads/main/MurderersVsSheriffs"},
     {"Pendulum Hub (Universal)", "https://scriptblox.com/raw/Universal-Script-Op-PENDULUM-HUB-Gui-R6-6490"},
     {"SCRIPTHUBV3 (Universal)", "https://raw.githubusercontent.com/scripthubekitten/SCRIPTHUBV3/main/SCRIPTHUBV3"},
     {"UTG V3 (Universal)", "https://raw.githubusercontent.com/Blukez/Scripts/main/UTG%20V3%20RAW"},
@@ -69,8 +190,9 @@ local scripts = {
     {"BLADE BALL SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/SUPER-OP/refs/heads/main/AOPA%20D%20BOA%20MEU%20CHAPA"},
     {"EM BREVE", "ODNifKTBirOHHIrFJ78IyRJ"}
 }
+MainTab:CreateLabel("SCRIPTS AQUI❗️")
 for _, script in ipairs(scripts) do
-    Tab:CreateButton({
+    MainTab:CreateButton({
         Name = script[1],
         Callback = function()
             loadstring(game:HttpGet(script[2]))()
@@ -78,55 +200,112 @@ for _, script in ipairs(scripts) do
     })
 end
 
--- Adicionando uma aba de configurações
-local SettingsTab = Window:CreateTab("Settings") -- Nova aba para configurações
-local SettingsSection = SettingsTab:CreateSection("Configuration")
+local InstructionLabel = MainTab:CreateLabel("Digite a Senha para acessar as URLs")
 
--- Continuando a partir da seção de configurações
+local urlTabCreated = false
 
--- Adicionando alguns elementos de configuração
-local SettingsToggle = SettingsSection:CreateToggle({
-    Name = "Enable Feature X",
-    CurrentValue = false,
-    Flag = "FeatureX",
-    Callback = function(Value)
-        print("Feature X:", Value) -- Substituir pela lógica real da Feature X
+local KeyInput = MainTab:CreateInput({
+    Name = "Enter Code",
+    PlaceholderText = "Digite a senha aqui",
+    Flag = "Password",
+    Callback = function(Text)
+        if Text == "AkTgBaiItw5VFWIL8wj" then
+            if not urlTabCreated then
+                local URLTab = Window:CreateTab("URLSscripts")
+                local URLSection = URLTab:CreateSection("URLs of Scripts")
+
+                for _, script in ipairs(scripts) do
+                    URLTab:CreateLabel(script[1])
+                    URLTab:CreateButton({
+                        Name = "Copy URL",
+                        Callback = function()
+                            setclipboard(script[2])
+                            URLTab:CreateLabel("URL copied to clipboard!")
+                        end
+                    })
+                end
+
+                urlTabCreated = true
+            else
+                MainTab:CreateLabel("A aba URLS já foi criada!")
+            end
+        else
+            MainTab:CreateLabel("Senha incorreta! Tente novamente.")
+        end
+        KeyInput:SetText("")
     end
 })
 
-local SettingsSlider = SettingsSection:CreateSlider({
-    Name = "Adjust Volume",
-    Min = 0,
-    Max = 100,
-    Increment = 1,
-    CurrentValue = 50,
-    Flag = "Volume",
-    Callback = function(Value)
-        print("Volume:", Value) -- Substituir pela lógica real do ajuste de volume
+local CustomScriptLabel = ExtraTab:CreateLabel("ADICIONE SEUS PRÓPRIOS SCRIPTS AQUI")
+
+local CustomScriptInput = ExtraTab:CreateInput({
+    Name = "Enter Script URL",
+    PlaceholderText = "Digite a URL do script aqui",
+    Flag = "ScriptURL",
+    Callback = function(Text)
+        -- Não faz nada, apenas recebe o texto
     end
 })
 
-local SettingsDropdown = SettingsSection:CreateDropdown({
-    Name = "Select Mode",
-    Options = {"Mode 1", "Mode 2", "Mode 3"},
-    CurrentOption = "Mode 1",
-    Flag = "Mode",
-    Callback = function(Option)
-        print("Selected Mode:", Option) -- Substituir pela lógica real de seleção de modo
-    end
-})
+CustomScriptInput.Focused:Connect(function()
+    CustomScriptInput:SetText("")
+end)
 
-local SettingsButton = SettingsSection:CreateButton({
-    Name = "Save Settings",
+local AddScriptButton = ExtraTab:CreateButton({
+    Name = "Adicionar Script",
     Callback = function()
-        print("Settings saved!") -- Substituir pela lógica real de salvar configurações
+        local scriptUrl = extractUrl(CustomScriptInput:GetText())
+        if scriptUrl then
+            local scriptName = getScriptName(scriptUrl)
+            createScriptButton(scriptName, scriptUrl, ExtraTab)
+        else
+            ExtraTab:CreateLabel("URL inválida. Por favor, insira uma URL de script válida.")
+        end
+        CustomScriptInput:SetText("")
     end
 })
 
--- Alternativamente, adicionar outro botão na aba principal se necessário
---local SettingsButtonMain = Tab:CreateButton({
---    Name = "Configure Settings",
---    Callback = function()
---        print("Settings button clicked!") -- Substituir pela lógica real das configurações
---    end
---})
+local addedScripts = {}
+
+local function createScriptButton(scriptName, scriptUrl, tab)
+    if not addedScripts[scriptUrl] then
+        tab:CreateButton({
+            Name = scriptName,
+            Callback = function()
+                loadstring(game:HttpGet(scriptUrl))()
+            end
+        })
+        addedScripts[scriptUrl] = true
+    end
+end
+
+local function extractUrl(text)
+    return text:match("https?://[%w%./_%-]+")
+end
+
+local function getScriptName(scriptUrl)
+    return scriptUrl
+end
+
+local InstructionLabel2 = MainTab:CreateLabel("Adicionar script aqui")
+
+local KeyInput2 = MainTab:CreateInput({
+    Name = "Enter Code",
+    PlaceholderText = "Seu código aqui",
+    Flag = "Code",
+    Callback = function(Text)
+        local scriptUrl = extractUrl(Text)
+        if scriptUrl then
+            local scriptName = getScriptName(scriptUrl)
+            createScriptButton(scriptName, scriptUrl, MainTab)
+            MainTab:CreateLabel("Código adicionado! Verifique a aba principal para o seu script.")
+        else
+            MainTab:CreateLabel("Código inválido. Por favor, insira uma URL válida.")
+        end
+        KeyInput2:SetText("")
+    end
+})
+
+KeyInput2.Focused:Connect(function()
+    KeyInput2:SetText("")
+end)
