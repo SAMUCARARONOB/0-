@@ -95,6 +95,7 @@ local SpeedIFNInput = SettingsTab:CreateInput({
         SpeedIFNInput:SetText("")
     end
 })
+
 -- Botão para resetar a velocidade do jogador
 local ResetSpeedButton = SettingsTab:CreateButton({
     Name = "Resetar Velocidade",
@@ -110,16 +111,136 @@ local ResetSpeedButton = SettingsTab:CreateButton({
     end
 })
 
--- Criar aba EXECUTE INFINITE-YIELD
-local CommandTab = Window:CreateTab("EXECUTE INFINITE-YIELD")
+-- Adicionando o novo toggle para gravidade
+local GravityToggle = SettingsTab:CreateToggle({
+    Name = "LUA GRAVITY",
+    CurrentValue = false,
+    Flag = "Gravity",
+    Callback = function(Value)
+        if Value then
+            game:GetService("Workspace").Gravity = game:GetService("Workspace").Gravity * 0.3
+            print("Gravidade reduzida para 30%!")
+        else
+            game:GetService("Workspace").Gravity = 196.2
+            print("Gravidade resetada para 100%!")
+        end
+    end
+})
+
+-- Entrada de texto para EDITOR SIZER
+local SizerLabel = SettingsTab:CreateLabel("EDITOR SIZER")
+
+local SizerInput = SettingsTab:CreateInput({
+    Name = "Tamanho",
+    PlaceholderText = "Digite o tamanho desejado",
+    Flag = "SizerValue",
+    Callback = function(Text)
+        local newSize = tonumber(Text)
+        if newSize then
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            character.HumanoidRootPart.Size = Vector3.new(newSize, newSize, newSize)
+            print("Tamanho do jogador definido para " .. newSize .. "!")
+        else
+            print("Valor inválido. Por favor, insira um número.")
+        end
+        SizerInput:SetText("")
+    end
+})
+
+-- Botão para resetar o tamanho do jogador
+local ResetSizerButton = SettingsTab:CreateButton({
+    Name = "Reset Sizer",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        character.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
+        print("Tamanho do jogador resetado para o normal!")
+    end
+})
+
+local CommandTab = Window:CreateTab("ADMIM SCRIPTS")
 local CommandSection = CommandTab:CreateSection("Comandos Gerais")
-local CommandLabel = CommandTab:CreateLabel("Esta é a nova aba de comandos")
+local CommandLabel = CommandTab:CreateLabel("SCRIPTS COMANDOS")
 
 local InfiniteYieldButton = CommandTab:CreateButton({
     Name = "Executar Infinite Yield",
     Callback = function()
         loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
         print("Infinite Yield executado!")
+    end
+})
+
+-- Novos botões adicionados na aba EXECUTE INFINITE-YIELD
+local CMD_X_Button = CommandTab:CreateButton({
+    Name = "CMD-X",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/CMD-X/CMD-X/master/Source"))()
+        print("CMD-X executado!")
+    end
+})
+
+local SimpleSpy_Button = CommandTab:CreateButton({
+    Name = "Simple Spy",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/Caniwq2N"))()
+        print("Simple Spy executado!")
+    end
+})
+
+local VgHub_Button = CommandTab:CreateButton({
+    Name = "V.G. Hub",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/fz7z5a7G"))()
+        print("V.G. Hub executado!")
+    end
+})
+
+local DarkDex_Button = CommandTab:CreateButton({
+    Name = "Dark Dex",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/6r3qgG7Q"))()
+        print("Dark Dex executado!")
+    end
+})
+
+local ShindoLife_Button = CommandTab:CreateButton({
+    Name = "Shindo Life",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/8Q7Q5w3J"))()
+        print("Shindo Life executado!")
+    end
+})
+
+local DaHood_Button = CommandTab:CreateButton({
+    Name = "Da Hood",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/4nRg9CHU"))()
+        print("Da Hood executado!")
+    end
+})
+
+local PetSimulatorX_Button = CommandTab:CreateButton({
+    Name = "Pet Simulator X",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/9tZMx4SW"))()
+        print("Pet Simulator X executado!")
+    end
+})
+
+local MurderMystery2_Button = CommandTab:CreateButton({
+    Name = "Murder Mystery 2",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/7tZMx4SW"))()
+        print("Murder Mystery 2 executado!")
+    end
+})
+
+local Arsenal_Button = CommandTab:CreateButton({
+    Name = "Arsenal",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/5tZMx4SW"))()
+        print("Arsenal executado!")
     end
 })
 
@@ -250,20 +371,6 @@ local CustomScriptInput = ExtraTab:CreateInput({
 CustomScriptInput.Focused:Connect(function()
     CustomScriptInput:SetText("")
 end)
-
-local AddScriptButton = ExtraTab:CreateButton({
-    Name = "Adicionar Script",
-    Callback = function()
-        local scriptUrl = extractUrl(CustomScriptInput:GetText())
-        if scriptUrl then
-            local scriptName = getScriptName(scriptUrl)
-            createScriptButton(scriptName, scriptUrl, ExtraTab)
-        else
-            ExtraTab:CreateLabel("URL inválida. Por favor, insira uma URL de script válida.")
-        end
-        CustomScriptInput:SetText("")
-    end
-})
 
 local addedScripts = {}
 
