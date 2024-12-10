@@ -159,9 +159,96 @@ local ResetSizerButton = SettingsTab:CreateButton({
     end
 })
 
+local IncreaseFOVToggle, ActivateESPToggle, InvisibilityToggle
+
+-- Função para desativar todos os toggles exceto o especificado
+local function deactivateOtherToggles(exceptToggle)
+    if exceptToggle ~= IncreaseFOVToggle then IncreaseFOVToggle:Set(false) end
+    if exceptToggle ~= ActivateESPToggle then ActivateESPToggle:Set(false) end
+    if exceptToggle ~= InvisibilityToggle then InvisibilityToggle:Set(false) end
+end
+
+IncreaseFOVToggle = SettingsTab:CreateToggle({
+    Name = "Aumentar FOV",
+    CurrentValue = false,
+    Flag = "IncreaseFOV",
+    Callback = function(Value)
+        if Value then
+            deactivateOtherToggles(IncreaseFOVToggle)
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            character.Humanoid.FieldOfView = 120
+            print("Campo de visão (FOV) aumentado para 120!")
+        else
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            character.Humanoid.FieldOfView = 70 -- Valor padrão do FOV
+            print("Campo de visão (FOV) resetado para 70!")
+        end
+    end
+})ActivateESPToggle = SettingsTab:CreateToggle({
+    Name = "Ativar ESP",
+    CurrentValue = false,
+    Flag = "ActivateESP",
+    Callback = function(Value)
+        if Value then
+            deactivateOtherToggles(ActivateESPToggle)
+            for _, player in pairs(game.Players:GetPlayers()) do
+                if player ~= game.Players.LocalPlayer then
+                    local highlight = Instance.new("Highlight", player.Character)
+                    highlight.Adornee = player.Character
+                    highlight.FillColor = Color3.fromRGB(255, 0, 0)
+                    highlight.OutlineColor = Color3.fromRGB(255, 0, 0)
+                    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+                end
+            end
+            print("ESP ativado!")
+        else
+            for _, player in pairs(game.Players:GetPlayers()) do
+                if player ~= game.Players.LocalPlayer then
+                    local highlight = player.Character:FindFirstChildOfClass("Highlight")
+                    if highlight then
+                        highlight:Destroy()
+                    end
+                end
+            end
+            print("ESP desativado!")
+        end
+    end
+})
+
+InvisibilityToggle = SettingsTab:CreateToggle({
+    Name = "Invisibilidade",
+    CurrentValue = false,
+    Flag = "Invisibility",
+    Callback = function(Value)
+        if Value then
+            deactivateOtherToggles(InvisibilityToggle)
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            for _, part in pairs(character:GetChildren()) do
+                if part:IsA("BasePart") then
+                    part.Transparency = 1
+                end
+            end
+            print("Jogador tornou-se invisível!")
+        else
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            for _, part in pairs(character:GetChildren()) do
+                if part:IsA("BasePart") then
+                    part.Transparency = 0
+                end
+            end
+            print("Jogador tornou-se visível novamente!")
+        end
+    end
+})
+
+-- Criar aba EXECUTE INFINITE-YIELD
 local CommandTab = Window:CreateTab("ADMIM SCRIPTS")
 local CommandSection = CommandTab:CreateSection("Comandos Gerais")
-local CommandLabel = CommandTab:CreateLabel("SCRIPTS COMANDOS")
+local CommandLabel = CommandTab:CreateLabel("Esta é a nova aba de comandos")
 
 local InfiniteYieldButton = CommandTab:CreateButton({
     Name = "Executar Infinite Yield",
@@ -309,7 +396,7 @@ local scripts = {
     {"BLOX FRUITS SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/NOCLIP/refs/heads/main/Slk"},
     {"PETS GO! SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/-829-1-9IWN1O/refs/heads/main/Saia%20e%20n%C3%A3o%20roube%20minha%20URL"},
     {"BLADE BALL SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/SUPER-OP/refs/heads/main/AOPA%20D%20BOA%20MEU%20CHAPA"},
-    {"EM BREVE", "ODNifKTBirOHHIrFJ78IyRJ"}
+    {"EM BREVE", "EM BREVE"}
 }
 MainTab:CreateLabel("SCRIPTS AQUI❗️")
 for _, script in ipairs(scripts) do
