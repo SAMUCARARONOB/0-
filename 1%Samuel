@@ -19,7 +19,6 @@ local SettingsTab = Window:CreateTab("Settings")
 local SettingsSection = SettingsTab:CreateSection("Settings")
 local SettingsLabel = SettingsTab:CreateLabel("This is the Settings tab.")
 
--- Funções de Configuração usando toggles
 local DarkModeToggle = SettingsTab:CreateToggle({
     Name = "Modo Escuro",
     CurrentValue = false,
@@ -72,7 +71,6 @@ local MouseSensitivityToggle = SettingsTab:CreateToggle({
     end
 })
 
--- Entrada de texto para SPEED IFN
 local SpeedIFNLabel = SettingsTab:CreateLabel("SPEED IFN")
 
 local SpeedIFNInput = SettingsTab:CreateInput({
@@ -96,7 +94,6 @@ local SpeedIFNInput = SettingsTab:CreateInput({
     end
 })
 
--- Botão para resetar a velocidade do jogador
 local ResetSpeedButton = SettingsTab:CreateButton({
     Name = "Resetar Velocidade",
     Callback = function()
@@ -111,7 +108,6 @@ local ResetSpeedButton = SettingsTab:CreateButton({
     end
 })
 
--- Adicionando o novo toggle para gravidade
 local GravityToggle = SettingsTab:CreateToggle({
     Name = "LUA GRAVITY",
     CurrentValue = false,
@@ -127,7 +123,6 @@ local GravityToggle = SettingsTab:CreateToggle({
     end
 })
 
--- Entrada de texto para EDITOR SIZER
 local SizerLabel = SettingsTab:CreateLabel("EDITOR SIZER")
 
 local SizerInput = SettingsTab:CreateInput({
@@ -148,7 +143,6 @@ local SizerInput = SettingsTab:CreateInput({
     end
 })
 
--- Botão para resetar o tamanho do jogador
 local ResetSizerButton = SettingsTab:CreateButton({
     Name = "Reset Sizer",
     Callback = function()
@@ -245,10 +239,9 @@ InvisibilityToggle = SettingsTab:CreateToggle({
     end
 })
 
--- Criar aba EXECUTE INFINITE-YIELD
 local CommandTab = Window:CreateTab("ADMIM SCRIPTS")
 local CommandSection = CommandTab:CreateSection("Comandos Gerais")
-local CommandLabel = CommandTab:CreateLabel("Esta é a nova aba de comandos")
+local CommandLabel = CommandTab:CreateLabel("SCRIPTS DE ADIMIM")
 
 local InfiniteYieldButton = CommandTab:CreateButton({
     Name = "Executar Infinite Yield",
@@ -258,7 +251,6 @@ local InfiniteYieldButton = CommandTab:CreateButton({
     end
 })
 
--- Novos botões adicionados na aba EXECUTE INFINITE-YIELD
 local CMD_X_Button = CommandTab:CreateButton({
     Name = "CMD-X",
     Callback = function()
@@ -333,7 +325,6 @@ local Arsenal_Button = CommandTab:CreateButton({
 
 local CommandTextLabel = MainTab:CreateLabel("Clique aqui para acessar o canal do YouTube")
 
--- Botão na aba principal para copiar o link do canal do YouTube
 MainTab:CreateButton({
     Name = "CANAL DO YOUTUBE",
     Callback = function()
