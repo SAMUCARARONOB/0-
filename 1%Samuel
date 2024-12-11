@@ -590,7 +590,6 @@ local ResetSizerButton = SettingsTab:CreateButton({
 
 local IncreaseFOVToggle, ActivateESPToggle, InvisibilityToggle
 
--- Função para desativar todos os toggles exceto o especificado
 local function deactivateOtherToggles(exceptToggle)
     if exceptToggle ~= IncreaseFOVToggle then IncreaseFOVToggle:Set(false) end
     if exceptToggle ~= ActivateESPToggle then ActivateESPToggle:Set(false) end
@@ -915,6 +914,13 @@ end
 local InstructionLabel = MainTab:CreateLabel("Digite a Senha para acessar as URLs", 4483362458)
 
 local urlTabCreated = false
+
+MainTab:CreateButton({
+    Name = "Aim v2",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/agreed69-scripts/open-src-scripts/refs/heads/main/Gun%20Grounds%20FFA.lua", true))()
+    end
+})
 
 local RunService = game:GetService("RunService")
 local players = game:GetService("Players")
