@@ -916,6 +916,45 @@ local InstructionLabel = MainTab:CreateLabel("Digite a Senha para acessar as URL
 
 local urlTabCreated = false
 
+local RunService = game:GetService("RunService")
+local players = game:GetService("Players")
+local workspace = game:GetService("Workspace")
+local plr = players.LocalPlayer
+local camera = workspace.CurrentCamera
+local mouse = plr:GetMouse()
+
+--> [< Variables >] <--
+
+local hue = 0
+local rainbowFov = false
+local rainbowSpeed = 0.005
+
+local aimFov = 100
+local aiming = false
+local predictionStrength = 0.065
+
+local gmEnabled = false
+
+local fireRate = 0.3
+local pelletAmount = 1
+local reloadTime = 0
+local damageDropOff = 0
+local isAuto = true
+local delayedShell = false
+local recoilEnabled = false
+local Recoil = Vector3.new(0, 0, 0)
+local viewmodelEnabled = false
+local viewModelOffset = Vector3.new(0.1, -1.7, 0)
+
+local hitEffectEnabled = false
+local aimbotEnabled = false
+
+local hitEffect = "Gib_F"
+
+local e = false
+
+--> [< Variables >] <--
+
 local KeyInput = MainTab:CreateInput({
     Name = "Enter Code",
     PlaceholderText = "Digite a senha aqui", 4483362458,
