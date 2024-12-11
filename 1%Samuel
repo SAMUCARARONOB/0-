@@ -2,19 +2,19 @@ local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/Siri
 getgenv().SecureMode = true
 
 local Window = Rayfield:CreateWindow({
-    Name = "OP SCRIPTS",
+    Name = "OP SCRIPTS", 4483362458,
     LoadingTitle = "OP SCRIPTS",
     LoadingSubtitle = "Brought to you by SCRIPTS OP",
 })
 
-local MainTab = Window:CreateTab("Main GUI's")
+local MainTab = Window:CreateTab("Main GUI's", 4483362458)
 local MainSection = MainTab:CreateSection("OP SCRIPTS Main GUI's")
 local MainLabel = MainTab:CreateLabel("Thanks for using OP SCRIPTS☠️")
 
-local ExtraTab = Window:CreateTab("Extra GUI's")
+local ExtraTab = Window:CreateTab("Extra GUI's", 4483362458)
 local ExtraSection = ExtraTab:CreateSection("OP SCRIPTS Extra GUI's")
 local ExtraLabel = ExtraTab:CreateLabel("This is the Extra GUI's tab.")
-local PlayersFunctionsTab = Window:CreateTab("PLAYERS FUNCTIONS")
+local PlayersFunctionsTab = Window:CreateTab("PLAYERS FUNCTIONS", 4483362458)
 local PlayersFunctionsSection = PlayersFunctionsTab:CreateSection("Funções dos Jogadores")
 local PlayersFunctionsLabel = PlayersFunctionsTab:CreateLabel("Adicione aqui suas funções personalizadas para jogadores!")
 
@@ -453,7 +453,7 @@ PlayersFunctionsTab:CreateToggle({
         SuperStrength()
     end
 })
-local SettingsTab = Window:CreateTab("Settings")
+local SettingsTab = Window:CreateTab("Settings", 4483362458)
 local SettingsSection = SettingsTab:CreateSection("Settings")
 local SettingsLabel = SettingsTab:CreateLabel("This is the Settings tab.")
 
@@ -707,7 +707,7 @@ local ShowTextButton = SettingsTab:CreateButton({
     end
 })
 
-local CommandTab = Window:CreateTab("ADMIM SCRIPTS")
+local CommandTab = Window:CreateTab("ADMIM SCRIPTS", 4483362458)
 local CommandSection = CommandTab:CreateSection("Comandos Gerais")
 local CommandLabel = CommandTab:CreateLabel("SCRIPTS DE ADIMIM")
 
@@ -802,9 +802,62 @@ MainTab:CreateButton({
 })
 
 local scripts = {
-    {"Rochips Universal", "https://glot.io/snippets/gzrux646yj/raw/main.ts"}
+    {"Rochips Universal", "https://glot.io/snippets/gzrux646yj/raw/main.ts"},
+    {"GhostHub", "https://raw.githubusercontent.com/GhostPlayer352/Test4/main/GhostHub"},
+    {"Zygarde", "https://raw.githubusercontent.com/louismich4el/Zygarde/main/Protected%20zygarde.lua"},
+    {"MainMenu", "https://raw.githubusercontent.com/SkibidiCen/MainMenu/main/Code"},
+    {"LatvixDoc", "https://raw.githubusercontent.com/Jonthedruger/LatvixDoc/script/idkgamenameforgot.lua"},
+    {"Infinite Yield (Universal)", "https://raw.githubusercontent.com/DarkNetworks/Infinite-Yield/main/latest.lua"},
+    {"Orca (Universal)", "https://raw.githubusercontent.com/richie0866/orca/master/public/latest.lua"},
+    {"ProjectPastel (Universal)", "https://raw.githubusercontent.com/NUTellaVING/ProjectPastel/main/Loader.lua"},
+    {"Wrestling Legends", "https://raw.githubusercontent.com/ToraScript/Script/main/WrestlingLegends"},
+    {"MurderersVsSheriffs", "https://raw.githubusercontent.com/RenceeeX/MVSD/refs/heads/main/MurderersVsSheriffs"},
+    {"Pendulum Hub (Universal)", "https://scriptblox.com/raw/Universal-Script-Op-PENDULUM-HUB-Gui-R6-6490"},
+    {"SCRIPTHUBV3 (Universal)", "https://raw.githubusercontent.com/scripthubekitten/SCRIPTHUBV3/main/SCRIPTHUBV3"},
+    {"UTG V3 (Universal)", "https://raw.githubusercontent.com/Blukez/Scripts/main/UTG%20V3%20RAW"},
+    {"Speed-Hub (Blade Ball)", "https://raw.githubusercontentudepr0l8lkgGlzJds2hwQhn/Speed-Hub-Main-Releases-B-Y-R-E-N/refs/heads/main/Speed-Hub-Bladeball-Update-Lite-V2.txt"},
+    {"R6 Animations for R15", "https://raw.githubusercontent.com/Imagnir/r6_anims_for_r15/main/r6_anims.lua"},
+    {"Fe Bypass", "https://raw.githubusercontent.com/g00lXploiter/g00lXploiter/main/Fe%20bypass"},
+    {"Azure V3 (Blox Fruit)", "https://raw.githubusercontent.com/BasementHub/BH-Blox-fruit/main/W-Azure-V3"},
+    {"XAZM Script List (Universal)", "https://raw.githubusercontent.com/YogaProjectRblx/XAZM-Script-List/refs/heads/main/Protected_8192991545688583.txt"},
+    {"Baldy To Sorcerer", "https://raw.githubusercontent.com/skibiditoiletfan2007/BaldyToSorcerer/refs/heads/main/LatestV2.lua"},
+    {"Skibidi Toilet War", "https://raw.githubusercontent.com/ExploiterGuy/Scriptblox-ExploitFin/refs/heads/main/Skibidi%20Toilet%20War"},
+    {"TOILET TOWER", "https://raw.githubusercontent.com/LOLking123456/TTD/main/ToiletDefense"},
+    {"Zenith Hub Obfuscado", "https://raw.githubusercontent.com/LookP/Roblox/refs/heads/main/ZenithHubObsfucado.lua"},
+    {"Zenith Hub Knight Demons", "https://raw.githubusercontent.com/LookP/Roblox/refs/heads/main/ZenithHub%20Knight%20Demons.lua"},
+    {"Classic Nations OBF", "https://raw.githubusercontent.com/Gamer-3/ClassicNationsOBF/refs/heads/main/latest_version.lua", true},
+    {"BOLA DA MORTE", "https://raw.githubusercontent.com/kiciahook/kiciahook/refs/heads/main/loader.lua"},
+    {"Burgeria Tycoon", "https://raw.githubusercontent.com/ExploiterGuy/Scriptblox-ExploitFin/refs/heads/main/Burgeria%20Tycoon.txt"},
+    {"DungeonRNG", "https://raw.githubusercontent.com/ProjectpopCat/ywxoscripts/main/DungeonRNG231.lua"},
+    {"XeraUltron (Blade Ball)", "https://raw.githubusercontent.com/luascriptsROBLOX/BladeBallXera/main/XeraUltron"},
+    {"Anime", "https://raw.githubusercontent.com/LHking123456/nsX94GqZju2km/refs/heads/main/Anime"},
+    {"Noname Hub (Universal)", "https://noname-hub.fun/loader.lua"},
+    {"Fish Release", "https://raw.githubusercontent.com/yolobradda/fischjvrre/refs/heads/main/fishrelease"},
+    {"InfiniteWare (Universal)", "https://raw.githubusercontent.com/Kitler69/InfiniteWare/refs/heads/main/Launcher", true},
+    {"Block Tales Auto Guard (Block Tales)", "https://raw.githubusercontent.com/TexRBLX/Roblox-stuff/refs/heads/main/block%20tales/Block-Tales-Auto-Guard.lua"},
+    {"Damonvip", "https://raw.githubusercontent.com/daucobonhi/seagame/main/Damonvip.lua"},
+    {"TOILET BATTLE", "https://raw.githubusercontent.com/ToraScript/Script/main/SkibidiToiletBattle"},
+    {"Skinwalker Hub", "https://raw.githubusercontent.com/lucas021ajds/theskinwalkerhub/main/script"},
+    {"X Script", "https://raw.githubusercontent.com/NICKISBAD/RM/main/xscript.lua"},
+    {"PizzeriaTycoon", "https://raw.githubusercontent.com/ToraScript/Script/main/PizzeriaTycoon"},
+    {"NovBoatR1", "https://raw.githubusercontent.com/novakoolhub/Scripts/main/Scripts/NovBoatR1"},
+    {"Vapa v2 Arsenal (Roblox Arsenal)", "https://raw.githubusercontent.com/Nickyangtpe/Vapa-v2/refs/heads/main/Vapav2-Arsenal.lua"},
+    {"PetsGo (Pet Simulator)", "https://raw.githubusercontent.com/RenceeeX/PetsGo/refs/heads/main/RenceeXHub"},
+    {"rybowescripts", "https://raw.githubusercontent.com/rybowe/rybowescripts/main/release.lua"},
+    {"XenonHub", "https://www.xenonhub.xyz/loader.lua"},
+    {"TOILET SUVIVAL", "https://rawscripts.net/raw/PART-4-Toilet-Tower-Survival-EIGHT-SCRIPT-9365"},
+    {"Linux Hub", "https://raw.githubusercontent.com/wannagrindlikepablo/Linux-Hub/refs/heads/main/Linux%20Hub"},
+    {"OhhMyGehlee Script", "https://raw.githubusercontent.com/OhhMyGehlee/rel/refs/heads/main/el"},
+    {"YT", "https://raw.githubusercontent.com/OhhMyGehlee/at/refs/heads/main/yt"},
+    {"Zen Hub (Universal)", "https://raw.githubusercontent.com/Zenhubtop/zen_hub_pr/main/zennewwwwui.lua"},
+    {"SCRIPTS BROOKHAVEN", "https://raw.githubusercontent.com/SAMUCARARONOB/FLY/refs/heads/main/%40yahoo.com"},
+    {"RNG SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/Inf/refs/heads/main/Samuel"},
+    {"BLOX FRUITS SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/NOCLIP/refs/heads/main/Slk"},
+    {"PETS GO! SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/-829-1-9IWN1O/refs/heads/main/Saia%20e%20n%C3%A3o%20roube%20minha%20URL"},
+    {"BLADE BALL SCRIPTS", "https://raw.githubusercontent.com/SAMUCARARONOB/SUPER-OP/refs/heads/main/AOPA%20D%20BOA%20MEU%20CHAPA"},
+    {"EM BREVE", 4483362458, "EM BREVE"}
 }
-MainTab:CreateLabel("SCRIPTS AQUI❗️")
+MainTab:CreateLabel("SCRIPTS AQUI❗️", 4483362458)
 for _, script in ipairs(scripts) do
     MainTab:CreateButton({
         Name = script[1],
@@ -814,18 +867,18 @@ for _, script in ipairs(scripts) do
     })
 end
 
-local InstructionLabel = MainTab:CreateLabel("Digite a Senha para acessar as URLs")
+local InstructionLabel = MainTab:CreateLabel("Digite a Senha para acessar as URLs", 4483362458)
 
 local urlTabCreated = false
 
 local KeyInput = MainTab:CreateInput({
     Name = "Enter Code",
-    PlaceholderText = "Digite a senha aqui",
+    PlaceholderText = "Digite a senha aqui", 4483362458,
     Flag = "Password",
     Callback = function(Text)
         if Text == "AkTgBaiItw5VFWIL8wj" then
             if not urlTabCreated then
-                local URLTab = Window:CreateTab("URLSscripts")
+                local URLTab = Window:CreateTab("URLSscripts", 4483362458)
                 local URLSection = URLTab:CreateSection("URLs of Scripts")
 
                 for _, script in ipairs(scripts) do
@@ -849,7 +902,21 @@ local KeyInput = MainTab:CreateInput({
         KeyInput:SetText("")
     end
 })
+-- Botão NUKE!
+MainTab:CreateButton({
+    Name = "NUKE!", 4483362458,
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/IFeelPower/Battle/refs/heads/main/2nd%20Latest"))()
+    end
+})
 
+-- Botão OP SCRIPTS v2
+MainTab:CreateButton({
+    Name = "OP SCRIPTS v2", 4483362458,
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/ROST/refs/heads/main/ROST"))()
+    end
+})
 local CustomScriptLabel = ExtraTab:CreateLabel("ADICIONE SEUS PRÓPRIOS SCRIPTS AQUI")
 
 local CustomScriptInput = ExtraTab:CreateInput({
