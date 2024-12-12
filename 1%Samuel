@@ -11,7 +11,7 @@ local MainTab = Window:CreateTab("Main GUI's", 4483362458)
 local MainSection = MainTab:CreateSection("OP SCRIPTS Main GUI's")
 local MainLabel = MainTab:CreateLabel("Thanks for using OP SCRIPTS☠️")
 
-local PlayersFunctionsTab = Window:CreateTab("PLAYERS FUNCTIONS", 4483362458)
+local PlayersFunctionsTab = Window:CreateTab("PLAYERS FUNCTIONS", 6031280883)
 local PlayersFunctionsSection = PlayersFunctionsTab:CreateSection("Funções dos Jogadores")
 local PlayersFunctionsLabel = PlayersFunctionsTab:CreateLabel("Adicione aqui suas funções personalizadas para jogadores!")
 
@@ -450,7 +450,7 @@ PlayersFunctionsTab:CreateToggle({
         SuperStrength()
     end
 })
-local SettingsTab = Window:CreateTab("Settings", 4483362458)
+local SettingsTab = Window:CreateTab("Settings", 6031280882)
 local SettingsSection = SettingsTab:CreateSection("Settings")
 local SettingsLabel = SettingsTab:CreateLabel("This is the Settings tab.")
 
@@ -703,7 +703,7 @@ local ShowTextButton = SettingsTab:CreateButton({
     end
 })
 
-local CommandTab = Window:CreateTab("ADMIM SCRIPTS", 4483362458)
+local CommandTab = Window:CreateTab("ADMIM SCRIPTS", 6031068420)
 local CommandSection = CommandTab:CreateSection("Comandos Gerais")
 local CommandLabel = CommandTab:CreateLabel("SCRIPTS DE ADIMIM")
 
