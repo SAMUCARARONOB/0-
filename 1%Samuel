@@ -1154,7 +1154,11 @@ local scripts = {
     {"Remove Hats", "https://pastebin.com/raw/Edrf0987"},
     {"Add Friends", "https://pastebin.com/raw/Tgbv7654"},
     {"Friend All", "https://pastebin.com/raw/Yhnj4321"},
-    {"EM BREVE", "EM BREVE"}
+    {"EatWorld Script", "https://raw.githubusercontent.com/ToraScript/Script/main/EatWorld"},
+    {"Universal Loader", "https://raw.githubusercontent.com/Janorax/UniversalLoader/main/Main"},
+    {"Eat the World Script", "https://raw.githubusercontent.com/Kenniel123/Eat-the-World-script/main/Eat%20the%20world%20Script"},
+    {"Horse Race Script", "https://raw.githubusercontent.com/ToraScript/Script/main/HorseRace"},
+    {"EM BREVE", "NADA AQUI"}
 }
 MainTab:CreateLabel("SCRIPTS AQUI❗️", 4483362458)
 for _, script in ipairs(scripts) do
