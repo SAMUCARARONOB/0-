@@ -450,6 +450,261 @@ PlayersFunctionsTab:CreateToggle({
         SuperStrength()
     end
 })
+
+local function createToggle(parent, name, callback)
+    return parent:CreateToggle({
+        Name = name,
+        CurrentValue = false,
+        Flag = name .. "Toggle",
+        Callback = callback
+    })
+end
+
+createToggle(PlayersFunctionsTab, "Céu Diurno", function(Value)
+    if Value then
+        game.Lighting.TimeOfDay = "12:00:00"
+        game.Lighting.Brightness = 2
+    else
+        game.Lighting.TimeOfDay = "20:00:00"
+        game.Lighting.Brightness = 0
+    end
+end)
+
+createToggle(PlayersFunctionsTab, "Céu Noturno", function(Value)
+    if Value then
+        game.Lighting.TimeOfDay = "20:00:00"
+        game.Lighting.Brightness = 0
+    else
+        game.Lighting.TimeOfDay = "12:00:00"
+        game.Lighting.Brightness = 2
+    end
+end)
+
+createToggle(PlayersFunctionsTab, "Tempestade", function(Value)
+    if Value then
+        local storm = Instance.new("ParticleEmitter", game.Workspace)
+        storm.Texture = "rbxassetid://243660364"
+        storm.LightEmission = 0.5
+        storm.Rate = 1000
+        storm.Lifetime = NumberRange.new(1, 2)
+    else
+        for _, emitter in ipairs(game.Workspace:GetChildren()) do
+            if emitter:IsA("ParticleEmitter") then
+                emitter:Destroy()
+            end
+        end
+    end
+end)
+
+createToggle(PlayersFunctionsTab, "Congelar Água", function(Value)
+    if Value then
+        for _, part in ipairs(game.Workspace:GetDescendants()) do
+            if part:IsA("Part") and part.Material == Enum.Material.Water then
+                part.Material = Enum.Material.Ice
+            end
+        end
+    else
+        for _, part in ipairs(game.Workspace:GetDescendants()) do
+            if part:IsA("Part") and part.Material == Enum.Material.Ice then
+                part.Material = Enum.Material.Water
+            end
+        end
+    end
+end)
+
+createToggle(PlayersFunctionsTab, "Gravidade Baixa", function(Value)
+    if Value then
+        game.Workspace.Gravity = game.Workspace.Gravity * 0.2
+    else
+        game.Workspace.Gravity = 196.2
+    end
+end)
+
+createToggle(PlayersFunctionsTab, "Chuva de Meteoros", function(Value)
+    if Value then
+        local function createMeteor()
+            local meteor = Instance.new("Part", game.Workspace)
+            meteor.Size = Vector3.new(5, 5, 5)
+            meteor.Position = Vector3.new(math.random(-500, 500), 500, math.random(-500, 500))
+            meteor.Velocity = Vector3.new(0, -100, 0)
+            meteor.BrickColor = BrickColor.new("Bright orange")
+        end
+        for i = 1, 10 do
+            createMeteor()
+        end
+    else
+        for _, part in ipairs(game.Workspace:GetChildren()) do
+            if part:IsA("Part") and part.BrickColor == BrickColor.new("Bright orange") then
+                part:Destroy()
+            end
+        end
+    end
+end)
+
+createToggle(PlayersFunctionsTab, "Árvores de Ouro", function(Value)
+    for _, tree in ipairs(game.Workspace:GetDescendants()) do
+        if tree:IsA("Part") and tree.Name == "Tree" then
+            if Value then
+                tree.BrickColor = BrickColor.new("Bright yellow")
+                tree.Material = Enum.Material.Metal
+            else
+                tree.BrickColor = BrickColor.new("Forest green")
+                tree.Material = Enum.Material.Wood
+            end
+        end
+    end
+end)
+
+createToggle(PlayersFunctionsTab, "Teletransportar Jogadores", function(Value)
+    if Value then
+        for _, player in ipairs(game.Players:GetPlayers()) do
+            local character = player.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                character.HumanoidRootPart.CFrame = CFrame.new(0, 10, 0)
+            end
+        end
+    end
+end)
+
+createToggle(PlayersFunctionsTab, "Plataformas Invisíveis", function(Value)
+    if Value then
+        for i = 1, 10 do
+            local platform = Instance.new("Part", game.Workspace)
+            platform.Size = Vector3.new(10, 1, 10)
+            platform.Position = Vector3.new(math.random(-100, 100), math.random(20, 100), math.random(-100, 100))
+            platform.Transparency = 0.8
+            platform.Anchored = true
+        end
+    else
+        for _, part in ipairs(game.Workspace:GetChildren()) do
+            if part:IsA("Part") and part.Transparency == 0.8 then
+                part:Destroy()
+            end
+        end
+    end
+end)
+
+createToggle(PlayersFunctionsTab, "Barreira Invisível", function(Value)
+    if Value then
+        local barrier = Instance.new("Part", game.Workspace)
+        barrier.Size = Vector3.new(1000, 1000, 1)
+        barrier.CFrame = CFrame.new(0, 500, 500)
+        barrier.Anchored = true
+        barrier.Transparency = 1
+        barrier.CanCollide = true
+    else
+        for _, part in ipairs(game.Workspace:GetChildren()) do
+            if part:IsA("Part") and part.Transparency == 1 and part.Size == Vector3.new(1000, 1000, 1) then
+                part:Destroy()
+            end
+        end
+    end
+end)
+
+createToggle(PlayersFunctionsTab, "Neve", function(Value)
+    if Value then
+        local snow = Instance.new("ParticleEmitter", game.Workspace)
+        snow.Texture = "rbxassetid://1075651"
+        snow.Rate = 500
+        snow.Lifetime = NumberRange.new(5, 10)
+        snow.Speed = NumberRange.new(5, 10)
+        snow.VelocitySpread = 180
+    else
+        for _, emitter in ipairs(game.Workspace:GetChildren()) do
+            if emitter:IsA("ParticleEmitter") then
+                emitter:Destroy()
+            end
+        end
+    end
+end)
+
+createToggle(PlayersFunctionsTab, "Inundar Mapa", function(Value)
+    if Value then
+        local water = Instance.new("Part", game.Workspace)
+        water.Size = Vector3.new(1000, 10, 1000)
+        water.Position = Vector3.new(0, 5, 0)
+        water.Material = Enum.Material.Water
+        water.Anchored = true
+    else
+        for _, part in ipairs(game.Workspace:GetChildren()) do
+            if part:IsA("Part") and part.Material == Enum.Material.Water then
+                part:Destroy()
+            end
+        end
+    end
+end)
+
+createToggle(PlayersFunctionsTab, "Ponte de Arco-Íris", function(Value)
+    if Value then
+        for i = 0, 100, 10 do
+            local bridgePart = Instance.new("Part", game.Workspace)
+            bridgePart.Size = Vector3.new(10, 1, 10)
+            bridgePart.Position = Vector3.new(i, 10, 0)
+            bridgePart.Anchored = true
+            bridgePart.BrickColor = BrickColor.random()
+        end
+    else
+        for _, part in ipairs(game.Workspace:GetChildren()) do
+            if part:IsA("Part") and part.BrickColor ~= BrickColor.new("Institutional white") then
+                part:Destroy()
+            end
+        end
+    end
+end)
+
+local originalParts = {}
+
+local function saveOriginalParts()
+    originalParts = {}
+    for _, part in ipairs(game.Workspace:GetDescendants()) do
+        if part:IsA("Model") or part:IsA("Part") then
+            table.insert(originalParts, {part, part.Parent})
+        end
+    end
+end
+
+local function restoreOriginalParts()
+    for _, partInfo in ipairs(originalParts) do
+        local part, parent = partInfo[1], partInfo[2]
+        if part and parent then
+            part.Parent = parent
+        end
+    end
+    originalParts = {}
+end
+
+createToggle(PlayersFunctionsTab, "Destruir Construções", function(Value)
+    if Value then
+        saveOriginalParts()
+        for _, part in ipairs(game.Workspace:GetDescendants()) do
+            if part:IsA("Model") or part:IsA("Part") then
+                part:Destroy()
+            end
+        end
+    else
+        restoreOriginalParts()
+    end
+end)
+
+createToggle(PlayersFunctionsTab, "Campo de Força", function(Value)
+    if Value then
+        for _, player in ipairs(game.Players:GetPlayers()) do
+            local character = player.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                local forceField = Instance.new("ForceField", character)
+                forceField.Visible = true
+            end
+        end
+    else
+        for _, player in ipairs(game.Players:GetPlayers()) do
+            local character = player.Character
+            if character and character:FindFirstChildOfClass("ForceField") then
+                character:FindFirstChildOfClass("ForceField"):Destroy()
+            end
+        end
+    end
+end)
+
 local SettingsTab = Window:CreateTab("Settings", 6031280882)
 local SettingsSection = SettingsTab:CreateSection("Settings")
 local SettingsLabel = SettingsTab:CreateLabel("This is the Settings tab.")
