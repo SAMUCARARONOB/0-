@@ -329,6 +329,72 @@ game:GetService('RunService').RenderStepped:connect(function()
     end
 end)
 
+local invincibilityEnabled = false
+
+local function toggleInvincibility(enabled)
+    if enabled then
+        local player = game.Players.LocalPlayer
+        local RunService = game:GetService("RunService")
+        local Players = game:GetService("Players")
+        local teleportCooldown = {}
+
+        local function getRandomSpawnLocation()
+            local spawns = game.Workspace:FindFirstChild("Spawns")
+            if spawns then
+                local spawnPoints = spawns:GetChildren()
+                return spawnPoints[math.random(1, #spawnPoints)].Position
+            else
+                return Vector3.new(0, 50, 0)
+            end
+        end
+
+        local function applyInvincibilityAndTeleport()
+            if player.Character and player.Character:FindFirstChild("Humanoid") then
+                player.Character.Humanoid.MaxHealth = math.huge
+                player.Character.Humanoid.Health = math.huge
+
+                for _, otherPlayer in ipairs(Players:GetPlayers()) do
+                    if otherPlayer ~= player and otherPlayer.Character and otherPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        local directionToPlayer = (player.Character.HumanoidRootPart.Position - otherPlayer.Character.HumanoidRootPart.Position).Unit
+                        local lookVector = otherPlayer.Character.HumanoidRootPart.CFrame.LookVector
+                        local ray = Ray.new(otherPlayer.Character.HumanoidRootPart.Position, lookVector * 1000)
+                        local hitPart, hitPosition = game.Workspace:FindPartOnRay(ray, otherPlayer.Character, false, true)
+
+                        if directionToPlayer:Dot(lookVector) > 0 and hitPart and hitPart:IsDescendantOf(player.Character) and not teleportCooldown[otherPlayer] then
+                            local randomSpawnLocation = getRandomSpawnLocation()
+                            player.Character.HumanoidRootPart.CFrame = CFrame.new(randomSpawnLocation)
+                            teleportCooldown[otherPlayer] = true
+
+                            delay(0.00000000001, function()
+                                teleportCooldown[otherPlayer] = nil
+                            end)
+                        end
+                    end
+                end
+            end
+        end
+
+        RunService.RenderStepped:Connect(applyInvincibilityAndTeleport)
+    else
+        -- Reseta o estado do jogador
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.MaxHealth = 100
+            player.Character.Humanoid.Health = 100
+        end
+    end
+end
+
+PlayersFunctionsTab:CreateToggle({
+    Name = "Invencibilidade",
+    CurrentValue = false,
+    Flag = "ToggleInvincibility",
+    Callback = function(Value)
+        invincibilityEnabled = Value
+        toggleInvincibility(invincibilityEnabled)
+    end
+})
+
 PlayersFunctionsTab:CreateToggle({
     Name = "Speed Hack",
     Callback = function()
