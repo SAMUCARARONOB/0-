@@ -153,7 +153,182 @@ local function SuperStrength()
     print("Super Strength ativada")
 end
 
--- Criar os botões
+local espEnabled = false
+local localPlayer = game.Players.LocalPlayer
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local tweenService = game:GetService("TweenService")
+
+local function createESP(player)
+    if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local character = player.Character
+        if not character:FindFirstChild("ESPHighlight") then
+            local highlight = Instance.new("Highlight")
+            highlight.Name = "ESPHighlight"
+            highlight.Adornee = character
+            highlight.Parent = character
+            highlight.FillColor = Color3.fromRGB(255, 0, 0)
+            highlight.OutlineColor = Color3.fromRGB(0, 0, 0)
+            highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+            highlight.FillTransparency = 0.5
+            highlight.OutlineTransparency = 0
+
+            local highlightGoal = {FillTransparency = 0.8}
+            local highlightTweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+            local highlightTween = tweenService:Create(highlight, highlightTweenInfo, highlightGoal)
+            highlightTween:Play()
+
+            local billboard = Instance.new("BillboardGui", character)
+            billboard.Name = "ESPBillboard"
+            billboard.Adornee = character.Head
+            billboard.Size = UDim2.new(0, 50, 0, 50)
+            billboard.StudsOffset = Vector3.new(0, 3, 0)
+            billboard.AlwaysOnTop = true
+
+            local textLabel = Instance.new("TextLabel", billboard)
+            textLabel.Size = UDim2.new(1, 0, 1, 0)
+            textLabel.BackgroundTransparency = 1
+            textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            textLabel.TextStrokeTransparency = 0
+            textLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+            textLabel.TextScaled = true
+            textLabel.Text = string.format("%s\nHealth: %d\nDistance: %.1f\nSpeed: %.1f",
+                player.Name,
+                character.Humanoid and character.Humanoid.Health or 0,
+                (localPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).magnitude,
+                character.HumanoidRootPart.Velocity.Magnitude
+            )
+
+            runService.RenderStepped:Connect(function()
+                if character and character:FindFirstChild("HumanoidRootPart") then
+                    textLabel.Text = string.format("%s\nHealth: %d\nDistance: %.1f\nSpeed: %.1f",
+                        player.Name,
+                        character.Humanoid and character.Humanoid.Health or 0,
+                        (localPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).magnitude,
+                        character.HumanoidRootPart.Velocity.Magnitude
+                    )
+                end
+            end)
+
+            local tracer = Instance.new("Part", character)
+            tracer.Name = "ESPTracer"
+            tracer.Size = Vector3.new(0.1, 0.1, 0.1)
+            tracer.Anchored = true
+            tracer.CanCollide = false
+            tracer.Material = Enum.Material.Neon
+            tracer.Color = Color3.fromRGB(255, 0, 0)
+            tracer.Transparency = 0.5
+
+            runService.RenderStepped:Connect(function()
+                if character and character:FindFirstChild("HumanoidRootPart") then
+                    local rootPart = character.HumanoidRootPart
+                    tracer.Position = rootPart.Position - Vector3.new(0, rootPart.Size.Y / 2, 0)
+                end
+            end)
+
+            local box = Instance.new("BoxHandleAdornment", character)
+            box.Name = "ESPBox"
+            box.Adornee = character.HumanoidRootPart
+            box.Size = character.HumanoidRootPart.Size + Vector3.new(1, 2, 1)
+            box.Color3 = Color3.fromRGB(255, 0, 0)
+            box.AlwaysOnTop = true
+            box.ZIndex = 1
+            box.Transparency = 0.5
+
+            local boxGoal = {Transparency = 0.8}
+            local boxTweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+            local boxTween = tweenService:Create(box, boxTweenInfo, boxGoal)
+            boxTween:Play()
+        end
+    end
+end
+
+local function removeESP(player)
+    if player.Character then
+        if player.Character:FindFirstChild("ESPHighlight") then
+            player.Character:FindFirstChild("ESPHighlight"):Destroy()
+        end
+        if player.Character:FindFirstChild("ESPBillboard") then
+            player.Character:FindFirstChild("ESPBillboard"):Destroy()
+        end
+        if player.Character:FindFirstChild("ESPTracer") then
+            player.Character:FindFirstChild("ESPTracer"):Destroy()
+        end
+        if player.Character:FindFirstChild("ESPBox") then
+            player.Character:FindFirstChild("ESPBox"):Destroy()
+        end
+    end
+end
+
+local function toggleESP(enabled)
+    if enabled then
+        for _, player in pairs(players:GetPlayers()) do
+            createESP(player)
+        end
+        players.PlayerAdded:Connect(function(player)
+            player.CharacterAdded:Connect(function()
+                createESP(player)
+            end)
+        end)
+        runService.RenderStepped:Connect(function()
+            for _, player in pairs(players:GetPlayers()) do
+                if player ~= localPlayer then
+                    createESP(player)
+                end
+            end
+        end)
+    else
+        for _, player in pairs(players:GetPlayers()) do
+            removeESP(player)
+        end
+    end
+end
+
+PlayersFunctionsTab:CreateToggle({
+    Name = "ESP",
+    CurrentValue = false,
+    Flag = "ToggleESP",
+    Callback = function(Value)
+        espEnabled = Value
+        toggleESP(espEnabled)
+    end
+})
+
+local hitboxEnabled = false
+_G.HeadSize = 20
+_G.Disabled = true
+
+local function toggleHitbox(enabled)
+    _G.Disabled = not enabled
+end
+
+PlayersFunctionsTab:CreateToggle({
+    Name = "HITBOX HEADS",
+    CurrentValue = false,
+    Flag = "ToggleHitboxHeads",
+    Callback = function(Value)
+        hitboxEnabled = Value
+        toggleHitbox(hitboxEnabled)
+    end
+})
+
+game:GetService('RunService').RenderStepped:connect(function()
+    if not _G.Disabled then
+        for i, v in next, game:GetService('Players'):GetPlayers() do
+            if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+                pcall(function()
+                    v.Character.Head.Size = Vector3.new(_G.HeadSize, _G.HeadSize, _G.HeadSize)
+                    v.Character.Head.Transparency = 1
+                    v.Character.Head.BrickColor = BrickColor.new("Red")
+                    v.Character.Head.Material = "Neon"
+                    v.Character.Head.CanCollide = false
+                    v.Character.Head.Massless = true
+                end)
+            end
+        end
+    end
+end)
+
 PlayersFunctionsTab:CreateToggle({
     Name = "Speed Hack",
     Callback = function()
