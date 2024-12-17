@@ -599,6 +599,13 @@ PlayersFunctionsTab:CreateButton({
     end
 })
 
+PlayersFunctionsTab:CreateButton({
+    Name = "APOCALIPSE",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/Key2/refs/heads/main/Chave2"))()
+    end
+})
+
 PlayersFunctionsTab:CreateToggle({
     Name = "ESP",
     CurrentValue = false,
