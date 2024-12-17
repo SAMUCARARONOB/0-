@@ -299,91 +299,9 @@ PlayersFunctionsTab:CreateButton({
 })
 
 PlayersFunctionsTab:CreateButton({
-    Name = "SPAM CLICK MOUSE", 4483362458,
+    Name = "SPAM CLICK MOUSE",
     Callback = function()
-        -- Criar GUI
-        local screenGui = Instance.new("ScreenGui")
-        local spamButton = Instance.new("TextButton")
-        local uICorner = Instance.new("UICorner")
-        local uIStroke = Instance.new("UIStroke")
-
-        screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
-        -- Configurar o botão de spam
-        spamButton.Parent = screenGui
-        spamButton.Size = UDim2.new(0, 50, 0, 25) -- Tamanho do botão
-        spamButton.Position = UDim2.new(0.5, -50, 0.5, -25) -- Centro da tela
-        spamButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Cor preta
-        spamButton.BackgroundTransparency = 0.5 -- 30% de transparência
-        spamButton.Text = "Spam" -- Texto do botão
-        spamButton.TextColor3 = Color3.new(1, 1, 1) -- Cor do texto (branca)
-        spamButton.Font = Enum.Font.SourceSansBold
-        spamButton.TextScaled = true
-        spamButton.TextStrokeTransparency = 0.5
-        spamButton.TextStrokeColor3 = Color3.new(0, 0, 0)
-
-        -- Bordas arredondadas
-        uICorner.CornerRadius = UDim.new(0, 15)
-        uICorner.Parent = spamButton
-
-        -- Borda externa
-        uIStroke.Parent = spamButton
-        uIStroke.Thickness = 3
-        uIStroke.Color = Color3.fromRGB(255, 255, 255) -- Cor branca
-        uIStroke.Transparency = 0.2
-
-        local runService = game:GetService("RunService")
-        local virtualInputManager = game:GetService("VirtualInputManager")
-        local spamming = false
-        local dragging = false
-        local dragInput = nil
-        local dragStart = nil
-        local startPos = nil
-
-        -- Função para ativar/desativar spam
-        spamButton.MouseButton1Click:Connect(function()
-            spamming = not spamming
-            spamButton.Text = spamming and "Parar" or "Spam"
-
-            runService.Heartbeat:Connect(function()
-                if spamming then
-                    virtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-                    virtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
-                end
-            end)
-        end)
-
-        -- Funções para permitir mover o botão
-        local function update(input)
-            local delta = input.Position - dragStart
-            spamButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-
-        spamButton.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                dragging = true
-                dragStart = input.Position
-                startPos = spamButton.Position
-
-                input.Changed:Connect(function()
-                    if input.UserInputState == Enum.UserInputState.End then
-                        dragging = false
-                    end
-                end)
-            end
-        end)
-
-        spamButton.InputChanged:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType.Touch then
-                dragInput = input
-            end
-        end)
-
-        game:GetService("UserInputService").InputChanged:Connect(function(input)
-            if dragging and input == dragInput then
-                update(input)
-            end
-        end)
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/ABCD-EFETUAR-A-QUALIDADE-/refs/heads/main/U%3A%C2%A3%5E%E2%82%ACFuf"))()
     end
 })
 
