@@ -1576,7 +1576,7 @@ MainTab:CreateButton({
 
 -- Botão OP SCRIPTS v2
 MainTab:CreateButton({
-    Name = "OP SCRIPTS v2", 4483362458,
+    Name = "OP SCRIPTS EXTRA FUNCTIONS", 4483362458,
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/ROST/refs/heads/main/ROST"))()
     end
