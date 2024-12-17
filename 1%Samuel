@@ -284,6 +284,523 @@ local function toggleESP(enabled)
     end
 end
 
+PlayersFunctionsTab:CreateButton({
+    Name = "SPAM F BLADE BALL/DEATH BALL"
+    Callback = function()
+        -- Criar GUI
+        local screenGui = Instance.new("ScreenGui")
+        local spamButton = Instance.new("TextButton")
+        local uICorner = Instance.new("UICorner")
+        local uIStroke = Instance.new("UIStroke")
+
+        screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+        -- Configurar o botão de spam
+        spamButton.Parent = screenGui
+        spamButton.Size = UDim2.new(0, 50, 0, 25) -- Tamanho do botão
+        spamButton.Position = UDim2.new(0.5, -50, 0.5, -25) -- Centro da tela
+        spamButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Cor preta
+        spamButton.BackgroundTransparency = 0.5 -- 30% de transparência
+        spamButton.Text = "Spam" -- Texto do botão
+        spamButton.TextColor3 = Color3.new(1, 1, 1) -- Cor do texto (branca)
+        spamButton.Font = Enum.Font.SourceSansBold
+        spamButton.TextScaled = true
+        spamButton.TextStrokeTransparency = 0.5
+        spamButton.TextStrokeColor3 = Color3.new(0, 0, 0)
+
+        -- Bordas arredondadas
+        uICorner.CornerRadius = UDim.new(0, 15)
+        uICorner.Parent = spamButton
+
+        -- Borda externa
+        uIStroke.Parent = spamButton
+        uIStroke.Thickness = 3
+        uIStroke.Color = Color3.fromRGB(255, 255, 255) -- Cor branca
+        uIStroke.Transparency = 0.2
+
+        local runService = game:GetService("RunService")
+        local virtualInputManager = game:GetService("VirtualInputManager")
+        local spamming = false
+        local dragging = false
+        local dragInput = nil
+        local dragStart = nil
+        local startPos = nil
+
+        -- Função para ativar/desativar spam
+        spamButton.MouseButton1Click:Connect(function()
+            spamming = not spamming
+            spamButton.Text = spamming and "Parar" or "Spam"
+
+            if spamming then
+                runService:BindToRenderStep("SpamClick", Enum.RenderPriority.Input.Value, function()
+                    virtualInputManager:SendKeyEvent(true, Enum.KeyCode.F, false, game)
+                    virtualInputManager:SendKeyEvent(false, Enum.KeyCode.F, false, game)
+                end)
+            else
+                runService:UnbindFromRenderStep("SpamClick")
+            end
+        end)
+
+        -- Funções para permitir mover o botão
+        local function update(input)
+            local delta = input.Position - dragStart
+            spamButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+
+        spamButton.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragging = true
+                dragStart = input.Position
+                startPos = spamButton.Position
+
+                input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragging = false
+                    end
+                end)
+            end
+        end)
+
+        spamButton.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType.Touch then
+                dragInput = input
+            end
+        end)
+
+        game:GetService("UserInputService").InputChanged:Connect(function(input)
+            if dragging and input == dragInput then
+                update(input)
+            end
+        end)
+
+        -- Parar a função de spam quando o personagem morrer
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+
+        humanoid.Died:Connect(function()
+            spamming = false
+            spamButton.Text = "Spam"
+            runService:UnbindFromRenderStep("SpamClick")
+        end)
+
+        player.CharacterAdded:Connect(function(newCharacter)
+            character = newCharacter
+            humanoid = character:WaitForChild("Humanoid")
+
+            humanoid.Died:Connect(function()
+                spamming = false
+                spamButton.Text = "Spam"
+                runService:UnbindFromRenderStep("SpamClick")
+            end)
+        end)
+    end
+})
+
+PlayersFunctionsTab:CreateButton({
+    Name = "SPAM E"
+    Callback = function()
+        -- Criar GUI
+        local screenGui = Instance.new("ScreenGui")
+        local spamButton = Instance.new("TextButton")
+        local uICorner = Instance.new("UICorner")
+        local uIStroke = Instance.new("UIStroke")
+
+        screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+        -- Configurar o botão de spam
+        spamButton.Parent = screenGui
+        spamButton.Size = UDim2.new(0, 50, 0, 25) -- Tamanho do botão
+        spamButton.Position = UDim2.new(0.5, -50, 0.5, -25) -- Centro da tela
+        spamButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Cor preta
+        spamButton.BackgroundTransparency = 0.5 -- 30% de transparência
+        spamButton.Text = "Spam" -- Texto do botão
+        spamButton.TextColor3 = Color3.new(1, 1, 1) -- Cor do texto (branca)
+        spamButton.Font = Enum.Font.SourceSansBold
+        spamButton.TextScaled = true
+        spamButton.TextStrokeTransparency = 0.5
+        spamButton.TextStrokeColor3 = Color3.new(0, 0, 0)
+
+        -- Bordas arredondadas
+        uICorner.CornerRadius = UDim.new(0, 15)
+        uICorner.Parent = spamButton
+
+        -- Borda externa
+        uIStroke.Parent = spamButton
+        uIStroke.Thickness = 3
+        uIStroke.Color = Color3.fromRGB(255, 255, 255) -- Cor branca
+        uIStroke.Transparency = 0.2
+
+        local runService = game:GetService("RunService")
+        local virtualInputManager = game:GetService("VirtualInputManager")
+        local spamming = false
+        local dragging = false
+        local dragInput = nil
+        local dragStart = nil
+        local startPos = nil
+
+        -- Função para ativar/desativar spam
+        spamButton.MouseButton1Click:Connect(function()
+            spamming = not spamming
+            spamButton.Text = spamming and "Parar" or "Spam"
+
+            if spamming then
+                runService:BindToRenderStep("SpamClick", Enum.RenderPriority.Input.Value, function()
+                    virtualInputManager:SendKeyEvent(true, Enum.KeyCode.E, false, game)
+                    virtualInputManager:SendKeyEvent(false, Enum.KeyCode.E, false, game)
+                end)
+            else
+                runService:UnbindFromRenderStep("SpamClick")
+            end
+        end)
+
+        -- Funções para permitir mover o botão
+        local function update(input)
+            local delta = input.Position - dragStart
+            spamButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+
+        spamButton.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragging = true
+                dragStart = input.Position
+                startPos = spamButton.Position
+
+                input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragging = false
+                    end
+                end)
+            end
+        end)
+
+        spamButton.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType.Touch then
+                dragInput = input
+            end
+        end)
+
+        game:GetService("UserInputService").InputChanged:Connect(function(input)
+            if dragging and input == dragInput then
+                update(input)
+            end
+        end)
+
+        -- Parar a função de spam quando o personagem morrer
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+
+        humanoid.Died:Connect(function()
+            spamming = false
+            spamButton.Text = "Spam"
+            runService:UnbindFromRenderStep("SpamClick")
+        end)
+
+        player.CharacterAdded:Connect(function(newCharacter)
+            character = newCharacter
+            humanoid = character:WaitForChild("Humanoid")
+
+            humanoid.Died:Connect(function()
+                spamming = false
+                spamButton.Text = "Spam"
+                runService:UnbindFromRenderStep("SpamClick")
+            end)
+        end)
+    end
+})
+
+PlayersFunctionsTab:CreateButton({
+    Name = "SPAM CLICK MOUSE"
+    Callback = function()
+        -- Criar GUI
+        local screenGui = Instance.new("ScreenGui")
+        local spamButton = Instance.new("TextButton")
+        local uICorner = Instance.new("UICorner")
+        local uIStroke = Instance.new("UIStroke")
+
+        screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+        -- Configurar o botão de spam
+        spamButton.Parent = screenGui
+        spamButton.Size = UDim2.new(0, 50, 0, 25) -- Tamanho do botão
+        spamButton.Position = UDim2.new(0.5, -50, 0.5, -25) -- Centro da tela
+        spamButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Cor preta
+        spamButton.BackgroundTransparency = 0.5 -- 30% de transparência
+        spamButton.Text = "Spam" -- Texto do botão
+        spamButton.TextColor3 = Color3.new(1, 1, 1) -- Cor do texto (branca)
+        spamButton.Font = Enum.Font.SourceSansBold
+        spamButton.TextScaled = true
+        spamButton.TextStrokeTransparency = 0.5
+        spamButton.TextStrokeColor3 = Color3.new(0, 0, 0)
+
+        -- Bordas arredondadas
+        uICorner.CornerRadius = UDim.new(0, 15)
+        uICorner.Parent = spamButton
+
+        -- Borda externa
+        uIStroke.Parent = spamButton
+        uIStroke.Thickness = 3
+        uIStroke.Color = Color3.fromRGB(255, 255, 255) -- Cor branca
+        uIStroke.Transparency = 0.2
+
+        local runService = game:GetService("RunService")
+        local virtualInputManager = game:GetService("VirtualInputManager")
+        local spamming = false
+        local dragging = false
+        local dragInput = nil
+        local dragStart = nil
+        local startPos = nil
+
+        -- Função para ativar/desativar spam
+        spamButton.MouseButton1Click:Connect(function()
+            spamming = not spamming
+            spamButton.Text = spamming and "Parar" or "Spam"
+
+            runService.Heartbeat:Connect(function()
+                if spamming then
+                    virtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+                    virtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+                end
+            end)
+        end)
+
+        -- Funções para permitir mover o botão
+        local function update(input)
+            local delta = input.Position - dragStart
+            spamButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+
+        spamButton.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragging = true
+                dragStart = input.Position
+                startPos = spamButton.Position
+
+                input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragging = false
+                    end
+                end)
+            end
+        end)
+
+        spamButton.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType.Touch then
+                dragInput = input
+            end
+        end)
+
+        game:GetService("UserInputService").InputChanged:Connect(function(input)
+            if dragging and input == dragInput then
+                update(input)
+            end
+        end)
+    end
+})
+
+PlayersFunctionsTab:CreateButton({
+    Name = "Apocalyptic Effects",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local runService = game:GetService("RunService")
+        local workspace = game:GetService("Workspace")
+        local lighting = game:GetService("Lighting")
+        local players = game:GetService("Players")
+        local debris = game:GetService("Debris")
+        local random = Random.new()
+
+        local lavaParts = {}
+
+        local function createApocalypticFog()
+            lighting.FogEnd = 150
+            lighting.FogColor = Color3.fromRGB(255, 102, 0)
+            lighting.Brightness = 0.5
+        end
+
+        local function createRedFog()
+            lighting.FogEnd = 200
+            lighting.FogColor = Color3.fromRGB(255, 0, 0)
+            lighting.Brightness = 0.5
+        end
+
+        local function resetFog()
+            lighting.FogEnd = 200
+            lighting.FogColor = Color3.fromRGB(255, 102, 0)
+            lighting.Brightness = 0.5
+        end
+
+        local function spawnMeteor()
+            local meteor = Instance.new("Part")
+            meteor.Size = Vector3.new(random:NextNumber(5, 10), random:NextNumber(5, 10), random:NextNumber(5, 10))
+            meteor.Color = Color3.fromRGB(0, 0, 0)
+            meteor.Position = Vector3.new(random:NextNumber(-500, 500), 100, random:NextNumber(-500, 500))
+            meteor.Anchored = false
+            meteor.Material = Enum.Material.Slate
+            meteor.Parent = workspace
+
+            local fireParticle = Instance.new("ParticleEmitter")
+            fireParticle.Texture = "rbxassetid://241876004"
+            fireParticle.Parent = meteor
+            fireParticle.Enabled = true
+
+            meteor.Touched:Connect(function(hit)
+                if hit:IsA("BasePart") and hit ~= character.HumanoidRootPart then
+                    local explosion = Instance.new("Explosion")
+                    explosion.Position = meteor.Position
+                    explosion.BlastRadius = 10
+                    explosion.BlastPressure = 5000
+                    explosion.Parent = workspace
+                    meteor:Destroy()
+                end
+            end)
+        end
+
+        local function playScarySound()
+            local sound = Instance.new("Sound")
+            sound.SoundId = "rbxassetid://183763515"
+            sound.Volume = 1
+            sound.Parent = workspace
+            sound:Play()
+        end
+
+        local function createBloomEffect()
+            local bloom = Instance.new("BloomEffect")
+            bloom.Intensity = 2
+            bloom.Size = 30
+            bloom.Threshold = 0.8
+            bloom.Parent = lighting
+        end
+
+        local function createDustEffect()
+            local dustParticle = Instance.new("ParticleEmitter")
+            dustParticle.Texture = "rbxassetid://241876004"
+            dustParticle.Rate = 100
+            dustParticle.Lifetime = NumberRange.new(5)
+            dustParticle.Speed = NumberRange.new(5)
+            dustParticle.Parent = workspace
+        end
+
+        local function applyRedSky()
+            lighting.OutdoorAmbient = Color3.fromRGB(60, 0, 0)
+        end
+
+        local function createLavaPool()
+            local position
+
+            repeat
+                position = Vector3.new(random:NextNumber(-500, 500), 0.5, random:NextNumber(-500, 500))
+                local isPositionFree = true
+
+                for _, lava in ipairs(lavaParts) do
+                    if (lava.Position - position).Magnitude < 10 then
+                        isPositionFree = false
+                        break
+                    end
+                end
+
+                if (character.HumanoidRootPart.Position - position).Magnitude < 10 then
+                    isPositionFree = false
+                end
+            until isPositionFree
+
+            local lava = Instance.new("Part")
+            lava.Size = Vector3.new(random:NextNumber(20, 50), 1, random:NextNumber(20, 50))
+            lava.Color = Color3.fromRGB(255, 69, 0)
+            lava.Anchored = true
+            lava.Position = position
+            lava.Material = Enum.Material.Neon
+            lava.Parent = workspace
+
+            local lavaParticle = Instance.new("ParticleEmitter")
+            lavaParticle.Texture = "rbxassetid://241876004"
+            lavaParticle.Rate = 50
+            lavaParticle.Lifetime = NumberRange.new(5)
+            lavaParticle.Speed = NumberRange.new(1)
+            lavaParticle.Parent = lava
+
+            table.insert(lavaParts, lava)
+
+            delay(10, function()
+                lava.Color = Color3.fromRGB(0, 0, 0)
+                wait(2.5)
+                lava:Destroy()
+                table.remove(lavaParts, table.find(lavaParts, lava))
+            end)
+
+            lava.Touched:Connect(function(hit)
+                local humanoid = hit.Parent:FindFirstChild("Humanoid")
+                if humanoid and lava.Color == Color3.fromRGB(255, 69, 0) then
+                    humanoid:TakeDamage(25)
+                end
+            end)
+        end
+
+        local function spawnLightning()
+            local lightning = Instance.new("Part")
+            lightning.Size = Vector3.new(0.5, 100, 0.5)
+            lightning.Color = Color3.fromRGB(255, 255, 255)
+            lightning.Anchored = true
+            lightning.CanCollide = false
+            lightning.Position = Vector3.new(random:NextNumber(-500, 500), 50, random:NextNumber(-500, 500))
+            lightning.Material = Enum.Material.Neon
+            lightning.Parent = workspace
+            
+            local explosion = Instance.new("Explosion")
+            explosion.Position = lightning.Position
+            explosion.BlastRadius = 10
+            explosion.BlastPressure = 5000
+            explosion.ExplosionType = Enum.ExplosionType.NoCraters
+            explosion.Visible = false
+            explosion.Parent = workspace
+
+            delay(0.1, function()
+                lightning:Destroy()
+            end)
+
+            lightning.Touched:Connect(function(hit)
+                if hit.Parent == character then
+                    if random:NextNumber(0, 1) <= 0.2 then
+                        character.Humanoid:TakeDamage(99)
+                        createRedFog()
+                        delay(3, resetFog)
+                    else
+                        character.Humanoid:TakeDamage(10)
+                        character.HumanoidRootPart.Velocity = (character.HumanoidRootPart.Position - lightning.Position).unit * 50
+                    end
+                end
+            end)
+        end
+
+        local function apocalypticEffects()
+            spawnMeteor()
+            playScarySound()
+            createApocalypticFog()
+            createBloomEffect()
+            createDustEffect()
+            applyRedSky()
+            createLavaPool()
+        end
+
+        runService.RenderStepped:Connect(function()
+            apocalypticEffects()
+        end)
+
+        runService.Heartbeat:Connect(function()
+            spawnLightning()
+            wait(0.00001)
+        end)
+
+        spawn(function()
+            while true do
+                createLavaPool()
+                wait(5)
+            end
+        end)
+    end
+})
+
 PlayersFunctionsTab:CreateToggle({
     Name = "ESP",
     CurrentValue = false,
