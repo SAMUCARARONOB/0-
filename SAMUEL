@@ -1,0 +1,128 @@
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local ScrollingFrame = Instance.new("ScrollingFrame")
+local UIListLayout = Instance.new("UIListLayout")
+local CoordinateLabel = Instance.new("TextLabel")
+local CopyButton = Instance.new("TextButton")
+local MarkButton = Instance.new("TextButton")
+
+ScreenGui.Name = "ModernUI"
+ScreenGui.ResetOnSpawn = false  -- Garante que a interface não desapareça ao morrer
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+Frame.Name = "MainFrame"
+Frame.Parent = ScreenGui
+Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+Frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+Frame.Size = UDim2.new(0.6, 0, 0.6, 0)
+Frame.BorderSizePixel = 0
+Frame.BackgroundTransparency = 0.2
+Frame.Active = true
+Frame.Draggable = true
+
+ScrollingFrame.Name = "ScrollingFrame"
+ScrollingFrame.Parent = Frame
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
+ScrollingFrame.ScrollBarThickness = 12
+ScrollingFrame.Position = UDim2.new(0, 0, 0.3, 0)
+ScrollingFrame.Size = UDim2.new(1, 0, 0.7, 0)
+ScrollingFrame.BackgroundTransparency = 0.8
+ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 128, 0)
+
+UIListLayout.Parent = ScrollingFrame
+UIListLayout.Padding = UDim.new(0.01, 0)
+
+CoordinateLabel.Name = "CoordinateLabel"
+CoordinateLabel.Parent = Frame
+CoordinateLabel.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+CoordinateLabel.Size = UDim2.new(1, 0, 0.15, 0)
+CoordinateLabel.Font = Enum.Font.GothamBold
+CoordinateLabel.Text = "Coord.: (0, 0, 0)"
+CoordinateLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+CoordinateLabel.TextScaled = true
+
+CopyButton.Name = "CopyButton"
+CopyButton.Parent = Frame
+CopyButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+CopyButton.Size = UDim2.new(0.5, 0, 0.1, 0)
+CopyButton.Position = UDim2.new(0, 0, 0.15, 0)
+CopyButton.Font = Enum.Font.GothamBold
+CopyButton.Text = "Copiar Coord."
+CopyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CopyButton.TextScaled = true
+CopyButton.MouseButton1Click:Connect(function()
+    setclipboard(string.match(CoordinateLabel.Text, "%((.-)%)"))
+end)
+
+MarkButton.Name = "MarkButton"
+MarkButton.Parent = Frame
+MarkButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+MarkButton.Size = UDim2.new(0.5, 0, 0.1, 0)
+MarkButton.Position = UDim2.new(0.5, 0, 0.15, 0)
+MarkButton.Font = Enum.Font.GothamBold
+MarkButton.Text = "Marcar Coord."
+MarkButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MarkButton.TextScaled = true
+
+local markedCoords = {}
+
+MarkButton.MouseButton1Click:Connect(function()
+    local coords = string.match(CoordinateLabel.Text, "%((.-)%)")
+    table.insert(markedCoords, coords)
+    
+    local newFrame = Instance.new("Frame")
+    newFrame.Parent = ScrollingFrame
+    newFrame.Size = UDim2.new(1, 0, 0.1, 0)
+    newFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    newFrame.BackgroundTransparency = 0.3
+
+    local newLabel = Instance.new("TextLabel")
+    newLabel.Parent = newFrame
+    newLabel.Size = UDim2.new(0.5, 0, 1, 0)
+    newLabel.BackgroundTransparency = 1
+    newLabel.Font = Enum.Font.GothamBold
+    newLabel.Text = "Marcada: " .. coords
+    newLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    newLabel.TextScaled = true
+
+    local teleportButton = Instance.new("TextButton")
+    teleportButton.Parent = newFrame
+    teleportButton.Size = UDim2.new(0.25, 0, 1, 0)
+    teleportButton.Position = UDim2.new(0.5, 0, 0, 0)
+    teleportButton.BackgroundColor3 = Color3.fromRGB(255, 128, 0)
+    teleportButton.Font = Enum.Font.GothamBold
+    teleportButton.Text = "Teleporte"
+    teleportButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+    teleportButton.TextScaled = true
+    teleportButton.MouseButton1Click:Connect(function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        if character then
+            local x, y, z = coords:match("([^,]+), ([^,]+), ([^,]+)")
+            character:SetPrimaryPartCFrame(CFrame.new(tonumber(x), tonumber(y), tonumber(z)))
+        end
+    end)
+
+    local copyCoordButton = Instance.new("TextButton")
+    copyCoordButton.Parent = newFrame
+    copyCoordButton.Size = UDim2.new(0.25, 0, 1, 0)
+    copyCoordButton.Position = UDim2.new(0.75, 0, 0, 0)
+    copyCoordButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    copyCoordButton.Font = Enum.Font.GothamBold
+    copyCoordButton.Text = "Copiar"
+    copyCoordButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    copyCoordButton.TextScaled = true
+    copyCoordButton.MouseButton1Click:Connect(function()
+        setclipboard(coords)
+    end)
+end)
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        local pos = character.HumanoidRootPart.Position
+        CoordinateLabel.Text = string.format("Coord.: (%.2f, %.2f, %.2f)", pos.X, pos.Y, pos.Z)
+    end
+end)
