@@ -61,6 +61,17 @@ farmTab:CreateToggle({
     end
 })
 
+farmTab:CreateButton({
+    Name = "RETURN TO ORIGINAL POSITION",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and previousPosition then
+            player.Character:SetPrimaryPartCFrame(previousPosition)
+            previousPosition = nil
+        end
+    end
+})
+
 Rayfield:LoadConfiguration()
 
 local vu = game:GetService("VirtualUser")
