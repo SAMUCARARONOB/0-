@@ -1,13 +1,13 @@
 local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua'))()
 
 local Window = Rayfield:CreateWindow({
-    Name = "Seu Script",
-    LoadingTitle = "Carregando...",
+    Name = "Race Clicke",
+    LoadingTitle = "Carregando... Script Race Clicker",
     LoadingSubtitle = "Por favor, aguarde",
     ConfigurationSaving = {
        Enabled = true,
        FolderName = nil,
-       FileName = "SeuScript"
+       FileName = "Race Click Script"
     }
 })
 
@@ -72,6 +72,150 @@ farmTab:CreateButton({
     end
 })
 
+local title = "EXTRA FEATURES FOR ALL GAMES"
+
+farmTab:CreateSection(title)
+
+farmTab:CreateButton({
+    Name = "Invulnerability",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            player.Character:FindFirstChildOfClass("Humanoid").Health = math.huge
+        end
+    end
+})
+
+farmTab:CreateButton({
+    Name = "Teleport to Random Location",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local randomPosition = Vector3.new(math.random(-1000, 1000), 50, math.random(-1000, 1000))
+        if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character:SetPrimaryPartCFrame(CFrame.new(randomPosition))
+        end
+    end
+})
+
+farmTab:CreateToggle({
+    Name = "Fly Mode",
+    CurrentValue = false,
+    Callback = function(Value)
+        local player = game.Players.LocalPlayer
+        if player and player.Character then
+            local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+            if Value then
+                humanoid.PlatformStand = true
+                player.Character.HumanoidRootPart.Velocity = Vector3.new(0, 50, 0)
+            else
+                humanoid.PlatformStand = false
+                player.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+            end
+        end
+    end
+})
+
+farmTab:CreateButton({
+    Name = "Teleport to Highest Point",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local highestPoint = Vector3.new(player.Character.HumanoidRootPart.Position.X, 1000, player.Character.HumanoidRootPart.Position.Z)
+            player.Character:SetPrimaryPartCFrame(CFrame.new(highestPoint))
+        end
+    end
+})
+
+farmTab:CreateButton({
+    Name = "Increase Walk Speed",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            player.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = 100
+        end
+    end
+})
+
+farmTab:CreateButton({
+    Name = "Decrease Walk Speed",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            player.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = 10
+        end
+    end
+})
+
+farmTab:CreateButton({
+    Name = "Teleport to Friend",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local friend = game.Players:FindFirstChild("FriendName")
+        if player and player.Character and friend and friend.Character and friend.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character:SetPrimaryPartCFrame(friend.Character.HumanoidRootPart.CFrame)
+        end
+    end
+})
+
+farmTab:CreateButton({
+    Name = "Teleport to Enemy",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local enemy = game.Players:FindFirstChild("EnemyName")
+        if player and player.Character and enemy and enemy.Character and enemy.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character:SetPrimaryPartCFrame(enemy.Character.HumanoidRootPart.CFrame)
+        end
+    end
+})
+
+farmTab:CreateButton({
+    Name = "Toggle Invisibility",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player and player.Character then
+            for _, part in pairs(player.Character:GetChildren()) do
+                if part:IsA("BasePart") then
+                    part.Transparency = part.Transparency == 0 and 1 or 0
+                end
+            end
+        end
+    end
+})
+
+farmTab:CreateButton({
+    Name = "Instant Collect Items",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            for _, item in pairs(workspace:GetDescendants()) do
+                if item:IsA("BasePart") and item:CanSetNetworkOwnership() then
+                    firetouchinterest(player.Character.HumanoidRootPart, item, 0)
+                    firetouchinterest(player.Character.HumanoidRootPart, item, 1)
+                end
+            end
+        end
+    end
+})
+
+farmTab:CreateToggle({
+    Name = "Auto Attack",
+    CurrentValue = false,
+    Callback = function(Value)
+        local autoAttack = Value
+        while autoAttack do
+            local player = game.Players.LocalPlayer
+            if player and player.Character then
+                local target = game.Players:FindFirstChild("EnemyName")
+                if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                    player.Character:SetPrimaryPartCFrame(target.Character.HumanoidRootPart.CFrame)
+                    -- Trigger attack here (e.g., tool activation or ability use)
+                end
+            end
+            wait(1)
+        end
+    end
+})
+
 Rayfield:LoadConfiguration()
 
 local vu = game:GetService("VirtualUser")
@@ -86,6 +230,119 @@ local originalWalkSpeed = 16
 local boostedWalkSpeed = 50
 
 local boostsTab = Window:CreateTab("Boosts")
+
+boostsTab:CreateButton({
+    Name = "Invincibility",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            player.Character:FindFirstChildOfClass("Humanoid").MaxHealth = math.huge
+            player.Character:FindFirstChildOfClass("Humanoid").Health = math.huge
+        end
+    end
+})
+
+boostsTab:CreateToggle({
+    Name = "Super Speed",
+    CurrentValue = false,
+    Callback = function(Value)
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            player.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = Value and 200 or 16
+        end
+    end
+})
+
+boostsTab:CreateButton({
+    Name = "Teleport to Safe Zone",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player and player.Character then
+            player.Character:SetPrimaryPartCFrame(CFrame.new(100, 10, 100))
+        end
+    end
+})
+
+boostsTab:CreateButton({
+    Name = "Gain Super Strength",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            player.Character:FindFirstChildOfClass("Humanoid").BodyTypeScale = 1.5
+        end
+    end
+})
+
+boostsTab:CreateButton({
+    Name = "Remove Debuffs",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            player.Character:FindFirstChildOfClass("Humanoid"):ClearAllChildren()
+        end
+    end
+})
+
+boostsTab:CreateButton({
+    Name = "Instant Win",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character:SetPrimaryPartCFrame(CFrame.new(-442100, 3.21, 66.73))
+        end
+    end
+})
+
+boostsTab:CreateToggle({
+    Name = "Night Vision",
+    CurrentValue = false,
+    Callback = function(Value)
+        if Value then
+            game.Lighting.Brightness = 3
+            game.Lighting.Ambient = Color3.fromRGB(255, 255, 255)
+        else
+            game.Lighting.Brightness = 1
+            game.Lighting.Ambient = Color3.fromRGB(127, 127, 127)
+        end
+    end
+})
+
+boostsTab:CreateButton({
+    Name = "Restore Energy",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChild("Energy") then
+            player.Character.Energy.Value = player.Character.Energy.MaxValue
+        end
+    end
+})
+
+boostsTab:CreateToggle({
+    Name = "Auto Heal",
+    CurrentValue = false,
+    Callback = function(Value)
+        local autoHealActive = Value
+        spawn(function()
+            while autoHealActive do
+                local player = game.Players.LocalPlayer
+                if player and player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+                    player.Character:FindFirstChildOfClass("Humanoid").Health = player.Character:FindFirstChildOfClass("Humanoid").MaxHealth
+                end
+                wait(1)
+            end
+        end)
+    end
+})
+
+boostsTab:CreateButton({
+    Name = "Triple Jump",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            player.Character:FindFirstChildOfClass("Humanoid").JumpPower = player.Character:FindFirstChildOfClass("Humanoid").JumpPower * 3
+        end
+    end
+})
 
 boostsTab:CreateToggle({
     Name = "Speed Boost",
