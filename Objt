@@ -1,0 +1,170 @@
+local player = game.Players.LocalPlayer
+
+-- Interface GUI
+local gui = Instance.new("ScreenGui")
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 600, 0, 500)  -- Altura ajustada para 500 pixels
+frame.Position = UDim2.new(0.5, -300, 0.5, -250)  -- Meio da tela
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true  -- Permitir arrastar a interface inteira
+frame.Parent = gui
+
+-- Efeito de sombra para o frame
+local shadow = Instance.new("ImageLabel")
+shadow.Size = frame.Size + UDim2.new(0, 15, 0, 15)
+shadow.Position = frame.Position - UDim2.new(0, 7, 0, 7)
+shadow.Image = "rbxassetid://1316045217"
+shadow.ImageTransparency = 0.5
+shadow.ScaleType = Enum.ScaleType.Slice
+shadow.SliceCenter = Rect.new(10, 10, 118, 118)
+shadow.BackgroundTransparency = 1
+shadow.ZIndex = 0
+shadow.Parent = gui
+
+-- Mantendo a sombra alinhada com o frame
+frame:GetPropertyChangedSignal("Position"):Connect(function()
+    shadow.Position = frame.Position - UDim2.new(0, 7, 0, 7)
+end)
+
+frame:GetPropertyChangedSignal("Size"):Connect(function()
+    shadow.Size = frame.Size + UDim2.new(0, 15, 0, 15)
+end)
+
+-- Título
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1, 0, 0, 50)
+titleBar.Position = UDim2.new(0, 0, 0, 0)
+titleBar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+titleBar.BorderSizePixel = 0
+titleBar.Parent = frame
+
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, 0, 1, 0)
+titleLabel.Position = UDim2.new(0, 0, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Lista de Objetos"
+titleLabel.TextColor3 = Color3.new(1, 1, 1)
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextSize = 24
+titleLabel.Parent = titleBar
+
+-- Efeito de gradiente no título
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 176, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 88, 255))
+})
+gradient.Parent = titleLabel
+
+local scrollingFrame = Instance.new("ScrollingFrame")
+scrollingFrame.Size = UDim2.new(1, 0, 1, -50)  -- Ajuste para não cobrir o título
+scrollingFrame.Position = UDim2.new(0, 0, 0, 50)
+scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollingFrame.ScrollBarThickness = 10
+scrollingFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+scrollingFrame.BackgroundTransparency = 1
+scrollingFrame.Parent = frame
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Parent = scrollingFrame
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 5)
+
+-- Função para obter todos os objetos únicos
+local function getAllUniqueObjects()
+    local objects = {}
+    local objectNames = {}
+
+    for _, object in pairs(game.Workspace:GetDescendants()) do
+        if not objectNames[object.Name] then
+            objectNames[object.Name] = true
+            table.insert(objects, {Name = object.Name, Id = object:GetFullName()})
+        end
+    end
+
+    return objects
+end
+
+local objects = getAllUniqueObjects()
+
+local function createObjectButton(object)
+    local buttonFrame = Instance.new("Frame")
+    buttonFrame.Size = UDim2.new(1, 0, 0, 80)  -- Tamanho aumentado para melhor visualização
+    buttonFrame.BackgroundTransparency = 0.5
+    buttonFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    buttonFrame.BorderSizePixel = 0
+    buttonFrame.Parent = scrollingFrame
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(0.4, -10, 1, 0)
+    textLabel.Position = UDim2.new(0, 10, 0, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Text = object.Name
+    textLabel.TextColor3 = Color3.new(1, 1, 1)
+    textLabel.Font = Enum.Font.Gotham
+    textLabel.TextSize = 18
+    textLabel.Parent = buttonFrame
+
+    -- Novo: Icone futurista
+    local icon = Instance.new("ImageLabel")
+    icon.Size = UDim2.new(0.1, 0, 0.8, 0)
+    icon.Position = UDim2.new(0.85, 0, 0.1, 0)
+    icon.Image = "rbxassetid://12345678"  -- Substitua pelo ID do seu ícone
+    icon.BackgroundTransparency = 1
+    icon.Parent = buttonFrame
+
+    -- Novo: Barra de progresso visual
+    local progressBar = Instance.new("Frame")
+    progressBar.Size = UDim2.new(0.25, -10, 0.1, 0)
+    progressBar.Position = UDim2.new(0.45, 0, 0.6, 0)
+    progressBar.BackgroundColor3 = Color3.fromRGB(0, 176, 255)
+    progressBar.BorderSizePixel = 0
+    progressBar.Parent = buttonFrame
+
+    local progressBackground = Instance.new("Frame")
+    progressBackground.Size = UDim2.new(0.25, -10, 0.1, 0)
+    progressBackground.Position = UDim2.new(0.45, 0, 0.6, 0)
+    progressBackground.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    progressBackground.BorderSizePixel = 0
+    progressBackground.ZIndex = -1
+    progressBackground.Parent = buttonFrame
+
+    -- Estilizando os botões
+    local copyNameButton = Instance.new("TextButton")
+    copyNameButton.Size = UDim2.new(0.25, -10, 0.4, -10)
+    copyNameButton.Position = UDim2.new(0.45, 10, 0.1, 0)
+    copyNameButton.Text = "Copiar Nome"
+    copyNameButton.BackgroundColor3 = Color3.fromRGB(0, 88, 255)
+    copyNameButton.TextColor3 = Color3.new(1, 1, 1)
+    copyNameButton.Font = Enum.Font.Gotham
+    copyNameButton.TextSize = 18
+    copyNameButton.Parent = buttonFrame
+
+    copyNameButton.MouseButton1Click:Connect(function()
+        setclipboard(object.Name)
+    end)
+
+    local copyIdButton = Instance.new("TextButton")
+    copyIdButton.Size = UDim2.new(0.25, -10, 0.4, -10)
+    copyIdButton.Position = UDim2.new(0.7, 10, 0.1, 0)
+    copyIdButton.Text = "Copiar ID"
+    copyIdButton.BackgroundColor3 = Color3.fromRGB(0, 88, 255)
+    copyIdButton.TextColor3 = Color3.new(1, 1, 1)
+    copyIdButton.Font = Enum.Font.Gotham
+    copyIdButton.TextSize = 18
+    copyIdButton.Parent = buttonFrame
+
+    copyIdButton.MouseButton1Click:Connect(function()
+        setclipboard(object.Id)
+    end)
+
+    scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, scrollingFrame.CanvasSize.Y.Offset + 80)  -- Atualiza o tamanho da tela
+end
+
+for _, object in ipairs(objects) do
+    createObjectButton(object)
+end
