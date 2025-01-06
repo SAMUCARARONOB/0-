@@ -1,0 +1,118 @@
+local player = game.Players.LocalPlayer
+
+-- Interface GUI
+local gui = Instance.new("ScreenGui")
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 400, 0, 500)  -- Aumentei o tamanho para melhor visualização
+frame.Position = UDim2.new(0.5, -200, 0.5, -250)  -- Meio da tela
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true  -- Permitir arrastar a interface inteira
+frame.Parent = gui
+
+-- Título
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1, 0, 0, 50)
+titleBar.Position = UDim2.new(0, 0, 0, 0)
+titleBar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+titleBar.BorderSizePixel = 0
+titleBar.Parent = frame
+
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, 0, 1, 0)
+titleLabel.Position = UDim2.new(0, 0, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Lista de NPCs com Humanoid"
+titleLabel.TextColor3 = Color3.new(1, 1, 1)
+titleLabel.Font = Enum.Font.SourceSansBold
+titleLabel.TextSize = 24
+titleLabel.Parent = titleBar
+
+local scrollingFrame = Instance.new("ScrollingFrame")
+scrollingFrame.Size = UDim2.new(1, 0, 1, -50)  -- Ajuste para não cobrir o título
+scrollingFrame.Position = UDim2.new(0, 0, 0, 50)
+scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollingFrame.ScrollBarThickness = 10
+scrollingFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+scrollingFrame.BackgroundTransparency = 1
+scrollingFrame.Parent = frame
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Parent = scrollingFrame
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 5)
+
+-- Função para obter todos os NPCs únicos com Humanoid
+local function getAllUniqueHumanoids()
+    local humanoids = {}
+    local humanoidNames = {}
+
+    for _, object in pairs(game.Workspace:GetDescendants()) do
+        if object:IsA("Model") and object:FindFirstChildOfClass("Humanoid") and not game.Players:GetPlayerFromCharacter(object) then
+            if not humanoidNames[object.Name] then
+                humanoidNames[object.Name] = true
+                table.insert(humanoids, {Name = object.Name, Id = object:GetFullName()})
+            end
+        end
+    end
+
+    return humanoids
+end
+
+local humanoids = getAllUniqueHumanoids()
+
+local function createHumanoidButton(humanoid)
+    local buttonFrame = Instance.new("Frame")
+    buttonFrame.Size = UDim2.new(1, 0, 0, 80)  -- Tamanho aumentado para melhor visualização
+    buttonFrame.BackgroundTransparency = 0.5
+    buttonFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    buttonFrame.BorderSizePixel = 0
+    buttonFrame.Parent = scrollingFrame
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(0.4, -10, 1, 0)
+    textLabel.Position = UDim2.new(0, 10, 0, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Text = humanoid.Name
+    textLabel.TextColor3 = Color3.new(1, 1, 1)
+    textLabel.Font = Enum.Font.SourceSansBold
+    textLabel.TextSize = 18
+    textLabel.Parent = buttonFrame
+
+    local copyNameButton = Instance.new("TextButton")
+    copyNameButton.Size = UDim2.new(0.25, -10, 0.4, -10)
+    copyNameButton.Position = UDim2.new(0.45, 10, 0.1, 0)
+    copyNameButton.Text = "Copiar Nome"
+    copyNameButton.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+    copyNameButton.TextColor3 = Color3.new(1, 1, 1)
+    copyNameButton.Font = Enum.Font.SourceSans
+    copyNameButton.TextSize = 18
+    copyNameButton.Parent = buttonFrame
+
+    copyNameButton.MouseButton1Click:Connect(function()
+        setclipboard(humanoid.Name)
+    end)
+
+    local copyIdButton = Instance.new("TextButton")
+    copyIdButton.Size = UDim2.new(0.25, -10, 0.4, -10)
+    copyIdButton.Position = UDim2.new(0.7, 10, 0.1, 0)
+    copyIdButton.Text = "Copiar ID"
+    copyIdButton.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+    copyIdButton.TextColor3 = Color3.new(1, 1, 1)
+    copyIdButton.Font = Enum.Font.SourceSans
+    copyIdButton.TextSize = 18
+    copyIdButton.Parent = buttonFrame
+
+    copyIdButton.MouseButton1Click:Connect(function()
+        setclipboard(humanoid.Id)
+    end)
+
+    scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, scrollingFrame.CanvasSize.Y.Offset + 80)  -- Atualiza o tamanho da tela
+end
+
+for _, humanoid in ipairs(humanoids) do
+    createHumanoidButton(humanoid)
+end
