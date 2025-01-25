@@ -1,0 +1,169 @@
+local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
+
+local Window = Rayfield:CreateWindow({
+    Name = "PONTE DE VIDRO2",
+    LoadingTitle = "Loading Interface",
+    LoadingSubtitle = "OP AUTO FARM",
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = nil,
+        FileName = "SimulatedCollisionSystems"
+    },
+    KeySystem = false
+})
+
+local Tab1 = Window:CreateTab("OP-SCRIPTS", 4483362458)
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local BrokeGlassEvent_O = ReplicatedStorage:FindFirstChild("BrokeGlassEvent_O")
+local crateRemote = ReplicatedStorage:FindFirstChild("CratesUtilities"):FindFirstChild("Remotes")
+local freeGearEvent = ReplicatedStorage:FindFirstChild("FreeGearEvent")
+local quintoPremio = ReplicatedStorage:FindFirstChild("SpinEvents"):FindFirstChild("QuintoPremio")
+local sextoPremio = ReplicatedStorage:FindFirstChild("SpinEvents"):FindFirstChild("SextoPremio")
+
+local enable_breakFakeGlasses, enable_showPaths, enable_autoWin, enable_freeItem, enable_opFarm, enable_magicCarpet = false
+
+local function breakAllGlasses()
+    local player = game.Players.LocalPlayer
+    for _, glass in pairs(workspace:FindFirstChild("Glasses").Wrong:GetChildren()) do
+        if glass:IsA("BasePart") and glass.Name == "glass" then
+            local args = { player, glass }
+            BrokeGlassEvent_O:FireServer(unpack(args))
+        end
+    end
+end
+
+local function loopActivationBreakGlasses()
+    while enable_breakFakeGlasses do
+        breakAllGlasses()
+        wait(0.5)
+    end
+end
+
+local function showPaths()
+    while enable_showPaths do
+        local correctGlasses = workspace.Glasses.Correct:GetChildren()
+        for _, glass in pairs(correctGlasses) do
+            if glass:IsA("BasePart") then
+                glass.Color = Color3.fromRGB(0, 255, 0)
+            end
+        end
+
+        local wrongGlasses = workspace.Glasses.Wrong:GetChildren()
+        for _, glass in pairs(wrongGlasses) do
+            if glass:IsA("BasePart") then
+                glass.Color = Color3.fromRGB(255, 0, 0)
+            end
+        end
+
+        local player = game.Players.LocalPlayer
+        player.Respawned:Connect(showPaths)
+        wait(0.5)
+    end
+end
+
+local function autoWin()
+    RunService.Heartbeat:Connect(function()
+        if enable_autoWin then
+            local args = { "10000" }
+            crateRemote.GiveReward:FireServer(unpack(args))
+        end
+    end)
+end
+
+local function freeItem()
+    while enable_freeItem do
+        wait(0.5)
+        local args = { game:GetService("Players").LocalPlayer }
+        freeGearEvent:FireServer(unpack(args))
+    end
+end
+
+local function opFarm()
+    RunService.Heartbeat:Connect(function()
+        if enable_opFarm then
+            local args = { game:GetService("Players").LocalPlayer }
+            quintoPremio:FireServer(unpack(args))
+        end
+    end)
+end
+
+local function magicCarpet()
+    while enable_magicCarpet do
+        wait(1)
+        local args = { game:GetService("Players").LocalPlayer }
+        sextoPremio:FireServer(unpack(args))
+    end
+end
+
+Tab1:CreateToggle({
+    Name = "DESTRUIR VIDROS FALSOS",
+    CurrentValue = false,
+    Flag = "BreakFakeGlassesToggle",
+    Callback = function(Value)
+        enable_breakFakeGlasses = Value
+        if enable_breakFakeGlasses then
+            loopActivationBreakGlasses()
+        end
+    end
+})
+
+Tab1:CreateToggle({
+    Name = "MOSTRA CAMINHOS",
+    CurrentValue = false,
+    Flag = "ShowPathsToggle",
+    Callback = function(Value)
+        enable_showPaths = Value
+        if enable_showPaths then
+            showPaths()
+        end
+    end
+})
+
+Tab1:CreateToggle({
+    Name = "OP AUTO WIN",
+    CurrentValue = false,
+    Flag = "AutoWinToggle",
+    Callback = function(Value)
+        enable_autoWin = Value
+    end
+})
+
+Tab1:CreateToggle({
+    Name = "FREE ITEMS",
+    CurrentValue = false,
+    Flag = "FreeItemsToggle",
+    Callback = function(Value)
+        enable_freeItem = Value
+        if enable_freeItem then
+            freeItem()
+        end
+    end
+})
+
+Tab1:CreateToggle({
+    Name = "100K OP FARM",
+    CurrentValue = false,
+    Flag = "OpFarmToggle",
+    Callback = function(Value)
+        enable_opFarm = Value
+    end
+})
+
+Tab1:CreateToggle({
+    Name = "TAPETE MÁGICO",
+    CurrentValue = false,
+    Flag = "MagicCarpetToggle",
+    Callback = function(Value)
+        enable_magicCarpet = Value
+        if enable_magicCarpet then
+            magicCarpet()
+        end
+    end
+})
+
+loopActivationBreakGlasses() -- Inicia o loop para quebrar vidros falsos
+autoWin() -- Inicia o loop para OP AUTO WIN
+freeItem() -- Inicia o loop para FREE ITEMS
+opFarm() -- Inicia o loop para 100K OP FARM
+magicCarpet() -- Inicia o loop para TAPETE MÁGICO
