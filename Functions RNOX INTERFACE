@@ -1,0 +1,27 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/INTERFACE-RNOX-HUB"))() local commandBindable = game.ReplicatedStorage:FindFirstChild("CommandBindable")
+if commandBindable then
+    -- Configuração de colunas
+    commandBindable:Fire("CL1") -- Define o layout com 1 coluna
+    commandBindable:Fire("CL2") -- Define o layout com 2 colunas
+    commandBindable:Fire("CL2") -- Define o layout com 3 colunas
+
+    -- Criação de botões e toggles com funcionalidades
+    commandBindable:Fire("A1>[loadstring(game:HttpGet('https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/PYRO0%251%2519157190', true))()]") -- Cria o botão 1 com script via URL
+    commandBindable:Fire("A2>[print('Botão 2 clicado!')]") -- Cria o botão 2 com função de log
+    commandBindable:Fire("T1>[print('Toggle 1 ativado!')]") -- Cria o Toggle 1 com função de log
+
+    -- Renomeação de botões e toggles
+    commandBindable:Fire("A1N(Botão Especial)") -- Renomeia o botão 1 para "Botão Especial"
+    commandBindable:Fire("A2N(Botão de Teste)") -- Renomeia o botão 2 para "Botão de Teste"
+    commandBindable:Fire("T1N(Toggle Principal)") -- Renomeia o Toggle 1 para "Toggle Principal"
+
+    -- Adição de rótulos acima dos botões e toggles
+    commandBindable:Fire("LBT1>(Rótulo para Toggle 1)") -- Adiciona "Rótulo para Toggle 1" acima do Toggle 1
+    commandBindable:Fire("LBA2>(Rótulo para Botão 2)") -- Adiciona "Rótulo para Botão 2" acima do Botão 2
+
+    -- Configurações gerais do painel
+    commandBindable:Fire("A0") -- Torna o painel arrastável
+    commandBindable:Fire("C1=Painel Atualizado") -- Atualiza o título para "Painel Atualizado"
+    commandBindable:Fire("C2=170,0,0") -- Altera a cor do título para verde
+    commandBindable:Fire("C4()") -- Adiciona bordas arredondadas ao painel
+end
