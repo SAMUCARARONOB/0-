@@ -1,3 +1,12 @@
+if game.Players.LocalPlayer:FindFirstChild("InterfaceExecutada") then
+    warn("A interface já foi executada anteriormente. Execução ignorada.")
+    return
+end
+
+local flag = Instance.new("BoolValue")
+flag.Name = "InterfaceExecutada"
+flag.Parent = game.Players.LocalPlayer
+
 local tweenService = game:GetService("TweenService")
 local gui = Instance.new("ScreenGui")
 gui.Parent = game.Players.LocalPlayer.PlayerGui
