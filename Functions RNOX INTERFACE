@@ -21,7 +21,7 @@ if commandBindable then
 
     -- Configurações gerais do painel
     commandBindable:Fire("A0") -- Torna o painel arrastável
-    commandBindable:Fire("C1=Painel Atualizado") -- Atualiza o título para "Painel Atualizado"
+    commandBindable:Fire("C1=RNOX-HUB") -- Atualiza o título para "Painel Atualizado"
     commandBindable:Fire("C2=170,0,0") -- Altera a cor do título para verde
     commandBindable:Fire("C4()") -- Adiciona bordas arredondadas ao painel
 end
