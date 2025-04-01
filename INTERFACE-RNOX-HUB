@@ -53,7 +53,7 @@ scrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
 scrollingFrame.Parent = frame
 
 local layout = Instance.new("UIGridLayout")
-layout.CellPadding = UDim2.new(0.02, 0, 0.06, 0) -- Adicionado espaçamento vertical extra
+layout.CellPadding = UDim2.new(0.02, 0, 0.06, 0)
 layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 layout.VerticalAlignment = Enum.VerticalAlignment.Top
 layout.Parent = scrollingFrame
@@ -123,10 +123,10 @@ local function adjustColumns(columnCount)
     layout.CellSize = UDim2.new(1 / columnCount - 0.02, 0, 0.12, 0)
 end
 
-local function createButton(index, buttonFunction)
+local function createButton(buttonId, name, buttonFunction)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0.2, 0, 0.1, 0)
-    button.Text = "Botão " .. index
+    button.Text = name
     button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.Gotham
@@ -140,17 +140,17 @@ local function createButton(index, buttonFunction)
             loadstring(buttonFunction)()
         end)
         if not success then
-            warn("Erro ao executar a função do botão " .. index .. ": " .. err)
+            warn("Erro ao executar a função do botão " .. name .. ": " .. err)
         end
     end)
     button.Parent = scrollingFrame
-    buttons["A" .. index] = button
+    buttons["BUTTON" .. buttonId] = button
 end
 
-local function createToggle(index, activeFunction)
+local function createToggle(toggleId, name, activeFunction)
     local toggleButton = Instance.new("TextButton")
     toggleButton.Size = UDim2.new(0.2, 0, 0.1, 0)
-    toggleButton.Text = "Toggle " .. index
+    toggleButton.Text = name
     toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     toggleButton.Font = Enum.Font.GothamBold
@@ -176,100 +176,81 @@ local function createToggle(index, activeFunction)
                 loadstring(activeFunction)()
             end)
             if not success then
-                warn("Erro ao executar função do toggle " .. index .. ": " .. err)
+                warn("Erro ao executar função do toggle " .. name .. ": " .. err)
             end
         end
     end)
     toggleButton.Parent = scrollingFrame
-    toggles["T" .. index] = toggleButton
+    toggles["TOGGLE" .. toggleId] = toggleButton
 end
 
-local function addLabelAbove(index, labelText, isToggle)
-    local buttonOrToggle = isToggle and toggles["T" .. index] or buttons["A" .. index]
-    if buttonOrToggle then
+local function addLabelAbove(name, labelText, isToggle, color)
+    local element = isToggle and toggles[name] or buttons[name]
+    if element then
         local label = Instance.new("TextLabel")
         label.Size = UDim2.new(1, 0, 0.3, 0)
         label.Position = UDim2.new(0, 0, -0.4, 0)
         label.BackgroundTransparency = 1
         label.Text = labelText
-        label.TextColor3 = Color3.fromRGB(255, 255, 255)
+        if color then
+            local r, g, b = color:match("(%d+).(%d+).(%d+)")
+            label.TextColor3 = Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b))
+        else
+            label.TextColor3 = Color3.fromRGB(255, 255, 255)
+        end
         label.Font = Enum.Font.Gotham
         label.TextSize = 14
         label.TextWrapped = true
-        label.Parent = buttonOrToggle
+        label.Parent = element
         scrollingFrame.CanvasSize = UDim2.new(0, 0, scrollingFrame.CanvasSize.Y.Offset + label.Size.Y.Offset, 0)
     else
-        warn("O botão ou toggle com índice " .. index .. " não existe.")
-    end
-end
-
-local function addLabelAboveButton(index, labelText)
-    local button = buttons["A" .. index]
-    if button then
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, 0, 0.3, 0)
-        label.Position = UDim2.new(0, 0, -0.4, 0)
-        label.BackgroundTransparency = 1
-        label.Text = labelText
-        label.TextColor3 = Color3.fromRGB(255, 255, 255)
-        label.Font = Enum.Font.Gotham
-        label.TextSize = 14
-        label.TextWrapped = true
-        label.Parent = button
-        scrollingFrame.CanvasSize = UDim2.new(0, 0, scrollingFrame.CanvasSize.Y.Offset + label.Size.Y.Offset, 0)
-    else
-        warn("O botão com índice " .. index .. " não existe.")
+        warn("O botão ou toggle com o nome " .. name .. " não existe.")
     end
 end
 
 local function processCommands(command)
-    if command:match("^CL%d+") then
-        local columnCount = tonumber(command:match("^CL(%d+)"))
+    if command:match("^COLUNA%(%d+%)") then
+        local columnCount = tonumber(command:match("%((%d+)%)"))
         adjustColumns(columnCount)
-    elseif command:match("^A%d+>%[.+%]") then
-        local buttonIndex = tonumber(command:match("^A(%d+)>"))
-        local buttonFunction = command:match("%[(.+)%]")
-        createButton(buttonIndex, buttonFunction)
-    elseif command:match("^T%d+>%[.+%]") then
-        local toggleIndex = tonumber(command:match("^T(%d+)>"))
-        local toggleFunction = command:match("%[(.+)%]")
-        createToggle(toggleIndex, toggleFunction)
-    elseif command:match("^A%d+N%(.+%)") then
-        local buttonIndex = tonumber(command:match("^A(%d+)N"))
-        local newName = command:match("%((.+)%)")
-        if buttons["A" .. buttonIndex] then
-            buttons["A" .. buttonIndex].Text = newName
+    elseif command:match("^BUTTON(%d+)%(.+%)>[%d,]+%)function%(.+%)") then
+        local buttonId, buttonName, buttonFunction = command:match("^BUTTON(%d+)%((.+)%)>[%d,]+%)function%((.+)%)")
+        createButton(buttonId, buttonName, buttonFunction)
+    elseif command:match("^TOGGLE(%d+)%(.+%)>[%d,]+%)function%(.+%)") then
+        local toggleId, toggleName, toggleFunction = command:match("^TOGGLE(%d+)%((.+)%)>[%d,]+%)function%((.+)%)")
+        createToggle(toggleId, toggleName, toggleFunction)
+    elseif command:match("^BUTTONN%(.+%)") then
+        local nameChange = command:match("^BUTTONN%((.+)%)")
+        local originalName, newName = nameChange:match("([^,]+),(.+)")
+        if buttons[originalName] then
+            buttons[originalName].Text = newName
         end
-    elseif command:match("^T%d+N%(.+%)") then
-        local toggleIndex = tonumber(command:match("^T(%d+)N"))
-        local newName = command:match("%((.+)%)")
-        if toggles["T" .. toggleIndex] then
-            toggles["T" .. toggleIndex].Text = newName
+    elseif command:match("^TOGGLEN%(.+%)") then
+        local nameChange = command:match("^TOGGLEN%((.+)%)")
+        local originalName, newName = nameChange:match("([^,]+),(.+)")
+        if toggles[originalName] then
+            toggles[originalName].Text = newName
         end
-    elseif command:match("^LBT%d+>%(.+%)") then
-        local targetIndex = tonumber(command:match("^LBT(%d+)>"))
-        local labelText = command:match("%((.+)%)")
-        local isToggle = toggles["T" .. targetIndex] ~= nil
-        addLabelAbove(targetIndex, labelText, isToggle)
-    elseif command:match("^LBA%d+>%(.+%)") then
-    local targetIndex = tonumber(command:match("^LBA(%d+)>"))
-    local labelText = command:match("%((.+)%)")
-    addLabelAboveButton(targetIndex, labelText)
-    elseif command:match("^A0") then
+    elseif command:match("^LABELBUTTON(%d+)>.+$") then
+        local buttonId, labelText, labelColor = command:match("LABELBUTTON(%d+)>([^>]+)>(.+)")
+        addLabelAbove("BUTTON" .. buttonId, labelText, false, labelColor)
+    elseif command:match("^LABELTOGGLE(%d+)>.+$") then
+        local toggleId, labelText, labelColor = command:match("LABELTOGGLE(%d+)>([^>]+)>(.+)")
+        addLabelAbove("TOGGLE" .. toggleId, labelText, true, labelColor)
+    elseif command:match("^ARRASTAR%(%w*%)") then
         frame.Active = true
         frame.Draggable = true
-    elseif command:match("^C1=") then
-        local newTitle = command:match("=(.+)")
+    elseif command:match("^TITLE%(.+%)") then
+        local newTitle = command:match("%((.+)%)")
         title.Text = newTitle or "PAINEL"
-    elseif command:match("^C2=") then
-        local colorValues = command:match("=(.+)")
+    elseif command:match("^TITLECOLOR%(.+%)") then
+        local colorValues = command:match("%((.+)%)")
         if colorValues then
             local r, g, b = colorValues:match("(%d+),(%d+),(%d+)")
             title.TextColor3 = Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b))
         end
-    elseif command:match("^C4%(%w*%)") then
+    elseif command:match("^BORDA%(%w*%)") then
         local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0, 10)
+        corner.CornerRadius = UDim.new(0.05, 0)
         corner.Parent = frame
     end
 end
@@ -280,4 +261,4 @@ commandBindable.Parent = game.ReplicatedStorage
 
 commandBindable.Event:Connect(processCommands)
 
-print("Interface inicializada com suporte a animações, comandos atualizados e TextLabels ajustáveis.") 
+print("Interface inicializada com suporte a animações, comandos atualizados e TextLabels ajustáveis.")
