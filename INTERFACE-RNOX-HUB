@@ -151,7 +151,7 @@ local function createToggle(toggleId, name, activeFunction)
     corner.Parent = toggleButton
     local icon = Instance.new("ImageButton")
     icon.Size = UDim2.new(0.1, 0, 0.8, 0)
-    icon.Position = UDim2.new(0.90, 0, 0.1, 0)
+    icon.Position = UDim2.new(0.88, 0, 0.1, 0)
     icon.BackgroundTransparency = 1
     icon.Image = "rbxassetid://14293471713"
     icon.ImageColor3 = Color3.fromRGB(255, 0, 0)
@@ -159,7 +159,7 @@ local function createToggle(toggleId, name, activeFunction)
     local isActive = false
     icon.MouseButton1Click:Connect(function()
         isActive = not isActive
-        toggleButton.BackgroundColor3 = isActive and Color3.fromRGB(0, 128, 0) or Color3.fromRGB(0, 0, 0)
+        toggleButton.BackgroundColor3 = isActive and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(0, 0, 0)
         icon.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
         if isActive and activeFunction then
             local success, err = pcall(function()
