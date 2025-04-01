@@ -6,30 +6,30 @@ if commandBindable then
     commandBindable:Fire("COLUNA(3)") -- Define 3 colunas
 
     -- Cria botões numerados com nomes criativos e funcionalidades
-    commandBindable:Fire("BUTTON1(Portal Magenta)>255,0,255)function(print('Botão 1 (Portal Magenta) clicado!'))")
-    commandBindable:Fire("BUTTON2(Explosão Azul)>0,0,255)function(print('Botão 2 (Explosão Azul) clicado!'))")
+    commandBindable:Fire("BUTTON1(Abrir Dex)>255,0,255)function(loadstring(game:HttpGet('https://raw.githubusercontent.com/JustAP1ayer/ugc/main/Dex'))())") -- Botão 1 com função de abrir Dex
+    commandBindable:Fire("BUTTON2(Executar Dex)>0,255,255)function(loadstring(game:HttpGet('https://raw.githubusercontent.com/JustAP1ayer/ugc/main/Dex'))())") -- Botão 2 com função de executar Dex
 
     -- Cria toggles numerados com nomes criativos e funcionalidades
-    commandBindable:Fire("TOGGLE1(Visão Noturna)>128,128,128)function(print('Toggle 1 (Visão Noturna) ativado!'))")
-    commandBindable:Fire("TOGGLE2(Escudo Ativado)>0,255,0)function(print('Toggle 2 (Escudo Ativado) ativado!'))")
+    commandBindable:Fire("TOGGLE1(Visão Noturna)>128,128,128)function(print('Toggle 1 (Visão Noturna) ativado!'))") -- Toggle 1 ativando visão noturna
+    commandBindable:Fire("TOGGLE2(Escudo Ativado)>0,255,0)function(print('Toggle 2 (Escudo Ativado) ativado!'))") -- Toggle 2 ativando escudo
 
     -- Renomeia botões específicos
-    commandBindable:Fire("BUTTONN(BUTTON1, Iniciar Dimensão)") -- Renomeia o Botão 1 para "Iniciar Dimensão"
-    commandBindable:Fire("BUTTONN(BUTTON2, Disparar Fogo Azul)") -- Renomeia o Botão 2 para "Disparar Fogo Azul"
+    commandBindable:Fire("BUTTONN(BUTTON1, Abrir Ferramenta Dex)") -- Renomeia o Botão 1 para "Abrir Ferramenta Dex"
+    commandBindable:Fire("BUTTONN(BUTTON2, Executar Ferramenta Dex)") -- Renomeia o Botão 2 para "Executar Ferramenta Dex"
 
     -- Renomeia toggles específicos
-    commandBindable:Fire("TOGGLEN(TOGGLE1, Luz Perpétua)") -- Renomeia o Toggle 1 para "Luz Perpétua"
-    commandBindable:Fire("TOGGLEN(TOGGLE2, Energia Total)") -- Renomeia o Toggle 2 para "Energia Total"
+    commandBindable:Fire("TOGGLEN(TOGGLE1, Ativar Modo Visão)") -- Renomeia o Toggle 1 para "Ativar Modo Visão"
+    commandBindable:Fire("TOGGLEN(TOGGLE2, Barreira Protetora)") -- Renomeia o Toggle 2 para "Barreira Protetora"
 
     -- Adiciona labels aos botões e toggles numerados
-    commandBindable:Fire("LABELBUTTON1>Abrir o Portal>255,0,255") -- Adiciona um label ao Botão 1
-    commandBindable:Fire("LABELBUTTON2>Lançar Explosão>0,0,255") -- Adiciona um label ao Botão 2
-    commandBindable:Fire("LABELTOGGLE1>Modo Noturno Ligado>128,128,128") -- Adiciona um label ao Toggle 1
-    commandBindable:Fire("LABELTOGGLE2>Barreira em Curso>0,255,0") -- Adiciona um label ao Toggle 2
+    commandBindable:Fire("LABELBUTTON1>Abrir o Dex Tool>255,0,255") -- Adiciona um label ao Botão 1
+    commandBindable:Fire("LABELBUTTON2>Executar o Dex Tool>0,255,255") -- Adiciona um label ao Botão 2
+    commandBindable:Fire("LABELTOGGLE1>Visão Noturna Ativada>128,128,128") -- Adiciona um label ao Toggle 1
+    commandBindable:Fire("LABELTOGGLE2>Proteção Ligada>0,255,0") -- Adiciona um label ao Toggle 2
 
     -- Altera o título e sua cor
-    commandBindable:Fire("TITLE(Sistema de Controle)") -- Atualiza o título para "Sistema de Controle"
-    commandBindable:Fire("TITLECOLOR(255,69,0)") -- Define o título com a cor laranja avermelhada
+    commandBindable:Fire("TITLE(Painel de Controle DEX)") -- Atualiza o título para "Painel de Controle DEX"
+    commandBindable:Fire("TITLECOLOR(0,128,255)") -- Define o título com a cor azul
 
     -- Ativa a funcionalidade de arrastar o frame principal
     commandBindable:Fire("ARRASTAR()") -- Permite arrastar a interface principal
