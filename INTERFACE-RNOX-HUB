@@ -198,10 +198,85 @@ local function addLabelAbove(name, labelText, isToggle, color)
     end
 end
 
+local function createSlider(sliderId, range, color)
+    local minValue, maxValue = range:match("(%d+)/(%d+)")
+    minValue = tonumber(minValue) or 0
+    maxValue = tonumber(maxValue) or 100
+    local sliderColor = color and {color:match("(%d+),(%d+),(%d+)")} or {255, 255, 255}
+
+    local sliderFrame = Instance.new("Frame")
+    sliderFrame.Size = UDim2.new(0.8, 0, 0.1, 0)
+    sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    sliderFrame.BorderSizePixel = 0
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 10)
+    corner.Parent = sliderFrame
+
+    local track = Instance.new("Frame")
+    track.Size = UDim2.new(1, 0, 0.4, 0)
+    track.Position = UDim2.new(0, 0, 0.3, 0)
+    track.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    track.BorderSizePixel = 0
+    local trackCorner = Instance.new("UICorner")
+    trackCorner.CornerRadius = UDim.new(0, 5)
+    trackCorner.Parent = track
+    track.Parent = sliderFrame
+
+    local handle = Instance.new("Frame")
+    handle.Size = UDim2.new(0.05, 0, 1, 0)
+    handle.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
+    handle.BorderSizePixel = 0
+    handle.Position = UDim2.new(0, 0, 0, 0)
+    local handleCorner = Instance.new("UICorner")
+    handleCorner.CornerRadius = UDim.new(1, 0)
+    handleCorner.Parent = handle
+    handle.Parent = track
+
+    local valueLabel = Instance.new("TextLabel")
+    valueLabel.Size = UDim2.new(1, 0, 1, 0)
+    valueLabel.BackgroundTransparency = 1
+    valueLabel.Text = tostring(minValue)
+    valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    valueLabel.Font = Enum.Font.GothamBold
+    valueLabel.TextSize = 14
+    valueLabel.TextXAlignment = Enum.TextXAlignment.Center
+    valueLabel.Parent = handle
+
+    local userInputService = game:GetService("UserInputService")
+    local dragging = false
+
+    handle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+        end
+    end)
+
+    handle.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    userInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local relativePosition = math.clamp((input.Position.X - track.AbsolutePosition.X) / track.AbsoluteSize.X, 0, 1)
+            handle.Position = UDim2.new(relativePosition, 0, 0, 0)
+            local currentValue = math.floor(minValue + (maxValue - minValue) * relativePosition)
+            valueLabel.Text = tostring(currentValue)
+        end
+    end)
+
+    sliderFrame.Parent = scrollingFrame
+    sliders["SLIDER" .. sliderId] = sliderFrame
+end
+
 local function processCommands(command)
     if command:match("^COLUNA%(%d+%)") then
         local columnCount = tonumber(command:match("%((%d+)%)"))
         adjustColumns(columnCount)
+    elseif command:match("^SLIDER(%d+)%(.+%)>[%d,]+$") then
+    local sliderId, range, sliderColor = command:match("^SLIDER(%d+)%((.+)%)>(.+)$")
+    createSlider(sliderId, range, sliderColor)
     elseif command:match("^BUTTON(%d+)%(.+%)>[%d,]+%)function%(.+%)") then
         local buttonId, buttonName, buttonFunction = command:match("^BUTTON(%d+)%((.+)%)>[%d,]+%)function%((.+)%)")
         createButton(buttonId, buttonName, buttonFunction)
