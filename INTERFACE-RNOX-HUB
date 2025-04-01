@@ -32,16 +32,6 @@ title.Font = Enum.Font.GothamBold
 title.TextSize = 30
 title.Parent = frame
 
-local function autoResizeTitle(titleLabel, containerFrame)
-    titleLabel.Size = UDim2.new(1, 0, titleLabel.Size.Y.Scale, titleLabel.Size.Y.Offset)
-    titleLabel.TextScaled = true
-    local uiTextSizeConstraint = Instance.new("UITextSizeConstraint")
-    uiTextSizeConstraint.MaxTextSize = 30
-    uiTextSizeConstraint.Parent = titleLabel
-end
-
-autoResizeTitle(title, frame)
-
 local scrollingFrame = Instance.new("ScrollingFrame")
 scrollingFrame.Size = UDim2.new(0.95, 0, 0.85, 0)
 scrollingFrame.Position = UDim2.new(0.025, 0, 0.12, 0)
