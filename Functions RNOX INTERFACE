@@ -1,27 +1,39 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/INTERFACE-RNOX-HUB"))() local commandBindable = game.ReplicatedStorage:FindFirstChild("CommandBindable")
 if commandBindable then
-    -- Configuração de colunas
-    commandBindable:Fire("CL1") -- Define o layout com 1 coluna
-    commandBindable:Fire("CL2") -- Define o layout com 2 colunas
-    commandBindable:Fire("CL2") -- Define o layout com 3 colunas
+    -- Configura o número de colunas no layout da interface
+    commandBindable:Fire("COLUNA(1)") -- Define 1 coluna
+    commandBindable:Fire("COLUNA(2)") -- Define 2 colunas
+    commandBindable:Fire("COLUNA(3)") -- Define 3 colunas
 
-    -- Criação de botões e toggles com funcionalidades
-    commandBindable:Fire("A1>[loadstring(game:HttpGet('https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/PYRO0%251%2519157190', true))()]") -- Cria o botão 1 com script via URL
-    commandBindable:Fire("A2>[print('Botão 2 clicado!')]") -- Cria o botão 2 com função de log
-    commandBindable:Fire("T1>[print('Toggle 1 ativado!')]") -- Cria o Toggle 1 com função de log
+    -- Cria botões numerados com nomes criativos e funcionalidades
+    commandBindable:Fire("BUTTON1(Portal Magenta)>255,0,255)function(print('Botão 1 (Portal Magenta) clicado!'))")
+    commandBindable:Fire("BUTTON2(Explosão Azul)>0,0,255)function(print('Botão 2 (Explosão Azul) clicado!'))")
 
-    -- Renomeação de botões e toggles
-    commandBindable:Fire("A1N(Botão Especial)") -- Renomeia o botão 1 para "Botão Especial"
-    commandBindable:Fire("A2N(Botão de Teste)") -- Renomeia o botão 2 para "Botão de Teste"
-    commandBindable:Fire("T1N(Toggle Principal)") -- Renomeia o Toggle 1 para "Toggle Principal"
+    -- Cria toggles numerados com nomes criativos e funcionalidades
+    commandBindable:Fire("TOGGLE1(Visão Noturna)>128,128,128)function(print('Toggle 1 (Visão Noturna) ativado!'))")
+    commandBindable:Fire("TOGGLE2(Escudo Ativado)>0,255,0)function(print('Toggle 2 (Escudo Ativado) ativado!'))")
 
-    -- Adição de rótulos acima dos botões e toggles
-    commandBindable:Fire("LBT1>(Rótulo para Toggle 1)") -- Adiciona "Rótulo para Toggle 1" acima do Toggle 1
-    commandBindable:Fire("LBA2>(Rótulo para Botão 2)") -- Adiciona "Rótulo para Botão 2" acima do Botão 2
+    -- Renomeia botões específicos
+    commandBindable:Fire("BUTTONN(BUTTON1, Iniciar Dimensão)") -- Renomeia o Botão 1 para "Iniciar Dimensão"
+    commandBindable:Fire("BUTTONN(BUTTON2, Disparar Fogo Azul)") -- Renomeia o Botão 2 para "Disparar Fogo Azul"
 
-    -- Configurações gerais do painel
-    commandBindable:Fire("A0") -- Torna o painel arrastável
-    commandBindable:Fire("C1=RNOX-HUB") -- Atualiza o título para "Painel Atualizado"
-    commandBindable:Fire("C2=170,0,0") -- Altera a cor do título para verde
-    commandBindable:Fire("C4()") -- Adiciona bordas arredondadas ao painel
+    -- Renomeia toggles específicos
+    commandBindable:Fire("TOGGLEN(TOGGLE1, Luz Perpétua)") -- Renomeia o Toggle 1 para "Luz Perpétua"
+    commandBindable:Fire("TOGGLEN(TOGGLE2, Energia Total)") -- Renomeia o Toggle 2 para "Energia Total"
+
+    -- Adiciona labels aos botões e toggles numerados
+    commandBindable:Fire("LABELBUTTON1>Abrir o Portal>255,0,255") -- Adiciona um label ao Botão 1
+    commandBindable:Fire("LABELBUTTON2>Lançar Explosão>0,0,255") -- Adiciona um label ao Botão 2
+    commandBindable:Fire("LABELTOGGLE1>Modo Noturno Ligado>128,128,128") -- Adiciona um label ao Toggle 1
+    commandBindable:Fire("LABELTOGGLE2>Barreira em Curso>0,255,0") -- Adiciona um label ao Toggle 2
+
+    -- Altera o título e sua cor
+    commandBindable:Fire("TITLE(Sistema de Controle)") -- Atualiza o título para "Sistema de Controle"
+    commandBindable:Fire("TITLECOLOR(255,69,0)") -- Define o título com a cor laranja avermelhada
+
+    -- Ativa a funcionalidade de arrastar o frame principal
+    commandBindable:Fire("ARRASTAR()") -- Permite arrastar a interface principal
+
+    -- Aplica bordas arredondadas na parte inferior
+    commandBindable:Fire("BORDA()") -- Adiciona bordas arredondadas inferiores ao frame principal
 end
