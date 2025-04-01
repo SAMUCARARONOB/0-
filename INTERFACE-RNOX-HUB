@@ -198,7 +198,7 @@ local function addLabelAbove(name, labelText, isToggle, color)
     end
 end
 
-local function createSlider(sliderId, range, color)
+local function createSlider(sliderId, range, color, sliderFunction)
     local minValue, maxValue = range:match("(%d+)/(%d+)")
     minValue = tonumber(minValue) or 0
     maxValue = tonumber(maxValue) or 100
@@ -232,18 +232,34 @@ local function createSlider(sliderId, range, color)
     handleCorner.Parent = handle
     handle.Parent = track
 
-    local valueLabel = Instance.new("TextLabel")
-    valueLabel.Size = UDim2.new(1, 0, 1, 0)
-    valueLabel.BackgroundTransparency = 1
-    valueLabel.Text = tostring(minValue)
-    valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    valueLabel.Font = Enum.Font.GothamBold
-    valueLabel.TextSize = 14
-    valueLabel.TextXAlignment = Enum.TextXAlignment.Center
-    valueLabel.Parent = handle
+    local valueTextBox = Instance.new("TextBox")
+    valueTextBox.Size = UDim2.new(1, 0, 1, 0)
+    valueTextBox.BackgroundTransparency = 1
+    valueTextBox.Text = tostring(minValue)
+    valueTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    valueTextBox.Font = Enum.Font.GothamBold
+    valueTextBox.TextSize = 14
+    valueTextBox.TextXAlignment = Enum.TextXAlignment.Center
+    valueTextBox.ClearTextOnFocus = false
+    valueTextBox.Parent = handle
 
     local userInputService = game:GetService("UserInputService")
     local dragging = false
+
+    local function updateSliderValue(value)
+        local currentValue = math.clamp(value, minValue, maxValue)
+        valueTextBox.Text = tostring(currentValue)
+        local relativePosition = (currentValue - minValue) / (maxValue - minValue)
+        handle.Position = UDim2.new(relativePosition, 0, 0, 0)
+        if sliderFunction then
+            local success, err = pcall(function()
+                loadstring(sliderFunction:gsub("value", tostring(currentValue)))()
+            end)
+            if not success then
+                warn("Erro ao executar a função do slider: " .. err)
+            end
+        end
+    end
 
     handle.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -260,9 +276,13 @@ local function createSlider(sliderId, range, color)
     userInputService.InputChanged:Connect(function(input)
         if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
             local relativePosition = math.clamp((input.Position.X - track.AbsolutePosition.X) / track.AbsoluteSize.X, 0, 1)
-            handle.Position = UDim2.new(relativePosition, 0, 0, 0)
-            local currentValue = math.floor(minValue + (maxValue - minValue) * relativePosition)
-            valueLabel.Text = tostring(currentValue)
+            updateSliderValue(math.floor(minValue + (maxValue - minValue) * relativePosition))
+        end
+    end)
+
+    valueTextBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            updateSliderValue(tonumber(valueTextBox.Text) or minValue)
         end
     end)
 
@@ -270,13 +290,30 @@ local function createSlider(sliderId, range, color)
     sliders["SLIDER" .. sliderId] = sliderFrame
 end
 
+local function enableSliderValueEditing(valueTextBox, handle, track, minValue, maxValue)
+    valueTextBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            local enteredValue = tonumber(valueTextBox.Text)
+            if enteredValue then
+                enteredValue = math.clamp(enteredValue, minValue, maxValue)
+                valueTextBox.Text = tostring(enteredValue)
+                local relativePosition = (enteredValue - minValue) / (maxValue - minValue)
+                handle.Position = UDim2.new(relativePosition, 0, 0, 0)
+            else
+                valueTextBox.Text = tostring(minValue)
+                handle.Position = UDim2.new(0, 0, 0, 0)
+            end
+        end
+    end)
+end
+
 local function processCommands(command)
     if command:match("^COLUNA%(%d+%)") then
         local columnCount = tonumber(command:match("%((%d+)%)"))
         adjustColumns(columnCount)
-    elseif command:match("^SLIDER(%d+)%(.+%)>[%d,]+$") then
-    local sliderId, range, sliderColor = command:match("^SLIDER(%d+)%((.+)%)>(.+)$")
-    createSlider(sliderId, range, sliderColor)
+    elseif command:match("^SLIDER(%d+)%(.+%)>[%d,]+,function%(.+%)$") then
+    local sliderId, range, sliderColor, sliderFunction = command:match("^SLIDER(%d+)%((.+)%)>(.+),function%((.+)%)")
+    createSlider(sliderId, range, sliderColor, sliderFunction)
     elseif command:match("^BUTTON(%d+)%(.+%)>[%d,]+%)function%(.+%)") then
         local buttonId, buttonName, buttonFunction = command:match("^BUTTON(%d+)%((.+)%)>[%d,]+%)function%((.+)%)")
         createButton(buttonId, buttonName, buttonFunction)
