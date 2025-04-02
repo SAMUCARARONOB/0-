@@ -202,7 +202,7 @@ local function createSlider(sliderId, range, color, sliderFunction)
     local minValue, maxValue = range:match("(%d+)/(%d+)")
     minValue = tonumber(minValue) or 0
     maxValue = tonumber(maxValue) or 100
-    local initialValue = (maxValue - minValue) / 2 -- Define o valor inicial como metade do intervalo
+    local initialValue = minValue
     local sliderColor = color and {color:match("(%d+),(%d+),(%d+)")} or {255, 255, 255}
 
     local sliderFrame = Instance.new("Frame")
@@ -215,23 +215,33 @@ local function createSlider(sliderId, range, color, sliderFunction)
 
     local track = Instance.new("Frame")
     track.Size = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.4, 0)
-    track.Position = UDim2.new(0, 0, 0.3, 0)
-    track.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
+    track.Position = UDim2.new(0, 0, 0.5, 0)
+    track.AnchorPoint = Vector2.new(0, 0.5)
     track.BorderSizePixel = 0
     local trackCorner = Instance.new("UICorner")
     trackCorner.CornerRadius = UDim.new(0, 5)
     trackCorner.Parent = track
+
+    local trackTexture = Instance.new("ImageLabel")
+    trackTexture.Size = UDim2.new(1, 0, 1, 0)
+    trackTexture.Position = UDim2.new(0, 0, 0, 0)
+    trackTexture.Image = "rbxassetid://14293471713"
+    trackTexture.ImageColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
+    trackTexture.BackgroundTransparency = 0.3
+    trackTexture.BorderSizePixel = 0
+    trackTexture.Parent = track
     track.Parent = sliderFrame
 
     local handle = Instance.new("Frame")
-    handle.Size = UDim2.new(0.05, 0, 1, 0)
+    handle.Size = UDim2.new(0.05, 0, track.Size.Y.Scale, 0)
+    handle.Position = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.5, 0)
+    handle.AnchorPoint = Vector2.new(0.5, 0.5)
     handle.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
     handle.BorderSizePixel = 0
-    handle.Position = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0, 0)
     local handleCorner = Instance.new("UICorner")
     handleCorner.CornerRadius = UDim.new(1, 0)
     handleCorner.Parent = handle
-    handle.Parent = track
+    handle.Parent = sliderFrame
 
     local valueTextBox = Instance.new("TextBox")
     valueTextBox.Size = UDim2.new(0.2, 0, 0.4, 0)
@@ -251,10 +261,11 @@ local function createSlider(sliderId, range, color, sliderFunction)
     local dragging = false
 
     local function updateSliderBar(value)
-        local relativeWidth = (value - minValue) / (maxValue - minValue)
+        local relativeWidth = math.clamp((value - minValue) / (maxValue - minValue), 0, 1)
         track.Size = UDim2.new(relativeWidth, 0, 0.4, 0)
-        handle.Position = UDim2.new(relativeWidth, 0, 0, 0)
+        handle.Position = UDim2.new(relativeWidth, 0, 0.5, 0)
         valueTextBox.Text = tostring(value)
+        trackTexture.ImageColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
         if sliderFunction then
             local success, err = pcall(function()
                 loadstring(sliderFunction:gsub("value", tostring(value)))()
@@ -279,7 +290,7 @@ local function createSlider(sliderId, range, color, sliderFunction)
 
     userInputService.InputChanged:Connect(function(input)
         if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local relativePosition = math.clamp((input.Position.X - track.AbsolutePosition.X) / track.AbsoluteSize.X, 0, 1)
+            local relativePosition = math.clamp((input.Position.X - sliderFrame.AbsolutePosition.X) / sliderFrame.AbsoluteSize.X, 0, 1)
             local currentValue = math.floor(minValue + (maxValue - minValue) * relativePosition)
             updateSliderBar(currentValue)
         end
