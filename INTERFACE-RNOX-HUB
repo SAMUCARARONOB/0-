@@ -258,14 +258,25 @@ local function createSlider(sliderId, range, color, sliderFunction)
     valueTextBox.Parent = sliderFrame
 
     local userInputService = game:GetService("UserInputService")
+    local tweenService = game:GetService("TweenService")
     local dragging = false
+
+    local function animateSliderBarColor(bar, color)
+        local colorDecrease = Color3.fromRGB(
+            math.floor(color[1] * 0.65),
+            math.floor(color[2] * 0.65),
+            math.floor(color[3] * 0.65)
+        )
+        local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+        local tween = tweenService:Create(bar, tweenInfo, {ImageColor3 = colorDecrease})
+        tween:Play()
+    end
 
     local function updateSliderBar(value)
         local relativeWidth = math.clamp((value - minValue) / (maxValue - minValue), 0, 1)
         track.Size = UDim2.new(relativeWidth, 0, 0.4, 0)
         handle.Position = UDim2.new(relativeWidth, 0, 0.5, 0)
         valueTextBox.Text = tostring(value)
-        trackTexture.ImageColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
         if sliderFunction then
             local success, err = pcall(function()
                 loadstring(sliderFunction:gsub("value", tostring(value)))()
@@ -308,6 +319,7 @@ local function createSlider(sliderId, range, color, sliderFunction)
         end
     end)
 
+    animateSliderBarColor(trackTexture, sliderColor)
     updateSliderBar(initialValue)
     sliderFrame.Parent = scrollingFrame
     sliders["SLIDER" .. sliderId] = sliderFrame
