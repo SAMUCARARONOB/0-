@@ -202,7 +202,7 @@ local function createSlider(sliderId, range, color, sliderFunction)
     local minValue, maxValue = range:match("(%d+)/(%d+)")
     minValue = tonumber(minValue) or 0
     maxValue = tonumber(maxValue) or 100
-    local initialValue = 50
+    local initialValue = (maxValue - minValue) / 2 -- Define o valor inicial como metade do intervalo
     local sliderColor = color and {color:match("(%d+),(%d+),(%d+)")} or {255, 255, 255}
 
     local sliderFrame = Instance.new("Frame")
@@ -214,7 +214,7 @@ local function createSlider(sliderId, range, color, sliderFunction)
     corner.Parent = sliderFrame
 
     local track = Instance.new("Frame")
-    track.Size = UDim2.new(0, 0, 0.4, 0)
+    track.Size = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.4, 0)
     track.Position = UDim2.new(0, 0, 0.3, 0)
     track.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
     track.BorderSizePixel = 0
@@ -227,7 +227,7 @@ local function createSlider(sliderId, range, color, sliderFunction)
     handle.Size = UDim2.new(0.05, 0, 1, 0)
     handle.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
     handle.BorderSizePixel = 0
-    handle.Position = UDim2.new(0, 0, 0, 0)
+    handle.Position = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0, 0)
     local handleCorner = Instance.new("UICorner")
     handleCorner.CornerRadius = UDim.new(1, 0)
     handleCorner.Parent = handle
@@ -282,13 +282,6 @@ local function createSlider(sliderId, range, color, sliderFunction)
             local relativePosition = math.clamp((input.Position.X - track.AbsolutePosition.X) / track.AbsoluteSize.X, 0, 1)
             local currentValue = math.floor(minValue + (maxValue - minValue) * relativePosition)
             updateSliderBar(currentValue)
-        end
-    end)
-
-    track.Active = true
-    track.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            valueTextBox:CaptureFocus()
         end
     end)
 
