@@ -1,39 +1,43 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/INTERFACE-RNOX-HUB"))() local commandBindable = game.ReplicatedStorage:FindFirstChild("CommandBindable")
 if commandBindable then
     -- Configura o número de colunas no layout da interface
-    commandBindable:Fire("COLUNA(1)") -- Define 1 coluna
-    commandBindable:Fire("COLUNA(2)") -- Define 2 colunas
-    commandBindable:Fire("COLUNA(3)") -- Define 3 colunas
+    commandBindable:Fire("COLUNA(1)")
+    commandBindable:Fire("COLUNA(2)")
+    commandBindable:Fire("COLUNA(2)")
 
-    -- Cria botões numerados com nomes criativos e funcionalidades
-    commandBindable:Fire("BUTTON1(Abrir Dex)>255,0,255)function(loadstring(game:HttpGet('https://raw.githubusercontent.com/JustAP1ayer/ugc/main/Dex'))())") -- Botão 1 com função de abrir Dex
-    commandBindable:Fire("BUTTON2(Executar Dex)>0,255,255)function(loadstring(game:HttpGet('https://raw.githubusercontent.com/JustAP1ayer/ugc/main/Dex'))())") -- Botão 2 com função de executar Dex
+    -- Cria botões numerados com funcionalidades
+    commandBindable:Fire("BUTTON1(Abrir Dex)>255,0,255)function(loadstring(game:HttpGet('https://raw.githubusercontent.com/JustAP1ayer/ugc/main/Dex'))())")
+    commandBindable:Fire("BUTTON2(Executar Dex)>0,255,255)function(loadstring(game:HttpGet('https://raw.githubusercontent.com/JustAP1ayer/ugc/main/Dex'))())")
 
-    -- Cria toggles numerados com nomes criativos e funcionalidades
-    commandBindable:Fire("TOGGLE1(Visão Noturna)>128,128,128)function(print('Toggle 1 (Visão Noturna) ativado!'))") -- Toggle 1 ativando visão noturna
-    commandBindable:Fire("TOGGLE2(Escudo Ativado)>0,255,0)function(print('Toggle 2 (Escudo Ativado) ativado!'))") -- Toggle 2 ativando escudo
+    -- Cria toggles numerados com funcionalidades
+    commandBindable:Fire("TOGGLE1(Visão Noturna)>128,128,128)function(print('Toggle 1 (Visão Noturna) ativado!'))")
+    commandBindable:Fire("TOGGLE2(Escudo Ativado)>0,255,0)function(print('Toggle 2 (Escudo Ativado) ativado!'))")
+
+    -- Cria sliders numerados com funcionalidades e cor personalizada
+    commandBindable:Fire("SLIDER1(0/100)>255,0,255,function(game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value)")
+    commandBindable:Fire("SLIDER2(0/100)>0,255,255,function(game.Players.LocalPlayer.Character.Humanoid.JumpPower = value)")
 
     -- Renomeia botões específicos
-    commandBindable:Fire("BUTTONN(BUTTON1, Abrir Ferramenta Dex)") -- Renomeia o Botão 1 para "Abrir Ferramenta Dex"
-    commandBindable:Fire("BUTTONN(BUTTON2, Executar Ferramenta Dex)") -- Renomeia o Botão 2 para "Executar Ferramenta Dex"
+    commandBindable:Fire("BUTTONN(BUTTON1, Abrir Ferramenta Dex)")
+    commandBindable:Fire("BUTTONN(BUTTON2, Executar Ferramenta Dex)")
 
     -- Renomeia toggles específicos
-    commandBindable:Fire("TOGGLEN(TOGGLE1, Ativar Modo Visão)") -- Renomeia o Toggle 1 para "Ativar Modo Visão"
-    commandBindable:Fire("TOGGLEN(TOGGLE2, Barreira Protetora)") -- Renomeia o Toggle 2 para "Barreira Protetora"
+    commandBindable:Fire("TOGGLEN(TOGGLE1, Ativar Modo Visão)")
+    commandBindable:Fire("TOGGLEN(TOGGLE2, Barreira Protetora)")
 
     -- Adiciona labels aos botões e toggles numerados
-    commandBindable:Fire("LABELBUTTON1>Abrir o Dex Tool>255,0,255") -- Adiciona um label ao Botão 1
-    commandBindable:Fire("LABELBUTTON2>Executar o Dex Tool>0,255,255") -- Adiciona um label ao Botão 2
-    commandBindable:Fire("LABELTOGGLE1>Visão Noturna Ativada>128,128,128") -- Adiciona um label ao Toggle 1
-    commandBindable:Fire("LABELTOGGLE2>Proteção Ligada>0,255,0") -- Adiciona um label ao Toggle 2
+    commandBindable:Fire("LABELBUTTON1>Abrir o Dex Tool>255,0,255")
+    commandBindable:Fire("LABELBUTTON2>Executar o Dex Tool>0,255,255")
+    commandBindable:Fire("LABELTOGGLE1>Visão Noturna Ativada>128,128,128")
+    commandBindable:Fire("LABELTOGGLE2>Proteção Ligada>0,255,0")
 
-    -- Altera o título e sua cor
-    commandBindable:Fire("TITLE(Painel de Controle DEX)") -- Atualiza o título para "Painel de Controle DEX"
-    commandBindable:Fire("TITLECOLOR(0,128,255)") -- Define o título com a cor azul
+    -- Altera o título da interface e sua cor
+    commandBindable:Fire("TITLE(Painel de Controle Atualizado)")
+    commandBindable:Fire("TITLECOLOR(0,128,255)")
 
     -- Ativa a funcionalidade de arrastar o frame principal
-    commandBindable:Fire("ARRASTAR()") -- Permite arrastar a interface principal
+    commandBindable:Fire("ARRASTAR()")
 
-    -- Aplica bordas arredondadas na parte inferior
-    commandBindable:Fire("BORDA()") -- Adiciona bordas arredondadas inferiores ao frame principal
+    -- Aplica bordas arredondadas na interface principal
+    commandBindable:Fire("BORDA()")
 end
