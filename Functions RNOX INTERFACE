@@ -14,322 +14,309 @@ local Interface = {}
 
 -- Inicialização principal da interface
 function Interface:CreateMainUI()
-local tweenService = game:GetService("TweenService")
-local gui = Instance.new("ScreenGui")
-gui.Parent = game.Players.LocalPlayer.PlayerGui
-gui.ResetOnSpawn = false
+    local gui = Instance.new("ScreenGui")
+    gui.Parent = game.Players.LocalPlayer.PlayerGui
+    gui.ResetOnSpawn = false
 
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 0, 0, 0)
-frame.AnchorPoint = Vector2.new(0.5, 0.5)
-frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-frame.BackgroundTransparency = 0.1
-frame.BorderSizePixel = 0
-frame.Parent = gui
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 0, 0, 0)
+    frame.AnchorPoint = Vector2.new(0.5, 0.5)
+    frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    frame.BackgroundTransparency = 0.1
+    frame.BorderSizePixel = 0
+    frame.Parent = gui
 
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0.1, 0)
-title.Position = UDim2.new(0, 0, 0, 0)
-title.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-title.BorderSizePixel = 0
-title.Text = "PAINEL"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Font = Enum.Font.GothamBold
-title.TextSize = 30
-title.Parent = frame
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0.1, 0)
+    title.Position = UDim2.new(0, 0, 0, 0)
+    title.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    title.BorderSizePixel = 0
+    title.Text = "PAINEL"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 30
+    title.TextWrapped = true
+    title.Parent = frame
 
-local scrollingFrame = Instance.new("ScrollingFrame")
-scrollingFrame.Size = UDim2.new(0.95, 0, 0.85, 0)
-scrollingFrame.Position = UDim2.new(0.025, 0, 0.12, 0)
-scrollingFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
-scrollingFrame.ScrollBarThickness = 10
-scrollingFrame.BackgroundColor3 = Color3.fromRGB(17, 17, 17)
-scrollingFrame.BorderSizePixel = 0
-scrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
-scrollingFrame.Parent = frame
+    local scrollingFrame = Instance.new("ScrollingFrame")
+    scrollingFrame.Size = UDim2.new(0.95, 0, 0.85, 0)
+    scrollingFrame.Position = UDim2.new(0.025, 0, 0.12, 0)
+    scrollingFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
+    scrollingFrame.ScrollBarThickness = 10
+    scrollingFrame.BackgroundColor3 = Color3.fromRGB(17, 17, 17)
+    scrollingFrame.BorderSizePixel = 0
+    scrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    scrollingFrame.Parent = frame
 
-local layout = Instance.new("UIGridLayout")
-layout.CellPadding = UDim2.new(0.02, 0, 0.06, 0)
-layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-layout.VerticalAlignment = Enum.VerticalAlignment.Top
-layout.Parent = scrollingFrame
+    local layout = Instance.new("UIGridLayout")
+    layout.CellPadding = UDim2.new(0.02, 0, 0.06, 0)
+    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    layout.VerticalAlignment = Enum.VerticalAlignment.Top
+    layout.Parent = scrollingFrame
 
-local hideButton = Instance.new("ImageButton")
-hideButton.Size = UDim2.new(0.05, 0, 0.05, 0)
-hideButton.Position = UDim2.new(0.95, -10, 0, 10)
-hideButton.Image = "rbxassetid://6035047409"
-hideButton.BackgroundTransparency = 1
-hideButton.Parent = frame
+    local hideButton = Instance.new("ImageButton")
+    hideButton.Size = UDim2.new(0.05, 0, 0.05, 0)
+    hideButton.Position = UDim2.new(0.95, -10, 0, 10)
+    hideButton.Image = "rbxassetid://6035047409"
+    hideButton.BackgroundTransparency = 1
+    hideButton.Parent = frame
 
-local ballButton = Instance.new("ImageButton")
-ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
-ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
-ballButton.Position = UDim2.new(0.1, 0, 0.9, 0)
-ballButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-ballButton.Image = "rbxassetid://6337069410"
-ballButton.BackgroundTransparency = 0
-ballButton.Visible = false
-ballButton.Active = true
-ballButton.Draggable = true
-ballButton.Parent = gui
-
-local ballCorner = Instance.new("UICorner")
-ballCorner.CornerRadius = UDim.new(0.5, 0)
-ballCorner.Parent = ballButton
-
-local buttons = {}
-local toggles = {}
-
-local function animateFrameIn()
-    frame.Visible = true
-    local tweenIn = tweenService:Create(
-        frame,
-        TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-        {Size = UDim2.new(0.8, 0, 1.1, 0)}
-    )
-    tweenIn:Play()
-end
-
-local function animateFrameOut()
-    local tweenOut = tweenService:Create(
-        frame,
-        TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-        {Size = UDim2.new(0, 0, 0, 0)}
-    )
-    tweenOut:Play()
-    tweenOut.Completed:Connect(function()
-        frame.Visible = false
-        ballButton.Visible = true
-    end)
-end
-
-hideButton.MouseButton1Click:Connect(function()
-    animateFrameOut()
-end)
-
-ballButton.MouseButton1Click:Connect(function()
+    local ballButton = Instance.new("ImageButton")
+    ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
+    ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
+    ballButton.Position = UDim2.new(0.1, 0, 0.9, 0)
+    ballButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    ballButton.Image = "rbxassetid://6337069410"
+    ballButton.BackgroundTransparency = 0
     ballButton.Visible = false
-    animateFrameIn()
-end)
+    ballButton.Active = true
+    ballButton.Draggable = true
+    ballButton.Parent = gui
 
-animateFrameIn()
+    local ballCorner = Instance.new("UICorner")
+    ballCorner.CornerRadius = UDim.new(0.5, 0)
+    ballCorner.Parent = ballButton
 
-local function adjustColumns(columnCount)
-    if columnCount < 1 then return end
-    layout.CellSize = UDim2.new(1 / columnCount - 0.02, 0, 0.12, 0)
-end
+    local buttons = {}
+    local toggles = {}
+    local sliders = {}
 
-local function createButton(buttonId, name, buttonFunction)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0.2, 0, 0.1, 0)
-    button.Text = name
-    button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.Font = Enum.Font.Gotham
-    button.TextSize = 18
-    button.TextWrapped = true
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 10)
-    corner.Parent = button
-    button.MouseButton1Click:Connect(function()
-        local success, err = pcall(function()
-            loadstring(buttonFunction)()
-        end)
-        if not success then
-            warn("Erro ao executar a função do botão " .. name .. ": " .. err)
-        end
-    end)
-    button.Parent = scrollingFrame
-    buttons["BUTTON" .. buttonId] = button
-end
-
-local function createToggle(toggleId, name, activeFunction)
-    local toggleButton = Instance.new("TextButton")
-    toggleButton.Size = UDim2.new(0.2, 0, 0.1, 0)
-    toggleButton.Text = name
-    toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggleButton.Font = Enum.Font.GothamBold
-    toggleButton.TextSize = 14
-    toggleButton.TextWrapped = true
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 10)
-    corner.Parent = toggleButton
-    local icon = Instance.new("ImageButton")
-    icon.Size = UDim2.new(0.1, 0, 0.8, 0)
-    icon.Position = UDim2.new(0.88, 0, 0.1, 0)
-    icon.BackgroundTransparency = 1
-    icon.Image = "rbxassetid://14293471713"
-    icon.ImageColor3 = Color3.fromRGB(255, 0, 0)
-    icon.Parent = toggleButton
-    local isActive = false
-    icon.MouseButton1Click:Connect(function()
-        isActive = not isActive
-        toggleButton.BackgroundColor3 = isActive and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(0, 0, 0)
-        icon.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-        if isActive and activeFunction then
-            local success, err = pcall(function()
-                loadstring(activeFunction)()
-            end)
-            if not success then
-                warn("Erro ao executar função do toggle " .. name .. ": " .. err)
-            end
-        end
-    end)
-    toggleButton.Parent = scrollingFrame
-    toggles["TOGGLE" .. toggleId] = toggleButton
-end
-
-local function addLabelAbove(name, labelText, isToggle, color)
-    local element = isToggle and toggles[name] or buttons[name]
-    if element then
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, 0, 0.3, 0)
-        label.Position = UDim2.new(0, 0, -0.4, 0)
-        label.BackgroundTransparency = 1
-        label.Text = labelText
-        if color then
-            local r, g, b = color:match("(%d+).(%d+).(%d+)")
-            label.TextColor3 = Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b))
-        else
-            label.TextColor3 = Color3.fromRGB(255, 255, 255)
-        end
-        label.Font = Enum.Font.Gotham
-        label.TextSize = 14
-        label.TextWrapped = true
-        label.Parent = element
-        scrollingFrame.CanvasSize = UDim2.new(0, 0, scrollingFrame.CanvasSize.Y.Offset + label.Size.Y.Offset, 0)
-    else
-        warn("O botão ou toggle com o nome " .. name .. " não existe.")
-    end
-end
-
-local function createSlider(sliderId, range, color, sliderFunction)
-    local minValue, maxValue = range:match("(%d+)/(%d+)")
-    minValue = tonumber(minValue) or 0
-    maxValue = tonumber(maxValue) or 100
-    local initialValue = minValue
-    local sliderColor = color and {color:match("(%d+),(%d+),(%d+)")} or {255, 255, 255}
-
-    local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(0.8, 0, 0.1, 0)
-    sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    sliderFrame.BorderSizePixel = 0
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 10)
-    corner.Parent = sliderFrame
-
-    local track = Instance.new("Frame")
-    track.Size = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.4, 0)
-    track.Position = UDim2.new(0, 0, 0.5, 0)
-    track.AnchorPoint = Vector2.new(0, 0.5)
-    track.BorderSizePixel = 0
-    local trackCorner = Instance.new("UICorner")
-    trackCorner.CornerRadius = UDim.new(0, 5)
-    trackCorner.Parent = track
-
-    local trackTexture = Instance.new("ImageLabel")
-    trackTexture.Size = UDim2.new(1, 0, 1, 0)
-    trackTexture.Position = UDim2.new(0, 0, 0, 0)
-    trackTexture.Image = "rbxassetid://14293471713"
-    trackTexture.ImageColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
-    trackTexture.BackgroundTransparency = 0.3
-    trackTexture.BorderSizePixel = 0
-    trackTexture.Parent = track
-    track.Parent = sliderFrame
-
-    local handle = Instance.new("Frame")
-    handle.Size = UDim2.new(0.05, 0, track.Size.Y.Scale, 0)
-    handle.Position = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.5, 0)
-    handle.AnchorPoint = Vector2.new(0.5, 0.5)
-    handle.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
-    handle.BorderSizePixel = 0
-    local handleCorner = Instance.new("UICorner")
-    handleCorner.CornerRadius = UDim.new(1, 0)
-    handleCorner.Parent = handle
-    handle.Parent = sliderFrame
-
-    local valueTextBox = Instance.new("TextBox")
-    valueTextBox.Size = UDim2.new(0.2, 0, 0.4, 0)
-    valueTextBox.AnchorPoint = Vector2.new(0.5, 0.5)
-    valueTextBox.Position = UDim2.new(0.5, 0, 0.5, 0)
-    valueTextBox.BackgroundTransparency = 1
-    valueTextBox.Text = tostring(initialValue)
-    valueTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    valueTextBox.Font = Enum.Font.GothamBold
-    valueTextBox.TextSize = 14
-    valueTextBox.TextXAlignment = Enum.TextXAlignment.Center
-    valueTextBox.TextYAlignment = Enum.TextYAlignment.Center
-    valueTextBox.ClearTextOnFocus = false
-    valueTextBox.Parent = sliderFrame
-
-    local userInputService = game:GetService("UserInputService")
-    local tweenService = game:GetService("TweenService")
-    local dragging = false
-
-    local function animateSliderBarColor(bar, color)
-        local colorDecrease = Color3.fromRGB(
-            math.floor(color[1] * 0.65),
-            math.floor(color[2] * 0.65),
-            math.floor(color[3] * 0.65)
+    local function animateFrameIn()
+        frame.Visible = true
+        local tweenIn = tweenService:Create(
+            frame,
+            TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+            {Size = UDim2.new(0.8, 0, 1.1, 0)}
         )
-        local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
-        local tween = tweenService:Create(bar, tweenInfo, {ImageColor3 = colorDecrease})
-        tween:Play()
+        tweenIn:Play()
     end
 
-    local function updateSliderBar(value)
-        local relativeWidth = math.clamp((value - minValue) / (maxValue - minValue), 0, 1)
-        track.Size = UDim2.new(relativeWidth, 0, 0.4, 0)
-        handle.Position = UDim2.new(relativeWidth, 0, 0.5, 0)
-        valueTextBox.Text = tostring(value)
-        if sliderFunction then
+    local function animateFrameOut()
+        local tweenOut = tweenService:Create(
+            frame,
+            TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+            {Size = UDim2.new(0, 0, 0, 0)}
+        )
+        tweenOut:Play()
+        tweenOut.Completed:Connect(function()
+            frame.Visible = false
+            ballButton.Visible = true
+        end)
+    end
+
+    hideButton.MouseButton1Click:Connect(function()
+        animateFrameOut()
+    end)
+
+    ballButton.MouseButton1Click:Connect(function()
+        ballButton.Visible = false
+        animateFrameIn()
+    end)
+
+    animateFrameIn()
+
+    local function adjustColumns(columnCount)
+        if columnCount < 1 then return end
+        layout.CellSize = UDim2.new(1 / columnCount - 0.02, 0, 0.12, 0)
+    end
+
+    local function createButton(buttonId, name, buttonFunction)
+        local button = Instance.new("TextButton")
+        button.Size = UDim2.new(0.2, 0, 0.1, 0)
+        button.Text = name
+        button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+        button.Font = Enum.Font.Gotham
+        button.TextSize = 18
+        button.TextWrapped = true
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, 10)
+        corner.Parent = button
+        button.MouseButton1Click:Connect(function()
             local success, err = pcall(function()
-                loadstring(sliderFunction:gsub("value", tostring(value)))()
+                loadstring(buttonFunction)()
             end)
             if not success then
-                warn("Erro ao executar a função do slider: " .. err)
+                warn("Erro ao executar a função do botão " .. name .. ": " .. err)
             end
+        end)
+        button.Parent = scrollingFrame
+        buttons["BUTTON" .. buttonId] = button
+    end
+
+    local function createToggle(toggleId, name, activeFunction)
+        local toggleButton = Instance.new("TextButton")
+        toggleButton.Size = UDim2.new(0.2, 0, 0.1, 0)
+        toggleButton.Text = name
+        toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        toggleButton.Font = Enum.Font.GothamBold
+        toggleButton.TextSize = 14
+        toggleButton.TextWrapped = true
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, 10)
+        corner.Parent = toggleButton
+        local icon = Instance.new("ImageButton")
+        icon.Size = UDim2.new(0.1, 0, 0.8, 0)
+        icon.Position = UDim2.new(0.88, 0, 0.1, 0)
+        icon.BackgroundTransparency = 1
+        icon.Image = "rbxassetid://14293471713"
+        icon.ImageColor3 = Color3.fromRGB(255, 0, 0)
+        icon.Parent = toggleButton
+        local isActive = false
+        icon.MouseButton1Click:Connect(function()
+            isActive = not isActive
+            toggleButton.BackgroundColor3 = isActive and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(0, 0, 0)
+            icon.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            if isActive and activeFunction then
+                local success, err = pcall(function()
+                    loadstring(activeFunction)()
+                end)
+                if not success then
+                    warn("Erro ao executar função do toggle " .. name .. ": " .. err)
+                end
+            end
+        end)
+        toggleButton.Parent = scrollingFrame
+        toggles["TOGGLE" .. toggleId] = toggleButton
+    end
+
+    local function addLabelAbove(name, labelText, isToggle, color)
+        local element = isToggle and toggles[name] or buttons[name]
+        if element then
+            local label = Instance.new("TextLabel")
+            label.Size = UDim2.new(1, 0, 0.3, 0)
+            label.Position = UDim2.new(0, 0, -0.4, 0)
+            label.BackgroundTransparency = 1
+            label.Text = labelText
+if color then
+                local r, g, b = color:match("(%d+).(%d+).(%d+)")
+                label.TextColor3 = Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b))
+            else
+                label.TextColor3 = Color3.fromRGB(255, 255, 255)
+            end
+            label.Font = Enum.Font.Gotham
+            label.TextSize = 14
+            label.TextWrapped = true
+            label.Parent = element
+            scrollingFrame.CanvasSize = UDim2.new(0, 0, scrollingFrame.CanvasSize.Y.Offset + label.Size.Y.Offset, 0)
+        else
+            warn("O botão ou toggle com o nome " .. name .. " não existe.")
         end
     end
 
-    handle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-        end
-    end)
+    local function createSlider(sliderId, range, color, sliderFunction)
+        local minValue, maxValue = range:match("(%d+)/(%d+)")
+        minValue = tonumber(minValue) or 0
+        maxValue = tonumber(maxValue) or 100
+        local initialValue = minValue
+        local sliderColor = color and {color:match("(%d+),(%d+),(%d+)")} or {255, 255, 255}
 
-    handle.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
+        local sliderFrame = Instance.new("Frame")
+        sliderFrame.Size = UDim2.new(0.8, 0, 0.1, 0)
+        sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        sliderFrame.BorderSizePixel = 0
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, 10)
+        corner.Parent = sliderFrame
 
-    userInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local relativePosition = math.clamp((input.Position.X - sliderFrame.AbsolutePosition.X) / sliderFrame.AbsoluteSize.X, 0, 1)
-            local currentValue = math.floor(minValue + (maxValue - minValue) * relativePosition)
-            updateSliderBar(currentValue)
-        end
-    end)
+        local track = Instance.new("Frame")
+        track.Size = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.4, 0)
+        track.Position = UDim2.new(0, 0, 0.5, 0)
+        track.AnchorPoint = Vector2.new(0, 0.5)
+        track.BorderSizePixel = 0
+        local trackCorner = Instance.new("UICorner")
+        trackCorner.CornerRadius = UDim.new(0, 5)
+        trackCorner.Parent = track
 
-    valueTextBox.FocusLost:Connect(function(enterPressed)
-        if enterPressed then
-            local enteredValue = tonumber(valueTextBox.Text)
-            if enteredValue then
-                enteredValue = math.clamp(enteredValue, minValue, maxValue)
-                updateSliderBar(enteredValue)
-            else
-                updateSliderBar(minValue)
+        local trackTexture = Instance.new("ImageLabel")
+        trackTexture.Size = UDim2.new(1, 0, 1, 0)
+        trackTexture.Position = UDim2.new(0, 0, 0, 0)
+        trackTexture.Image = "rbxassetid://14293471713"
+        trackTexture.ImageColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
+        trackTexture.BackgroundTransparency = 0.3
+        trackTexture.BorderSizePixel = 0
+        trackTexture.Parent = track
+        track.Parent = sliderFrame
+
+        local handle = Instance.new("Frame")
+        handle.Size = UDim2.new(0.05, 0, track.Size.Y.Scale, 0)
+        handle.Position = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.5, 0)
+        handle.AnchorPoint = Vector2.new(0.5, 0.5)
+        handle.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
+        handle.BorderSizePixel = 0
+        local handleCorner = Instance.new("UICorner")
+        handleCorner.CornerRadius = UDim.new(1, 0)
+        handleCorner.Parent = handle
+        handle.Parent = sliderFrame
+
+        local valueTextBox = Instance.new("TextBox")
+        valueTextBox.Size = UDim2.new(0.2, 0, 0.4, 0)
+        valueTextBox.AnchorPoint = Vector2.new(0.5, 0.5)
+        valueTextBox.Position = UDim2.new(0.5, 0, 0.5, 0)
+        valueTextBox.BackgroundTransparency = 1
+        valueTextBox.Text = tostring(initialValue)
+        valueTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+        valueTextBox.Font = Enum.Font.GothamBold
+        valueTextBox.TextSize = 14
+        valueTextBox.TextXAlignment = Enum.TextXAlignment.Center
+        valueTextBox.TextYAlignment = Enum.TextYAlignment.Center
+        valueTextBox.ClearTextOnFocus = false
+        valueTextBox.Parent = sliderFrame
+
+        local dragging = false
+
+        local function updateSliderBar(value)
+            local relativeWidth = math.clamp((value - minValue) / (maxValue - minValue), 0, 1)
+            track.Size = UDim2.new(relativeWidth, 0, 0.4, 0)
+            handle.Position = UDim2.new(relativeWidth, 0, 0.5, 0)
+            valueTextBox.Text = tostring(value)
+            if sliderFunction then
+                local success, err = pcall(function()
+                    loadstring(sliderFunction:gsub("value", tostring(value)))()
+                end)
+                if not success then
+                    warn("Erro ao executar a função do slider: " .. err)
+                end
             end
         end
-    end)
 
-    animateSliderBarColor(trackTexture, sliderColor)
-    updateSliderBar(initialValue)
-    sliderFrame.Parent = scrollingFrame
-    sliders["SLIDER" .. sliderId] = sliderFrame
-end
+        handle.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = true
+            end
+        end)
 
-return Interface
+        handle.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = false
+            end
+        end)
+
+        userInputService.InputChanged:Connect(function(input)
+            if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                local relativePosition = math.clamp((input.Position.X - sliderFrame.AbsolutePosition.X) / sliderFrame.AbsoluteSize.X, 0, 1)
+                local currentValue = math.floor(minValue + (maxValue - minValue) * relativePosition)
+                updateSliderBar(currentValue)
+            end
+        end)
+
+        valueTextBox.FocusLost:Connect(function(enterPressed)
+            if enterPressed then
+                local enteredValue = tonumber(valueTextBox.Text)
+                if enteredValue then
+                    enteredValue = math.clamp(enteredValue, minValue, maxValue)
+                    updateSliderBar(enteredValue)
+                else
+                    updateSliderBar(minValue)
+                end
+            end
+        end)
+
+        updateSliderBar(initialValue)
+        sliderFrame.Parent = scrollingFrame
+        sliders["SLIDER" .. sliderId] = sliderFrame
+    end
+
+    return Interface
