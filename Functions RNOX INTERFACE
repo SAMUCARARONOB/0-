@@ -5,30 +5,28 @@ function RNOX:CreateMainUI(params)
     gui.Parent = game.Players.LocalPlayer.PlayerGui
     gui.ResetOnSpawn = false
 
-    local baseFrame = Instance.new("Frame")
-    baseFrame.Size = UDim2.new(0, 450, 0, 350)
-    baseFrame.Position = UDim2.new(0.5, -225, 0.5, -175)
-    baseFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-    baseFrame.BorderSizePixel = 0
-    baseFrame.Active = true
-    baseFrame.Draggable = true
-    baseFrame.Parent = gui
-
-    local borderFrame = Instance.new("Frame")
-    borderFrame.Size = UDim2.new(1, 2, 1, 2)
-    borderFrame.Position = UDim2.new(0, -1, 0, -1)
-    borderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    borderFrame.BorderSizePixel = 0
-    borderFrame.ZIndex = baseFrame.ZIndex - 1
-    borderFrame.Parent = baseFrame
+    local baseFrameBorder = Instance.new("Frame")
+    baseFrameBorder.Size = UDim2.new(0, 452, 0, 352) -- Aumentado em 2 pixels para criar a borda
+    baseFrameBorder.Position = UDim2.new(0.5, -226, 0.5, -176) -- Ajustado para centralizar com borda
+    baseFrameBorder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    baseFrameBorder.BorderSizePixel = 0
+    baseFrameBorder.Parent = gui
 
     local borderGradient = Instance.new("UIGradient")
     borderGradient.Color = ColorSequence.new{
         ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 200, 255)) -- Efeito de brilho
     }
-    borderGradient.Enabled = true
-    borderGradient.Parent = borderFrame
+    borderGradient.Parent = baseFrameBorder
+
+    local baseFrame = Instance.new("Frame")
+    baseFrame.Size = UDim2.new(0, 450, 0, 350)
+    baseFrame.Position = UDim2.new(0, 1, 0, 1) -- Ajustado para ficar dentro da borda
+    baseFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    baseFrame.BorderSizePixel = 0
+    baseFrame.Active = true
+    baseFrame.Draggable = true
+    baseFrame.Parent = baseFrameBorder
 
     local header = Instance.new("TextLabel")
     header.Size = UDim2.new(1, 0, 0.15, 0)
