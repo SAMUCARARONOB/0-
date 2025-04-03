@@ -1,43 +1,116 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/INTERFACE-RNOX-HUB"))() local commandBindable = game.ReplicatedStorage:FindFirstChild("CommandBindable")
-if commandBindable then
-    -- Configura o número de colunas no layout da interface
-    commandBindable:Fire("COLUNA(1)")
-    commandBindable:Fire("COLUNA(2)")
-    commandBindable:Fire("COLUNA(2)")
+local UniqueInterface = {}
 
-    -- Cria botões numerados com funcionalidades
-    commandBindable:Fire("BUTTON1(Abrir Dex)>255,0,255)function(loadstring(game:HttpGet('https://raw.githubusercontent.com/JustAP1ayer/ugc/main/Dex'))())")
-    commandBindable:Fire("BUTTON2(Executar Dex)>0,255,255)function(loadstring(game:HttpGet('https://raw.githubusercontent.com/JustAP1ayer/ugc/main/Dex'))())")
+-- Inicialização da interface principal
+function UniqueInterface:CreateMainUI()
+    local gui = Instance.new("ScreenGui")
+    gui.Parent = game.Players.LocalPlayer.PlayerGui
+    gui.ResetOnSpawn = false
 
-    -- Cria toggles numerados com funcionalidades
-    commandBindable:Fire("TOGGLE1(Visão Noturna)>128,128,128)function(print('Toggle 1 (Visão Noturna) ativado!'))")
-    commandBindable:Fire("TOGGLE2(Escudo Ativado)>0,255,0)function(print('Toggle 2 (Escudo Ativado) ativado!'))")
+    local baseFrame = Instance.new("Frame")
+    baseFrame.Size = UDim2.new(0.5, 0, 0.5, 0)
+    baseFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    baseFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    baseFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    baseFrame.BorderSizePixel = 0
+    baseFrame.Parent = gui
 
-    -- Cria sliders numerados com funcionalidades e cor personalizada
-    commandBindable:Fire("SLIDER1(0/100)>255,0,255,function(game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value)")
-    commandBindable:Fire("SLIDER2(0/100)>0,255,255,function(game.Players.LocalPlayer.Character.Humanoid.JumpPower = value)")
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0.1, 0)
+    corner.Parent = baseFrame
 
-    -- Renomeia botões específicos
-    commandBindable:Fire("BUTTONN(BUTTON1, Abrir Ferramenta Dex)")
-    commandBindable:Fire("BUTTONN(BUTTON2, Executar Ferramenta Dex)")
+    local header = Instance.new("TextLabel")
+    header.Size = UDim2.new(1, 0, 0.15, 0)
+    header.Position = UDim2.new(0, 0, 0, 0)
+    header.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    header.BorderSizePixel = 0
+    header.Text = "Interface Nova"
+    header.TextColor3 = Color3.fromRGB(255, 255, 255)
+    header.Font = Enum.Font.GothamBold
+    header.TextSize = 24
+    header.TextWrapped = true
+    header.Parent = baseFrame
 
-    -- Renomeia toggles específicos
-    commandBindable:Fire("TOGGLEN(TOGGLE1, Ativar Modo Visão)")
-    commandBindable:Fire("TOGGLEN(TOGGLE2, Barreira Protetora)")
+    local contentFrame = Instance.new("Frame")
+    contentFrame.Size = UDim2.new(0.9, 0, 0.75, 0)
+    contentFrame.Position = UDim2.new(0.05, 0, 0.2, 0)
+    contentFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    contentFrame.BorderSizePixel = 0
+    contentFrame.Parent = baseFrame
 
-    -- Adiciona labels aos botões e toggles numerados
-    commandBindable:Fire("LABELBUTTON1>Abrir o Dex Tool>255,0,255")
-    commandBindable:Fire("LABELBUTTON2>Executar o Dex Tool>0,255,255")
-    commandBindable:Fire("LABELTOGGLE1>Visão Noturna Ativada>128,128,128")
-    commandBindable:Fire("LABELTOGGLE2>Proteção Ligada>0,255,0")
+    local layout = Instance.new("UIListLayout")
+    layout.Padding = UDim.new(0.05, 0)
+    layout.Parent = contentFrame
 
-    -- Altera o título da interface e sua cor
-    commandBindable:Fire("TITLE(Painel de Controle Atualizado)")
-    commandBindable:Fire("TITLECOLOR(0,128,255)")
-
-    -- Ativa a funcionalidade de arrastar o frame principal
-    commandBindable:Fire("ARRASTAR()")
-
-    -- Aplica bordas arredondadas na interface principal
-    commandBindable:Fire("BORDA()")
+    self.gui = gui
+    self.frame = baseFrame
+    self.contentFrame = contentFrame
 end
+
+-- Função para adicionar botões
+function UniqueInterface:AddButton(params)
+    local button = Instance.new("TextButton")
+    button.Text = params.Nome or "Botão"
+    button.Size = UDim2.new(1, 0, 0.1, 0)
+    button.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 18
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0.1, 0)
+    corner.Parent = button
+
+    button.MouseButton1Click:Connect(function()
+        if params.Acao then
+            local success, err = pcall(params.Acao)
+            if not success then
+                warn("Erro no botão: " .. err)
+            end
+        end
+    end)
+
+    button.Parent = self.contentFrame
+end
+
+-- Função para adicionar toggles
+function UniqueInterface:AddToggle(params)
+    local toggleFrame = Instance.new("Frame")
+    toggleFrame.Size = UDim2.new(1, 0, 0.1, 0)
+    toggleFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+
+    local toggleText = Instance.new("TextLabel")
+    toggleText.Text = params.Nome or "Toggle"
+    toggleText.Size = UDim2.new(0.7, 0, 1, 0)
+    toggleText.BackgroundTransparency = 1
+    toggleText.Font = Enum.Font.GothamBold
+    toggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggleText.TextSize = 18
+    toggleText.Parent = toggleFrame
+
+    local toggleButton = Instance.new("TextButton")
+    toggleButton.Size = UDim2.new(0.2, 0, 0.8, 0)
+    toggleButton.Position = UDim2.new(0.75, 0, 0.1, 0)
+    toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    toggleButton.Text = ""
+    toggleButton.Parent = toggleFrame
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0.5, 0)
+    corner.Parent = toggleButton
+
+    local state = false
+    toggleButton.MouseButton1Click:Connect(function()
+        state = not state
+        toggleButton.BackgroundColor3 = state and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        if params.Acao then
+            local success, err = pcall(params.Acao, state)
+            if not success then
+                warn("Erro no toggle: " .. err)
+            end
+        end
+    end)
+
+    toggleFrame.Parent = self.contentFrame
+end
+
+return UniqueInterface
