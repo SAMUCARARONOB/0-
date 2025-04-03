@@ -8,7 +8,7 @@ function RNOX:CreateMainUI(params)
     local baseFrame = Instance.new("Frame")
     baseFrame.Size = UDim2.new(0, 450, 0, 350)
     baseFrame.Position = UDim2.new(0.5, -225, 0.5, -175)
-    baseFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    baseFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10) -- Cor cinza escuro
     baseFrame.BorderSizePixel = 0
     baseFrame.Active = true
     baseFrame.Draggable = true
@@ -30,35 +30,28 @@ function RNOX:CreateMainUI(params)
     local tabFrame = Instance.new("Frame")
     tabFrame.Size = UDim2.new(1, 0, 0.1, 0)
     tabFrame.Position = UDim2.new(0, 0, 0.15, 0)
-    tabFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    tabFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     tabFrame.Parent = baseFrame
 
     local tabLayout = Instance.new("UIListLayout")
     tabLayout.FillDirection = Enum.FillDirection.Horizontal
-    tabLayout.Padding = UDim.new(0.01, 0)
+    tabLayout.Padding = UDim.new(0.02, 0)
     tabLayout.Parent = tabFrame
 
-    local contentFrame = Instance.new("ScrollingFrame")
-    contentFrame.Size = UDim2.new(1, 0, 0.7, 0)
-    contentFrame.Position = UDim2.new(0, 0, 0.25, 0)
-    contentFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    contentFrame.BorderSizePixel = 0
-    contentFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
-    contentFrame.ScrollBarThickness = 10
-    contentFrame.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-    contentFrame.Parent = baseFrame
-
-    local layout = Instance.new("UIListLayout")
-    layout.Padding = UDim.new(0.05, 0)
-    layout.Parent = contentFrame
-
     self.gui = gui
-    self.frame = baseFrame
-    self.contentFrame = contentFrame
+    self.baseFrame = baseFrame
     self.tabFrame = tabFrame
+    self.tabs = {}
 end
 
 function RNOX:AddTab(params)
+    local tabContent = Instance.new("Frame")
+    tabContent.Size = UDim2.new(1, 0, 0.75, 0)
+    tabContent.Position = UDim2.new(0, 0, 0.25, 0)
+    tabContent.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    tabContent.Visible = false
+    tabContent.Parent = self.baseFrame
+
     local tabButton = Instance.new("TextButton")
     tabButton.Text = params.Nome or "Aba"
     tabButton.Size = UDim2.new(0.2, 0, 1, 0)
@@ -72,21 +65,21 @@ function RNOX:AddTab(params)
     corner.Parent = tabButton
 
     tabButton.MouseButton1Click:Connect(function()
-        for _, child in pairs(self.contentFrame:GetChildren()) do
-            if child:IsA("Frame") then
-                child.Visible = false
-            end
+        for _, content in pairs(self.tabs) do
+            content.Visible = false
         end
-        params.Content.Visible = true
+        tabContent.Visible = true
     end)
 
     tabButton.Parent = self.tabFrame
+    table.insert(self.tabs, tabContent)
+    return tabContent
 end
 
-function RNOX:AddButton(params)
+function RNOX:AddButton(parent, params)
     local button = Instance.new("TextButton")
     button.Text = params.Nome or "Botão"
-    button.Size = UDim2.new(1, 0, 0.1, 0)
+    button.Size = UDim2.new(0.9, 0, 0.1, 0)
     button.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.GothamBold
@@ -113,13 +106,12 @@ function RNOX:AddButton(params)
         end
     end)
 
-    button.Parent = self.contentFrame
-    self.contentFrame.CanvasSize = UDim2.new(0, 0, 0, self.contentFrame.UIListLayout.AbsoluteContentSize.Y)
+    button.Parent = parent
 end
 
-function RNOX:AddToggle(params)
+function RNOX:AddToggle(parent, params)
     local toggleFrame = Instance.new("Frame")
-    toggleFrame.Size = UDim2.new(1, 0, 0.1, 0)
+    toggleFrame.Size = UDim2.new(0.9, 0, 0.1, 0)
     toggleFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 
     local toggleText = Instance.new("TextLabel")
@@ -154,8 +146,7 @@ function RNOX:AddToggle(params)
         end
     end)
 
-    toggleFrame.Parent = self.contentFrame
-    self.contentFrame.CanvasSize = UDim2.new(0, 0, 0, self.contentFrame.UIListLayout.AbsoluteContentSize.Y)
+    toggleFrame.Parent = parent
 end
 
 return RNOX
