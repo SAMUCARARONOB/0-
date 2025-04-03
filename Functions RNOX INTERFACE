@@ -7,11 +7,12 @@ function UniqueInterface:CreateMainUI()
     gui.ResetOnSpawn = false
 
     local baseFrame = Instance.new("Frame")
-    baseFrame.Size = UDim2.new(0.5, 0, 0.5, 0)
-    baseFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    baseFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    baseFrame.Size = UDim2.new(0, 450, 0, 350) -- 450px de largura, 350px de altura
+    baseFrame.Position = UDim2.new(0.5, -225, 0.5, -175) -- Centraliza na tela
     baseFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     baseFrame.BorderSizePixel = 0
+    baseFrame.Active = true -- Habilita entrada do mouse
+    baseFrame.Draggable = true -- Permite movimentar a interface
     baseFrame.Parent = gui
 
     local corner = Instance.new("UICorner")
@@ -23,7 +24,7 @@ function UniqueInterface:CreateMainUI()
     header.Position = UDim2.new(0, 0, 0, 0)
     header.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     header.BorderSizePixel = 0
-    header.Text = "Interface Nova"
+    header.Text = "Interface Movível"
     header.TextColor3 = Color3.fromRGB(255, 255, 255)
     header.Font = Enum.Font.GothamBold
     header.TextSize = 24
