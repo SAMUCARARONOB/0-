@@ -1,6 +1,6 @@
-local ModernInterface = {}
+local RNOX = {}
 
-function ModernInterface:CreateMainUI()
+function RNOX:CreateMainUI()
     local gui = Instance.new("ScreenGui")
     gui.Parent = game.Players.LocalPlayer.PlayerGui
     gui.ResetOnSpawn = false
@@ -21,18 +21,17 @@ function ModernInterface:CreateMainUI()
     local header = Instance.new("TextLabel")
     header.Size = UDim2.new(1, 0, 0.15, 0)
     header.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    header.Text = "Interface Modernizada"
+    header.Text = "RNOX Interface"
     header.TextColor3 = Color3.fromRGB(255, 255, 255)
     header.Font = Enum.Font.GothamBold
     header.TextSize = 24
     header.Parent = baseFrame
 
-    local contentFrame = Instance.new("ScrollingFrame")
+    local contentFrame = Instance.new("Frame")
     contentFrame.Size = UDim2.new(0.9, 0, 0.75, 0)
     contentFrame.Position = UDim2.new(0.05, 0, 0.2, 0)
     contentFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     contentFrame.BorderSizePixel = 0
-    contentFrame.ScrollBarThickness = 10
     contentFrame.Parent = baseFrame
 
     local layout = Instance.new("UIListLayout")
@@ -44,7 +43,7 @@ function ModernInterface:CreateMainUI()
     self.contentFrame = contentFrame
 end
 
-function ModernInterface:AddButton(params)
+function RNOX:AddButton(params)
     local button = Instance.new("TextButton")
     button.Text = params.Nome or "Botão"
     button.Size = UDim2.new(1, 0, 0.1, 0)
@@ -77,7 +76,7 @@ function ModernInterface:AddButton(params)
     button.Parent = self.contentFrame
 end
 
-function ModernInterface:AddToggle(params)
+function RNOX:AddToggle(params)
     local toggleFrame = Instance.new("Frame")
     toggleFrame.Size = UDim2.new(1, 0, 0.1, 0)
     toggleFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
@@ -117,4 +116,4 @@ function ModernInterface:AddToggle(params)
     toggleFrame.Parent = self.contentFrame
 end
 
-return ModernInterface
+return RNOX
