@@ -1,18 +1,17 @@
-local UniqueInterface = {}
+local ModernInterface = {}
 
--- Inicialização da interface principal
-function UniqueInterface:CreateMainUI()
+function ModernInterface:CreateMainUI()
     local gui = Instance.new("ScreenGui")
     gui.Parent = game.Players.LocalPlayer.PlayerGui
     gui.ResetOnSpawn = false
 
     local baseFrame = Instance.new("Frame")
-    baseFrame.Size = UDim2.new(0, 450, 0, 350) -- 450px de largura, 350px de altura
-    baseFrame.Position = UDim2.new(0.5, -225, 0.5, -175) -- Centraliza na tela
+    baseFrame.Size = UDim2.new(0, 450, 0, 350)
+    baseFrame.Position = UDim2.new(0.5, -225, 0.5, -175)
     baseFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     baseFrame.BorderSizePixel = 0
-    baseFrame.Active = true -- Habilita entrada do mouse
-    baseFrame.Draggable = true -- Permite movimentar a interface
+    baseFrame.Active = true
+    baseFrame.Draggable = true
     baseFrame.Parent = gui
 
     local corner = Instance.new("UICorner")
@@ -21,21 +20,19 @@ function UniqueInterface:CreateMainUI()
 
     local header = Instance.new("TextLabel")
     header.Size = UDim2.new(1, 0, 0.15, 0)
-    header.Position = UDim2.new(0, 0, 0, 0)
     header.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    header.BorderSizePixel = 0
-    header.Text = "Interface Movível"
+    header.Text = "Interface Modernizada"
     header.TextColor3 = Color3.fromRGB(255, 255, 255)
     header.Font = Enum.Font.GothamBold
     header.TextSize = 24
-    header.TextWrapped = true
     header.Parent = baseFrame
 
-    local contentFrame = Instance.new("Frame")
+    local contentFrame = Instance.new("ScrollingFrame")
     contentFrame.Size = UDim2.new(0.9, 0, 0.75, 0)
     contentFrame.Position = UDim2.new(0.05, 0, 0.2, 0)
     contentFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     contentFrame.BorderSizePixel = 0
+    contentFrame.ScrollBarThickness = 10
     contentFrame.Parent = baseFrame
 
     local layout = Instance.new("UIListLayout")
@@ -47,8 +44,7 @@ function UniqueInterface:CreateMainUI()
     self.contentFrame = contentFrame
 end
 
--- Função para adicionar botões
-function UniqueInterface:AddButton(params)
+function ModernInterface:AddButton(params)
     local button = Instance.new("TextButton")
     button.Text = params.Nome or "Botão"
     button.Size = UDim2.new(1, 0, 0.1, 0)
@@ -60,6 +56,14 @@ function UniqueInterface:AddButton(params)
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0.1, 0)
     corner.Parent = button
+
+    button.MouseEnter:Connect(function()
+        button.BackgroundColor3 = Color3.fromRGB(100, 100, 255)
+    end)
+
+    button.MouseLeave:Connect(function()
+        button.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
+    end)
 
     button.MouseButton1Click:Connect(function()
         if params.Acao then
@@ -73,15 +77,14 @@ function UniqueInterface:AddButton(params)
     button.Parent = self.contentFrame
 end
 
--- Função para adicionar toggles
-function UniqueInterface:AddToggle(params)
+function ModernInterface:AddToggle(params)
     local toggleFrame = Instance.new("Frame")
     toggleFrame.Size = UDim2.new(1, 0, 0.1, 0)
     toggleFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 
     local toggleText = Instance.new("TextLabel")
     toggleText.Text = params.Nome or "Toggle"
-    toggleText.Size = UDim2.new(0.7, 0, 1, 0)
+    toggleText.Size = UDim2.new(0.6, 0, 1, 0)
     toggleText.BackgroundTransparency = 1
     toggleText.Font = Enum.Font.GothamBold
     toggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -114,4 +117,4 @@ function UniqueInterface:AddToggle(params)
     toggleFrame.Parent = self.contentFrame
 end
 
-return UniqueInterface
+return ModernInterface
