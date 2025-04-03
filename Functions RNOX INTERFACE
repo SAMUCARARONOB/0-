@@ -8,7 +8,7 @@ function RNOX:CreateMainUI(params)
     local baseFrame = Instance.new("Frame")
     baseFrame.Size = UDim2.new(0, 450, 0, 350)
     baseFrame.Position = UDim2.new(0.5, -225, 0.5, -175)
-    baseFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10) -- Cor cinza escuro
+    baseFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
     baseFrame.BorderSizePixel = 0
     baseFrame.Active = true
     baseFrame.Draggable = true
@@ -45,12 +45,19 @@ function RNOX:CreateMainUI(params)
 end
 
 function RNOX:AddTab(params)
-    local tabContent = Instance.new("Frame")
+    local tabContent = Instance.new("ScrollingFrame")
     tabContent.Size = UDim2.new(1, 0, 0.75, 0)
     tabContent.Position = UDim2.new(0, 0, 0.25, 0)
     tabContent.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     tabContent.Visible = false
+    tabContent.ScrollBarThickness = 10
+    tabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
+    tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
     tabContent.Parent = self.baseFrame
+
+    local layout = Instance.new("UIListLayout")
+    layout.Padding = UDim.new(0.05, 0)
+    layout.Parent = tabContent
 
     local tabButton = Instance.new("TextButton")
     tabButton.Text = params.Nome or "Aba"
@@ -79,7 +86,7 @@ end
 function RNOX:AddButton(parent, params)
     local button = Instance.new("TextButton")
     button.Text = params.Nome or "Botão"
-    button.Size = UDim2.new(0.9, 0, 0.1, 0)
+    button.Size = UDim2.new(1, 0, 0.1, 0)
     button.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.GothamBold
@@ -107,11 +114,12 @@ function RNOX:AddButton(parent, params)
     end)
 
     button.Parent = parent
+    parent.CanvasSize = UDim2.new(0, 0, 0, parent.UIListLayout.AbsoluteContentSize.Y)
 end
 
 function RNOX:AddToggle(parent, params)
     local toggleFrame = Instance.new("Frame")
-    toggleFrame.Size = UDim2.new(0.9, 0, 0.1, 0)
+    toggleFrame.Size = UDim2.new(1, 0, 0.1, 0)
     toggleFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 
     local toggleText = Instance.new("TextLabel")
@@ -147,6 +155,7 @@ function RNOX:AddToggle(parent, params)
     end)
 
     toggleFrame.Parent = parent
+    parent.CanvasSize = UDim2.new(0, 0, 0, parent.UIListLayout.AbsoluteContentSize.Y)
 end
 
 return RNOX
