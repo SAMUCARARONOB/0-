@@ -31,24 +31,27 @@ function RNOX:CreateMainUI(params)
     cornerHeader.CornerRadius = UDim.new(0.1, 0)
     cornerHeader.Parent = header
 
-    local tabFrame = Instance.new("Frame")
-    tabFrame.Size = UDim2.new(1, 0, 0.1, 0)
-    tabFrame.Position = UDim2.new(0, 0, 0.15, 0)
-    tabFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    tabFrame.Parent = baseFrame
+    local tabScrollFrame = Instance.new("ScrollingFrame")
+    tabScrollFrame.Size = UDim2.new(1, 0, 0.1, 0)
+    tabScrollFrame.Position = UDim2.new(0, 0, 0.15, 0)
+    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    tabScrollFrame.ScrollBarThickness = 10
+    tabScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+    tabScrollFrame.Parent = baseFrame
 
     local cornerTabFrame = Instance.new("UICorner")
     cornerTabFrame.CornerRadius = UDim.new(0.1, 0)
-    cornerTabFrame.Parent = tabFrame
+    cornerTabFrame.Parent = tabScrollFrame
 
     local tabLayout = Instance.new("UIListLayout")
     tabLayout.FillDirection = Enum.FillDirection.Horizontal
     tabLayout.Padding = UDim.new(0.02, 0)
-    tabLayout.Parent = tabFrame
+    tabLayout.Parent = tabScrollFrame
 
     self.gui = gui
     self.baseFrame = baseFrame
-    self.tabFrame = tabFrame
+    self.tabScrollFrame = tabScrollFrame
     self.tabs = {}
 end
 
@@ -75,7 +78,7 @@ function RNOX:AddTab(params)
 
     local tabButton = Instance.new("TextButton")
     tabButton.Text = params.Nome or "Aba"
-    tabButton.Size = UDim2.new(0.2, 0, 1, 0)
+    tabButton.Size = UDim2.new(0, 100, 1, 0)
     tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
     tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     tabButton.Font = Enum.Font.GothamBold
@@ -92,7 +95,8 @@ function RNOX:AddTab(params)
         tabContent.Visible = true
     end)
 
-    tabButton.Parent = self.tabFrame
+    tabButton.Parent = self.tabScrollFrame
+    self.tabScrollFrame.CanvasSize = UDim2.new(0, self.tabScrollFrame.UIListLayout.AbsoluteContentSize.X, 0, 0)
     table.insert(self.tabs, tabContent)
 
     if params.Default then
