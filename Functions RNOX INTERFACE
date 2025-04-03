@@ -38,6 +38,7 @@ function RNOX:CreateMainUI(params)
     tabScrollFrame.ScrollBarThickness = 10
     tabScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
     tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+    tabScrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.X
     tabScrollFrame.Parent = baseFrame
 
     local cornerTabFrame = Instance.new("UICorner")
@@ -62,8 +63,8 @@ function RNOX:AddTab(params)
     tabContent.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     tabContent.Visible = false
     tabContent.ScrollBarThickness = 10
-    tabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
     tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+    tabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
     tabContent.Parent = self.baseFrame
 
     local cornerTabContent = Instance.new("UICorner")
@@ -96,7 +97,6 @@ function RNOX:AddTab(params)
     end)
 
     tabButton.Parent = self.tabScrollFrame
-    self.tabScrollFrame.CanvasSize = UDim2.new(0, self.tabScrollFrame.UIListLayout.AbsoluteContentSize.X, 0, 0)
     table.insert(self.tabs, tabContent)
 
     if params.Default then
@@ -137,7 +137,6 @@ function RNOX:AddButton(parent, params)
     end)
 
     button.Parent = parent
-    parent.CanvasSize = UDim2.new(0, 0, 0, parent.UIListLayout.AbsoluteContentSize.Y)
 end
 
 function RNOX:AddToggle(parent, params)
@@ -182,7 +181,6 @@ function RNOX:AddToggle(parent, params)
     end)
 
     toggleFrame.Parent = parent
-    parent.CanvasSize = UDim2.new(0, 0, 0, parent.UIListLayout.AbsoluteContentSize.Y)
 end
 
 return RNOX
