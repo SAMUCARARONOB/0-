@@ -14,9 +14,21 @@ function RNOX:CreateMainUI(params)
     baseFrame.Draggable = true
     baseFrame.Parent = gui
 
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.1, 0)
-    corner.Parent = baseFrame
+    local borderFrame = Instance.new("Frame")
+    borderFrame.Size = UDim2.new(1, 2, 1, 2)
+    borderFrame.Position = UDim2.new(0, -1, 0, -1)
+    borderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    borderFrame.BorderSizePixel = 0
+    borderFrame.ZIndex = baseFrame.ZIndex - 1
+    borderFrame.Parent = baseFrame
+
+    local borderGradient = Instance.new("UIGradient")
+    borderGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+    }
+    borderGradient.Enabled = true
+    borderGradient.Parent = borderFrame
 
     local header = Instance.new("TextLabel")
     header.Size = UDim2.new(1, 0, 0.15, 0)
@@ -27,10 +39,6 @@ function RNOX:CreateMainUI(params)
     header.TextSize = 24
     header.Parent = baseFrame
 
-    local cornerHeader = Instance.new("UICorner")
-    cornerHeader.CornerRadius = UDim.new(0.1, 0)
-    cornerHeader.Parent = header
-
     local tabScrollFrame = Instance.new("ScrollingFrame")
     tabScrollFrame.Size = UDim2.new(1, 0, 0.1, 0)
     tabScrollFrame.Position = UDim2.new(0, 0, 0.15, 0)
@@ -39,10 +47,6 @@ function RNOX:CreateMainUI(params)
     tabScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
     tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
     tabScrollFrame.Parent = baseFrame
-
-    local cornerTabFrame = Instance.new("UICorner")
-    cornerTabFrame.CornerRadius = UDim.new(0.1, 0)
-    cornerTabFrame.Parent = tabScrollFrame
 
     local tabLayout = Instance.new("UIListLayout")
     tabLayout.FillDirection = Enum.FillDirection.Horizontal
@@ -66,10 +70,6 @@ function RNOX:AddTab(params)
     tabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
     tabContent.Parent = self.baseFrame
 
-    local cornerTabContent = Instance.new("UICorner")
-    cornerTabContent.CornerRadius = UDim.new(0.1, 0)
-    cornerTabContent.Parent = tabContent
-
     local gridLayout = Instance.new("UIGridLayout")
     gridLayout.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
     gridLayout.CellSize = UDim2.new(1 / params.Colunas, -10, 0.1, 0)
@@ -86,10 +86,6 @@ function RNOX:AddTab(params)
     tabButton.Font = Enum.Font.GothamBold
     tabButton.TextSize = 16
 
-    local cornerTabButton = Instance.new("UICorner")
-    cornerTabButton.CornerRadius = UDim.new(0.1, 0)
-    cornerTabButton.Parent = tabButton
-
     tabButton.MouseButton1Click:Connect(function()
         for _, content in pairs(self.tabs) do
             content.Visible = false
@@ -98,7 +94,6 @@ function RNOX:AddTab(params)
     end)
 
     tabButton.Parent = self.tabScrollFrame
-    self.tabScrollFrame.CanvasSize = UDim2.new(0, self.tabScrollFrame.UIListLayout.AbsoluteContentSize.X, 0, 0)
     table.insert(self.tabs, tabContent)
 
     if params.Default then
@@ -116,10 +111,6 @@ function RNOX:AddButton(parent, params)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.GothamBold
     button.TextSize = 18
-
-    local cornerButton = Instance.new("UICorner")
-    cornerButton.CornerRadius = UDim.new(0.2, 0)
-    cornerButton.Parent = button
 
     button.MouseEnter:Connect(function()
         button.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
@@ -146,10 +137,6 @@ function RNOX:AddToggle(parent, params)
     toggleFrame.Size = UDim2.new(1, 0, 0.1, 0)
     toggleFrame.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 
-    local cornerToggleFrame = Instance.new("UICorner")
-    cornerToggleFrame.CornerRadius = UDim.new(0.15, 0)
-    cornerToggleFrame.Parent = toggleFrame
-
     local toggleText = Instance.new("TextLabel")
     toggleText.Text = params.Nome or "Toggle"
     toggleText.Size = UDim2.new(0.7, 0, 1, 0)
@@ -159,27 +146,17 @@ function RNOX:AddToggle(parent, params)
     toggleText.TextSize = 18
     toggleText.Parent = toggleFrame
 
-    local toggleButton = Instance.new("TextButton")
+    local toggleButton = Instance.new("ImageButton")
     toggleButton.Size = UDim2.new(0.2, 0, 0.8, 0)
     toggleButton.Position = UDim2.new(0.75, 0, 0.1, 0)
-    toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    toggleButton.Text = ""
+    toggleButton.Image = "rbxassetid://14293471713"
+    toggleButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
     toggleButton.Parent = toggleFrame
-
-    local cornerToggleButton = Instance.new("UICorner")
-    cornerToggleButton.CornerRadius = UDim.new(0.5, 0)
-    cornerToggleButton.Parent = toggleButton
 
     local state = false
     toggleButton.MouseButton1Click:Connect(function()
         state = not state
-        toggleButton.BackgroundColor3 = state and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-        if params.Acao then
-            local success, err = pcall(params.Acao, state)
-            if not success then
-                warn("Erro no toggle: " .. err)
-            end
-        end
+        toggleButton.BackgroundColor3 = state and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
     end)
 
     toggleFrame.Parent = parent
