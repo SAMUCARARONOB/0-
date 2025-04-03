@@ -110,7 +110,7 @@ function RNOX:AddButton(parent, params)
     local button = Instance.new("TextButton")
     button.Text = params.Nome or "Botão"
     button.Size = UDim2.new(1, 0, 0.1, 0)
-    button.BackgroundColor3 = params.Cor or Color3.fromRGB(60, 60, 60)
+    button.BackgroundColor3 = params.Cor or Color3.fromRGB(100, 100, 100)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.GothamBold
     button.TextSize = 18
@@ -119,13 +119,20 @@ function RNOX:AddButton(parent, params)
     cornerButton.CornerRadius = UDim.new(0.2, 0)
     cornerButton.Parent = button
 
+    local gradient = Instance.new("UIGradient")
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 60, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(100, 100, 255))
+    }
+    gradient.Parent = button
+
     button.MouseEnter:Connect(function()
-        button.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
+        gradient.Offset = Vector2.new(0.5, 0)
         button.TextColor3 = Color3.fromRGB(200, 200, 200)
     end)
 
     button.MouseLeave:Connect(function()
-        button.BackgroundColor3 = params.Cor or Color3.fromRGB(60, 60, 60)
+        gradient.Offset = Vector2.new(0, 0)
         button.TextColor3 = Color3.fromRGB(255, 255, 255)
     end)
 
@@ -145,15 +152,15 @@ end
 function RNOX:AddToggle(parent, params)
     local toggleFrame = Instance.new("Frame")
     toggleFrame.Size = UDim2.new(1, 0, 0.1, 0)
-    toggleFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    toggleFrame.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 
     local cornerToggleFrame = Instance.new("UICorner")
-    cornerToggleFrame.CornerRadius = UDim.new(0.1, 0)
+    cornerToggleFrame.CornerRadius = UDim.new(0.15, 0)
     cornerToggleFrame.Parent = toggleFrame
 
     local toggleText = Instance.new("TextLabel")
     toggleText.Text = params.Nome or "Toggle"
-    toggleText.Size = UDim2.new(0.6, 0, 1, 0)
+    toggleText.Size = UDim2.new(0.7, 0, 1, 0)
     toggleText.BackgroundTransparency = 1
     toggleText.Font = Enum.Font.GothamBold
     toggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -170,6 +177,13 @@ function RNOX:AddToggle(parent, params)
     local cornerToggleButton = Instance.new("UICorner")
     cornerToggleButton.CornerRadius = UDim.new(0.5, 0)
     cornerToggleButton.Parent = toggleButton
+
+    local gradient = Instance.new("UIGradient")
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 0))
+    }
+    gradient.Parent = toggleButton
 
     local state = false
     toggleButton.MouseButton1Click:Connect(function()
