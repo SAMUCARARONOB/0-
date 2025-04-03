@@ -106,21 +106,23 @@ function RNOX:AddButton(parent, params)
     local button = Instance.new("TextButton")
     button.Text = params.Nome or "Botão"
     button.Size = UDim2.new(1, 0, 0.1, 0)
-    button.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
+    button.BackgroundColor3 = params.Cor or Color3.fromRGB(60, 60, 60)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.GothamBold
     button.TextSize = 18
 
     local cornerButton = Instance.new("UICorner")
-    cornerButton.CornerRadius = UDim.new(0.1, 0)
+    cornerButton.CornerRadius = UDim.new(0.2, 0)
     cornerButton.Parent = button
 
     button.MouseEnter:Connect(function()
-        button.BackgroundColor3 = Color3.fromRGB(100, 100, 255)
+        button.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
+        button.TextColor3 = Color3.fromRGB(200, 200, 200)
     end)
 
     button.MouseLeave:Connect(function()
-        button.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
+        button.BackgroundColor3 = params.Cor or Color3.fromRGB(60, 60, 60)
+        button.TextColor3 = Color3.fromRGB(255, 255, 255)
     end)
 
     button.MouseButton1Click:Connect(function()
