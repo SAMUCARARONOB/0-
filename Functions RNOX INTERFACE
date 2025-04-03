@@ -116,73 +116,62 @@ function Interface:CreateMainUI()
 
     animateFrameIn()
 
-    local function adjustColumns(columnCount)
+    function Interface:AdjustColumns(columnCount)
         if columnCount < 1 then return end
         layout.CellSize = UDim2.new(1 / columnCount - 0.02, 0, 0.12, 0)
     end
 
-    local function createButton(buttonId, name, buttonFunction)
+    function Interface:CreateButton(params)
         local button = Instance.new("TextButton")
         button.Size = UDim2.new(0.2, 0, 0.1, 0)
-        button.Text = name
-        button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        button.Text = params.Nome or "Botão"
+        button.BackgroundColor3 = params.Cor or Color3.fromRGB(35, 35, 35)
         button.TextColor3 = Color3.fromRGB(255, 255, 255)
         button.Font = Enum.Font.Gotham
         button.TextSize = 18
         button.TextWrapped = true
-        local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0, 10)
-        corner.Parent = button
-        button.MouseButton1Click:Connect(function()
-            local success, err = pcall(function()
-                loadstring(buttonFunction)()
-            end)
-            if not success then
-                warn("Erro ao executar a função do botão " .. name .. ": " .. err)
-            end
-        end)
-        button.Parent = scrollingFrame
-        buttons["BUTTON" .. buttonId] = button
-    end
 
-    local function createToggle(toggleId, name, activeFunction)
-        local toggleButton = Instance.new("TextButton")
-        toggleButton.Size = UDim2.new(0.2, 0, 0.1, 0)
-        toggleButton.Text = name
-        toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-        toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        toggleButton.Font = Enum.Font.GothamBold
-        toggleButton.TextSize = 14
-        toggleButton.TextWrapped = true
         local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0, 10)
-        corner.Parent = toggleButton
-        local icon = Instance.new("ImageButton")
-        icon.Size = UDim2.new(0.1, 0, 0.8, 0)
-        icon.Position = UDim2.new(0.88, 0, 0.1, 0)
-        icon.BackgroundTransparency = 1
-        icon.Image = "rbxassetid://14293471713"
-        icon.ImageColor3 = Color3.fromRGB(255, 0, 0)
-        icon.Parent = toggleButton
-        local isActive = false
-        icon.MouseButton1Click:Connect(function()
-            isActive = not isActive
-            toggleButton.BackgroundColor3 = isActive and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(0, 0, 0)
-            icon.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-            if isActive and activeFunction then
-                local success, err = pcall(function()
-                    loadstring(activeFunction)()
-                end)
+        corner.CornerRadius = UDim.new(0.05, 0)
+        corner.Parent = button
+
+        button.MouseButton1Click:Connect(function()
+            if params.Acao then
+                local success, err = pcall(params.Acao)
                 if not success then
-                    warn("Erro ao executar função do toggle " .. name .. ": " .. err)
+                    warn("Erro no botão: " .. err)
                 end
             end
         end)
-        toggleButton.Parent = scrollingFrame
-        toggles["TOGGLE" .. toggleId] = toggleButton
+
+        button.Parent = scrollingFrame
     end
 
-    local function addLabelAbove(name, labelText, isToggle, color)
+    function Interface:CreateToggle(params)
+        local toggleButton = Instance.new("TextButton")
+        toggleButton.Size = UDim2.new(0.2, 0, 0.1, 0)
+        toggleButton.Text = params.Nome or "Toggle"
+        toggleButton.BackgroundColor3 = params.Cor or Color3.fromRGB(35, 35, 35)
+        toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        toggleButton.Font = Enum.Font.GothamBold
+        toggleButton.TextSize = 14
+
+        local isActive = false
+        toggleButton.MouseButton1Click:Connect(function()
+            isActive = not isActive
+            toggleButton.BackgroundColor3 = isActive and Color3.fromRGB(0, 255, 0) or (params.Cor or Color3.fromRGB(35, 35, 35))
+            if params.Acao then
+                local success, err = pcall(function() params.Acao(isActive) end)
+                if not success then
+                    warn("Erro no toggle: " .. err)
+                end
+            end
+        end)
+
+        toggleButton.Parent = scrollingFrame
+    end
+
+    function Interface:AddLabelAbove(name, labelText, isToggle, color)
         local element = isToggle and toggles[name] or buttons[name]
         if element then
             local label = Instance.new("TextLabel")
@@ -190,7 +179,7 @@ function Interface:CreateMainUI()
             label.Position = UDim2.new(0, 0, -0.4, 0)
             label.BackgroundTransparency = 1
             label.Text = labelText
-if color then
+            if color then
                 local r, g, b = color:match("(%d+).(%d+).(%d+)")
                 label.TextColor3 = Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b))
             else
@@ -200,23 +189,22 @@ if color then
             label.TextSize = 14
             label.TextWrapped = true
             label.Parent = element
-            scrollingFrame.CanvasSize = UDim2.new(0, 0, scrollingFrame.CanvasSize.Y.Offset + label.Size.Y.Offset, 0)
         else
             warn("O botão ou toggle com o nome " .. name .. " não existe.")
         end
     end
 
-    local function createSlider(sliderId, range, color, sliderFunction)
+    function Interface:CreateSlider(sliderId, range, color, sliderFunction)
         local minValue, maxValue = range:match("(%d+)/(%d+)")
         minValue = tonumber(minValue) or 0
         maxValue = tonumber(maxValue) or 100
         local initialValue = minValue
         local sliderColor = color and {color:match("(%d+),(%d+),(%d+)")} or {255, 255, 255}
-
         local sliderFrame = Instance.new("Frame")
         sliderFrame.Size = UDim2.new(0.8, 0, 0.1, 0)
         sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
         sliderFrame.BorderSizePixel = 0
+
         local corner = Instance.new("UICorner")
         corner.CornerRadius = UDim.new(0, 10)
         corner.Parent = sliderFrame
@@ -226,6 +214,7 @@ if color then
         track.Position = UDim2.new(0, 0, 0.5, 0)
         track.AnchorPoint = Vector2.new(0, 0.5)
         track.BorderSizePixel = 0
+
         local trackCorner = Instance.new("UICorner")
         trackCorner.CornerRadius = UDim.new(0, 5)
         trackCorner.Parent = track
@@ -246,6 +235,7 @@ if color then
         handle.AnchorPoint = Vector2.new(0.5, 0.5)
         handle.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
         handle.BorderSizePixel = 0
+
         local handleCorner = Instance.new("UICorner")
         handleCorner.CornerRadius = UDim.new(1, 0)
         handleCorner.Parent = handle
