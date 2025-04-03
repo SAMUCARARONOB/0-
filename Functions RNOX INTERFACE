@@ -3,32 +3,29 @@ if game.Players.LocalPlayer:FindFirstChild("InterfaceExecutada") then
     return
 end
 
+local flag = Instance.new("BoolValue")
+flag.Name = "InterfaceExecutada"
+flag.Parent = game.Players.LocalPlayer
+
+local tweenService = game:GetService("TweenService")
+local userInputService = game:GetService("UserInputService")
+
 local Interface = {}
 
--- Criando a interface principal
+-- Inicialização principal da interface
 function Interface:CreateMainUI()
-    local flag = Instance.new("BoolValue")
-    flag.Name = "InterfaceExecutada"
-    flag.Parent = game.Players.LocalPlayer
-
-    local tweenService = game:GetService("TweenService")
     local gui = Instance.new("ScreenGui")
     gui.Parent = game.Players.LocalPlayer.PlayerGui
     gui.ResetOnSpawn = false
 
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0.8, 0, 1.1, 0)
+    frame.Size = UDim2.new(0, 0, 0, 0)
     frame.AnchorPoint = Vector2.new(0.5, 0.5)
     frame.Position = UDim2.new(0.5, 0, 0.5, 0)
     frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     frame.BackgroundTransparency = 0.1
     frame.BorderSizePixel = 0
-    frame.Visible = false
     frame.Parent = gui
-
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.05, 0)
-    corner.Parent = frame
 
     local title = Instance.new("TextLabel")
     title.Size = UDim2.new(1, 0, 0.1, 0)
@@ -58,25 +55,14 @@ function Interface:CreateMainUI()
     layout.VerticalAlignment = Enum.VerticalAlignment.Top
     layout.Parent = scrollingFrame
 
-    self.tweenService = tweenService
-    self.gui = gui
-    self.frame = frame
-    self.scrollingFrame = scrollingFrame
-    self.buttons = {}
-    self.toggles = {}
-    self.sliders = {}
+    local hideButton = Instance.new("ImageButton")
+    hideButton.Size = UDim2.new(0.05, 0, 0.05, 0)
+    hideButton.Position = UDim2.new(0.95, -10, 0, 10)
+    hideButton.Image = "rbxassetid://6035047409"
+    hideButton.BackgroundTransparency = 1
+    hideButton.Parent = frame
 
-    local function animateFrameIn()
-        frame.Visible = true
-        local tweenIn = tweenService:Create(
-            frame,
-            TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-            {Size = UDim2.new(0.8, 0, 1.1, 0)}
-        )
-        tweenIn:Play()
-    end
-
-    local function animateFrameOut()
+    hideButton.MouseButton1Click:Connect(function()
         local tweenOut = tweenService:Create(
             frame,
             TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
@@ -86,19 +72,21 @@ function Interface:CreateMainUI()
         tweenOut.Completed:Connect(function()
             frame.Visible = false
         end)
-    end
-
-    local hideButton = Instance.new("ImageButton")
-    hideButton.Size = UDim2.new(0.05, 0, 0.05, 0)
-    hideButton.Position = UDim2.new(0.95, -10, 0, 10)
-    hideButton.Image = "rbxassetid://6035047409"
-    hideButton.BackgroundTransparency = 1
-    hideButton.Parent = frame
-    hideButton.MouseButton1Click:Connect(function()
-        animateFrameOut()
     end)
 
-    animateFrameIn()
+    local tweenIn = tweenService:Create(
+        frame,
+        TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+        {Size = UDim2.new(0.8, 0, 1.1, 0)}
+    )
+    tweenIn:Play()
+
+    self.gui = gui
+    self.frame = frame
+    self.scrollingFrame = scrollingFrame
+    self.buttons = {}
+    self.toggles = {}
+    self.sliders = {}
 end
 
 -- Função para criar botões
@@ -111,9 +99,11 @@ function Interface:CreateButton(params)
     button.Font = Enum.Font.Gotham
     button.TextSize = 18
     button.TextWrapped = true
+
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0.05, 0)
     corner.Parent = button
+
     button.MouseButton1Click:Connect(function()
         if params.Acao then
             local success, err = pcall(params.Acao)
@@ -122,6 +112,7 @@ function Interface:CreateButton(params)
             end
         end
     end)
+
     button.Parent = self.scrollingFrame
 end
 
@@ -134,7 +125,9 @@ function Interface:CreateToggle(params)
     toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
     toggle.Font = Enum.Font.GothamBold
     toggle.TextSize = 14
+
     local active = false
+
     toggle.MouseButton1Click:Connect(function()
         active = not active
         toggle.BackgroundColor3 = active and Color3.fromRGB(0, 255, 0) or (params.Cor or Color3.fromRGB(35, 35, 35))
@@ -145,11 +138,18 @@ function Interface:CreateToggle(params)
             end
         end
     end)
+
     toggle.Parent = self.scrollingFrame
 end
 
 -- Função para criar sliders
 function Interface:CreateSlider(params)
+    local minValue, maxValue = params.Range:match("(%d+)/(%d+)")
+    minValue = tonumber(minValue) or 0
+    maxValue = tonumber(maxValue) or 100
+    local initialValue = minValue
+    local sliderColor = params.Cor and {params.Cor:match("(%d+),(%d+),(%d+)")} or {255, 255, 255}
+
     local sliderFrame = Instance.new("Frame")
     sliderFrame.Size = UDim2.new(0.8, 0, 0.1, 0)
     sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
@@ -158,30 +158,102 @@ function Interface:CreateSlider(params)
     corner.CornerRadius = UDim.new(0, 10)
     corner.Parent = sliderFrame
 
+    local track = Instance.new("Frame")
+    track.Size = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.4, 0)
+    track.Position = UDim2.new(0, 0, 0.5, 0)
+    track.AnchorPoint = Vector2.new(0, 0.5)
+    track.BorderSizePixel = 0
+    local trackCorner = Instance.new("UICorner")
+    trackCorner.CornerRadius = UDim.new(0, 5)
+    trackCorner.Parent = track
+
+    local trackTexture = Instance.new("ImageLabel")
+    trackTexture.Size = UDim2.new(1, 0, 1, 0)
+    trackTexture.Position = UDim2.new(0, 0, 0, 0)
+    trackTexture.Image = "rbxassetid://14293471713"
+    trackTexture.ImageColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
+    trackTexture.BackgroundTransparency = 0.3
+    trackTexture.BorderSizePixel = 0
+    trackTexture.Parent = track
+    track.Parent = sliderFrame
+
     local handle = Instance.new("Frame")
-    handle.Size = UDim2.new(0.05, 0, 1, 0)
-    handle.BackgroundColor3 = params.Cor or Color3.fromRGB(255, 255, 255)
+    handle.Size = UDim2.new(0.05, 0, track.Size.Y.Scale, 0)
+    handle.Position = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.5, 0)
+    handle.AnchorPoint = Vector2.new(0.5, 0.5)
+    handle.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
     handle.BorderSizePixel = 0
     local handleCorner = Instance.new("UICorner")
     handleCorner.CornerRadius = UDim.new(1, 0)
     handleCorner.Parent = handle
     handle.Parent = sliderFrame
 
+    local valueTextBox = Instance.new("TextBox")
+    valueTextBox.Size = UDim2.new(0.2, 0, 0.4, 0)
+    valueTextBox.AnchorPoint = Vector2.new(0.5, 0.5)
+    valueTextBox.Position = UDim2.new(0.5, 0, 0.5, 0)
+    valueTextBox.BackgroundTransparency = 1
+    valueTextBox.Text = tostring(initialValue)
+    valueTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    valueTextBox.Font = Enum.Font.GothamBold
+    valueTextBox.TextSize = 14
+    valueTextBox.TextXAlignment = Enum.TextXAlignment.Center
+    valueTextBox.TextYAlignment = Enum.TextYAlignment.Center
+    valueTextBox.ClearTextOnFocus = false
+    valueTextBox.Parent = sliderFrame
+
+    local dragging = false
+
+    local function updateSliderBar(value)
+        local relativeWidth = math.clamp((value - minValue) / (maxValue - minValue), 0, 1)
+        track.Size = UDim2.new(relativeWidth, 0, 0.4, 0)
+        handle.Position = UDim2.new(relativeWidth, 0, 0.5, 0)
+        valueTextBox.Text = tostring(value)
+        if sliderFunction then
+            local success, err = pcall(function()
+                loadstring(sliderFunction:gsub("value", tostring(value)))()
+            end)
+            if not success then
+                warn("Erro ao executar a função do slider: " .. err)
+            end
+        end
+    end
+
     handle.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            game:GetService("UserInputService").InputChanged:Connect(function(move)
-                if move.UserInputType == Enum.UserInputType.MouseMovement then
-                    local position = math.clamp((move.Position.X - sliderFrame.AbsolutePosition.X) / sliderFrame.AbsoluteSize.X, 0, 1)
-                    local value = math.floor((params.Min or 0) + ((params.Max or 100) - (params.Min or 0)) * position)
-                    if params.Acao then
-                        pcall(function() params.Acao(value) end)
-                    end
-                end
-            end)
+            dragging = true
         end
     end)
 
-    sliderFrame.Parent = self.scrollingFrame
+    handle.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    userInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local relativePosition = math.clamp((input.Position.X - sliderFrame.AbsolutePosition.X) / sliderFrame.AbsoluteSize.X, 0, 1)
+            local currentValue = math.floor(minValue + (maxValue - minValue) * relativePosition)
+            updateSliderBar(currentValue)
+        end
+    end)
+
+    valueTextBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            local enteredValue = tonumber(valueTextBox.Text)
+            if enteredValue then
+                enteredValue = math.clamp(enteredValue, minValue, maxValue)
+                updateSliderBar(enteredValue)
+            else
+                updateSliderBar(minValue)
+            end
+        end
+    end)
+
+    updateSliderBar(initialValue)
+    sliderFrame.Parent = scrollingFrame
+    sliders["SLIDER" .. sliderId] = sliderFrame
 end
 
 return Interface
