@@ -6,7 +6,7 @@ function RNOX:CreateMainUI(params)
     gui.ResetOnSpawn = false
 
     local baseFrame = Instance.new("Frame")
-    baseFrame.Size = UDim2.new(0, 450, 0, 350)
+    baseFrame.Size = UDim2.new(0, 300, 0, 350)
     baseFrame.Position = UDim2.new(0.5, -225, 0.5, -175)
     baseFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
     baseFrame.BorderSizePixel = 0
@@ -119,21 +119,12 @@ function RNOX:AddButton(parent, params)
     cornerButton.CornerRadius = UDim.new(0.2, 0)
     cornerButton.Parent = button
 
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 60, 255)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(100, 100, 255))
-    }
-    gradient.Parent = button
-
     button.MouseEnter:Connect(function()
-        gradient.Offset = Vector2.new(0.5, 0)
-        button.TextColor3 = Color3.fromRGB(200, 200, 200)
+        button.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
     end)
 
     button.MouseLeave:Connect(function()
-        gradient.Offset = Vector2.new(0, 0)
-        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+        button.BackgroundColor3 = params.Cor or Color3.fromRGB(100, 100, 100)
     end)
 
     button.MouseButton1Click:Connect(function()
@@ -177,13 +168,6 @@ function RNOX:AddToggle(parent, params)
     local cornerToggleButton = Instance.new("UICorner")
     cornerToggleButton.CornerRadius = UDim.new(0.5, 0)
     cornerToggleButton.Parent = toggleButton
-
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 0))
-    }
-    gradient.Parent = toggleButton
 
     local state = false
     toggleButton.MouseButton1Click:Connect(function()
