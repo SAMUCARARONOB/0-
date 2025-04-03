@@ -1,6 +1,6 @@
 local RNOX = {}
 
-function RNOX:CreateMainUI()
+function RNOX:CreateMainUI(params)
     local gui = Instance.new("ScreenGui")
     gui.Parent = game.Players.LocalPlayer.PlayerGui
     gui.ResetOnSpawn = false
@@ -20,18 +20,32 @@ function RNOX:CreateMainUI()
 
     local header = Instance.new("TextLabel")
     header.Size = UDim2.new(1, 0, 0.15, 0)
-    header.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    header.BackgroundColor3 = params.TituloCor or Color3.fromRGB(20, 20, 20)
     header.Text = "RNOX Interface"
     header.TextColor3 = Color3.fromRGB(255, 255, 255)
     header.Font = Enum.Font.GothamBold
     header.TextSize = 24
     header.Parent = baseFrame
 
-    local contentFrame = Instance.new("Frame")
-    contentFrame.Size = UDim2.new(0.9, 0, 0.75, 0)
-    contentFrame.Position = UDim2.new(0.05, 0, 0.2, 0)
+    local tabFrame = Instance.new("Frame")
+    tabFrame.Size = UDim2.new(1, 0, 0.1, 0)
+    tabFrame.Position = UDim2.new(0, 0, 0.15, 0)
+    tabFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    tabFrame.Parent = baseFrame
+
+    local tabLayout = Instance.new("UIListLayout")
+    tabLayout.FillDirection = Enum.FillDirection.Horizontal
+    tabLayout.Padding = UDim.new(0.01, 0)
+    tabLayout.Parent = tabFrame
+
+    local contentFrame = Instance.new("ScrollingFrame")
+    contentFrame.Size = UDim2.new(1, 0, 0.7, 0)
+    contentFrame.Position = UDim2.new(0, 0, 0.25, 0)
     contentFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     contentFrame.BorderSizePixel = 0
+    contentFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
+    contentFrame.ScrollBarThickness = 10
+    contentFrame.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
     contentFrame.Parent = baseFrame
 
     local layout = Instance.new("UIListLayout")
@@ -41,6 +55,32 @@ function RNOX:CreateMainUI()
     self.gui = gui
     self.frame = baseFrame
     self.contentFrame = contentFrame
+    self.tabFrame = tabFrame
+end
+
+function RNOX:AddTab(params)
+    local tabButton = Instance.new("TextButton")
+    tabButton.Text = params.Nome or "Aba"
+    tabButton.Size = UDim2.new(0.2, 0, 1, 0)
+    tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
+    tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    tabButton.Font = Enum.Font.GothamBold
+    tabButton.TextSize = 16
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0.1, 0)
+    corner.Parent = tabButton
+
+    tabButton.MouseButton1Click:Connect(function()
+        for _, child in pairs(self.contentFrame:GetChildren()) do
+            if child:IsA("Frame") then
+                child.Visible = false
+            end
+        end
+        params.Content.Visible = true
+    end)
+
+    tabButton.Parent = self.tabFrame
 end
 
 function RNOX:AddButton(params)
@@ -74,6 +114,7 @@ function RNOX:AddButton(params)
     end)
 
     button.Parent = self.contentFrame
+    self.contentFrame.CanvasSize = UDim2.new(0, 0, 0, self.contentFrame.UIListLayout.AbsoluteContentSize.Y)
 end
 
 function RNOX:AddToggle(params)
@@ -114,6 +155,7 @@ function RNOX:AddToggle(params)
     end)
 
     toggleFrame.Parent = self.contentFrame
+    self.contentFrame.CanvasSize = UDim2.new(0, 0, 0, self.contentFrame.UIListLayout.AbsoluteContentSize.Y)
 end
 
 return RNOX
