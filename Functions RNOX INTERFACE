@@ -53,13 +53,14 @@ function RNOX:CreateMainUI(params)
     self.baseFrame = baseFrame
     self.tabScrollFrame = tabScrollFrame
     self.tabs = {}
+    self.columns = {}
 end
 
 function RNOX:AddTab(params)
     local tabContent = Instance.new("ScrollingFrame")
     tabContent.Size = UDim2.new(1, 0, 0.75, 0)
     tabContent.Position = UDim2.new(0, 0, 0.25, 0)
-    tabContent.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    tabContent.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     tabContent.Visible = false
     tabContent.ScrollBarThickness = 10
     tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
@@ -110,10 +111,11 @@ end
 
 function RNOX:AddButton(columnIndex, params)
     if self.columns and self.columns[columnIndex] then
+        local parent = self.columns[columnIndex]
         local buttonFrame = Instance.new("Frame")
         buttonFrame.Size = UDim2.new(1, 0, 0.1, 0)
         buttonFrame.BackgroundTransparency = 1
-        buttonFrame.Parent = self.columns[columnIndex]
+        buttonFrame.Parent = parent
 
         local button = Instance.new("TextButton")
         button.Text = params.Nome or "Botão"
@@ -133,20 +135,22 @@ function RNOX:AddButton(columnIndex, params)
                 end
             end
         end)
+    else
+        warn("Coluna " .. tostring(columnIndex) .. " não encontrada.")
     end
 end
 
 function RNOX:AddToggle(columnIndex, params)
     if self.columns and self.columns[columnIndex] then
+        local parent = self.columns[columnIndex]
         local toggleFrame = Instance.new("Frame")
         toggleFrame.Size = UDim2.new(1, 0, 0.1, 0)
         toggleFrame.BackgroundTransparency = 1
-        toggleFrame.Parent = self.columns[columnIndex]
+        toggleFrame.Parent = parent
 
         local toggleText = Instance.new("TextLabel")
         toggleText.Text = params.Nome or "Toggle"
-        toggleText.Size = UDim2.new(0.6, -4, 1, -4)
-        toggleText.Position = UDim2.new(0, 2, 0, 2)
+        toggleText.Size = UDim2.new(0.7, 0, 1, 0)
         toggleText.BackgroundTransparency = 1
         toggleText.Font = Enum.Font.GothamBold
         toggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -154,11 +158,19 @@ function RNOX:AddToggle(columnIndex, params)
         toggleText.Parent = toggleFrame
 
         local toggleButton = Instance.new("TextButton")
-        toggleButton.Size = UDim2.new(0.4, -4, 0.8, -4)
-        toggleButton.Position = UDim2.new(0.6, 2, 0.1, 2)
+        toggleButton.Size = UDim2.new(0.2, 0, 0.8, 0)
+        toggleButton.Position = UDim2.new(0.75, 0, 0.1, 0)
         toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
         toggleButton.Text = ""
         toggleButton.Parent = toggleFrame
+
+        local cornerToggleFrame = Instance.new("UICorner")
+        cornerToggleFrame.CornerRadius = UDim.new(0.15, 0)
+        cornerToggleFrame.Parent = toggleFrame
+
+        local cornerToggleButton = Instance.new("UICorner")
+        cornerToggleButton.CornerRadius = UDim.new(0.5, 0)
+        cornerToggleButton.Parent = toggleButton
 
         local state = false
         toggleButton.MouseButton1Click:Connect(function()
@@ -171,8 +183,8 @@ function RNOX:AddToggle(columnIndex, params)
                 end
             end
         end)
-
-        toggleFrame.Parent = self.columns[columnIndex]
+    else
+        warn("Coluna " .. tostring(columnIndex) .. " não encontrada.")
     end
 end
 
