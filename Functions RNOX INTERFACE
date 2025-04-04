@@ -126,27 +126,22 @@ function RNOX:AddTab(params)
     return tabContent
 end
 
-function RNOX:AddButton(aba, coluna, params)
-    if aba and aba.Columns and aba.Columns[coluna] then
+function RNOX:AddButton(columnIndex, params)
+    if self.columns[columnIndex] then
+        local buttonFrame = Instance.new("Frame")
+        buttonFrame.Size = UDim2.new(1, 0, 0.1, 0)
+        buttonFrame.BackgroundTransparency = 1
+        buttonFrame.Parent = self.columns[columnIndex]
+
         local button = Instance.new("TextButton")
         button.Text = params.Nome or "Botão"
-        button.Size = UDim2.new(1, 0, 0.1, 0)
+        button.Size = UDim2.new(1, -4, 1, -4)
+        button.Position = UDim2.new(0, 2, 0, 2)
         button.BackgroundColor3 = params.Cor or Color3.fromRGB(100, 100, 100)
         button.TextColor3 = Color3.fromRGB(255, 255, 255)
         button.Font = Enum.Font.GothamBold
         button.TextSize = 18
-
-        local cornerButton = Instance.new("UICorner")
-        cornerButton.CornerRadius = UDim.new(0.2, 0)
-        cornerButton.Parent = button
-
-        button.MouseEnter:Connect(function()
-            button.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
-        end)
-
-        button.MouseLeave:Connect(function()
-            button.BackgroundColor3 = params.Cor or Color3.fromRGB(100, 100, 100)
-        end)
+        button.Parent = buttonFrame
 
         button.MouseButton1Click:Connect(function()
             if params.Acao then
@@ -156,24 +151,20 @@ function RNOX:AddButton(aba, coluna, params)
                 end
             end
         end)
-
-        button.Parent = aba.Columns[coluna]
     end
 end
 
-function RNOX:AddToggle(aba, coluna, params)
-    if aba and aba.Columns and aba.Columns[coluna] then
+function RNOX:AddToggle(columnIndex, params)
+    if self.columns[columnIndex] then
         local toggleFrame = Instance.new("Frame")
         toggleFrame.Size = UDim2.new(1, 0, 0.1, 0)
-        toggleFrame.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-
-        local cornerToggleFrame = Instance.new("UICorner")
-        cornerToggleFrame.CornerRadius = UDim.new(0.15, 0)
-        cornerToggleFrame.Parent = toggleFrame
+        toggleFrame.BackgroundTransparency = 1
+        toggleFrame.Parent = self.columns[columnIndex]
 
         local toggleText = Instance.new("TextLabel")
         toggleText.Text = params.Nome or "Toggle"
-        toggleText.Size = UDim2.new(0.7, 0, 1, 0)
+        toggleText.Size = UDim2.new(0.6, -4, 1, -4)
+        toggleText.Position = UDim2.new(0, 2, 0, 2)
         toggleText.BackgroundTransparency = 1
         toggleText.Font = Enum.Font.GothamBold
         toggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -181,29 +172,21 @@ function RNOX:AddToggle(aba, coluna, params)
         toggleText.Parent = toggleFrame
 
         local toggleButton = Instance.new("TextButton")
-        toggleButton.Size = UDim2.new(0.2, 0, 0.8, 0)
-        toggleButton.Position = UDim2.new(0.75, 0, 0.1, 0)
+        toggleButton.Size = UDim2.new(0.4, -4, 0.8, -4)
+        toggleButton.Position = UDim2.new(0.6, 2, 0.1, 2)
         toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
         toggleButton.Text = ""
         toggleButton.Parent = toggleFrame
 
-        local cornerToggleButton = Instance.new("UICorner")
-        cornerToggleButton.CornerRadius = UDim.new(0.5, 0)
-        cornerToggleButton.Parent = toggleButton
-
-        local state = false
         toggleButton.MouseButton1Click:Connect(function()
-            state = not state
-            toggleButton.BackgroundColor3 = state and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
+            toggleButton.BackgroundColor3 = toggleButton.BackgroundColor3 == Color3.fromRGB(255, 0, 0) and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
             if params.Acao then
-                local success, err = pcall(params.Acao, state)
+                local success, err = pcall(params.Acao)
                 if not success then
                     warn("Erro no toggle: " .. err)
                 end
             end
         end)
-
-        toggleFrame.Parent = aba.Columns[coluna]
     end
 end
 
