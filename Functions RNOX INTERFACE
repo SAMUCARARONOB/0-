@@ -6,7 +6,7 @@ function RNOX:CreateMainUI(params)
     gui.ResetOnSpawn = false
 
     local baseFrame = Instance.new("Frame")
-    baseFrame.Size = UDim2.new(0, 350, 0, 375)
+    baseFrame.Size = UDim2.new(0, 450, 0, 350)
     baseFrame.Position = UDim2.new(0.5, -225, 0.5, -175)
     baseFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
     baseFrame.BorderSizePixel = 0
@@ -67,7 +67,7 @@ for i = 1, params.Colunas or 2 do
         local separator = Instance.new("Frame")
         separator.Size = UDim2.new(0, 2, 1, 0)
         separator.Position = UDim2.new((i - 1) / (params.Colunas or 2) - 0.002, 0, 0, 0)
-        separator.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        separator.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Cor da linha separadora
         separator.BorderSizePixel = 0
         separator.Parent = columnFrame
     end
@@ -77,7 +77,7 @@ function RNOX:AddTab(params)
     local tabContent = Instance.new("ScrollingFrame")
     tabContent.Size = UDim2.new(1, 0, 0.75, 0)
     tabContent.Position = UDim2.new(0, 0, 0.25, 0)
-    tabContent.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    tabContent.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     tabContent.Visible = false
     tabContent.ScrollBarThickness = 10
     tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
@@ -126,55 +126,27 @@ function RNOX:AddTab(params)
     return tabContent
 end
 
-function RNOX:AddButton(parent, params)
-    local button = Instance.new("TextButton")
-    button.Text = params.Nome or "Botão"
-    button.Size = UDim2.new(1, 0, 0.1, 0)
-    button.BackgroundColor3 = params.Cor or Color3.fromRGB(100, 100, 100)
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.Font = Enum.Font.GothamBold
-    button.TextSize = 18
-
-    local cornerButton = Instance.new("UICorner")
-    cornerButton.CornerRadius = UDim.new(0.2, 0)
-    cornerButton.Parent = button
-
-    button.MouseEnter:Connect(function()
-        button.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
-    end)
-
-    button.MouseLeave:Connect(function()
-        button.BackgroundColor3 = params.Cor or Color3.fromRGB(100, 100, 100)
-    end)
-
-    button.MouseButton1Click:Connect(function()
-        if params.Acao then
-            local success, err = pcall(params.Acao)
-            if not success then
-                warn("Erro no botão: " .. err)
-            end
-        end
-    end)
-
-    button.Parent = parent
-end
-
-function RNOX:AddButton(columnIndex, params)
-    if self.columns[columnIndex] then
-        local buttonFrame = Instance.new("Frame")
-        buttonFrame.Size = UDim2.new(1, 0, 0.1, 0)
-        buttonFrame.BackgroundTransparency = 1
-        buttonFrame.Parent = self.columns[columnIndex]
-
+function RNOX:AddButton(aba, coluna, params)
+    if aba and aba.Columns and aba.Columns[coluna] then
         local button = Instance.new("TextButton")
         button.Text = params.Nome or "Botão"
-        button.Size = UDim2.new(1, -4, 1, -4)
-        button.Position = UDim2.new(0, 2, 0, 2)
+        button.Size = UDim2.new(1, 0, 0.1, 0)
         button.BackgroundColor3 = params.Cor or Color3.fromRGB(100, 100, 100)
         button.TextColor3 = Color3.fromRGB(255, 255, 255)
         button.Font = Enum.Font.GothamBold
         button.TextSize = 18
-        button.Parent = buttonFrame
+
+        local cornerButton = Instance.new("UICorner")
+        cornerButton.CornerRadius = UDim.new(0.2, 0)
+        cornerButton.Parent = button
+
+        button.MouseEnter:Connect(function()
+            button.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
+        end)
+
+        button.MouseLeave:Connect(function()
+            button.BackgroundColor3 = params.Cor or Color3.fromRGB(100, 100, 100)
+        end)
 
         button.MouseButton1Click:Connect(function()
             if params.Acao then
@@ -184,64 +156,24 @@ function RNOX:AddButton(columnIndex, params)
                 end
             end
         end)
+
+        button.Parent = aba.Columns[coluna]
     end
 end
 
-function RNOX:AddToggle(parent, params)
-    local toggleFrame = Instance.new("Frame")
-    toggleFrame.Size = UDim2.new(1, 0, 0.1, 0)
-    toggleFrame.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-
-    local cornerToggleFrame = Instance.new("UICorner")
-    cornerToggleFrame.CornerRadius = UDim.new(0.15, 0)
-    cornerToggleFrame.Parent = toggleFrame
-
-    local toggleText = Instance.new("TextLabel")
-    toggleText.Text = params.Nome or "Toggle"
-    toggleText.Size = UDim2.new(0.7, 0, 1, 0)
-    toggleText.BackgroundTransparency = 1
-    toggleText.Font = Enum.Font.GothamBold
-    toggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggleText.TextSize = 18
-    toggleText.Parent = toggleFrame
-
-    local toggleButton = Instance.new("TextButton")
-    toggleButton.Size = UDim2.new(0.2, 0, 0.8, 0)
-    toggleButton.Position = UDim2.new(0.75, 0, 0.1, 0)
-    toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    toggleButton.Text = ""
-    toggleButton.Parent = toggleFrame
-
-    local cornerToggleButton = Instance.new("UICorner")
-    cornerToggleButton.CornerRadius = UDim.new(0.5, 0)
-    cornerToggleButton.Parent = toggleButton
-
-    local state = false
-    toggleButton.MouseButton1Click:Connect(function()
-        state = not state
-        toggleButton.BackgroundColor3 = state and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-        if params.Acao then
-            local success, err = pcall(params.Acao, state)
-            if not success then
-                warn("Erro no toggle: " .. err)
-            end
-        end
-    end)
-
-    toggleFrame.Parent = parent
-end
-
-function RNOX:AddToggle(columnIndex, params)
-    if self.columns[columnIndex] then
+function RNOX:AddToggle(aba, coluna, params)
+    if aba and aba.Columns and aba.Columns[coluna] then
         local toggleFrame = Instance.new("Frame")
         toggleFrame.Size = UDim2.new(1, 0, 0.1, 0)
-        toggleFrame.BackgroundTransparency = 1
-        toggleFrame.Parent = self.columns[columnIndex]
+        toggleFrame.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+
+        local cornerToggleFrame = Instance.new("UICorner")
+        cornerToggleFrame.CornerRadius = UDim.new(0.15, 0)
+        cornerToggleFrame.Parent = toggleFrame
 
         local toggleText = Instance.new("TextLabel")
         toggleText.Text = params.Nome or "Toggle"
-        toggleText.Size = UDim2.new(0.6, -4, 1, -4)
-        toggleText.Position = UDim2.new(0, 2, 0, 2)
+        toggleText.Size = UDim2.new(0.7, 0, 1, 0)
         toggleText.BackgroundTransparency = 1
         toggleText.Font = Enum.Font.GothamBold
         toggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -249,21 +181,29 @@ function RNOX:AddToggle(columnIndex, params)
         toggleText.Parent = toggleFrame
 
         local toggleButton = Instance.new("TextButton")
-        toggleButton.Size = UDim2.new(0.4, -4, 0.8, -4)
-        toggleButton.Position = UDim2.new(0.6, 2, 0.1, 2)
+        toggleButton.Size = UDim2.new(0.2, 0, 0.8, 0)
+        toggleButton.Position = UDim2.new(0.75, 0, 0.1, 0)
         toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
         toggleButton.Text = ""
         toggleButton.Parent = toggleFrame
 
+        local cornerToggleButton = Instance.new("UICorner")
+        cornerToggleButton.CornerRadius = UDim.new(0.5, 0)
+        cornerToggleButton.Parent = toggleButton
+
+        local state = false
         toggleButton.MouseButton1Click:Connect(function()
-            toggleButton.BackgroundColor3 = toggleButton.BackgroundColor3 == Color3.fromRGB(255, 0, 0) and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            state = not state
+            toggleButton.BackgroundColor3 = state and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
             if params.Acao then
-                local success, err = pcall(params.Acao)
+                local success, err = pcall(params.Acao, state)
                 if not success then
                     warn("Erro no toggle: " .. err)
                 end
             end
         end)
+
+        toggleFrame.Parent = aba.Columns[coluna]
     end
 end
 
