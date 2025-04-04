@@ -55,24 +55,6 @@ function RNOX:CreateMainUI(params)
     self.tabs = {}
 end
 
-for i = 1, params.Colunas or 2 do
-    local column = Instance.new("Frame")
-    column.Size = UDim2.new(1 / (params.Colunas or 2), -2, 1, 0)
-    column.BackgroundTransparency = 1
-    column.Position = UDim2.new((i - 1) / (params.Colunas or 2), 0, 0, 0)
-    column.Parent = columnFrame
-    table.insert(self.columns, column)
-    
-    if i > 1 then
-        local separator = Instance.new("Frame")
-        separator.Size = UDim2.new(0, 2, 1, 0)
-        separator.Position = UDim2.new((i - 1) / (params.Colunas or 2) - 0.002, 0, 0, 0)
-        separator.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Cor da linha separadora
-        separator.BorderSizePixel = 0
-        separator.Parent = columnFrame
-    end
-end
-
 function RNOX:AddTab(params)
     local tabContent = Instance.new("ScrollingFrame")
     tabContent.Size = UDim2.new(1, 0, 0.75, 0)
@@ -127,7 +109,7 @@ function RNOX:AddTab(params)
 end
 
 function RNOX:AddButton(columnIndex, params)
-    if self.columns[columnIndex] then
+    if self.columns and self.columns[columnIndex] then
         local buttonFrame = Instance.new("Frame")
         buttonFrame.Size = UDim2.new(1, 0, 0.1, 0)
         buttonFrame.BackgroundTransparency = 1
@@ -155,7 +137,7 @@ function RNOX:AddButton(columnIndex, params)
 end
 
 function RNOX:AddToggle(columnIndex, params)
-    if self.columns[columnIndex] then
+    if self.columns and self.columns[columnIndex] then
         local toggleFrame = Instance.new("Frame")
         toggleFrame.Size = UDim2.new(1, 0, 0.1, 0)
         toggleFrame.BackgroundTransparency = 1
@@ -178,15 +160,19 @@ function RNOX:AddToggle(columnIndex, params)
         toggleButton.Text = ""
         toggleButton.Parent = toggleFrame
 
+        local state = false
         toggleButton.MouseButton1Click:Connect(function()
-            toggleButton.BackgroundColor3 = toggleButton.BackgroundColor3 == Color3.fromRGB(255, 0, 0) and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            state = not state
+            toggleButton.BackgroundColor3 = state and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
             if params.Acao then
-                local success, err = pcall(params.Acao)
+                local success, err = pcall(params.Acao, state)
                 if not success then
                     warn("Erro no toggle: " .. err)
                 end
             end
         end)
+
+        toggleFrame.Parent = self.columns[columnIndex]
     end
 end
 
