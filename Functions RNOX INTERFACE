@@ -19,12 +19,14 @@ function RNOX:CreateMainUI(params)
     corner.Parent = baseFrame
 
     local header = Instance.new("TextLabel")
-    header.Size = UDim2.new(1, 0, 0.15, 0)
+    header.Size = UDim2.new(1, -20, 0.15, 0) -- Ajusta para nunca ultrapassar os limites
+    header.Position = UDim2.new(0, 10, 0, 0) -- Centraliza corretamente
     header.BackgroundColor3 = params.TituloCor or Color3.fromRGB(20, 20, 20)
-    header.Text = "RNOX Interface"
-    header.TextColor3 = Color3.fromRGB(255, 255, 255)
+    header.Text = params.Titulo or "RNOX Interface" -- Define título padrão ou dinâmico
+    header.TextColor3 = params.TituloTextoCor or Color3.fromRGB(255, 255, 255) -- Cor dinâmica do texto
     header.Font = Enum.Font.GothamBold
-    header.TextSize = 24
+    header.TextScaled = true -- Escala o texto automaticamente ao tamanho da interface
+    header.TextWrapped = true -- Garante que o texto seja quebrado se necessário
     header.Parent = baseFrame
 
     local cornerHeader = Instance.new("UICorner")
@@ -51,8 +53,22 @@ function RNOX:CreateMainUI(params)
 
     self.gui = gui
     self.baseFrame = baseFrame
+    self.header = header -- Salva referência ao cabeçalho
     self.tabScrollFrame = tabScrollFrame
     self.tabs = {}
+end
+
+function RNOX:UpdateHeader(params)
+    -- Atualiza o título dinamicamente
+    if params.Titulo then
+        self.header.Text = params.Titulo
+    end
+    if params.TituloCor then
+        self.header.BackgroundColor3 = params.TituloCor
+    end
+    if params.TituloTextoCor then
+        self.header.TextColor3 = params.TituloTextoCor
+    end
 end
 
 function RNOX:AddTab(params)
