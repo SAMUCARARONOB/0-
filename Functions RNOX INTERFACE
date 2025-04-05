@@ -136,7 +136,7 @@ end
 
 function RNOX:AddButton(parent, params)
     local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0.2, 0, 0.15, 0)
+    button.Size = UDim2.new(0.15, 0, 0.15, 0)
     button.Text = params.Nome or "Botão"
     button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
