@@ -96,53 +96,81 @@ function RNOX:AddTab(params)
 
     local tabButton = Instance.new("TextButton")
     tabButton.Text = params.Nome or "Aba"
-    tabButton.Size = UDim2.new(0, 100, 1, 0)
-    tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
-    tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    tabButton.Size = UDim2.new(0, 120, 0, 40)
+    tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(50, 60, 70)
+    tabButton.TextColor3 = Color3.fromRGB(240, 240, 240)
     tabButton.Font = Enum.Font.GothamBold
-    tabButton.TextSize = 16
+    tabButton.TextSize = 18
 
     local cornerTabButton = Instance.new("UICorner")
-    cornerTabButton.CornerRadius = UDim.new(0.1, 0)
+    cornerTabButton.CornerRadius = UDim.new(0.5, 0)
     cornerTabButton.Parent = tabButton
 
-    tabButton.MouseButton1Click:Connect(function()
-        for _, content in pairs(self.tabs) do
-            content.Visible = false
-        end
-        tabContent.Visible = true
+    local gradientTabButton = Instance.new("UIGradient")
+    gradientTabButton.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(70, 80, 90)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 60, 70))
+    }
+    gradientTabButton.Parent = tabButton
+
+    tabButton.MouseEnter:Connect(function()
+        gradientTabButton.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 120, 140)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(80, 100, 120))
+        }
     end)
 
-    tabButton.Parent = self.tabScrollFrame
-    self.tabScrollFrame.CanvasSize = UDim2.new(0, self.tabScrollFrame.UIListLayout.AbsoluteContentSize.X, 0, 0)
-    table.insert(self.tabs, tabContent)
+    tabButton.MouseLeave:Connect(function()
+        gradientTabButton.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(70, 80, 90)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 60, 70))
+        }
+    end)
 
-    if params.Default then
-        tabContent.Visible = true
-    end
+    tabButton.MouseButton1Click:Connect(function()
+        if params.Acao then
+            local success, err = pcall(params.Acao)
+            if not success then
+                warn("Erro no botão da aba: " .. err)
+            end
+        end
+    end)
 
-    return tabContent
+    tabButton.Parent = parent
 end
 
 function RNOX:AddButton(parent, params)
     local button = Instance.new("TextButton")
     button.Text = params.Nome or "Botão"
     button.Size = UDim2.new(1, 0, 0.1, 0)
-    button.BackgroundColor3 = params.Cor or Color3.fromRGB(100, 100, 100)
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.BackgroundColor3 = params.Cor or Color3.fromRGB(50, 60, 70)
+    button.TextColor3 = Color3.fromRGB(245, 245, 245)
     button.Font = Enum.Font.GothamBold
-    button.TextSize = 18
+    button.TextSize = 20
 
     local cornerButton = Instance.new("UICorner")
-    cornerButton.CornerRadius = UDim.new(0.2, 0)
+    cornerButton.CornerRadius = UDim.new(0.35, 0)
     cornerButton.Parent = button
 
+    local gradientButton = Instance.new("UIGradient")
+    gradientButton.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(80, 90, 100)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 70, 80))
+    }
+    gradientButton.Parent = button
+
     button.MouseEnter:Connect(function()
-        button.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
+        gradientButton.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(110, 130, 150)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(90, 110, 130))
+        }
     end)
 
     button.MouseLeave:Connect(function()
-        button.BackgroundColor3 = params.Cor or Color3.fromRGB(100, 100, 100)
+        gradientButton.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(80, 90, 100)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 70, 80))
+        }
     end)
 
     button.MouseButton1Click:Connect(function()
