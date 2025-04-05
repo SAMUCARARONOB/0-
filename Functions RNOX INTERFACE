@@ -6,9 +6,9 @@ function RNOX:CreateMainUI(params)
     gui.ResetOnSpawn = false
 
     local baseFrame = Instance.new("Frame")
-    baseFrame.Size = UDim2.new(0, 450, 0, 350)
-    baseFrame.Position = UDim2.new(0.5, -225, 0.5, -175)
-    baseFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    baseFrame.Size = UDim2.new(0.8, 0, 0.7, 0)
+    baseFrame.Position = UDim2.new(0.1, 0, 0.15, 0)
+    baseFrame.BackgroundColor3 = params.BackgroundColor or Color3.fromRGB(20, 20, 20)
     baseFrame.BorderSizePixel = 0
     baseFrame.Active = true
     baseFrame.Draggable = true
@@ -19,11 +19,11 @@ function RNOX:CreateMainUI(params)
     corner.Parent = baseFrame
 
     local header = Instance.new("TextLabel")
-    header.Size = UDim2.new(1, -20, 0.25, 0)
-    header.Position = UDim2.new(0, 10, 0, 5.5)
+    header.Size = UDim2.new(1, -20, 0.15, 0)
+    header.Position = UDim2.new(0, 10, 0, 10)
     header.BackgroundColor3 = params.TituloCor or Color3.fromRGB(0, 0, 0)
     header.Text = params.Titulo or "RNOX Interface"
-    header.TextColor3 = params.TituloTextoCor or Color3.fromRGB(10, 255, 10)
+    header.TextColor3 = params.TituloTextoCor or Color3.fromRGB(255, 255, 255)
     header.Font = Enum.Font.GothamBold
     header.TextScaled = true
     header.TextWrapped = true
@@ -34,10 +34,10 @@ function RNOX:CreateMainUI(params)
     cornerHeader.Parent = header
 
     local tabScrollFrame = Instance.new("ScrollingFrame")
-    tabScrollFrame.Size = UDim2.new(1, 0, 0.05, 0)
+    tabScrollFrame.Size = UDim2.new(1, 0, 0.1, 0)
     tabScrollFrame.Position = UDim2.new(0, 0, 0.15, 0)
-    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    tabScrollFrame.ScrollBarThickness = 10
+    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    tabScrollFrame.ScrollBarThickness = 8
     tabScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
     tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
     tabScrollFrame.Parent = baseFrame
@@ -58,25 +58,12 @@ function RNOX:CreateMainUI(params)
     self.tabs = {}
 end
 
-function RNOX:UpdateHeader(params)
-    -- Atualiza o título dinamicamente
-    if params.Titulo then
-        self.header.Text = params.Titulo
-    end
-    if params.TituloCor then
-        self.header.BackgroundColor3 = params.TituloCor
-    end
-    if params.TituloTextoCor then
-        self.header.TextColor3 = params.TituloTextoCor
-    end
-end
-
 function RNOX:AddTab(params)
     local tabContent = Instance.new("ScrollingFrame")
-    tabContent.Size = UDim2.new(1, 0, 0.65, 0) -- Reduzindo a altura para ocupar 65% da interface principal
-    tabContent.Position = UDim2.new(0, 0, 0.22, 0) -- Levando um pouco mais para cima (20% abaixo do topo)
-    tabContent.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    tabContent.Visible = false
+    tabContent.Size = UDim2.new(1, 0, 0.6, 0)
+    tabContent.Position = UDim2.new(0, 0, 0.25, 0)
+    tabContent.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    tabContent.Visible = params.Default or false
     tabContent.ScrollBarThickness = 10
     tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
     tabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
@@ -97,7 +84,7 @@ function RNOX:AddTab(params)
     local tabButton = Instance.new("TextButton")
     tabButton.Text = params.Nome or "Aba"
     tabButton.Size = UDim2.new(0, 100, 1, 0)
-    tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
+    tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(60, 60, 60)
     tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     tabButton.Font = Enum.Font.GothamBold
     tabButton.TextSize = 16
@@ -114,7 +101,6 @@ function RNOX:AddTab(params)
     end)
 
     tabButton.Parent = self.tabScrollFrame
-    self.tabScrollFrame.CanvasSize = UDim2.new(0, self.tabScrollFrame.UIListLayout.AbsoluteContentSize.X, 0, 0)
     table.insert(self.tabs, tabContent)
 
     if params.Default then
