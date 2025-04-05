@@ -193,4 +193,111 @@ function RNOX:AddToggle(parent, params)
     toggleButton.Parent = parent
 end
 
+function RNOX:AddSlider(parent, params)
+    local minValue, maxValue = params.Range:match("(%d+)/(%d+)")
+    minValue = tonumber(minValue) or 0
+    maxValue = tonumber(maxValue) or 100
+    local initialValue = minValue
+    local sliderColor = params.Color and {params.Color:match("(%d+),(%d+),(%d+)")} or {255, 255, 255}
+
+    local sliderFrame = Instance.new("Frame")
+    sliderFrame.Size = UDim2.new(0.8, 0, 0.1, 0)
+    sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    sliderFrame.BorderSizePixel = 0
+    sliderFrame.Parent = parent
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 10)
+    corner.Parent = sliderFrame
+
+    local track = Instance.new("Frame")
+    track.Size = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.4, 0)
+    track.Position = UDim2.new(0, 0, 0.5, 0)
+    track.AnchorPoint = Vector2.new(0, 0.5)
+    track.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
+    track.BorderSizePixel = 0
+    track.Parent = sliderFrame
+
+    local trackCorner = Instance.new("UICorner")
+    trackCorner.CornerRadius = UDim.new(0, 5)
+    trackCorner.Parent = track
+
+    local handle = Instance.new("Frame")
+    handle.Size = UDim2.new(0.05, 0, track.Size.Y.Scale, 0)
+    handle.Position = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.5, 0)
+    handle.AnchorPoint = Vector2.new(0.5, 0.5)
+    handle.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
+    handle.BorderSizePixel = 0
+    handle.Parent = sliderFrame
+
+    local handleCorner = Instance.new("UICorner")
+    handleCorner.CornerRadius = UDim.new(1, 0)
+    handleCorner.Parent = handle
+
+    local valueTextBox = Instance.new("TextBox")
+    valueTextBox.Size = UDim2.new(0.2, 0, 0.4, 0)
+    valueTextBox.AnchorPoint = Vector2.new(0.5, 0.5)
+    valueTextBox.Position = UDim2.new(0.5, 0, 0.5, 0)
+    valueTextBox.BackgroundTransparency = 1
+    valueTextBox.Text = tostring(initialValue)
+    valueTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    valueTextBox.Font = Enum.Font.GothamBold
+    valueTextBox.TextSize = 14
+    valueTextBox.TextXAlignment = Enum.TextXAlignment.Center
+    valueTextBox.TextYAlignment = Enum.TextYAlignment.Center
+    valueTextBox.ClearTextOnFocus = false
+    valueTextBox.Parent = sliderFrame
+
+    local dragging = false
+
+    local function updateSliderBar(value)
+        local relativeWidth = math.clamp((value - minValue) / (maxValue - minValue), 0, 1)
+        track.Size = UDim2.new(relativeWidth, 0, 0.4, 0)
+        handle.Position = UDim2.new(relativeWidth, 0, 0.5, 0)
+        valueTextBox.Text = tostring(value)
+        if params.SliderFunction then
+            local success, err = pcall(function()
+                params.SliderFunction(value)
+            end)
+            if not success then
+                warn("Erro ao executar a função do slider: " .. err)
+            end
+        end
+    end
+
+    handle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+        end
+    end)
+
+    handle.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local relativePosition = math.clamp((input.Position.X - sliderFrame.AbsolutePosition.X) / sliderFrame.AbsoluteSize.X, 0, 1)
+            local currentValue = math.floor(minValue + (maxValue - minValue) * relativePosition)
+            updateSliderBar(currentValue)
+        end
+    end)
+
+    valueTextBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            local enteredValue = tonumber(valueTextBox.Text)
+            if enteredValue then
+                enteredValue = math.clamp(enteredValue, minValue, maxValue)
+                updateSliderBar(enteredValue)
+            else
+                updateSliderBar(minValue)
+            end
+        end
+    end)
+
+    updateSliderBar(initialValue)
+end
+
 return RNOX
