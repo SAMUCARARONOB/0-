@@ -19,35 +19,45 @@ function RNOX:CreateMainUI(params)
     corner.Parent = baseFrame
 
     local header = Instance.new("TextLabel")
-    header.Size = UDim2.new(1, -20, 0.25, 0)
-    header.Position = UDim2.new(0, 10, 0, 5.5)
-    header.BackgroundColor3 = params.TituloCor or Color3.fromRGB(0, 0, 0)
-    header.Text = params.Titulo or "RNOX Interface"
-    header.TextColor3 = params.TituloTextoCor or Color3.fromRGB(10, 255, 10)
-    header.Font = Enum.Font.GothamBold
-    header.TextScaled = true
-    header.TextWrapped = false
-    local textSizeConstraint = Instance.new("UITextSizeConstraint")
-    textSizeConstraint.MaxTextSize = 30
-    textSizeConstraint.MinTextSize = 8
-    textSizeConstraint.Parent = header
-    header.Parent = baseFrame
-    local cornerHeader = Instance.new("UICorner")
-    cornerHeader.CornerRadius = UDim.new(0.1, 0)
-    cornerHeader.Parent = header
+header.Size = UDim2.new(1, -20, 0.25, 0)
+header.Position = UDim2.new(0, 10, 0, 5.5)
+header.BackgroundColor3 = params.TituloCor or Color3.fromRGB(0, 0, 0)
+header.Text = params.Titulo or "RNOX Interface"
+header.TextColor3 = params.TituloTextoCor or Color3.fromRGB(10, 255, 10)
+header.Font = Enum.Font.GothamBold
+header.TextScaled = true
+header.TextWrapped = false
+local textSizeConstraint = Instance.new("UITextSizeConstraint")
+textSizeConstraint.MaxTextSize = 30
+textSizeConstraint.MinTextSize = 30
+textSizeConstraint.Parent = header
+header.Parent = baseFrame
+local cornerHeader = Instance.new("UICorner")
+cornerHeader.CornerRadius = UDim.new(0.1, 0)
+cornerHeader.Parent = header
 
     local tabScrollFrame = Instance.new("ScrollingFrame")
-    tabScrollFrame.Size = UDim2.new(1, 0, 0.05, 0)
-    tabScrollFrame.Position = UDim2.new(0, 0, 0.17, 0)
-    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    tabScrollFrame.ScrollBarThickness = 10
-    tabScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-    tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-    tabScrollFrame.Parent = baseFrame
+tabScrollFrame.Size = UDim2.new(1, 0, 0.1, 0)
+tabScrollFrame.Position = UDim2.new(0, 0, 0.17, 0)
+tabScrollFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+tabScrollFrame.ScrollBarThickness = 10
+tabScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.None
+tabScrollFrame.ScrollBarInset = Enum.ScrollBarInset.ScrollBar
+tabScrollFrame.Parent = baseFrame
 
-    local cornerTabFrame = Instance.new("UICorner")
-    cornerTabFrame.CornerRadius = UDim.new(0.1, 0)
-    cornerTabFrame.Parent = tabScrollFrame
+local cornerTabFrame = Instance.new("UICorner")
+cornerTabFrame.CornerRadius = UDim.new(0.1, 0)
+cornerTabFrame.Parent = tabScrollFrame
+
+local tabLayout = Instance.new("UIListLayout")
+tabLayout.FillDirection = Enum.FillDirection.Horizontal
+tabLayout.Padding = UDim.new(0.02, 0)
+tabLayout.Parent = tabScrollFrame
+
+tabScrollFrame.ChildAdded:Connect(function()
+    tabScrollFrame.CanvasSize = UDim2.new(0, tabLayout.AbsoluteContentSize.X, 0, 0)
+end)
 
     local tabLayout = Instance.new("UIListLayout")
     tabLayout.FillDirection = Enum.FillDirection.Horizontal
