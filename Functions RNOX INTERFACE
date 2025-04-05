@@ -6,7 +6,7 @@ function RNOX:CreateMainUI(params)
     gui.ResetOnSpawn = false
 
     local baseFrame = Instance.new("Frame")
-    baseFrame.Size = UDim2.new(0, 300, 0, 350)
+    baseFrame.Size = UDim2.new(0, 500, 0, 355)
     baseFrame.Position = UDim2.new(0.5, -225, 0.5, -175)
     baseFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
     baseFrame.BorderSizePixel = 0
