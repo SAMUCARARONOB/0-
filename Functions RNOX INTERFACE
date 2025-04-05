@@ -84,7 +84,7 @@ end
 function RNOX:AddTab(params)
     local tabContent = Instance.new("ScrollingFrame")
     tabContent.Size = UDim2.new(1, 0, 0.65, 0)
-    tabContent.Position = UDim2.new(0, 0, 0.25, 0)
+    tabContent.Position = UDim2.new(0, 0, 0.28, 0)
     tabContent.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     tabContent.Visible = false
     tabContent.ScrollBarThickness = 10
@@ -106,14 +106,14 @@ function RNOX:AddTab(params)
 
     local tabButton = Instance.new("TextButton")
     tabButton.Text = params.Nome or "Aba"
-    tabButton.Size = UDim2.new(0, 100, 1, 0)
+    tabButton.Size = UDim2.new(0, 90, 1, 0)
     tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
     tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     tabButton.Font = Enum.Font.GothamBold
     tabButton.TextSize = 16
 
     local cornerTabButton = Instance.new("UICorner")
-    cornerTabButton.CornerRadius = UDim.new(0.1, 0)
+    cornerTabButton.CornerRadius = UDim.new(0.15, 0)
     cornerTabButton.Parent = tabButton
 
     tabButton.MouseButton1Click:Connect(function()
@@ -136,7 +136,7 @@ end
 
 function RNOX:AddButton(parent, params)
     local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0.15, 0, 0.15, 0)
+    button.Size = UDim2.new(0.2, 0, 0.15, 0)
     button.Text = params.Nome or "Botão"
     button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
