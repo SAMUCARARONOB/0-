@@ -5,16 +5,13 @@ function RNOX:CreateMainUI(params)
     gui.Parent = game.Players.LocalPlayer.PlayerGui
     gui.ResetOnSpawn = false
 
-    local tweenService = game:GetService("TweenService")
-
     local baseFrame = Instance.new("Frame")
-    baseFrame.Size = UDim2.new(0, 0, 0, 0)
-    baseFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    baseFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    baseFrame.BackgroundColor3 = params.BackgroundColor or Color3.fromRGB(0, 0, 0)
-    baseFrame.BackgroundTransparency = 0.1
+    baseFrame.Size = UDim2.new(0.8, 0, 0.7, 0)
+    baseFrame.Position = UDim2.new(0.1, 0, 0.15, 0)
+    baseFrame.BackgroundColor3 = params.BackgroundColor or Color3.fromRGB(20, 20, 20)
     baseFrame.BorderSizePixel = 0
-    baseFrame.Visible = false
+    baseFrame.Active = true
+    baseFrame.Draggable = true
     baseFrame.Parent = gui
 
     local corner = Instance.new("UICorner")
@@ -22,101 +19,112 @@ function RNOX:CreateMainUI(params)
     corner.Parent = baseFrame
 
     local header = Instance.new("TextLabel")
-    header.Size = UDim2.new(1, 0, 0.1, 0)
-    header.Position = UDim2.new(0, 0, 0, 0)
-    header.BackgroundColor3 = params.TituloCor or Color3.fromRGB(25, 25, 25)
-    header.BorderSizePixel = 0
+    header.Size = UDim2.new(1, -20, 0.15, 0)
+    header.Position = UDim2.new(0, 10, 0, 10)
+    header.BackgroundColor3 = params.TituloCor or Color3.fromRGB(0, 0, 0)
     header.Text = params.Titulo or "RNOX Interface"
     header.TextColor3 = params.TituloTextoCor or Color3.fromRGB(255, 255, 255)
     header.Font = Enum.Font.GothamBold
-    header.TextSize = 30
+    header.TextScaled = true
+    header.TextWrapped = true
     header.Parent = baseFrame
 
+    local cornerHeader = Instance.new("UICorner")
+    cornerHeader.CornerRadius = UDim.new(0.1, 0)
+    cornerHeader.Parent = header
+
     local tabScrollFrame = Instance.new("ScrollingFrame")
-    tabScrollFrame.Size = UDim2.new(0.95, 0, 0.85, 0)
-    tabScrollFrame.Position = UDim2.new(0.025, 0, 0.12, 0)
-    tabScrollFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
-    tabScrollFrame.ScrollBarThickness = 10
-    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(17, 17, 17)
-    tabScrollFrame.BorderSizePixel = 0
-    tabScrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    tabScrollFrame.Size = UDim2.new(1, 0, 0.1, 0)
+    tabScrollFrame.Position = UDim2.new(0, 0, 0.15, 0)
+    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    tabScrollFrame.ScrollBarThickness = 8
+    tabScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
     tabScrollFrame.Parent = baseFrame
 
-    local layout = Instance.new("UIGridLayout")
-    layout.CellPadding = UDim2.new(0.02, 0, 0.06, 0)
-    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    layout.VerticalAlignment = Enum.VerticalAlignment.Top
-    layout.Parent = tabScrollFrame
+    local cornerTabFrame = Instance.new("UICorner")
+    cornerTabFrame.CornerRadius = UDim.new(0.1, 0)
+    cornerTabFrame.Parent = tabScrollFrame
 
-    local hideButton = Instance.new("ImageButton")
-    hideButton.Size = UDim2.new(0.05, 0, 0.05, 0)
-    hideButton.Position = UDim2.new(0.95, -10, 0, 10)
-    hideButton.Image = "rbxassetid://6035047409"
-    hideButton.BackgroundTransparency = 1
-    hideButton.Parent = baseFrame
-
-    local ballButton = Instance.new("ImageButton")
-    ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
-    ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
-    ballButton.Position = UDim2.new(0.1, 0, 0.9, 0)
-    ballButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    ballButton.Image = "rbxassetid://6337069410"
-    ballButton.BackgroundTransparency = 0
-    ballButton.Visible = false
-    ballButton.Active = true
-    ballButton.Draggable = true
-    ballButton.Parent = gui
-
-    local ballCorner = Instance.new("UICorner")
-    ballCorner.CornerRadius = UDim.new(0.5, 0)
-    ballCorner.Parent = ballButton
-
-    hideButton.MouseButton1Click:Connect(function()
-        local tweenOut = tweenService:Create(
-            baseFrame,
-            TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-            {Size = UDim2.new(0, 0, 0, 0)}
-        )
-        tweenOut:Play()
-        tweenOut.Completed:Connect(function()
-            baseFrame.Visible = false
-            ballButton.Visible = true
-        end)
-    end)
-
-    ballButton.MouseButton1Click:Connect(function()
-        ballButton.Visible = false
-        baseFrame.Size = UDim2.new(0, 0, 0, 0)
-        baseFrame.Visible = true
-        local tweenIn = tweenService:Create(
-            baseFrame,
-            TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-            {Size = UDim2.new(0.8, 0, 1.1, 0)}
-        )
-        tweenIn:Play()
-    end)
+    local tabLayout = Instance.new("UIListLayout")
+    tabLayout.FillDirection = Enum.FillDirection.Horizontal
+    tabLayout.Padding = UDim.new(0.02, 0)
+    tabLayout.Parent = tabScrollFrame
 
     self.gui = gui
     self.baseFrame = baseFrame
+    self.header = header
     self.tabScrollFrame = tabScrollFrame
-    self.layout = layout
+    self.tabs = {}
+end
+
+function RNOX:AddTab(params)
+    local tabContent = Instance.new("ScrollingFrame")
+    tabContent.Size = UDim2.new(1, 0, 0.6, 0)
+    tabContent.Position = UDim2.new(0, 0, 0.25, 0)
+    tabContent.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    tabContent.Visible = params.Default or false
+    tabContent.ScrollBarThickness = 10
+    tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+    tabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    tabContent.Parent = self.baseFrame
+
+    local cornerTabContent = Instance.new("UICorner")
+    cornerTabContent.CornerRadius = UDim.new(0.1, 0)
+    cornerTabContent.Parent = tabContent
+
+    local gridLayout = Instance.new("UIGridLayout")
+    gridLayout.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
+    gridLayout.CellSize = UDim2.new(1 / params.Colunas, -10, 0.1, 0)
+    gridLayout.FillDirection = Enum.FillDirection.Horizontal
+    gridLayout.FillDirectionMaxCells = params.Colunas or 2
+    gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    gridLayout.Parent = tabContent
+
+    local tabButton = Instance.new("TextButton")
+    tabButton.Text = params.Nome or "Aba"
+    tabButton.Size = UDim2.new(0, 100, 1, 0)
+    tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(60, 60, 60)
+    tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    tabButton.Font = Enum.Font.GothamBold
+    tabButton.TextSize = 16
+
+    local cornerTabButton = Instance.new("UICorner")
+    cornerTabButton.CornerRadius = UDim.new(0.1, 0)
+    cornerTabButton.Parent = tabButton
+
+    tabButton.MouseButton1Click:Connect(function()
+        for _, content in pairs(self.tabs) do
+            content.Visible = false
+        end
+        tabContent.Visible = true
+    end)
+
+    tabButton.Parent = self.tabScrollFrame
+    table.insert(self.tabs, tabContent)
+
+    if params.Default then
+        tabContent.Visible = true
+    end
+
+    return tabContent
 end
 
 function RNOX:AddButton(parent, params)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0.2, 0, 0.1, 0)
     button.Text = params.Nome or "Botão"
-    button.BackgroundColor3 = params.Cor or Color3.fromRGB(35, 35, 35)
+    button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.Gotham
     button.TextSize = 18
     button.TextWrapped = true
     local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.1, 0)
+    corner.CornerRadius = UDim.new(0, 10)
     corner.Parent = button
     button.MouseButton1Click:Connect(function()
         local success, err = pcall(function()
-            params.Acao()
+            loadstring(params.Acao)()
         end)
         if not success then
             warn("Erro ao executar a função do botão: " .. err)
@@ -135,12 +143,20 @@ function RNOX:AddToggle(parent, params)
     toggleButton.TextSize = 14
     toggleButton.TextWrapped = true
     local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.1, 0)
+    corner.CornerRadius = UDim.new(0, 10)
     corner.Parent = toggleButton
+    local icon = Instance.new("ImageButton")
+    icon.Size = UDim2.new(0.1, 0, 0.8, 0)
+    icon.Position = UDim2.new(0.88, 0, 0.1, 0)
+    icon.BackgroundTransparency = 1
+    icon.Image = "rbxassetid://14293471713"
+    icon.ImageColor3 = Color3.fromRGB(255, 0, 0)
+    icon.Parent = toggleButton
     local isActive = false
-    toggleButton.MouseButton1Click:Connect(function()
+    icon.MouseButton1Click:Connect(function()
         isActive = not isActive
-        toggleButton.BackgroundColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        toggleButton.BackgroundColor3 = isActive and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(0, 0, 0)
+        icon.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
         if params.Acao then
             local success, err = pcall(function()
                 params.Acao(isActive)
