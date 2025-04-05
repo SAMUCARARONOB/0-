@@ -128,21 +128,29 @@ function RNOX:AddButton(parent, params)
     local button = Instance.new("TextButton")
     button.Text = params.Nome or "Botão"
     button.Size = UDim2.new(1, 0, 0.1, 0)
-    button.BackgroundColor3 = params.Cor or Color3.fromRGB(100, 100, 100)
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.BackgroundColor3 = params.Cor or Color3.fromRGB(50, 60, 70)
+    button.TextColor3 = Color3.fromRGB(245, 245, 245)
     button.Font = Enum.Font.GothamBold
     button.TextSize = 18
 
     local cornerButton = Instance.new("UICorner")
-    cornerButton.CornerRadius = UDim.new(0.2, 0)
+    cornerButton.CornerRadius = UDim.new(0.35, 0)
     cornerButton.Parent = button
 
+    local borderFrame = Instance.new("Frame")
+    borderFrame.Size = UDim2.new(1, 2, 1, 2)
+    borderFrame.Position = UDim2.new(0, -1, 0, -1)
+    borderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    borderFrame.BorderSizePixel = 0
+    borderFrame.ZIndex = button.ZIndex - 1
+    borderFrame.Parent = button.Parent
+
     button.MouseEnter:Connect(function()
-        button.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
+        button.BackgroundColor3 = Color3.fromRGB(100, 150, 200)
     end)
 
     button.MouseLeave:Connect(function()
-        button.BackgroundColor3 = params.Cor or Color3.fromRGB(100, 100, 100)
+        button.BackgroundColor3 = params.Cor or Color3.fromRGB(50, 60, 70)
     end)
 
     button.MouseButton1Click:Connect(function()
@@ -154,7 +162,7 @@ function RNOX:AddButton(parent, params)
         end
     end)
 
-    button.Parent = parent
+    button.Parent = borderFrame
 end
 
 function RNOX:AddToggle(parent, params)
