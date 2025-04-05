@@ -34,9 +34,9 @@ function RNOX:CreateMainUI(params)
     cornerHeader.Parent = header
 
     local tabContent = Instance.new("ScrollingFrame")
-    tabContent.Size = UDim2.new(1, 0, 0.7, 0) -- Ajuste: ocupando 70% da altura da interface
-    tabContent.Position = UDim2.new(0, 0, 0.25, 0) -- Ajuste: começa 25% abaixo do topo
-    tabContent.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    tabContent.Size = UDim2.new(0.95, 0, 0.6, 0) -- O ScrollingFrame ocupa 95% da largura e 60% da altura da interface principal
+    tabContent.Position = UDim2.new(0.025, 0, 0.2, 0) -- Centralizado horizontalmente e ajustado verticalmente
+    tabContent.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     tabContent.Visible = false
     tabContent.ScrollBarThickness = 10
     tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
