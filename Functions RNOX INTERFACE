@@ -95,7 +95,7 @@ end
 function RNOX:AddTab(params)
     local tabContent = Instance.new("ScrollingFrame")
     tabContent.Size = UDim2.new(1, 0, 0.65, 0)
-    tabContent.Position = UDim2.new(0, 0, 0.22, 0)
+    tabContent.Position = UDim2.new(0, 0, 0.25, 0)
     tabContent.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     tabContent.Visible = false
     tabContent.ScrollBarThickness = 10
