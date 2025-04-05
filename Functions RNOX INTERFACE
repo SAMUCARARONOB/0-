@@ -33,18 +33,19 @@ function RNOX:CreateMainUI(params)
     cornerHeader.CornerRadius = UDim.new(0.1, 0)
     cornerHeader.Parent = header
 
-    local tabScrollFrame = Instance.new("ScrollingFrame")
-    tabScrollFrame.Size = UDim2.new(1, 0, 0.1, 0)
-    tabScrollFrame.Position = UDim2.new(0, 0, 0.15, 0)
-    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    tabScrollFrame.ScrollBarThickness = 10
-    tabScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-    tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-    tabScrollFrame.Parent = baseFrame
+    local tabContent = Instance.new("ScrollingFrame")
+    tabContent.Size = UDim2.new(1, 0, 0.7, 0) -- Ajuste: ocupando 70% da altura da interface
+    tabContent.Position = UDim2.new(0, 0, 0.25, 0) -- Ajuste: começa 25% abaixo do topo
+    tabContent.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    tabContent.Visible = false
+    tabContent.ScrollBarThickness = 10
+    tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+    tabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    tabContent.Parent = self.baseFrame
 
-    local cornerTabFrame = Instance.new("UICorner")
-    cornerTabFrame.CornerRadius = UDim.new(0.1, 0)
-    cornerTabFrame.Parent = tabScrollFrame
+    local cornerTabContent = Instance.new("UICorner")
+    cornerTabContent.CornerRadius = UDim.new(0.1, 0)
+    cornerTabContent.Parent = tabContent
 
     local tabLayout = Instance.new("UIListLayout")
     tabLayout.FillDirection = Enum.FillDirection.Horizontal
