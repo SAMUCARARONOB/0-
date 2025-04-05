@@ -300,4 +300,21 @@ function RNOX:AddSlider(parent, params)
     updateSliderBar(initialValue)
 end
 
+function RNOX:AddLabelAbove(element, params)
+    if element then
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1, 0, 0.15, 0)
+        label.Position = UDim2.new(0, 0, -0.2, 0) -- Posição acima do elemento
+        label.BackgroundTransparency = 1
+        label.Text = params.Text or "Label"
+        label.TextColor3 = params.Color and Color3.fromRGB(params.Color[1], params.Color[2], params.Color[3]) or Color3.fromRGB(255, 255, 255)
+        label.Font = Enum.Font.Gotham
+        label.TextSize = 10
+        label.TextWrapped = false
+        label.Parent = element
+    else
+        warn("Elemento fornecido não encontrado para adicionar a label.")
+    end
+end
+
 return RNOX
