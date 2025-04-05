@@ -33,19 +33,18 @@ function RNOX:CreateMainUI(params)
     cornerHeader.CornerRadius = UDim.new(0.1, 0)
     cornerHeader.Parent = header
 
-    local tabContent = Instance.new("ScrollingFrame")
-    tabContent.Size = UDim2.new(0.95, 0, 0.6, 0) -- O ScrollingFrame ocupa 95% da largura e 60% da altura da interface principal
-    tabContent.Position = UDim2.new(0.025, 0, 0.2, 0) -- Centralizado horizontalmente e ajustado verticalmente
-    tabContent.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    tabContent.Visible = false
-    tabContent.ScrollBarThickness = 10
-    tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-    tabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    tabContent.Parent = self.baseFrame
+    local tabScrollFrame = Instance.new("ScrollingFrame")
+    tabScrollFrame.Size = UDim2.new(1, 0, 0.05, 0) -- Altura reduzida para 5% da interface
+    tabScrollFrame.Position = UDim2.new(0, 0, 0.1, 0) -- Posicionado 10% abaixo do topo
+    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    tabScrollFrame.ScrollBarThickness = 10
+    tabScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+    tabScrollFrame.Parent = baseFrame
 
-    local cornerTabContent = Instance.new("UICorner")
-    cornerTabContent.CornerRadius = UDim.new(0.1, 0)
-    cornerTabContent.Parent = tabContent
+    local cornerTabFrame = Instance.new("UICorner")
+    cornerTabFrame.CornerRadius = UDim.new(0.1, 0)
+    cornerTabFrame.Parent = tabScrollFrame
 
     local tabLayout = Instance.new("UIListLayout")
     tabLayout.FillDirection = Enum.FillDirection.Horizontal
@@ -76,7 +75,7 @@ function RNOX:AddTab(params)
     local tabContent = Instance.new("ScrollingFrame")
     tabContent.Size = UDim2.new(1, 0, 0.75, 0)
     tabContent.Position = UDim2.new(0, 0, 0.25, 0)
-    tabContent.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    tabContent.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     tabContent.Visible = false
     tabContent.ScrollBarThickness = 10
     tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
@@ -126,22 +125,13 @@ function RNOX:AddTab(params)
 end
 
 function RNOX:AddButton(parent, params)
-    local borderFrame = Instance.new("Frame")
-    borderFrame.Size = UDim2.new(1, 2, 0.1, 2)
-    borderFrame.Position = UDim2.new(0, -1, 0, -1)
-    borderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    borderFrame.BorderSizePixel = 0
-    borderFrame.Parent = parent
-
     local button = Instance.new("TextButton")
     button.Text = params.Nome or "Botão"
-    button.Size = UDim2.new(1, -2, 1, -2)
-    button.Position = UDim2.new(0, 1, 0, 1)
+    button.Size = UDim2.new(1, 0, 0.1, 0)
     button.BackgroundColor3 = params.Cor or Color3.fromRGB(100, 100, 100)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.GothamBold
     button.TextSize = 18
-    button.Parent = borderFrame
 
     local cornerButton = Instance.new("UICorner")
     cornerButton.CornerRadius = UDim.new(0.2, 0)
@@ -163,6 +153,8 @@ function RNOX:AddButton(parent, params)
             end
         end
     end)
+
+    button.Parent = parent
 end
 
 function RNOX:AddToggle(parent, params)
