@@ -6,7 +6,7 @@ function RNOX:CreateMainUI(params)
     gui.ResetOnSpawn = false
 
     local baseFrame = Instance.new("Frame")
-    baseFrame.Size = UDim2.new(0, 300, 0, 350)
+    baseFrame.Size = UDim2.new(0, 350, 0, 350)
     baseFrame.Position = UDim2.new(0.5, -225, 0.5, -175)
     baseFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
     baseFrame.BorderSizePixel = 0
@@ -26,7 +26,7 @@ function RNOX:CreateMainUI(params)
     header.Text = params.Titulo or "RNOX Interface"
     header.TextColor3 = params.TituloTextoCor or Color3.fromRGB(10, 255, 10)
     header.Font = Enum.Font.GothamBold
-    header.TextScaled = true
+    header.TextSize = 25
     header.TextWrapped = true
     header.Parent = baseFrame
 
