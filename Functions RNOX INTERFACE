@@ -75,37 +75,33 @@ function RNOX:AddTab(params)
     local tabContent = Instance.new("ScrollingFrame")
     tabContent.Size = UDim2.new(1, 0, 0.75, 0)
     tabContent.Position = UDim2.new(0, 0, 0.25, 0)
-    tabContent.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    tabContent.BackgroundColor3 = params.TabCor or Color3.fromRGB(30, 30, 30)
     tabContent.Visible = false
-    tabContent.ScrollBarThickness = 10
+    tabContent.ScrollBarThickness = 8
     tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
     tabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
     tabContent.Parent = self.baseFrame
 
     local cornerTabContent = Instance.new("UICorner")
-    cornerTabContent.CornerRadius = UDim.new(0.1, 0)
+    cornerTabContent.CornerRadius = UDim.new(0.15, 0) -- Mais arredondado para diferenciação
     cornerTabContent.Parent = tabContent
 
-    local gridLayout = Instance.new("UIGridLayout")
-    gridLayout.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
-    gridLayout.CellSize = UDim2.new(1 / params.Colunas, -10, 0.1, 0)
-    gridLayout.FillDirection = Enum.FillDirection.Horizontal
-    gridLayout.FillDirectionMaxCells = params.Colunas or 2
-    gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    gridLayout.Parent = tabContent
+    local gradientBackground = Instance.new("UIGradient") -- Adiciona um gradiente
+    gradientBackground.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 40, 40)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(25, 25, 25))
+    }
+    gradientBackground.Parent = tabContent
 
-    local tabButton = Instance.new("TextButton")
-    tabButton.Text = params.Nome or "Aba"
-    tabButton.Size = UDim2.new(0, 100, 1, 0)
-    tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(0, 0, 0)
-    tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    tabButton.Font = Enum.Font.GothamBold
-    tabButton.TextSize = 16
+    local padding = Instance.new("UIPadding") -- Adiciona espaçamento interno
+    padding.PaddingTop = UDim.new(0.02, 0)
+    padding.PaddingBottom = UDim.new(0.02, 0)
+    padding.PaddingLeft = UDim.new(0.02, 0)
+    padding.PaddingRight = UDim.new(0.02, 0)
+    padding.Parent = tabContent
 
-    local cornerTabButton = Instance.new("UICorner")
-    cornerTabButton.CornerRadius = UDim.new(0.1, 0)
-    cornerTabButton.Parent = tabButton
-
+    return tabContent
+end
     tabButton.MouseButton1Click:Connect(function()
         for _, content in pairs(self.tabs) do
             content.Visible = false
