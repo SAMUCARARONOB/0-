@@ -25,13 +25,22 @@ function RNOX:CreateMainUI(params)
     header.Text = params.Titulo or "RNOX Interface"
     header.TextColor3 = params.TituloTextoCor or Color3.fromRGB(10, 255, 10)
     header.Font = Enum.Font.GothamBold
-    header.TextScaled = true
     header.TextWrapped = false
+
     local textSizeConstraint = Instance.new("UITextSizeConstraint")
     textSizeConstraint.MaxTextSize = 30
-    textSizeConstraint.MinTextSize = 30
+    textSizeConstraint.MinTextSize = 8
     textSizeConstraint.Parent = header
-    header.Parent = baseFrame
+
+header:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+    local width = header.AbsoluteSize.X
+    local textLength = string.len(header.Text)
+    local calculatedSize = math.clamp(width / (textLength * 0.5), 8, 30)
+    textSizeConstraint.MaxTextSize = calculatedSize
+end)
+
+header.Parent = baseFrame
+
     local cornerHeader = Instance.new("UICorner")
     cornerHeader.CornerRadius = UDim.new(0.1, 0)
     cornerHeader.Parent = header
@@ -108,7 +117,7 @@ function RNOX:AddTab(params)
 
     local tabButton = Instance.new("TextButton")
     tabButton.Text = params.Nome or "Aba"
-    tabButton.Size = UDim2.new(0, 100, 1.5, 0)
+    tabButton.Size = UDim2.new(0, 100, 1, 0)
     tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
     tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     tabButton.Font = Enum.Font.GothamBold
