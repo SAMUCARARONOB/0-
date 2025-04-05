@@ -35,7 +35,7 @@ function RNOX:CreateMainUI(params)
 
     local tabScrollFrame = Instance.new("ScrollingFrame")
     tabScrollFrame.Size = UDim2.new(1, 0, 0.05, 0) -- Altura reduzida para 5% da interface
-    tabScrollFrame.Position = UDim2.new(0, 0, 0.1, 0) -- Posicionado 10% abaixo do topo
+    tabScrollFrame.Position = UDim2.new(0, 0, 0.15, 0) -- Posicionado 10% abaixo do topo
     tabScrollFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     tabScrollFrame.ScrollBarThickness = 10
     tabScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -73,8 +73,8 @@ end
 
 function RNOX:AddTab(params)
     local tabContent = Instance.new("ScrollingFrame")
-    tabContent.Size = UDim2.new(1, 0, 0.75, 0)
-    tabContent.Position = UDim2.new(0, 0, 0.25, 0)
+    tabContent.Size = UDim2.new(1, 0, 0.65, 0) -- Reduzindo a altura para ocupar 65% da interface principal
+    tabContent.Position = UDim2.new(0, 0, 0.2, 0) -- Levando um pouco mais para cima (20% abaixo do topo)
     tabContent.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     tabContent.Visible = false
     tabContent.ScrollBarThickness = 10
