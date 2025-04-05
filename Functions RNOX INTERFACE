@@ -5,13 +5,14 @@ function RNOX:CreateMainUI(params)
     gui.Parent = game.Players.LocalPlayer.PlayerGui
     gui.ResetOnSpawn = false
 
+    local tweenService = game:GetService("TweenService")
+    
     local baseFrame = Instance.new("Frame")
-    baseFrame.Size = UDim2.new(0.8, 0, 0.7, 0)
-    baseFrame.Position = UDim2.new(0.1, 0, 0.15, 0)
+    baseFrame.Size = UDim2.new(0, 500, 0, 350)
+    baseFrame.Position = UDim2.new(0.5, -225, 0.5, -175)
     baseFrame.BackgroundColor3 = params.BackgroundColor or Color3.fromRGB(20, 20, 20)
     baseFrame.BorderSizePixel = 0
-    baseFrame.Active = true
-    baseFrame.Draggable = true
+    baseFrame.Visible = false
     baseFrame.Parent = gui
 
     local corner = Instance.new("UICorner")
@@ -50,6 +51,51 @@ function RNOX:CreateMainUI(params)
     tabLayout.FillDirection = Enum.FillDirection.Horizontal
     tabLayout.Padding = UDim.new(0.02, 0)
     tabLayout.Parent = tabScrollFrame
+
+    local ballButton = Instance.new("ImageButton")
+    ballButton.Size = UDim2.new(0.1, 0, 0.1, 0)
+    ballButton.Position = UDim2.new(0, 10, 0.9, -50)
+    ballButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    ballButton.Image = "rbxassetid://6337069410"
+    ballButton.BackgroundTransparency = 0
+    ballButton.Visible = true
+    ballButton.Parent = gui
+
+    local ballCorner = Instance.new("UICorner")
+    ballCorner.CornerRadius = UDim.new(0.5, 0)
+    ballCorner.Parent = ballButton
+
+    local hideButton = Instance.new("ImageButton")
+    hideButton.Size = UDim2.new(0.05, 0, 0.05, 0)
+    hideButton.Position = UDim2.new(0.95, -10, 0, 10)
+    hideButton.Image = "rbxassetid://6035047409"
+    hideButton.BackgroundTransparency = 1
+    hideButton.Parent = baseFrame
+
+    hideButton.MouseButton1Click:Connect(function()
+        local tweenOut = tweenService:Create(
+            baseFrame,
+            TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+            {Size = UDim2.new(0, 0, 0, 0)}
+        )
+        tweenOut:Play()
+        tweenOut.Completed:Connect(function()
+            baseFrame.Visible = false
+            ballButton.Visible = true
+        end)
+    end)
+
+    ballButton.MouseButton1Click:Connect(function()
+        ballButton.Visible = false
+        baseFrame.Size = UDim2.new(0, 0, 0, 0)
+        baseFrame.Visible = true
+        local tweenIn = tweenService:Create(
+            baseFrame,
+            TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+            {Size = UDim2.new(0, 450, 0, 350)}
+        )
+        tweenIn:Play()
+    end)
 
     self.gui = gui
     self.baseFrame = baseFrame
