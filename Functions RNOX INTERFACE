@@ -134,10 +134,14 @@ function RNOX:AddTab(params)
     return tabContent
 end
 
+local elementCounts = {}
+
 function RNOX:AddButton(parent, params)
+    elementCounts[parent] = (elementCounts[parent] or 0) + 1
     local button = Instance.new("TextButton")
+    button.Name = "Button" .. elementCounts[parent]
     button.Size = UDim2.new(0.2, 0, 0.15, 0)
-    button.Text = params.Nome or "Botão"
+    button.Text = params.Nome or "Button"
     button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.Gotham
@@ -155,10 +159,13 @@ function RNOX:AddButton(parent, params)
         end
     end)
     button.Parent = parent
+    return button
 end
 
 function RNOX:AddToggle(parent, params)
+    elementCounts[parent] = (elementCounts[parent] or 0) + 1
     local toggleButton = Instance.new("TextButton")
+    toggleButton.Name = "Toggle" .. elementCounts[parent]
     toggleButton.Size = UDim2.new(0.2, 0, 0.15, 0)
     toggleButton.Text = params.Nome or "Toggle"
     toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -179,7 +186,7 @@ function RNOX:AddToggle(parent, params)
     local isActive = false
     icon.MouseButton1Click:Connect(function()
         isActive = not isActive
-        toggleButton.BackgroundColor3 = isActive and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(0, 0, 0)
+        toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
         icon.ImageColor3 = isActive and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
         if params.Acao then
             local success, err = pcall(function()
@@ -191,25 +198,25 @@ function RNOX:AddToggle(parent, params)
         end
     end)
     toggleButton.Parent = parent
+    return toggleButton
 end
 
 function RNOX:AddSlider(parent, params)
+    elementCounts[parent] = (elementCounts[parent] or 0) + 1
     local minValue, maxValue = params.Range:match("(%d+)/(%d+)")
     minValue = tonumber(minValue) or 16
     maxValue = tonumber(maxValue) or 1000
     local initialValue = minValue
     local sliderColor = params.Color and {params.Color:match("(%d+),(%d+),(%d+)")} or {255, 255, 255}
-
     local sliderFrame = Instance.new("Frame")
+    sliderFrame.Name = "Slider" .. elementCounts[parent]
     sliderFrame.Size = UDim2.new(0.8, 0, 0.1, 0)
     sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     sliderFrame.BorderSizePixel = 0
     sliderFrame.Parent = parent
-
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, 10)
     corner.Parent = sliderFrame
-
     local track = Instance.new("Frame")
     track.Size = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.4, 0)
     track.Position = UDim2.new(0, 0, 0.5, 0)
@@ -217,11 +224,9 @@ function RNOX:AddSlider(parent, params)
     track.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
     track.BorderSizePixel = 0
     track.Parent = sliderFrame
-
     local trackCorner = Instance.new("UICorner")
     trackCorner.CornerRadius = UDim.new(0, 5)
     trackCorner.Parent = track
-
     local handle = Instance.new("Frame")
     handle.Size = UDim2.new(0.05, 0, track.Size.Y.Scale, 0)
     handle.Position = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.5, 0)
@@ -229,11 +234,9 @@ function RNOX:AddSlider(parent, params)
     handle.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
     handle.BorderSizePixel = 0
     handle.Parent = sliderFrame
-
     local handleCorner = Instance.new("UICorner")
     handleCorner.CornerRadius = UDim.new(1, 0)
     handleCorner.Parent = handle
-
     local valueTextBox = Instance.new("TextBox")
     valueTextBox.Size = UDim2.new(0.2, 0, 0.4, 0)
     valueTextBox.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -247,9 +250,7 @@ function RNOX:AddSlider(parent, params)
     valueTextBox.TextYAlignment = Enum.TextYAlignment.Center
     valueTextBox.ClearTextOnFocus = false
     valueTextBox.Parent = sliderFrame
-
     local dragging = false
-
     local function updateSliderBar(value)
         local relativeWidth = math.clamp((value - minValue) / (maxValue - minValue), 0, 1)
         track.Size = UDim2.new(relativeWidth, 0, 0.4, 0)
@@ -264,19 +265,16 @@ function RNOX:AddSlider(parent, params)
             end
         end
     end
-
     handle.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
         end
     end)
-
     handle.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = false
         end
     end)
-
     game:GetService("UserInputService").InputChanged:Connect(function(input)
         if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
             local relativePosition = math.clamp((input.Position.X - sliderFrame.AbsolutePosition.X) / sliderFrame.AbsoluteSize.X, 0, 1)
@@ -284,7 +282,6 @@ function RNOX:AddSlider(parent, params)
             updateSliderBar(currentValue)
         end
     end)
-
     valueTextBox.FocusLost:Connect(function(enterPressed)
         if enterPressed then
             local enteredValue = tonumber(valueTextBox.Text)
@@ -296,8 +293,8 @@ function RNOX:AddSlider(parent, params)
             end
         end
     end)
-
     updateSliderBar(initialValue)
+    return sliderFrame
 end
 
 function RNOX:AddLabelAboveByName(parent, name, params)
