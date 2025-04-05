@@ -19,7 +19,7 @@ function RNOX:CreateMainUI(params)
     corner.Parent = baseFrame
 
     local header = Instance.new("TextLabel")
-    header.Size = UDim2.new(1, -20, 15, 0) -- Ajusta para nunca ultrapassar os limites
+    header.Size = UDim2.new(1, -20, 0.5, 0) -- Ajusta para nunca ultrapassar os limites
     header.Position = UDim2.new(0, 10, 0, 5.5) -- Centraliza corretamente
     header.BackgroundColor3 = params.TituloCor or Color3.fromRGB(20, 20, 20)
     header.Text = params.Titulo or "RNOX Interface" -- Define título padrão ou dinâmico
