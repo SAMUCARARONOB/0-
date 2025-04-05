@@ -195,8 +195,8 @@ end
 
 function RNOX:AddSlider(parent, params)
     local minValue, maxValue = params.Range:match("(%d+)/(%d+)")
-    minValue = tonumber(minValue) or 0
-    maxValue = tonumber(maxValue) or 100
+    minValue = tonumber(minValue) or 16
+    maxValue = tonumber(maxValue) or 1000
     local initialValue = minValue
     local sliderColor = params.Color and {params.Color:match("(%d+),(%d+),(%d+)")} or {255, 255, 255}
 
