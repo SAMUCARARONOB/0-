@@ -5,9 +5,8 @@ function RNOX:CreateWindow(params)
     gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
     gui.ResetOnSpawn = false
 
-    -- Base da Interface
     local interfaceFrame = Instance.new("Frame")
-    interfaceFrame.Size = UDim2.new(0, 0, 0, 0) -- Inicia invisível (para animação de entrada)
+    interfaceFrame.Size = UDim2.new(0, 0, 0, 0)
     interfaceFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
     interfaceFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     interfaceFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -22,7 +21,6 @@ function RNOX:CreateWindow(params)
     corner.CornerRadius = UDim.new(0.05, 0)
     corner.Parent = interfaceFrame
 
-    -- Título da Interface
     local titleLabel = Instance.new("TextLabel")
     titleLabel.Size = UDim2.new(1, -50, 0, 30)
     titleLabel.Position = UDim2.new(0, 10, 0, 10)
@@ -34,7 +32,6 @@ function RNOX:CreateWindow(params)
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.Parent = interfaceFrame
 
-    -- Botão de ocultar
     local hideButton = Instance.new("ImageButton")
     hideButton.Size = UDim2.new(0, 30, 0, 30)
     hideButton.Position = UDim2.new(1, -40, 0, 10)
@@ -43,9 +40,8 @@ function RNOX:CreateWindow(params)
     hideButton.BackgroundTransparency = 1
     hideButton.Parent = interfaceFrame
 
-    -- Sistema de rolagem (ScrollingFrame)
     local scrollingFrame = Instance.new("ScrollingFrame")
-    scrollingFrame.Size = UDim2.new(1, -20, 1, -70) -- Ajustado para caber abaixo do título
+    scrollingFrame.Size = UDim2.new(1, -20, 1, -70)
     scrollingFrame.Position = UDim2.new(0, 10, 0, 50)
     scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
     scrollingFrame.ScrollBarThickness = 6
@@ -62,7 +58,6 @@ function RNOX:CreateWindow(params)
         scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y)
     end)
 
-    -- Bola de menu para reexibir
     local ballButton = Instance.new("ImageButton")
     ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
     ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -78,10 +73,10 @@ function RNOX:CreateWindow(params)
     ballCorner.CornerRadius = UDim.new(0.5, 0)
     ballCorner.Parent = ballButton
 
-    -- Animação de entrada
-    interfaceFrame:TweenSize(UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true)
+    interfaceFrame:TweenSize(UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true, function()
+        titleLabel.Visible = true
+    end)
 
-    -- Ocultar interface
     hideButton.MouseButton1Click:Connect(function()
         interfaceFrame:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 0.3, true, function()
             interfaceFrame.Visible = false
@@ -89,14 +84,12 @@ function RNOX:CreateWindow(params)
         end)
     end)
 
-    -- Reexibir interface
     ballButton.MouseButton1Click:Connect(function()
         ballButton.Visible = false
         interfaceFrame.Visible = true
         interfaceFrame:TweenSize(UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     end)
 
-    -- Métodos da interface
     return {
         CreateLabel = function(params)
             local label = Instance.new("TextLabel")
