@@ -46,15 +46,38 @@ function RNOX:CreateWindow(params)
     tabContainer.BackgroundTransparency = 1
     tabContainer.Parent = interfaceFrame
 
-    local tabs = {}
+    local ballButton = Instance.new("ImageButton")
+    ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
+    ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
+    ballButton.Position = UDim2.new(0.1, 0, 0.9, 0)
+    ballButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    ballButton.Image = "rbxassetid://6337069410"
+    ballButton.BackgroundTransparency = 0
+    ballButton.Visible = false
+    ballButton.Active = true
+    ballButton.Draggable = true
+    ballButton.Parent = gui
+
+    local ballCorner = Instance.new("UICorner")
+    ballCorner.CornerRadius = UDim.new(0.5, 0)
+    ballCorner.Parent = ballButton
 
     interfaceFrame:TweenSize(UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true)
 
     hideButton.MouseButton1Click:Connect(function()
         interfaceFrame:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 0.3, true, function()
             interfaceFrame.Visible = false
+            ballButton.Visible = true
         end)
     end)
+
+    ballButton.MouseButton1Click:Connect(function()
+        ballButton.Visible = false
+        interfaceFrame.Visible = true
+        interfaceFrame:TweenSize(UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+    end)
+
+    local tabs = {}
 
     return {
         CreateTab = function(tabName)
@@ -63,7 +86,7 @@ function RNOX:CreateWindow(params)
             tabFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
             tabFrame.ScrollBarThickness = 6
             tabFrame.BackgroundTransparency = 1
-            tabFrame.Visible = #tabs == 0 -- Mostrar a primeira aba automaticamente
+            tabFrame.Visible = #tabs == 0
             tabFrame.Parent = tabContainer
 
             local listLayout = Instance.new("UIListLayout")
@@ -93,6 +116,10 @@ function RNOX:CreateWindow(params)
                     corner.CornerRadius = UDim.new(0.05, 0)
                     corner.Parent = button
 
+                    button:GetPropertyChangedSignal("Text"):Connect(function()
+                        button.Text = params.Name -- Atualiza dinamicamente o nome
+                    end)
+
                     button.MouseButton1Click:Connect(function()
                         if params.Callback then
                             params.Callback()
@@ -114,6 +141,10 @@ function RNOX:CreateWindow(params)
                     label.TextSize = 16
                     label.BackgroundTransparency = 1
                     label.Parent = toggleFrame
+
+                    label:GetPropertyChangedSignal("Text"):Connect(function()
+                        label.Text = params.Name -- Atualiza dinamicamente o nome
+                    end)
 
                     local icon = Instance.new("ImageButton")
                     icon.Size = UDim2.new(0.2, 0, 0.8, 0)
@@ -142,6 +173,10 @@ function RNOX:CreateWindow(params)
                     label.TextSize = 14
                     label.BackgroundTransparency = 1
                     label.Parent = tabFrame
+
+                    label:GetPropertyChangedSignal("Text"):Connect(function()
+                        label.Text = params.Name -- Atualiza dinamicamente o nome
+                    end)
                 end
             }
         end
