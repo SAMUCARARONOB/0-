@@ -1,7 +1,6 @@
 local RNOX = {}
 
 function RNOX:CreateWindow(params)
-    local window = {}
     local gui = Instance.new("ScreenGui")
     gui.Parent = game.Players.LocalPlayer.PlayerGui
     gui.ResetOnSpawn = false
@@ -22,10 +21,10 @@ function RNOX:CreateWindow(params)
     local header = Instance.new("TextLabel")
     header.Size = UDim2.new(1, -20, 0.25, 0)
     header.Position = UDim2.new(0, 10, 0, -5)
-    header.BackgroundColor3 = params.TitleBackgroundColor or Color3.fromRGB(0, 0, 0)
+    header.BackgroundColor3 = params.TituloCor or Color3.fromRGB(0, 0, 0)
     header.BackgroundTransparency = 1
-    header.Text = params.Name or "RNOX Interface"
-    header.TextColor3 = params.TitleTextColor or Color3.fromRGB(10, 255, 10)
+    header.Text = params.Titulo or "RNOX Interface"
+    header.TextColor3 = params.TituloTextoCor or Color3.fromRGB(10, 255, 10)
     header.Font = Enum.Font.GothamBold
     header.TextSize = 25
     header.TextWrapped = true
@@ -58,24 +57,36 @@ function RNOX:CreateWindow(params)
         tabScrollFrame.CanvasSize = UDim2.new(0, tabLayout.AbsoluteContentSize.X + 10, 0, 0)
     end)
 
-    window.baseFrame = baseFrame
-    window.tabScrollFrame = tabScrollFrame
-    window.tabs = {}
+    local window = {
+        gui = gui,
+        baseFrame = baseFrame,
+        header = header,
+        tabScrollFrame = tabScrollFrame,
+        tabs = {}
+    }
 
-    function window:SetTitleColor(color)
-        header.TextColor3 = color
+    function window:UpdateHeader(params)
+        if params.Titulo then
+            self.header.Text = params.Titulo
+        end
+        if params.TituloCor then
+            self.header.BackgroundColor3 = params.TituloCor
+        end
+        if params.TituloTextoCor then
+            self.header.TextColor3 = params.TituloTextoCor
+        end
     end
 
-    function window:CreateTab(tabParams)
+    function window:CreateTab(params)
         local tabContent = Instance.new("ScrollingFrame")
         tabContent.Size = UDim2.new(1, 0, 0.65, 0)
         tabContent.Position = UDim2.new(0, 0, 0.27, 0)
-        tabContent.BackgroundColor3 = Color3.fromRGB(17, 17, 17)
+        tabContent.BackgroundColor3 = params.Cor or Color3.fromRGB(17, 17, 17)
         tabContent.Visible = false
         tabContent.ScrollBarThickness = 10
         tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
         tabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
-        tabContent.Parent = baseFrame
+        tabContent.Parent = self.baseFrame
 
         local cornerTabContent = Instance.new("UICorner")
         cornerTabContent.CornerRadius = UDim.new(0.1, 0)
@@ -83,14 +94,15 @@ function RNOX:CreateWindow(params)
 
         local gridLayout = Instance.new("UIGridLayout")
         gridLayout.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
-        gridLayout.CellSize = UDim2.new(1 / (tabParams.Columns or 1), -10, 0.1, 0)
+        gridLayout.CellSize = UDim2.new(1 / (params.Colunas or 2), -10, 0.1, 0)
+        gridLayout.FillDirection = Enum.FillDirection.Horizontal
         gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
         gridLayout.Parent = tabContent
 
         local tabButton = Instance.new("TextButton")
-        tabButton.Text = tabParams.Name or "Aba"
+        tabButton.Text = params.Nome or "Aba"
         tabButton.Size = UDim2.new(0, 95, 0.95, 0)
-        tabButton.BackgroundColor3 = tabParams.Color or Color3.fromRGB(70, 70, 70)
+        tabButton.BackgroundColor3 = params.CorBotao or Color3.fromRGB(70, 70, 70)
         tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
         tabButton.Font = Enum.Font.GothamBold
         tabButton.TextSize = 15
@@ -100,16 +112,16 @@ function RNOX:CreateWindow(params)
         cornerTabButton.Parent = tabButton
 
         tabButton.MouseButton1Click:Connect(function()
-            for _, content in pairs(window.tabs) do
-                content.Visible = false
+            for _, tab in pairs(self.tabs) do
+                tab.Visible = false
             end
             tabContent.Visible = true
         end)
 
-        tabButton.Parent = tabScrollFrame
-        window.tabs[tabParams.Name] = tabContent
+        tabButton.Parent = self.tabScrollFrame
+        table.insert(self.tabs, tabContent)
 
-        if tabParams.Default then
+        if params.Default then
             tabContent.Visible = true
         end
 
@@ -121,8 +133,8 @@ end
 
 function RNOX:CreateButton(parent, params)
     local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0.2, 0, 0.15, 0)
-    button.Text = params.Nome or "Botão"
+    button.Size = UDim2.new(0.8, 0, 0.1, 0)
+    button.Text = params.Name or "Botão"
     button.BackgroundColor3 = params.Color or Color3.fromRGB(0, 0, 0)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.Gotham
@@ -133,7 +145,9 @@ function RNOX:CreateButton(parent, params)
     corner.Parent = button
     button.MouseButton1Click:Connect(function()
         local success, err = pcall(function()
-            loadstring(params.Acao)()
+            if params.Callback then
+                params.Callback()
+            end
         end)
         if not success then
             warn("Erro ao executar a função do botão: " .. err)
@@ -145,8 +159,8 @@ end
 
 function RNOX:CreateToggle(parent, params)
     local toggleButton = Instance.new("TextButton")
-    toggleButton.Size = UDim2.new(0.2, 0, 0.15, 0)
-    toggleButton.Text = params.Nome or "Toggle"
+    toggleButton.Size = UDim2.new(0.8, 0, 0.1, 0)
+    toggleButton.Text = params.Name or "Toggle"
     toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     toggleButton.Font = Enum.Font.GothamBold
@@ -165,11 +179,10 @@ function RNOX:CreateToggle(parent, params)
     local isActive = params.CurrentValue or false
     toggleButton.MouseButton1Click:Connect(function()
         isActive = not isActive
-        toggleButton.BackgroundColor3 = isActive and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(0, 0, 0)
-        icon.ImageColor3 = isActive and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
-        if params.Acao then
+        icon.ImageColor3 = isActive and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(255, 0, 0)
+        if params.Callback then
             local success, err = pcall(function()
-                params.Acao(isActive)
+                params.Callback(isActive)
             end)
             if not success then
                 warn("Erro no toggle: " .. err)
@@ -181,15 +194,11 @@ function RNOX:CreateToggle(parent, params)
 end
 
 function RNOX:CreateSlider(parent, params)
-    local minValue, maxValue = params.Range:match("(%d+)/(%d+)")
-    minValue = tonumber(minValue) or 16
-    maxValue = tonumber(maxValue) or 1000
-    local initialValue = minValue
-    local sliderColor = params.Color and {params.Color:match("(%d+),(%d+),(%d+)")} or {255, 255, 255}
-
+    local minValue, maxValue = params.Min or 0, params.Max or 100
+    local initialValue = params.Default or minValue
     local sliderFrame = Instance.new("Frame")
     sliderFrame.Size = UDim2.new(0.8, 0, 0.1, 0)
-    sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    sliderFrame.BackgroundColor3 = params.Color or Color3.fromRGB(20, 20, 20)
     sliderFrame.BorderSizePixel = 0
     sliderFrame.Parent = parent
 
@@ -201,7 +210,7 @@ function RNOX:CreateSlider(parent, params)
     track.Size = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.4, 0)
     track.Position = UDim2.new(0, 0, 0.5, 0)
     track.AnchorPoint = Vector2.new(0, 0.5)
-    track.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
+    track.BackgroundColor3 = params.TrackColor or Color3.fromRGB(0, 255, 0)
     track.BorderSizePixel = 0
     track.Parent = sliderFrame
 
@@ -213,7 +222,7 @@ function RNOX:CreateSlider(parent, params)
     handle.Size = UDim2.new(0.05, 0, track.Size.Y.Scale, 0)
     handle.Position = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.5, 0)
     handle.AnchorPoint = Vector2.new(0.5, 0.5)
-    handle.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
+    handle.BackgroundColor3 = params.HandleColor or Color3.fromRGB(255, 255, 255)
     handle.BorderSizePixel = 0
     handle.Parent = sliderFrame
 
@@ -242,9 +251,9 @@ function RNOX:CreateSlider(parent, params)
         track.Size = UDim2.new(relativeWidth, 0, 0.4, 0)
         handle.Position = UDim2.new(relativeWidth, 0, 0.5, 0)
         valueTextBox.Text = tostring(value)
-        if params.SliderFunction then
+        if params.Callback then
             local success, err = pcall(function()
-                params.SliderFunction(value)
+                params.Callback(value)
             end)
             if not success then
                 warn("Erro ao executar a função do slider: " .. err)
@@ -267,8 +276,8 @@ function RNOX:CreateSlider(parent, params)
     game:GetService("UserInputService").InputChanged:Connect(function(input)
         if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
             local relativePosition = math.clamp((input.Position.X - sliderFrame.AbsolutePosition.X) / sliderFrame.AbsoluteSize.X, 0, 1)
-            local currentValue = math.floor(minValue + (maxValue - minValue) * relativePosition)
-            updateSliderBar(currentValue)
+            local value = math.floor(minValue + (maxValue - minValue) * relativePosition)
+            updateSliderBar(value)
         end
     end)
 
@@ -289,42 +298,27 @@ end
 
 function RNOX:CreateTextBox(parent, params)
     local textBox = Instance.new("TextBox")
-    textBox.Parent = parent
-    textBox.Name = params.Nome or "TextBox"
-    textBox.BackgroundColor3 = Color3.new(1, 1, 1)
-    textBox.BackgroundTransparency = 1
-    textBox.BorderSizePixel = 0
     textBox.Size = UDim2.new(0.8, 0, 0.1, 0)
-    textBox.ZIndex = 2
-    textBox.Font = Enum.Font.GothamSemibold
-    textBox.PlaceholderColor3 = Color3.new(0.698039, 0.698039, 0.698039)
     textBox.PlaceholderText = params.PlaceholderText or "Digite algo..."
     textBox.Text = ""
-    textBox.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
+    textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textBox.Font = Enum.Font.Gotham
     textBox.TextSize = 14
-
-    local roundify = Instance.new("ImageLabel")
-    roundify.Name = "TextBox_Roundify_4px"
-    roundify.Parent = textBox
-    roundify.BackgroundTransparency = 1
-    roundify.Size = UDim2.new(1, 0, 1, 0)
-    roundify.Image = "rbxassetid://2851929490"
-    roundify.ImageColor3 = Color3.new(0.203922, 0.207843, 0.219608)
-    roundify.ScaleType = Enum.ScaleType.Slice
-    roundify.SliceCenter = Rect.new(4, 4, 4, 4)
-
+    textBox.BackgroundColor3 = params.Color or Color3.fromRGB(30, 30, 30)
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0.1, 0)
+    corner.Parent = textBox
     textBox.FocusLost:Connect(function(enterPressed)
-        if enterPressed and params.Acao then
+        if enterPressed and params.Callback then
             local success, err = pcall(function()
-                params.Acao(textBox.Text)
+                params.Callback(textBox.Text)
             end)
             if not success then
                 warn("Erro ao executar a ação do TextBox: " .. err)
             end
         end
     end)
-
-    return textBox
+    textBox.Parent = parent
 end
 
 function RNOX:CreateDropdown(parent, params)
