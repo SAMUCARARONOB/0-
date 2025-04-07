@@ -37,7 +37,7 @@ function RNOX:CreateMainUI(params)
     local tabScrollFrame = Instance.new("ScrollingFrame")
     tabScrollFrame.Size = UDim2.new(1, 0, 0.065, 0)
     tabScrollFrame.Position = UDim2.new(0, 0, 0.21, 0)
-    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     tabScrollFrame.ScrollBarThickness = 8
     tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
     tabScrollFrame.VerticalScrollBarInset = Enum.ScrollBarInset.Always
@@ -85,7 +85,7 @@ function RNOX:AddTab(params)
     local tabContent = Instance.new("ScrollingFrame")
     tabContent.Size = UDim2.new(1, 0, 0.65, 0)
     tabContent.Position = UDim2.new(0, 0, 0.27, 0)
-    tabContent.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    tabContent.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     tabContent.Visible = false
     tabContent.ScrollBarThickness = 10
     tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
@@ -106,7 +106,7 @@ function RNOX:AddTab(params)
 
     local tabButton = Instance.new("TextButton")
     tabButton.Text = params.Nome or "Aba"
-    tabButton.Size = UDim2.new(0, 100, 1, 0)
+    tabButton.Size = UDim2.new(0, 95, 0.95, 0)
     tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
     tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     tabButton.Font = Enum.Font.GothamBold
@@ -138,7 +138,7 @@ function RNOX:AddButton(parent, params)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0.2, 0, 0.15, 0)
     button.Text = params.Nome or "Botão"
-    button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    button.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.Gotham
     button.TextSize = 18
