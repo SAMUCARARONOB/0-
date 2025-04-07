@@ -401,11 +401,11 @@ function RNOX:AddDropdownElement(dropdown, params)
         button.Parent = container
         button.BackgroundColor3 = Color3.new(0.160784, 0.290196, 0.478431)
         button.BackgroundTransparency = 1
-        button.Size = UDim2.new(1, 0, 0, 20)
+        button.Size = UDim2.new(0.8, 0, 0, 16) -- Ajustado para ser 20% menor
         button.Font = Enum.Font.GothamSemibold
         button.Text = params.Text or "Button"
         button.TextColor3 = Color3.new(1, 1, 1)
-        button.TextSize = 14
+        button.TextSize = 12
         button.TextXAlignment = Enum.TextXAlignment.Left
 
         local roundify = Instance.new("ImageLabel")
@@ -424,41 +424,42 @@ function RNOX:AddDropdownElement(dropdown, params)
             end
         end)
     elseif params.Tipo == "Toggle" then
-        local toggle = Instance.new("Frame")
-        toggle.Name = params.Nome or "Toggle"
-        toggle.Parent = container
-        toggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-        toggle.Size = UDim2.new(1, 0, 0, 20)
+        local bar = Instance.new("Frame")
+        bar.Name = "Bar"
+        bar.Parent = container
+        bar.BackgroundColor3 = Color3.new(0.160784, 0.290196, 0.478431)
+        bar.BorderSizePixel = 0
+        bar.Size = UDim2.new(0.8, 0, 0, 16) -- Ajustado para ser 20% menor
+
+        local toggle = Instance.new("ImageButton")
+        toggle.Name = "Toggle"
+        toggle.Parent = bar
+        toggle.BackgroundColor3 = Color3.new(1, 1, 1)
+        toggle.BackgroundTransparency = 1
+        toggle.Position = UDim2.new(0, 5, 0, -2)
+        toggle.Rotation = 90
+        toggle.Size = UDim2.new(0, 20, 0, 20)
+        toggle.ZIndex = 2
+        toggle.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4731371541"
 
         local base = Instance.new("ImageLabel")
         base.Name = "Base"
-        base.Parent = toggle
-        base.BackgroundTransparency = 1
-        base.Size = UDim2.new(0.6, 0, 0.8, 0)
-        base.Position = UDim2.new(0.2, 0, 0.1, 0)
+        base.Parent = bar
+        base.BackgroundColor3 = Color3.new(0.160784, 0.290196, 0.478431)
+        base.BorderSizePixel = 0
+        base.Position = UDim2.new(0, 0, 0.8, 0)
+        base.Size = UDim2.new(1, 0, 0, 10)
         base.Image = "rbxassetid://2851926732"
-        base.ImageColor3 = Color3.fromRGB(30, 30, 30)
+        base.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
         base.ScaleType = Enum.ScaleType.Slice
         base.SliceCenter = Rect.new(12, 12, 12, 12)
 
-        local ball = Instance.new("ImageButton")
-        ball.Name = "Ball"
-        ball.Parent = base
-        ball.BackgroundTransparency = 1
-        ball.Size = UDim2.new(0, 20, 0, 20)
-        ball.Position = UDim2.new(0, 0, 0.5, -10)
-        ball.Image = "rbxassetid://2851926732"
-        ball.ImageColor3 = Color3.fromRGB(100, 100, 100)
-        ball.ScaleType = Enum.ScaleType.Slice
-        ball.SliceCenter = Rect.new(12, 12, 12, 12)
-
-        local isActive = false
-        ball.MouseButton1Click:Connect(function()
-            isActive = not isActive
-            ball.ImageColor3 = isActive and Color3.fromRGB(0, 146, 214) or Color3.fromRGB(100, 100, 100)
-            base.ImageColor3 = isActive and Color3.fromRGB(0, 146, 214) or Color3.fromRGB(30, 30, 30)
+        toggle.MouseButton1Click:Connect(function()
+            local isActive = toggle.ImageColor3 == Color3.new(0, 146, 214)
+            toggle.ImageColor3 = isActive and Color3.new(1, 1, 1) or Color3.new(0, 146, 214)
+            base.ImageColor3 = isActive and Color3.new(0.160784, 0.290196, 0.478431) or Color3.new(0, 146, 214)
             if params.Acao then
-                params.Acao(isActive)
+                params.Acao(not isActive)
             end
         end)
     end
