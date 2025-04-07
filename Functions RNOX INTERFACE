@@ -37,7 +37,7 @@ function RNOX:CreateMainUI(params)
     local tabScrollFrame = Instance.new("ScrollingFrame")
     tabScrollFrame.Size = UDim2.new(1, 0, 0.1, 0)
     tabScrollFrame.Position = UDim2.new(0, 0, 0.17, 0)
-    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     tabScrollFrame.ScrollBarThickness = 8
     tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
     tabScrollFrame.VerticalScrollBarInset = Enum.ScrollBarInset.Always
@@ -106,14 +106,14 @@ function RNOX:AddTab(params)
 
     local tabButton = Instance.new("TextButton")
     tabButton.Text = params.Nome or "Aba"
-    tabButton.Size = UDim2.new(0, 90, 1, 0)
+    tabButton.Size = UDim2.new(0, 100, 1, 0)
     tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
     tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     tabButton.Font = Enum.Font.GothamBold
     tabButton.TextSize = 16
 
     local cornerTabButton = Instance.new("UICorner")
-    cornerTabButton.CornerRadius = UDim.new(0.15, 0)
+    cornerTabButton.CornerRadius = UDim.new(0.1, 0)
     cornerTabButton.Parent = tabButton
 
     tabButton.MouseButton1Click:Connect(function()
