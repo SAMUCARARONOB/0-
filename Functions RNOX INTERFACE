@@ -396,21 +396,18 @@ function RNOX:AddDropdown(parent, params)
 end
 
 function RNOX:ToggleElementsBelowSameColumn(parent, dropdown, boxHeight, visible)
-    local foundDropdown = false
     local dropdownStart = dropdown.Position.X.Offset
     local dropdownEnd = dropdownStart + dropdown.Size.X.Offset
 
     for _, sibling in ipairs(parent:GetChildren()) do
-        if sibling == dropdown then
-            foundDropdown = true
-        elseif foundDropdown and sibling:IsA("GuiObject") then
+        if sibling:IsA("GuiObject") then
             local siblingStart = sibling.Position.X.Offset
             local siblingEnd = siblingStart + sibling.Size.X.Offset
 
             if siblingStart >= dropdownStart and siblingEnd <= dropdownEnd then
                 local siblingY = sibling.Position.Y.Offset
                 local dropdownY = dropdown.Position.Y.Offset + dropdown.Size.Y.Offset + boxHeight
-                if siblingY < dropdownY then
+                if siblingY > dropdown.Position.Y.Offset then
                     sibling.Visible = visible
                 end
             end
