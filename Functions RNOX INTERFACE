@@ -115,12 +115,18 @@ function RNOX:CreateWindow(params)
                     corner.CornerRadius = UDim.new(0.05, 0)
                     corner.Parent = button
 
-                    -- Atualização dinâmica do nome
                     local function updateName()
                         button.Text = params.Name or "Button"
                     end
                     updateName()
-                    params.NameChanged = updateName
+                    setmetatable(params, {
+                        __newindex = function(_, key, value)
+                            if key == "Name" then
+                                rawset(params, key, value)
+                                updateName()
+                            end
+                        end
+                    })
 
                     button.MouseButton1Click:Connect(function()
                         if params.Callback then
@@ -143,12 +149,18 @@ function RNOX:CreateWindow(params)
                     label.BackgroundTransparency = 1
                     label.Parent = toggleFrame
 
-                    -- Atualização dinâmica do nome
                     local function updateName()
                         label.Text = params.Name or "Toggle"
                     end
                     updateName()
-                    params.NameChanged = updateName
+                    setmetatable(params, {
+                        __newindex = function(_, key, value)
+                            if key == "Name" then
+                                rawset(params, key, value)
+                                updateName()
+                            end
+                        end
+                    })
 
                     local icon = Instance.new("ImageButton")
                     icon.Size = UDim2.new(0.2, 0, 0.8, 0)
@@ -177,12 +189,18 @@ function RNOX:CreateWindow(params)
                     label.BackgroundTransparency = 1
                     label.Parent = tabFrame
 
-                    -- Atualização dinâmica do nome
                     local function updateName()
                         label.Text = params.Name or "Label"
                     end
                     updateName()
-                    params.NameChanged = updateName
+                    setmetatable(params, {
+                        __newindex = function(_, key, value)
+                            if key == "Name" then
+                                rawset(params, key, value)
+                                updateName()
+                            end
+                        end
+                    })
                 end
             }
         end
