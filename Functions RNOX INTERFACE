@@ -381,17 +381,34 @@ function RNOX:AddDropdown(parent, params)
 
     layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         box.Size = UDim2.new(1, 0, 0, layout.AbsoluteContentSize.Y + 5)
+        updateBelowElements(dropdown, box.Size.Y.Offset)
     end)
 
     dropdown.MouseButton1Click:Connect(function()
         box.Visible = not box.Visible
         indicator.Rotation = box.Visible and 90 or -90
+        updateBelowElements(dropdown, box.Visible and box.Size.Y.Offset or 0)
     end)
 
     return {
         Dropdown = dropdown,
         Box = box
     }
+end
+
+-- Função para ajustar elementos abaixo do dropdown
+function updateBelowElements(dropdown, offset)
+    local siblings = dropdown.Parent:GetChildren()
+    local dropdownIndex = table.find(siblings, dropdown)
+
+    if dropdownIndex then
+        for i = dropdownIndex + 1, #siblings do
+            local sibling = siblings[i]
+            if sibling:IsA("GuiObject") then
+                sibling.Position = sibling.Position + UDim2.new(0, 0, 0, offset)
+            end
+        end
+    end
 end
 
 function RNOX:AddDropdownButton(dropdown, params)
