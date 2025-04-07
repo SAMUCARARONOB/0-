@@ -395,6 +395,11 @@ function RNOX:AddDropdown(parent, params)
     local layout = Instance.new("UIListLayout")
     layout.Parent = objects
     layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 5)
+
+    layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        objects.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+    end)
 
     local roundify = Instance.new("ImageLabel")
     roundify.Name = "TextButton_Roundify_4px"
