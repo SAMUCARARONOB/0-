@@ -83,7 +83,7 @@ end
 
 function RNOX:AddTab(params)
     local tabContent = Instance.new("ScrollingFrame")
-    tabContent.Size = UDim2.new(1, 0, 0.65, 0)
+    tabContent.Size = UDim2.new(1, 0, 0.75, 0)
     tabContent.Position = UDim2.new(0, 0, 0.27, 0)
     tabContent.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     tabContent.Visible = false
@@ -113,7 +113,7 @@ function RNOX:AddTab(params)
     tabButton.TextSize = 14
 
     local cornerTabButton = Instance.new("UICorner")
-    cornerTabButton.CornerRadius = UDim.new(0.1, 0)
+    cornerTabButton.CornerRadius = UDim.new(0.2, 0)
     cornerTabButton.Parent = tabButton
 
     tabButton.MouseButton1Click:Connect(function()
