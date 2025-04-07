@@ -344,37 +344,33 @@ function RNOX:AddDropdown(parent, params)
     local dropdown = Instance.new("TextButton")
     dropdown.Name = params.Nome or "Dropdown"
     dropdown.Parent = parent
-    dropdown.BackgroundColor3 = Color3.new(1, 1, 1)
+    dropdown.BackgroundColor3 = Color3.new(0.160784, 0.290196, 0.478431)
     dropdown.BackgroundTransparency = 1
     dropdown.BorderSizePixel = 0
-    dropdown.Position = UDim2.new(0, 0, 0, 0)
-    dropdown.Size = UDim2.new(0, 200, 0, 20)
-    dropdown.ZIndex = 2
-    dropdown.Font = Enum.Font.GothamBold
+    dropdown.Size = UDim2.new(1, 0, 0, 20)
+    dropdown.Font = Enum.Font.GothamSemibold
     dropdown.Text = params.Text or "Dropdown"
-    dropdown.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
+    dropdown.TextColor3 = Color3.new(1, 1, 1)
     dropdown.TextSize = 14
     dropdown.TextXAlignment = Enum.TextXAlignment.Left
 
-    local indicator = Instance.new("ImageLabel")
-    indicator.Name = "Indicator"
-    indicator.Parent = dropdown
-    indicator.BackgroundColor3 = Color3.new(1, 1, 1)
-    indicator.BackgroundTransparency = 1
-    indicator.Position = UDim2.new(0.9, -10, 0.1, 0)
-    indicator.Rotation = -90
-    indicator.Size = UDim2.new(0, 15, 0, 15)
-    indicator.ZIndex = 2
-    indicator.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4744658743"
+    local roundify = Instance.new("ImageLabel")
+    roundify.Name = "Roundify"
+    roundify.Parent = dropdown
+    roundify.BackgroundTransparency = 1
+    roundify.Size = UDim2.new(1, 0, 1, 0)
+    roundify.Image = "rbxassetid://2851929490"
+    roundify.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
+    roundify.ScaleType = Enum.ScaleType.Slice
+    roundify.SliceCenter = Rect.new(4, 4, 4, 4)
 
     local elementsContainer = Instance.new("Frame")
     elementsContainer.Name = "ElementsContainer"
     elementsContainer.Parent = parent
     elementsContainer.BackgroundColor3 = Color3.new(1, 1, 1)
     elementsContainer.BackgroundTransparency = 1
-    elementsContainer.Position = UDim2.new(0, 0, 0, 25)
-    elementsContainer.Size = UDim2.new(1, 0, 0, 0) -- Dinâmico, ajustado pelo tamanho dos elementos
-    elementsContainer.ZIndex = 3
+    elementsContainer.Position = UDim2.new(0, 0, 1, 5)
+    elementsContainer.Size = UDim2.new(1, 0, 0, 0)
     elementsContainer.Visible = false
 
     local layout = Instance.new("UIListLayout")
@@ -388,7 +384,6 @@ function RNOX:AddDropdown(parent, params)
 
     dropdown.MouseButton1Click:Connect(function()
         elementsContainer.Visible = not elementsContainer.Visible
-        indicator.Rotation = elementsContainer.Visible and 0 or -90
     end)
 
     return {
@@ -400,79 +395,70 @@ end
 function RNOX:AddDropdownElement(dropdown, params)
     local container = dropdown.Container
 
-    local elementLabel = Instance.new("TextLabel")
-    elementLabel.Name = "ElementLabel"
-    elementLabel.Parent = container
-    elementLabel.BackgroundTransparency = 1
-    elementLabel.Size = UDim2.new(1, 0, 0, 20)
-    elementLabel.Font = Enum.Font.GothamSemibold
-    elementLabel.Text = params.TextLabel or ""
-    elementLabel.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
-    elementLabel.TextSize = 14
-    elementLabel.TextWrapped = true
-    elementLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-    local elementFrame = Instance.new("Frame")
-    elementFrame.Name = params.Nome or "DropdownElement"
-    elementFrame.Parent = container
-    elementFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-    elementFrame.Size = UDim2.new(1, -10, 0, 24) -- Menores que o normal
-    elementFrame.ZIndex = 3
-
     if params.Tipo == "Button" then
         local button = Instance.new("TextButton")
-        button.Name = "Button"
-        button.Parent = elementFrame
-        button.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
-        button.Size = UDim2.new(1, 0, 1, 0)
-        button.Font = Enum.Font.Gotham
+        button.Name = params.Nome or "Button"
+        button.Parent = container
+        button.BackgroundColor3 = Color3.new(0.160784, 0.290196, 0.478431)
+        button.BackgroundTransparency = 1
+        button.Size = UDim2.new(1, 0, 0, 20)
+        button.Font = Enum.Font.GothamSemibold
         button.Text = params.Text or "Button"
         button.TextColor3 = Color3.new(1, 1, 1)
         button.TextSize = 14
+        button.TextXAlignment = Enum.TextXAlignment.Left
+
+        local roundify = Instance.new("ImageLabel")
+        roundify.Name = "Roundify"
+        roundify.Parent = button
+        roundify.BackgroundTransparency = 1
+        roundify.Size = UDim2.new(1, 0, 1, 0)
+        roundify.Image = "rbxassetid://2851929490"
+        roundify.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
+        roundify.ScaleType = Enum.ScaleType.Slice
+        roundify.SliceCenter = Rect.new(4, 4, 4, 4)
+
         button.MouseButton1Click:Connect(function()
             if params.Acao then
                 params.Acao()
             end
         end)
     elseif params.Tipo == "Toggle" then
-        local toggleButton = Instance.new("TextButton")
-        toggleButton.Name = "Toggle"
-        toggleButton.Parent = elementFrame
-        toggleButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
-        toggleButton.Size = UDim2.new(1, 0, 1, 0)
-        toggleButton.Font = Enum.Font.Gotham
-        toggleButton.Text = params.Text or "Toggle"
-        toggleButton.TextColor3 = Color3.new(1, 1, 1)
-        toggleButton.TextSize = 14
+        local toggle = Instance.new("Frame")
+        toggle.Name = params.Nome or "Toggle"
+        toggle.Parent = container
+        toggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        toggle.Size = UDim2.new(1, 0, 0, 20)
+
+        local base = Instance.new("ImageLabel")
+        base.Name = "Base"
+        base.Parent = toggle
+        base.BackgroundTransparency = 1
+        base.Size = UDim2.new(0.6, 0, 0.8, 0)
+        base.Position = UDim2.new(0.2, 0, 0.1, 0)
+        base.Image = "rbxassetid://2851926732"
+        base.ImageColor3 = Color3.fromRGB(30, 30, 30)
+        base.ScaleType = Enum.ScaleType.Slice
+        base.SliceCenter = Rect.new(12, 12, 12, 12)
+
+        local ball = Instance.new("ImageButton")
+        ball.Name = "Ball"
+        ball.Parent = base
+        ball.BackgroundTransparency = 1
+        ball.Size = UDim2.new(0, 20, 0, 20)
+        ball.Position = UDim2.new(0, 0, 0.5, -10)
+        ball.Image = "rbxassetid://2851926732"
+        ball.ImageColor3 = Color3.fromRGB(100, 100, 100)
+        ball.ScaleType = Enum.ScaleType.Slice
+        ball.SliceCenter = Rect.new(12, 12, 12, 12)
 
         local isActive = false
-        toggleButton.MouseButton1Click:Connect(function()
+        ball.MouseButton1Click:Connect(function()
             isActive = not isActive
-            toggleButton.BackgroundColor3 = isActive and Color3.new(0, 1, 0) or Color3.new(0.3, 0.3, 0.3)
+            ball.ImageColor3 = isActive and Color3.fromRGB(0, 146, 214) or Color3.fromRGB(100, 100, 100)
+            base.ImageColor3 = isActive and Color3.fromRGB(0, 146, 214) or Color3.fromRGB(30, 30, 30)
             if params.Acao then
                 params.Acao(isActive)
-            end
-        end)
-    elseif params.Tipo == "Slider" then
-        local slider = Instance.new("Frame")
-        slider.Name = "Slider"
-        slider.Parent = elementFrame
-        slider.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
-        slider.Size = UDim2.new(1, 0, 1, 0)
-
-        local sliderBar = Instance.new("Frame")
-        sliderBar.Name = "Bar"
-        sliderBar.Parent = slider
-        sliderBar.BackgroundColor3 = Color3.new(0, 1, 0)
-        sliderBar.Size = UDim2.new(0.5, 0, 1, 0)
-
-        slider.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                local relativePos = (input.Position.X - slider.AbsolutePosition.X) / slider.AbsoluteSize.X
-                sliderBar.Size = UDim2.new(math.clamp(relativePos, 0, 1), 0, 1, 0)
-                if params.Acao then
-                    params.Acao(relativePos * 100)
-                end
             end
         end)
     end
