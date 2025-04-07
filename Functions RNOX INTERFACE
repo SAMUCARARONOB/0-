@@ -36,7 +36,7 @@ function RNOX:CreateMainUI(params)
 
     local tabScrollFrame = Instance.new("ScrollingFrame")
     tabScrollFrame.Size = UDim2.new(1, 0, 0.1, 0)
-    tabScrollFrame.Position = UDim2.new(0, 0, 0.17, 0)
+    tabScrollFrame.Position = UDim2.new(0, 0, 0.11, 0)
     tabScrollFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     tabScrollFrame.ScrollBarThickness = 8
     tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
@@ -83,7 +83,7 @@ end
 
 function RNOX:AddTab(params)
     local tabContent = Instance.new("ScrollingFrame")
-    tabContent.Size = UDim2.new(1, 0, 0.75, 0)
+    tabContent.Size = UDim2.new(1, 0, 0.65, 0)
     tabContent.Position = UDim2.new(0, 0, 0.27, 0)
     tabContent.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     tabContent.Visible = false
