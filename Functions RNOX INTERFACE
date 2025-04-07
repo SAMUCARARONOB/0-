@@ -341,56 +341,64 @@ function RNOX:AddTextBox(parent, params)
 end
 
 function RNOX:AddDropdown(parent, params)
+    -- Criação do dropdown
+    local colunaIndex = params.Coluna or 1
+    local colunaWidth = parent.AbsoluteSize.X / parent:GetAttribute("Colunas") or 2
     local dropdown = Instance.new("TextButton")
     dropdown.Name = params.Nome or "Dropdown"
     dropdown.Parent = parent
     dropdown.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    dropdown.BackgroundTransparency = 0
     dropdown.BorderSizePixel = 0
-    dropdown.Size = UDim2.new(0, 200, 0, 20)
+    dropdown.Size = UDim2.new(1 / parent:GetAttribute("Colunas"), 0, 0, 20)
+    dropdown.Position = UDim2.new((colunaIndex - 1) / parent:GetAttribute("Colunas"), 0, 0, 0)
     dropdown.Font = Enum.Font.GothamBold
     dropdown.Text = params.Text or "Dropdown"
     dropdown.TextColor3 = Color3.fromRGB(200, 200, 200)
     dropdown.TextSize = 14
     dropdown.TextXAlignment = Enum.TextXAlignment.Left
 
+    -- Indicador do dropdown (seta)
     local indicator = Instance.new("ImageLabel")
     indicator.Name = "Indicator"
     indicator.Parent = dropdown
     indicator.BackgroundTransparency = 1
-    indicator.Position = UDim2.new(0.9, -10, 0.1, 0)
+    indicator.Position = UDim2.new(0.95, -10, 0.1, 0)
     indicator.Size = UDim2.new(0, 15, 0, 15)
     indicator.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4731371541"
     indicator.ImageColor3 = Color3.fromRGB(200, 200, 200)
 
+    -- Caixa do dropdown (conteúdo)
     local box = Instance.new("Frame")
     box.Name = "Box"
     box.Parent = dropdown
     box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    box.BackgroundTransparency = 0
     box.BorderSizePixel = 0
     box.Position = UDim2.new(0, 0, 1, 5)
     box.Size = UDim2.new(1, 0, 0, 0)
     box.ClipsDescendants = true
     box.Visible = false
 
+    -- Layout dos itens dentro da caixa do dropdown
     local layout = Instance.new("UIListLayout")
     layout.Parent = box
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Padding = UDim.new(0, 5)
 
+    -- Ajuste dinâmico do tamanho do box
     layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         box.Size = UDim2.new(1, 0, 0, layout.AbsoluteContentSize.Y + 5)
-        self:AdjustPositions(parent)
+        self:RecalibratePositions(parent)
     end)
 
+    -- Lógica para abrir e fechar o dropdown
     dropdown.MouseButton1Click:Connect(function()
         box.Visible = not box.Visible
         indicator.Rotation = box.Visible and 90 or -90
-        self:AdjustPositions(parent)
+        self:RecalibratePositions(parent)
     end)
 
-    self:AdjustPositions(parent)
+    -- Recalibração inicial
+    self:RecalibratePositions(parent)
 
     return {
         Dropdown = dropdown,
@@ -436,7 +444,7 @@ function RNOX:AddDropdownToggle(dropdown, params)
     toggleButton.Name = "ToggleButton"
     toggleButton.Parent = toggleFrame
     toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    toggleButton.Position = UDim2.new(0.88, 5, 0.1, 0)
+    toggleButton.Position = UDim2.new(0.88, -15, 0.2, 0)
     toggleButton.Size = UDim2.new(0, 20, 0, 20)
     toggleButton.Image = "rbxassetid://14293471713"
 
@@ -448,6 +456,19 @@ function RNOX:AddDropdownToggle(dropdown, params)
             params.Acao(isActive)
         end
     end)
+end
+
+function RNOX:RecalibratePositions(parent)
+    local cumulativeOffset = 0
+    for _, element in ipairs(parent:GetChildren()) do
+        if element:IsA("GuiObject") then
+            if element:FindFirstChild("Box") and element.Box.Visible then
+                cumulativeOffset = cumulativeOffset + element.Box.Size.Y.Offset + 10
+            end
+            element.Position = UDim2.new(element.Position.X.Scale, element.Position.X.Offset, 0, cumulativeOffset)
+            cumulativeOffset = cumulativeOffset + element.Size.Y.Offset + 10
+        end
+    end
 end
 
 return RNOX
