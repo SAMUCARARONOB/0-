@@ -52,7 +52,6 @@ function RNOX:CreateWindow(params)
     ballButton.Position = UDim2.new(0.1, 0, 0.9, 0)
     ballButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     ballButton.Image = "rbxassetid://6337069410"
-    ballButton.BackgroundTransparency = 0
     ballButton.Visible = false
     ballButton.Active = true
     ballButton.Draggable = true
@@ -77,8 +76,6 @@ function RNOX:CreateWindow(params)
         interfaceFrame:TweenSize(UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     end)
 
-    local tabs = {}
-
     return {
         CreateTab = function(tabName)
             local tabFrame = Instance.new("ScrollingFrame")
@@ -86,7 +83,7 @@ function RNOX:CreateWindow(params)
             tabFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
             tabFrame.ScrollBarThickness = 6
             tabFrame.BackgroundTransparency = 1
-            tabFrame.Visible = #tabs == 0
+            tabFrame.Visible = false
             tabFrame.Parent = tabContainer
 
             local listLayout = Instance.new("UIListLayout")
@@ -99,34 +96,16 @@ function RNOX:CreateWindow(params)
                 tabFrame.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y)
             end)
 
-            table.insert(tabs, {Name = tabName, Frame = tabFrame})
-
             return {
                 CreateButton = function(params)
                     local button = Instance.new("TextButton")
                     button.Size = UDim2.new(1, 0, 0, 40)
+                    button.Text = params.Name or "Button"
                     button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
                     button.TextColor3 = Color3.fromRGB(255, 255, 255)
                     button.Font = Enum.Font.GothamBold
                     button.TextSize = 18
                     button.Parent = tabFrame
-
-                    local corner = Instance.new("UICorner")
-                    corner.CornerRadius = UDim.new(0.05, 0)
-                    corner.Parent = button
-
-                    local function updateName()
-                        button.Text = params.Name or "Button"
-                    end
-                    updateName()
-                    setmetatable(params, {
-                        __newindex = function(_, key, value)
-                            if key == "Name" then
-                                rawset(params, key, value)
-                                updateName()
-                            end
-                        end
-                    })
 
                     button.MouseButton1Click:Connect(function()
                         if params.Callback then
@@ -143,31 +122,19 @@ function RNOX:CreateWindow(params)
 
                     local label = Instance.new("TextLabel")
                     label.Size = UDim2.new(0.7, 0, 1, 0)
+                    label.Text = params.Name or "Toggle"
                     label.TextColor3 = Color3.fromRGB(255, 255, 255)
                     label.Font = Enum.Font.Gotham
                     label.TextSize = 16
                     label.BackgroundTransparency = 1
                     label.Parent = toggleFrame
 
-                    local function updateName()
-                        label.Text = params.Name or "Toggle"
-                    end
-                    updateName()
-                    setmetatable(params, {
-                        __newindex = function(_, key, value)
-                            if key == "Name" then
-                                rawset(params, key, value)
-                                updateName()
-                            end
-                        end
-                    })
-
                     local icon = Instance.new("ImageButton")
                     icon.Size = UDim2.new(0.2, 0, 0.8, 0)
                     icon.Position = UDim2.new(0.75, 0, 0.1, 0)
                     icon.Image = "rbxassetid://14293471713"
-                    icon.ImageColor3 = params.CurrentValue and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                     icon.BackgroundTransparency = 1
+                    icon.ImageColor3 = params.CurrentValue and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                     icon.Parent = toggleFrame
 
                     local isActive = params.CurrentValue or false
@@ -183,24 +150,12 @@ function RNOX:CreateWindow(params)
                 CreateLabel = function(params)
                     local label = Instance.new("TextLabel")
                     label.Size = UDim2.new(1, 0, 0, 20)
+                    label.Text = params.Name or "Label"
                     label.TextColor3 = Color3.fromRGB(175, 175, 175)
                     label.Font = Enum.Font.Gotham
                     label.TextSize = 14
                     label.BackgroundTransparency = 1
                     label.Parent = tabFrame
-
-                    local function updateName()
-                        label.Text = params.Name or "Label"
-                    end
-                    updateName()
-                    setmetatable(params, {
-                        __newindex = function(_, key, value)
-                            if key == "Name" then
-                                rawset(params, key, value)
-                                updateName()
-                            end
-                        end
-                    })
                 end
             }
         end
