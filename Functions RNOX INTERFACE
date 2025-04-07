@@ -304,27 +304,38 @@ function RNOX:AddTextBox(parent, params)
     local textBox = Instance.new("TextBox")
     textBox.Parent = parent
     textBox.Name = params.Nome or "TextBox"
-    textBox.BackgroundColor3 = params.BackgroundColor3 or Color3.new(1, 1, 1)
-    textBox.BackgroundTransparency = params.BackgroundTransparency or 1
+    textBox.BackgroundColor3 = Color3.new(1, 1, 1)
+    textBox.BackgroundTransparency = 1
     textBox.BorderSizePixel = 0
-    textBox.Size = params.Size or UDim2.new(0.8, 0, 0.1, 0)
-    textBox.ZIndex = params.ZIndex or 2
-    textBox.Font = params.Font or Enum.Font.GothamSemibold
-    textBox.PlaceholderColor3 = params.PlaceholderColor3 or Color3.new(0.698039, 0.698039, 0.698039)
+    textBox.Size = UDim2.new(0.8, 0, 0.1, 0)
+    textBox.ZIndex = 2
+    textBox.Font = Enum.Font.GothamSemibold
+    textBox.PlaceholderColor3 = Color3.new(0.698039, 0.698039, 0.698039)
     textBox.PlaceholderText = params.PlaceholderText or "Digite algo..."
-    textBox.Text = params.Text or ""
-    textBox.TextColor3 = params.TextColor3 or Color3.new(0.784314, 0.784314, 0.784314)
-    textBox.TextSize = params.TextSize or 14
+    textBox.Text = ""
+    textBox.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
+    textBox.TextSize = 14
 
     local roundify = Instance.new("ImageLabel")
-    roundify.Name = params.RoundifyName or "TextBox_Roundify_4px"
+    roundify.Name = "TextBox_Roundify_4px"
     roundify.Parent = textBox
     roundify.BackgroundTransparency = 1
     roundify.Size = UDim2.new(1, 0, 1, 0)
-    roundify.Image = params.Image or "rbxassetid://2851929490"
-    roundify.ImageColor3 = params.ImageColor3 or Color3.new(0.203922, 0.207843, 0.219608)
+    roundify.Image = "rbxassetid://2851929490"
+    roundify.ImageColor3 = Color3.new(0.203922, 0.207843, 0.219608)
     roundify.ScaleType = Enum.ScaleType.Slice
     roundify.SliceCenter = Rect.new(4, 4, 4, 4)
+
+    textBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed and params.Acao then
+            local success, err = pcall(function()
+                params.Acao(textBox.Text)
+            end)
+            if not success then
+                warn("Erro ao executar a ação do TextBox: " .. err)
+            end
+        end
+    end)
 
     return textBox
 end
@@ -407,22 +418,72 @@ function RNOX:AddDropdown(parent, params)
     }
 end
 
-function RNOX:AddDropdownButton(dropdown, params)
-    local button = Instance.new("TextButton")
-    button.Name = params.Nome or "DropdownButton"
-    button.Parent = dropdown.Box
-    button.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-    button.Size = UDim2.new(1, -10, 0, 30)
-    button.Font = Enum.Font.Gotham
-    button.Text = params.Text or "Button"
-    button.TextColor3 = Color3.new(1, 1, 1)
-    button.TextSize = 14
-    button.TextWrapped = true
-    button.MouseButton1Click:Connect(function()
-        if params.Acao then
-            params.Acao()
-        end
-    end)
+function RNOX:AddDropdownElement(dropdown, params)
+    local element = Instance.new("Frame")
+    element.Name = params.Nome or "DropdownElement"
+    element.Parent = dropdown.Box
+    element.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+    element.Size = UDim2.new(1, -10, 0, 30)
+
+    if params.Tipo == "Button" then
+        local button = Instance.new("TextButton")
+        button.Name = "Button"
+        button.Parent = element
+        button.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+        button.Size = UDim2.new(1, 0, 1, 0)
+        button.Font = Enum.Font.Gotham
+        button.Text = params.Text or "Button"
+        button.TextColor3 = Color3.new(1, 1, 1)
+        button.TextSize = 14
+        button.TextWrapped = true
+        button.MouseButton1Click:Connect(function()
+            if params.Acao then
+                params.Acao()
+            end
+        end)
+    elseif params.Tipo == "Toggle" then
+        local toggleButton = Instance.new("TextButton")
+        toggleButton.Name = "Toggle"
+        toggleButton.Parent = element
+        toggleButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+        toggleButton.Size = UDim2.new(1, 0, 1, 0)
+        toggleButton.Font = Enum.Font.Gotham
+        toggleButton.Text = params.Text or "Toggle"
+        toggleButton.TextColor3 = Color3.new(1, 1, 1)
+        toggleButton.TextSize = 14
+        toggleButton.TextWrapped = true
+
+        local isActive = false
+        toggleButton.MouseButton1Click:Connect(function()
+            isActive = not isActive
+            toggleButton.BackgroundColor3 = isActive and Color3.new(0, 1, 0) or Color3.new(0.3, 0.3, 0.3)
+            if params.Acao then
+                params.Acao(isActive)
+            end
+        end)
+    elseif params.Tipo == "Slider" then
+        local slider = Instance.new("Frame")
+        slider.Name = "Slider"
+        slider.Parent = element
+        slider.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+        slider.Size = UDim2.new(1, 0, 1, 0)
+
+        local sliderBar = Instance.new("Frame")
+        sliderBar.Name = "Bar"
+        sliderBar.Parent = slider
+        sliderBar.BackgroundColor3 = Color3.new(0, 1, 0)
+        sliderBar.Size = UDim2.new(0.5, 0, 1, 0)
+
+        slider.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                local relativePos = (input.Position.X - slider.AbsolutePosition.X) / slider.AbsoluteSize.X
+                sliderBar.Size = UDim2.new(math.clamp(relativePos, 0, 1), 0, 1, 0)
+                if params.Acao then
+                    params.Acao(relativePos * 100)
+                end
+            end
+        end)
+    end
 end
 
 return RNOX
