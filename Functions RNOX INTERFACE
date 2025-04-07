@@ -112,6 +112,12 @@ function RNOX:CreateWindow(params)
                             params.Callback()
                         end
                     end)
+
+                    return {
+                        UpdateName = function(newName)
+                            button.Text = newName
+                        end
+                    }
                 end,
 
                 CreateToggle = function(params)
@@ -133,8 +139,8 @@ function RNOX:CreateWindow(params)
                     icon.Size = UDim2.new(0.2, 0, 0.8, 0)
                     icon.Position = UDim2.new(0.75, 0, 0.1, 0)
                     icon.Image = "rbxassetid://14293471713"
-                    icon.BackgroundTransparency = 1
                     icon.ImageColor3 = params.CurrentValue and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+                    icon.BackgroundTransparency = 1
                     icon.Parent = toggleFrame
 
                     local isActive = params.CurrentValue or false
@@ -145,6 +151,12 @@ function RNOX:CreateWindow(params)
                             params.Callback(isActive)
                         end
                     end)
+
+                    return {
+                        UpdateName = function(newName)
+                            label.Text = newName
+                        end
+                    }
                 end,
 
                 CreateLabel = function(params)
@@ -156,6 +168,12 @@ function RNOX:CreateWindow(params)
                     label.TextSize = 14
                     label.BackgroundTransparency = 1
                     label.Parent = tabFrame
+
+                    return {
+                        UpdateName = function(newName)
+                            label.Text = newName
+                        end
+                    }
                 end
             }
         end
