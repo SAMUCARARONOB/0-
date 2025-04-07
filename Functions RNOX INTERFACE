@@ -386,7 +386,7 @@ function RNOX:AddDropdown(parent, params)
     dropdown.MouseButton1Click:Connect(function()
         box.Visible = not box.Visible
         indicator.Rotation = box.Visible and 90 or -90
-        self:ToggleElementsDirectlyBelow(parent, dropdown, box.Size.Y.Offset, not box.Visible)
+        self:ToggleElementsBelowSameColumn(parent, dropdown, box.Size.Y.Offset, not box.Visible)
     end)
 
     return {
@@ -395,15 +395,24 @@ function RNOX:AddDropdown(parent, params)
     }
 end
 
-function RNOX:ToggleElementsDirectlyBelow(parent, dropdown, boxHeight, visible)
-    local dropdownStartY = dropdown.Position.Y.Offset + dropdown.Size.Y.Offset
-    local dropdownEndY = dropdownStartY + boxHeight
+function RNOX:ToggleElementsBelowSameColumn(parent, dropdown, boxHeight, visible)
+    local foundDropdown = false
+    local dropdownStart = dropdown.Position.X.Offset
+    local dropdownEnd = dropdownStart + dropdown.Size.X.Offset
 
     for _, sibling in ipairs(parent:GetChildren()) do
-        if sibling:IsA("GuiObject") then
-            local siblingStartY = sibling.Position.Y.Offset
-            if siblingStartY >= dropdownEndY then
-                sibling.Visible = visible
+        if sibling == dropdown then
+            foundDropdown = true
+        elseif foundDropdown and sibling:IsA("GuiObject") then
+            local siblingStart = sibling.Position.X.Offset
+            local siblingEnd = siblingStart + sibling.Size.X.Offset
+
+            if siblingStart >= dropdownStart and siblingEnd <= dropdownEnd then
+                local siblingY = sibling.Position.Y.Offset
+                local dropdownY = dropdown.Position.Y.Offset + dropdown.Size.Y.Offset + boxHeight
+                if siblingY < dropdownY then
+                    sibling.Visible = visible
+                end
             end
         end
     end
