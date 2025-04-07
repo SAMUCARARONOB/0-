@@ -170,7 +170,7 @@ function RNOX:AddToggle(parent, params)
     corner.CornerRadius = UDim.new(0, 10)
     corner.Parent = toggleButton
     local icon = Instance.new("ImageButton")
-    icon.Size = UDim2.new(0.1, 0, 0.8, 0)
+    icon.Size = UDim2.new(0, 20, 0, 20)
     icon.Position = UDim2.new(0.88, 0, 0.1, 0)
     icon.BackgroundTransparency = 1
     icon.Image = "rbxassetid://14293471713"
