@@ -379,14 +379,14 @@ function RNOX:AddDropdown(parent, params)
 
     layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         box.Size = UDim2.new(1, 0, 0, layout.AbsoluteContentSize.Y + 5)
-        self:UpdatePositions(parent)
     end)
 
     dropdown.MouseButton1Click:Connect(function()
         box.Visible = not box.Visible
         indicator.Rotation = box.Visible and 90 or -90
-        self:UpdatePositions(parent)
     end)
+
+    self:PreAdjustElementsBelow(parent, dropdown)
 
     return {
         Dropdown = dropdown,
@@ -394,15 +394,16 @@ function RNOX:AddDropdown(parent, params)
     }
 end
 
-function RNOX:UpdatePositions(parent)
-    local cumulativeOffset = 0
-    for _, element in ipairs(parent:GetChildren()) do
-        if element:IsA("GuiObject") then
-            if element.Visible and element:FindFirstChild("Box") and element.Box.Visible then
-                cumulativeOffset = cumulativeOffset + element.Box.Size.Y.Offset + 10
-            end
-            element.Position = UDim2.new(element.Position.X.Scale, element.Position.X.Offset, 0, cumulativeOffset)
-            cumulativeOffset = cumulativeOffset + element.Size.Y.Offset + 10
+function RNOX:PreAdjustElementsBelow(parent, dropdown)
+    local cumulativeOffset = dropdown.Position.Y.Offset + dropdown.Size.Y.Offset + 5
+    local foundDropdown = false
+
+    for _, sibling in ipairs(parent:GetChildren()) do
+        if sibling == dropdown then
+            foundDropdown = true
+        elseif foundDropdown and sibling:IsA("GuiObject") then
+            sibling.Position = UDim2.new(sibling.Position.X.Scale, sibling.Position.X.Offset, 0, cumulativeOffset)
+            cumulativeOffset = cumulativeOffset + sibling.Size.Y.Offset + 10
         end
     end
 end
