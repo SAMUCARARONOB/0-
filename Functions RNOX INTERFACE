@@ -22,10 +22,31 @@ function RNOX:CreateWindow(params)
     corner.CornerRadius = UDim.new(0.05, 0)
     corner.Parent = interfaceFrame
 
-    -- Sistema de rolagem
+    -- Título da Interface
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, -50, 0, 30)
+    titleLabel.Position = UDim2.new(0, 10, 0, 10)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Text = params.Name or "RNOX Interface"
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.TextSize = 20
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.Parent = interfaceFrame
+
+    -- Botão de ocultar
+    local hideButton = Instance.new("ImageButton")
+    hideButton.Size = UDim2.new(0, 30, 0, 30)
+    hideButton.Position = UDim2.new(1, -40, 0, 10)
+    hideButton.AnchorPoint = Vector2.new(1, 0)
+    hideButton.Image = "rbxassetid://6035047409"
+    hideButton.BackgroundTransparency = 1
+    hideButton.Parent = interfaceFrame
+
+    -- Sistema de rolagem (ScrollingFrame)
     local scrollingFrame = Instance.new("ScrollingFrame")
-    scrollingFrame.Size = UDim2.new(1, -20, 1, -20)
-    scrollingFrame.Position = UDim2.new(0, 10, 0, 10)
+    scrollingFrame.Size = UDim2.new(1, -20, 1, -70) -- Ajustado para caber abaixo do título
+    scrollingFrame.Position = UDim2.new(0, 10, 0, 50)
     scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
     scrollingFrame.ScrollBarThickness = 6
     scrollingFrame.BackgroundTransparency = 1
@@ -41,16 +62,7 @@ function RNOX:CreateWindow(params)
         scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y)
     end)
 
-    -- Botão de ocultar
-    local hideButton = Instance.new("ImageButton")
-    hideButton.Size = UDim2.new(0, 30, 0, 30)
-    hideButton.Position = UDim2.new(1, -40, 0, 10)
-    hideButton.AnchorPoint = Vector2.new(1, 0)
-    hideButton.Image = "rbxassetid://6035047409"
-    hideButton.BackgroundTransparency = 1
-    hideButton.Parent = interfaceFrame
-
-    -- Bola de menu
+    -- Bola de menu para reexibir
     local ballButton = Instance.new("ImageButton")
     ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
     ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -67,10 +79,7 @@ function RNOX:CreateWindow(params)
     ballCorner.Parent = ballButton
 
     -- Animação de entrada
-    interfaceFrame:TweenSize(UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true, function()
-        -- Desativa o texto inicial após a animação
-        wait(3)
-    end)
+    interfaceFrame:TweenSize(UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true)
 
     -- Ocultar interface
     hideButton.MouseButton1Click:Connect(function()
