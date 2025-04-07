@@ -300,4 +300,129 @@ function RNOX:AddSlider(parent, params)
     updateSliderBar(initialValue)
 end
 
+function RNOX:AddTextBox(parent, params)
+    local textBox = Instance.new("TextBox")
+    textBox.Parent = parent
+    textBox.Name = params.Nome or "TextBox"
+    textBox.BackgroundColor3 = params.BackgroundColor3 or Color3.new(1, 1, 1)
+    textBox.BackgroundTransparency = params.BackgroundTransparency or 1
+    textBox.BorderSizePixel = 0
+    textBox.Size = params.Size or UDim2.new(0.8, 0, 0.1, 0)
+    textBox.ZIndex = params.ZIndex or 2
+    textBox.Font = params.Font or Enum.Font.GothamSemibold
+    textBox.PlaceholderColor3 = params.PlaceholderColor3 or Color3.new(0.698039, 0.698039, 0.698039)
+    textBox.PlaceholderText = params.PlaceholderText or "Digite algo..."
+    textBox.Text = params.Text or ""
+    textBox.TextColor3 = params.TextColor3 or Color3.new(0.784314, 0.784314, 0.784314)
+    textBox.TextSize = params.TextSize or 14
+
+    local roundify = Instance.new("ImageLabel")
+    roundify.Name = params.RoundifyName or "TextBox_Roundify_4px"
+    roundify.Parent = textBox
+    roundify.BackgroundTransparency = 1
+    roundify.Size = UDim2.new(1, 0, 1, 0)
+    roundify.Image = params.Image or "rbxassetid://2851929490"
+    roundify.ImageColor3 = params.ImageColor3 or Color3.new(0.203922, 0.207843, 0.219608)
+    roundify.ScaleType = Enum.ScaleType.Slice
+    roundify.SliceCenter = Rect.new(4, 4, 4, 4)
+
+    return textBox
+end
+
+function RNOX:AddDropdown(parent, params)
+    local dropdown = Instance.new("TextButton")
+    dropdown.Name = params.Nome or "Dropdown"
+    dropdown.Parent = parent
+    dropdown.BackgroundColor3 = Color3.new(1, 1, 1)
+    dropdown.BackgroundTransparency = 1
+    dropdown.BorderSizePixel = 0
+    dropdown.Position = UDim2.new(0, 0, 0, 0)
+    dropdown.Size = UDim2.new(0, 200, 0, 20)
+    dropdown.ZIndex = 2
+    dropdown.Font = Enum.Font.GothamBold
+    dropdown.Text = params.Text or "      Dropdown"
+    dropdown.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
+    dropdown.TextSize = 14
+    dropdown.TextXAlignment = Enum.TextXAlignment.Left
+
+    local indicator = Instance.new("ImageLabel")
+    indicator.Name = "Indicator"
+    indicator.Parent = dropdown
+    indicator.BackgroundColor3 = Color3.new(1, 1, 1)
+    indicator.BackgroundTransparency = 1
+    indicator.Position = UDim2.new(0.9, -10, 0.1, 0)
+    indicator.Rotation = -90
+    indicator.Size = UDim2.new(0, 15, 0, 15)
+    indicator.ZIndex = 2
+    indicator.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4744658743"
+
+    local box = Instance.new("ImageLabel")
+    box.Name = "Box"
+    box.Parent = dropdown
+    box.BackgroundColor3 = Color3.new(1, 1, 1)
+    box.BackgroundTransparency = 1
+    box.Position = UDim2.new(0, 0, 0, 25)
+    box.Size = UDim2.new(1, 0, 0, 150)
+    box.ZIndex = 3
+    box.Image = "rbxassetid://2851929490"
+    box.ImageColor3 = Color3.new(0.129412, 0.133333, 0.141176)
+    box.ScaleType = Enum.ScaleType.Slice
+    box.SliceCenter = Rect.new(4, 4, 4, 4)
+    box.Visible = false
+
+    local objects = Instance.new("ScrollingFrame")
+    objects.Name = "Objects"
+    objects.Parent = box
+    objects.BackgroundColor3 = Color3.new(1, 1, 1)
+    objects.BackgroundTransparency = 1
+    objects.BorderSizePixel = 0
+    objects.Size = UDim2.new(1, 0, 1, 0)
+    objects.ZIndex = 3
+    objects.CanvasSize = UDim2.new(0, 0, 0, 0)
+    objects.ScrollBarThickness = 8
+
+    local layout = Instance.new("UIListLayout")
+    layout.Parent = objects
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+    local roundify = Instance.new("ImageLabel")
+    roundify.Name = "TextButton_Roundify_4px"
+    roundify.Parent = dropdown
+    roundify.BackgroundColor3 = Color3.new(1, 1, 1)
+    roundify.BackgroundTransparency = 1
+    roundify.Size = UDim2.new(1, 0, 1, 0)
+    roundify.Image = "rbxassetid://2851929490"
+    roundify.ImageColor3 = Color3.new(0.203922, 0.207843, 0.219608)
+    roundify.ScaleType = Enum.ScaleType.Slice
+    roundify.SliceCenter = Rect.new(4, 4, 4, 4)
+
+    dropdown.MouseButton1Click:Connect(function()
+        box.Visible = not box.Visible
+        indicator.Rotation = box.Visible and 0 or -90
+    end)
+
+    return {
+        Dropdown = dropdown,
+        Box = objects
+    }
+end
+
+function RNOX:AddDropdownButton(dropdown, params)
+    local button = Instance.new("TextButton")
+    button.Name = params.Nome or "DropdownButton"
+    button.Parent = dropdown.Box
+    button.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+    button.Size = UDim2.new(1, -10, 0, 30)
+    button.Font = Enum.Font.Gotham
+    button.Text = params.Text or "Button"
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.TextSize = 14
+    button.TextWrapped = true
+    button.MouseButton1Click:Connect(function()
+        if params.Acao then
+            params.Acao()
+        end
+    end)
+end
+
 return RNOX
