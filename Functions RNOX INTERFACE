@@ -345,9 +345,8 @@ function RNOX:AddDropdown(parent, params)
     dropdown.Name = params.Nome or "Dropdown"
     dropdown.Parent = parent
     dropdown.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    dropdown.BackgroundTransparency = 0
     dropdown.BorderSizePixel = 0
-    dropdown.Size = UDim2.new(0, 200, 0, 20)
+    dropdown.Size = UDim2.new(1, 0, 0, 20)
     dropdown.Font = Enum.Font.GothamBold
     dropdown.Text = params.Text or "Dropdown"
     dropdown.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -358,7 +357,7 @@ function RNOX:AddDropdown(parent, params)
     indicator.Name = "Indicator"
     indicator.Parent = dropdown
     indicator.BackgroundTransparency = 1
-    indicator.Position = UDim2.new(0.9, -10, 0.1, 0)
+    indicator.Position = UDim2.new(0.95, -10, 0.1, 0)
     indicator.Size = UDim2.new(0, 15, 0, 15)
     indicator.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4731371541"
     indicator.ImageColor3 = Color3.fromRGB(200, 200, 200)
@@ -367,7 +366,6 @@ function RNOX:AddDropdown(parent, params)
     box.Name = "Box"
     box.Parent = dropdown
     box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    box.BackgroundTransparency = 0
     box.BorderSizePixel = 0
     box.Position = UDim2.new(0, 0, 1, 5)
     box.Size = UDim2.new(1, 0, 0, 0)
@@ -381,13 +379,13 @@ function RNOX:AddDropdown(parent, params)
 
     layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         box.Size = UDim2.new(1, 0, 0, layout.AbsoluteContentSize.Y + 5)
-        updateBelowElements(dropdown, box.Size.Y.Offset)
+        self:AdjustBelowElements(dropdown, box.Visible and layout.AbsoluteContentSize.Y + 10 or 0)
     end)
 
     dropdown.MouseButton1Click:Connect(function()
         box.Visible = not box.Visible
         indicator.Rotation = box.Visible and 90 or -90
-        updateBelowElements(dropdown, box.Visible and box.Size.Y.Offset or 0)
+        self:AdjustBelowElements(dropdown, box.Visible and layout.AbsoluteContentSize.Y + 10 or 0)
     end)
 
     return {
@@ -396,8 +394,7 @@ function RNOX:AddDropdown(parent, params)
     }
 end
 
--- Função para ajustar elementos abaixo do dropdown
-function updateBelowElements(dropdown, offset)
+function RNOX:AdjustBelowElements(dropdown, offset)
     local siblings = dropdown.Parent:GetChildren()
     local dropdownIndex = table.find(siblings, dropdown)
 
@@ -449,7 +446,7 @@ function RNOX:AddDropdownToggle(dropdown, params)
     toggleButton.Name = "ToggleButton"
     toggleButton.Parent = toggleFrame
     toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    toggleButton.Position = UDim2.new(0.88, 5, 0.1, 0)
+    toggleButton.Position = UDim2.new(0.88, -15, 0.2, 0)
     toggleButton.Size = UDim2.new(0, 20, 0, 20)
     toggleButton.Image = "rbxassetid://14293471713"
 
