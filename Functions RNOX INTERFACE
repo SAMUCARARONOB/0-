@@ -118,6 +118,7 @@ function RNOX:CreateWindow(params)
 
     return window
 end
+
 function RNOX:CreateButton(parent, params)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0.2, 0, 0.15, 0)
