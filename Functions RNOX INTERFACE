@@ -379,13 +379,13 @@ function RNOX:AddDropdown(parent, params)
 
     layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         box.Size = UDim2.new(1, 0, 0, layout.AbsoluteContentSize.Y + 5)
-        self:AdjustBelowElements(dropdown, box.Visible and layout.AbsoluteContentSize.Y + 10 or 0)
+        self:AdjustElementsBelow(dropdown.Parent, dropdown, box.Visible and layout.AbsoluteContentSize.Y + 10 or 0)
     end)
 
     dropdown.MouseButton1Click:Connect(function()
         box.Visible = not box.Visible
         indicator.Rotation = box.Visible and 90 or -90
-        self:AdjustBelowElements(dropdown, box.Visible and layout.AbsoluteContentSize.Y + 10 or 0)
+        self:AdjustElementsBelow(dropdown.Parent, dropdown, box.Visible and layout.AbsoluteContentSize.Y + 10 or 0)
     end)
 
     return {
@@ -394,16 +394,13 @@ function RNOX:AddDropdown(parent, params)
     }
 end
 
-function RNOX:AdjustBelowElements(dropdown, offset)
-    local siblings = dropdown.Parent:GetChildren()
-    local dropdownIndex = table.find(siblings, dropdown)
-
-    if dropdownIndex then
-        for i = dropdownIndex + 1, #siblings do
-            local sibling = siblings[i]
-            if sibling:IsA("GuiObject") then
-                sibling.Position = sibling.Position + UDim2.new(0, 0, 0, offset)
-            end
+function RNOX:AdjustElementsBelow(parent, dropdown, offset)
+    local foundDropdown = false
+    for _, sibling in ipairs(parent:GetChildren()) do
+        if sibling == dropdown then
+            foundDropdown = true
+        elseif foundDropdown and sibling:IsA("GuiObject") then
+            sibling.Position = sibling.Position + UDim2.new(0, 0, 0, offset)
         end
     end
 end
