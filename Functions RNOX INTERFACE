@@ -105,7 +105,6 @@ function RNOX:CreateWindow(params)
                 CreateButton = function(params)
                     local button = Instance.new("TextButton")
                     button.Size = UDim2.new(1, 0, 0, 40)
-                    button.Text = params.Name or "Button"
                     button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
                     button.TextColor3 = Color3.fromRGB(255, 255, 255)
                     button.Font = Enum.Font.GothamBold
@@ -116,9 +115,12 @@ function RNOX:CreateWindow(params)
                     corner.CornerRadius = UDim.new(0.05, 0)
                     corner.Parent = button
 
-                    button:GetPropertyChangedSignal("Text"):Connect(function()
-                        button.Text = params.Name -- Atualiza dinamicamente o nome
-                    end)
+                    -- Atualização dinâmica do nome
+                    local function updateName()
+                        button.Text = params.Name or "Button"
+                    end
+                    updateName()
+                    params.NameChanged = updateName
 
                     button.MouseButton1Click:Connect(function()
                         if params.Callback then
@@ -135,16 +137,18 @@ function RNOX:CreateWindow(params)
 
                     local label = Instance.new("TextLabel")
                     label.Size = UDim2.new(0.7, 0, 1, 0)
-                    label.Text = params.Name or "Toggle"
                     label.TextColor3 = Color3.fromRGB(255, 255, 255)
                     label.Font = Enum.Font.Gotham
                     label.TextSize = 16
                     label.BackgroundTransparency = 1
                     label.Parent = toggleFrame
 
-                    label:GetPropertyChangedSignal("Text"):Connect(function()
-                        label.Text = params.Name -- Atualiza dinamicamente o nome
-                    end)
+                    -- Atualização dinâmica do nome
+                    local function updateName()
+                        label.Text = params.Name or "Toggle"
+                    end
+                    updateName()
+                    params.NameChanged = updateName
 
                     local icon = Instance.new("ImageButton")
                     icon.Size = UDim2.new(0.2, 0, 0.8, 0)
@@ -167,16 +171,18 @@ function RNOX:CreateWindow(params)
                 CreateLabel = function(params)
                     local label = Instance.new("TextLabel")
                     label.Size = UDim2.new(1, 0, 0, 20)
-                    label.Text = params.Name or "Label"
                     label.TextColor3 = Color3.fromRGB(175, 175, 175)
                     label.Font = Enum.Font.Gotham
                     label.TextSize = 14
                     label.BackgroundTransparency = 1
                     label.Parent = tabFrame
 
-                    label:GetPropertyChangedSignal("Text"):Connect(function()
-                        label.Text = params.Name -- Atualiza dinamicamente o nome
-                    end)
+                    -- Atualização dinâmica do nome
+                    local function updateName()
+                        label.Text = params.Name or "Label"
+                    end
+                    updateName()
+                    params.NameChanged = updateName
                 end
             }
         end
