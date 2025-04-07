@@ -6,7 +6,7 @@ function RNOX:CreateWindow(params)
     gui.ResetOnSpawn = false
 
     local interfaceFrame = Instance.new("Frame")
-    interfaceFrame.Size = UDim2.new(0, 450, 0, 350)
+    interfaceFrame.Size = UDim2.new(0, 0, 0, 0)
     interfaceFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
     interfaceFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     interfaceFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -22,24 +22,39 @@ function RNOX:CreateWindow(params)
     corner.Parent = interfaceFrame
 
     local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, 0, 0, 30)
-    titleLabel.Position = UDim2.new(0, 0, 0, 0)
-    titleLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    titleLabel.BorderSizePixel = 0
+    titleLabel.Size = UDim2.new(1, -50, 0, 30)
+    titleLabel.Position = UDim2.new(0, 10, 0, 10)
+    titleLabel.BackgroundTransparency = 1
     titleLabel.Text = params.Name or "RNOX Interface"
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     titleLabel.Font = Enum.Font.GothamBold
     titleLabel.TextSize = 20
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Center
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.Parent = interfaceFrame
 
-    local tabHolder = Instance.new("Frame")
-    tabHolder.Size = UDim2.new(1, 0, 1, -40)
-    tabHolder.Position = UDim2.new(0, 0, 0, 40)
-    tabHolder.BackgroundTransparency = 1
-    tabHolder.Parent = interfaceFrame
+    local hideButton = Instance.new("ImageButton")
+    hideButton.Size = UDim2.new(0, 30, 0, 30)
+    hideButton.Position = UDim2.new(1, -40, 0, 10)
+    hideButton.AnchorPoint = Vector2.new(1, 0)
+    hideButton.Image = "rbxassetid://6035047409"
+    hideButton.BackgroundTransparency = 1
+    hideButton.Parent = interfaceFrame
+
+    local tabContainer = Instance.new("Frame")
+    tabContainer.Size = UDim2.new(1, -20, 1, -70)
+    tabContainer.Position = UDim2.new(0, 10, 0, 50)
+    tabContainer.BackgroundTransparency = 1
+    tabContainer.Parent = interfaceFrame
 
     local tabs = {}
+
+    interfaceFrame:TweenSize(UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true)
+
+    hideButton.MouseButton1Click:Connect(function()
+        interfaceFrame:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 0.3, true, function()
+            interfaceFrame.Visible = false
+        end)
+    end)
 
     return {
         CreateTab = function(tabName)
@@ -49,7 +64,7 @@ function RNOX:CreateWindow(params)
             tabFrame.ScrollBarThickness = 6
             tabFrame.BackgroundTransparency = 1
             tabFrame.Visible = #tabs == 0 -- Mostrar a primeira aba automaticamente
-            tabFrame.Parent = tabHolder
+            tabFrame.Parent = tabContainer
 
             local listLayout = Instance.new("UIListLayout")
             listLayout.FillDirection = Enum.FillDirection.Vertical
