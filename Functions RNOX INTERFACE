@@ -85,7 +85,7 @@ function RNOX:AddTab(params)
     local tabContent = Instance.new("ScrollingFrame")
     tabContent.Size = UDim2.new(1, 0, 0.65, 0)
     tabContent.Position = UDim2.new(0, 0, 0.27, 0)
-    tabContent.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    tabContent.BackgroundColor3 = Color3.fromRGB(17, 17, 17)
     tabContent.Visible = false
     tabContent.ScrollBarThickness = 10
     tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
@@ -138,7 +138,7 @@ function RNOX:AddButton(parent, params)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0.2, 0, 0.15, 0)
     button.Text = params.Nome or "Botão"
-    button.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.Gotham
     button.TextSize = 18
