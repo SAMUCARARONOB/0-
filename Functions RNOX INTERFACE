@@ -106,11 +106,11 @@ function RNOX:AddTab(params)
 
     local tabButton = Instance.new("TextButton")
     tabButton.Text = params.Nome or "Aba"
-    tabButton.Size = UDim2.new(0, 100, 1, 0)
+    tabButton.Size = UDim2.new(0, 75, 0.75, 0)
     tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
     tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     tabButton.Font = Enum.Font.GothamBold
-    tabButton.TextSize = 16
+    tabButton.TextSize = 14
 
     local cornerTabButton = Instance.new("UICorner")
     cornerTabButton.CornerRadius = UDim.new(0.1, 0)
