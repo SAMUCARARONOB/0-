@@ -1,6 +1,7 @@
 local RNOX = {}
 
-function RNOX:CreateMainUI(params)
+function RNOX:CreateWindow(params)
+    local window = {}
     local gui = Instance.new("ScreenGui")
     gui.Parent = game.Players.LocalPlayer.PlayerGui
     gui.ResetOnSpawn = false
@@ -21,10 +22,10 @@ function RNOX:CreateMainUI(params)
     local header = Instance.new("TextLabel")
     header.Size = UDim2.new(1, -20, 0.25, 0)
     header.Position = UDim2.new(0, 10, 0, -5)
-    header.BackgroundColor3 = params.TituloCor or Color3.fromRGB(0, 0, 0)
+    header.BackgroundColor3 = params.TitleBackgroundColor or Color3.fromRGB(0, 0, 0)
     header.BackgroundTransparency = 1
-    header.Text = params.Titulo or "RNOX Interface"
-    header.TextColor3 = params.TituloTextoCor or Color3.fromRGB(10, 255, 10)
+    header.Text = params.Name or "RNOX Interface"
+    header.TextColor3 = params.TitleTextColor or Color3.fromRGB(10, 255, 10)
     header.Font = Enum.Font.GothamBold
     header.TextSize = 25
     header.TextWrapped = true
@@ -53,92 +54,75 @@ function RNOX:CreateMainUI(params)
     tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
     tabLayout.Parent = tabScrollFrame
 
-tabLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    tabScrollFrame.CanvasSize = UDim2.new(0, tabLayout.AbsoluteContentSize.X + 10, 0, 0)
-end)
-
-    local tabLayout = Instance.new("UIListLayout")
-    tabLayout.FillDirection = Enum.FillDirection.Horizontal
-    tabLayout.Padding = UDim.new(0.02, 0)
-    tabLayout.Parent = tabScrollFrame
-
-    self.gui = gui
-    self.baseFrame = baseFrame
-    self.header = header
-    self.tabScrollFrame = tabScrollFrame
-    self.tabs = {}
-end
-
-function RNOX:UpdateHeader(params)
-    if params.Titulo then
-        self.header.Text = params.Titulo
-    end
-    if params.TituloCor then
-        self.header.BackgroundColor3 = params.TituloCor
-    end
-    if params.TituloTextoCor then
-        self.header.TextColor3 = params.TituloTextoCor
-    end
-end
-
-function RNOX:AddTab(params)
-    local tabContent = Instance.new("ScrollingFrame")
-    tabContent.Size = UDim2.new(1, 0, 0.65, 0)
-    tabContent.Position = UDim2.new(0, 0, 0.27, 0)
-    tabContent.BackgroundColor3 = Color3.fromRGB(17, 17, 17)
-    tabContent.Visible = false
-    tabContent.ScrollBarThickness = 10
-    tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-    tabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    tabContent.Parent = self.baseFrame
-
-    local cornerTabContent = Instance.new("UICorner")
-    cornerTabContent.CornerRadius = UDim.new(0.1, 0)
-    cornerTabContent.Parent = tabContent
-
-    local gridLayout = Instance.new("UIGridLayout")
-    gridLayout.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
-    gridLayout.CellSize = UDim2.new(1 / params.Colunas, -10, 0.1, 0)
-    gridLayout.FillDirection = Enum.FillDirection.Horizontal
-    gridLayout.FillDirectionMaxCells = params.Colunas or 2
-    gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    gridLayout.Parent = tabContent
-
-    local tabButton = Instance.new("TextButton")
-    tabButton.Text = params.Nome or "Aba"
-    tabButton.Size = UDim2.new(0, 95, 0.95, 0)
-    tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
-    tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    tabButton.Font = Enum.Font.GothamBold
-    tabButton.TextSize = 15
-
-    local cornerTabButton = Instance.new("UICorner")
-    cornerTabButton.CornerRadius = UDim.new(0.2, 0)
-    cornerTabButton.Parent = tabButton
-
-    tabButton.MouseButton1Click:Connect(function()
-        for _, content in pairs(self.tabs) do
-            content.Visible = false
-        end
-        tabContent.Visible = true
+    tabLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        tabScrollFrame.CanvasSize = UDim2.new(0, tabLayout.AbsoluteContentSize.X + 10, 0, 0)
     end)
 
-    tabButton.Parent = self.tabScrollFrame
-    self.tabScrollFrame.CanvasSize = UDim2.new(0, self.tabScrollFrame.UIListLayout.AbsoluteContentSize.X, 0, 0)
-    table.insert(self.tabs, tabContent)
+    window.baseFrame = baseFrame
+    window.tabScrollFrame = tabScrollFrame
+    window.tabs = {}
 
-    if params.Default then
-        tabContent.Visible = true
+    function window:SetTitleColor(color)
+        header.TextColor3 = color
     end
 
-    return tabContent
-end
+    function window:CreateTab(tabParams)
+        local tabContent = Instance.new("ScrollingFrame")
+        tabContent.Size = UDim2.new(1, 0, 0.65, 0)
+        tabContent.Position = UDim2.new(0, 0, 0.27, 0)
+        tabContent.BackgroundColor3 = Color3.fromRGB(17, 17, 17)
+        tabContent.Visible = false
+        tabContent.ScrollBarThickness = 10
+        tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+        tabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
+        tabContent.Parent = baseFrame
 
-function RNOX:AddButton(parent, params)
+        local cornerTabContent = Instance.new("UICorner")
+        cornerTabContent.CornerRadius = UDim.new(0.1, 0)
+        cornerTabContent.Parent = tabContent
+
+        local gridLayout = Instance.new("UIGridLayout")
+        gridLayout.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
+        gridLayout.CellSize = UDim2.new(1 / (tabParams.Columns or 1), -10, 0.1, 0)
+        gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        gridLayout.Parent = tabContent
+
+        local tabButton = Instance.new("TextButton")
+        tabButton.Text = tabParams.Name or "Aba"
+        tabButton.Size = UDim2.new(0, 95, 0.95, 0)
+        tabButton.BackgroundColor3 = tabParams.Color or Color3.fromRGB(70, 70, 70)
+        tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        tabButton.Font = Enum.Font.GothamBold
+        tabButton.TextSize = 15
+
+        local cornerTabButton = Instance.new("UICorner")
+        cornerTabButton.CornerRadius = UDim.new(0.2, 0)
+        cornerTabButton.Parent = tabButton
+
+        tabButton.MouseButton1Click:Connect(function()
+            for _, content in pairs(window.tabs) do
+                content.Visible = false
+            end
+            tabContent.Visible = true
+        end)
+
+        tabButton.Parent = tabScrollFrame
+        window.tabs[tabParams.Name] = tabContent
+
+        if tabParams.Default then
+            tabContent.Visible = true
+        end
+
+        return tabContent
+    end
+
+    return window
+end
+function RNOX:CreateButton(parent, params)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0.2, 0, 0.15, 0)
     button.Text = params.Nome or "Botão"
-    button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    button.BackgroundColor3 = params.Color or Color3.fromRGB(0, 0, 0)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.Gotham
     button.TextSize = 18
@@ -155,9 +139,10 @@ function RNOX:AddButton(parent, params)
         end
     end)
     button.Parent = parent
+    return button
 end
 
-function RNOX:AddToggle(parent, params)
+function RNOX:CreateToggle(parent, params)
     local toggleButton = Instance.new("TextButton")
     toggleButton.Size = UDim2.new(0.2, 0, 0.15, 0)
     toggleButton.Text = params.Nome or "Toggle"
@@ -176,8 +161,8 @@ function RNOX:AddToggle(parent, params)
     icon.Image = "rbxassetid://14293471713"
     icon.ImageColor3 = Color3.fromRGB(255, 0, 0)
     icon.Parent = toggleButton
-    local isActive = false
-    icon.MouseButton1Click:Connect(function()
+    local isActive = params.CurrentValue or false
+    toggleButton.MouseButton1Click:Connect(function()
         isActive = not isActive
         toggleButton.BackgroundColor3 = isActive and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(0, 0, 0)
         icon.ImageColor3 = isActive and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
@@ -191,9 +176,10 @@ function RNOX:AddToggle(parent, params)
         end
     end)
     toggleButton.Parent = parent
+    return toggleButton
 end
 
-function RNOX:AddSlider(parent, params)
+function RNOX:CreateSlider(parent, params)
     local minValue, maxValue = params.Range:match("(%d+)/(%d+)")
     minValue = tonumber(minValue) or 16
     maxValue = tonumber(maxValue) or 1000
@@ -300,7 +286,7 @@ function RNOX:AddSlider(parent, params)
     updateSliderBar(initialValue)
 end
 
-function RNOX:AddTextBox(parent, params)
+function RNOX:CreateTextBox(parent, params)
     local textBox = Instance.new("TextBox")
     textBox.Parent = parent
     textBox.Name = params.Nome or "TextBox"
@@ -340,19 +326,17 @@ function RNOX:AddTextBox(parent, params)
     return textBox
 end
 
-function RNOX:AddDropdown(parent, params)
+function RNOX:CreateDropdown(parent, params)
     local dropdown = Instance.new("TextButton")
-    dropdown.Name = params.Nome or "Dropdown"
-    dropdown.Parent = parent
-    dropdown.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    dropdown.BackgroundTransparency = 0
-    dropdown.BorderSizePixel = 0
+    dropdown.Name = params.Name or "Dropdown"
+    dropdown.BackgroundColor3 = params.Color or Color3.fromRGB(30, 30, 30)
     dropdown.Size = UDim2.new(0, 200, 0, 20)
     dropdown.Font = Enum.Font.GothamBold
     dropdown.Text = params.Text or "Dropdown"
-    dropdown.TextColor3 = Color3.fromRGB(200, 200, 200)
+    dropdown.TextColor3 = params.TextColor or Color3.fromRGB(200, 200, 200)
     dropdown.TextSize = 14
     dropdown.TextXAlignment = Enum.TextXAlignment.Left
+    dropdown.Parent = parent
 
     local indicator = Instance.new("ImageLabel")
     indicator.Name = "Indicator"
@@ -360,19 +344,17 @@ function RNOX:AddDropdown(parent, params)
     indicator.BackgroundTransparency = 1
     indicator.Position = UDim2.new(0.9, -10, 0.1, 0)
     indicator.Size = UDim2.new(0, 15, 0, 15)
-    indicator.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4731371541"
+    indicator.Image = params.IndicatorImage or "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4731371541"
     indicator.ImageColor3 = Color3.fromRGB(200, 200, 200)
 
     local box = Instance.new("Frame")
     box.Name = "Box"
-    box.Parent = dropdown
-    box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    box.BackgroundTransparency = 0
-    box.BorderSizePixel = 0
-    box.Position = UDim2.new(0, 0, 1, 5)
+    box.BackgroundColor3 = params.BoxColor or Color3.fromRGB(40, 40, 40)
     box.Size = UDim2.new(1, 0, 0, 0)
+    box.Position = UDim2.new(0, 0, 1, 5)
     box.ClipsDescendants = true
     box.Visible = false
+    box.Parent = dropdown
 
     local layout = Instance.new("UIListLayout")
     layout.Parent = box
@@ -386,7 +368,6 @@ function RNOX:AddDropdown(parent, params)
     dropdown.MouseButton1Click:Connect(function()
         box.Visible = not box.Visible
         indicator.Rotation = box.Visible and 90 or -90
-        self:ToggleElementsBelowSameColumn(parent, dropdown, box.Size.Y.Offset, not box.Visible)
     end)
 
     return {
@@ -395,52 +376,29 @@ function RNOX:AddDropdown(parent, params)
     }
 end
 
-function RNOX:ToggleElementsBelowSameColumn(parent, dropdown, boxHeight, visible)
-    local foundDropdown = false
-    local dropdownStart = dropdown.Position.X.Offset
-    local dropdownEnd = dropdownStart + dropdown.Size.X.Offset
-
-    for _, sibling in ipairs(parent:GetChildren()) do
-        if sibling == dropdown then
-            foundDropdown = true
-        elseif foundDropdown and sibling:IsA("GuiObject") then
-            local siblingStart = sibling.Position.X.Offset
-            local siblingEnd = siblingStart + sibling.Size.X.Offset
-
-            if siblingStart >= dropdownStart and siblingEnd <= dropdownEnd then
-                local siblingY = sibling.Position.Y.Offset
-                local dropdownY = dropdown.Position.Y.Offset + dropdown.Size.Y.Offset + boxHeight
-                if siblingY < dropdownY then
-                    sibling.Visible = visible
-                end
-            end
-        end
-    end
-end
-
-function RNOX:AddDropdownButton(dropdown, params)
+function RNOX:CreateDropdownButton(dropdown, params)
     local button = Instance.new("TextButton")
-    button.Name = params.Nome or "DropdownButton"
-    button.Parent = dropdown.Box
-    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.Name = params.Name or "DropdownButton"
+    button.BackgroundColor3 = params.ButtonColor or Color3.fromRGB(50, 50, 50)
     button.Size = UDim2.new(1, 0, 0, 25)
     button.Font = Enum.Font.Gotham
     button.Text = params.Text or "Button"
-    button.TextColor3 = Color3.fromRGB(220, 220, 220)
+    button.TextColor3 = params.TextColor or Color3.fromRGB(220, 220, 220)
     button.TextSize = 14
     button.MouseButton1Click:Connect(function()
-        if params.Acao then
-            params.Acao()
+        if params.Callback then
+            params.Callback()
         end
     end)
+    button.Parent = dropdown.Box
 end
 
-function RNOX:AddDropdownToggle(dropdown, params)
+function RNOX:CreateDropdownToggle(dropdown, params)
     local toggleFrame = Instance.new("Frame")
-    toggleFrame.Name = params.Nome or "DropdownToggle"
-    toggleFrame.Parent = dropdown.Box
-    toggleFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    toggleFrame.Name = params.Name or "DropdownToggle"
+    toggleFrame.BackgroundColor3 = params.FrameColor or Color3.fromRGB(50, 50, 50)
     toggleFrame.Size = UDim2.new(1, 0, 0, 25)
+    toggleFrame.Parent = dropdown.Box
 
     local toggleLabel = Instance.new("TextLabel")
     toggleLabel.Parent = toggleFrame
@@ -448,7 +406,7 @@ function RNOX:AddDropdownToggle(dropdown, params)
     toggleLabel.Size = UDim2.new(0.8, 0, 1, 0)
     toggleLabel.Font = Enum.Font.Gotham
     toggleLabel.Text = params.Text or "Toggle"
-    toggleLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+    toggleLabel.TextColor3 = params.TextColor or Color3.fromRGB(220, 220, 220)
     toggleLabel.TextSize = 14
     toggleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -458,15 +416,15 @@ function RNOX:AddDropdownToggle(dropdown, params)
     toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     toggleButton.Position = UDim2.new(0.88, 0, 0.1, 0)
     toggleButton.Size = UDim2.new(0, 20, 0, 20)
-    toggleButton.Image = "rbxassetid://14293471713"
-    toggleButton.ImageColor3 = Color3.fromRGB(255, 0, 0)
+    toggleButton.Image = params.ToggleImage or "rbxassetid://14293471713"
+    toggleButton.ImageColor3 = params.ToggleOffColor or Color3.fromRGB(255, 0, 0)
 
-    local isActive = false
+    local isActive = params.CurrentValue or false
     toggleButton.MouseButton1Click:Connect(function()
         isActive = not isActive
-        toggleButton.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-        if params.Acao then
-            params.Acao(isActive)
+        toggleButton.ImageColor3 = isActive and params.ToggleOnColor or params.ToggleOffColor
+        if params.Callback then
+            params.Callback(isActive)
         end
     end)
 end
