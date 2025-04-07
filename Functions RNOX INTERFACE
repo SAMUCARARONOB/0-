@@ -351,7 +351,7 @@ function RNOX:AddDropdown(parent, params)
     dropdown.Size = UDim2.new(0, 200, 0, 20)
     dropdown.ZIndex = 2
     dropdown.Font = Enum.Font.GothamBold
-    dropdown.Text = params.Text or "      Dropdown"
+    dropdown.Text = params.Text or "Dropdown"
     dropdown.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
     dropdown.TextSize = 14
     dropdown.TextXAlignment = Enum.TextXAlignment.Left
@@ -367,80 +367,68 @@ function RNOX:AddDropdown(parent, params)
     indicator.ZIndex = 2
     indicator.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4744658743"
 
-    local box = Instance.new("ImageLabel")
-    box.Name = "Box"
-    box.Parent = dropdown
-    box.BackgroundColor3 = Color3.new(1, 1, 1)
-    box.BackgroundTransparency = 1
-    box.Position = UDim2.new(0, 0, 0, 25)
-    box.Size = UDim2.new(1, 0, 0, 150)
-    box.ZIndex = 3
-    box.Image = "rbxassetid://2851929490"
-    box.ImageColor3 = Color3.new(0.129412, 0.133333, 0.141176)
-    box.ScaleType = Enum.ScaleType.Slice
-    box.SliceCenter = Rect.new(4, 4, 4, 4)
-    box.Visible = false
-
-    local objects = Instance.new("ScrollingFrame")
-    objects.Name = "Objects"
-    objects.Parent = box
-    objects.BackgroundColor3 = Color3.new(1, 1, 1)
-    objects.BackgroundTransparency = 1
-    objects.BorderSizePixel = 0
-    objects.Size = UDim2.new(1, 0, 1, 0)
-    objects.ZIndex = 3
-    objects.CanvasSize = UDim2.new(0, 0, 0, 0)
-    objects.ScrollBarThickness = 8
+    local elementsContainer = Instance.new("Frame")
+    elementsContainer.Name = "ElementsContainer"
+    elementsContainer.Parent = parent
+    elementsContainer.BackgroundColor3 = Color3.new(1, 1, 1)
+    elementsContainer.BackgroundTransparency = 1
+    elementsContainer.Position = UDim2.new(0, 0, 0, 25)
+    elementsContainer.Size = UDim2.new(1, 0, 0, 0) -- Dinâmico, ajustado pelo tamanho dos elementos
+    elementsContainer.ZIndex = 3
+    elementsContainer.Visible = false
 
     local layout = Instance.new("UIListLayout")
-    layout.Parent = objects
+    layout.Parent = elementsContainer
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Padding = UDim.new(0, 5)
 
     layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        objects.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+        elementsContainer.Size = UDim2.new(1, 0, 0, layout.AbsoluteContentSize.Y)
     end)
 
-    local roundify = Instance.new("ImageLabel")
-    roundify.Name = "TextButton_Roundify_4px"
-    roundify.Parent = dropdown
-    roundify.BackgroundColor3 = Color3.new(1, 1, 1)
-    roundify.BackgroundTransparency = 1
-    roundify.Size = UDim2.new(1, 0, 1, 0)
-    roundify.Image = "rbxassetid://2851929490"
-    roundify.ImageColor3 = Color3.new(0.203922, 0.207843, 0.219608)
-    roundify.ScaleType = Enum.ScaleType.Slice
-    roundify.SliceCenter = Rect.new(4, 4, 4, 4)
-
     dropdown.MouseButton1Click:Connect(function()
-        box.Visible = not box.Visible
-        indicator.Rotation = box.Visible and 0 or -90
+        elementsContainer.Visible = not elementsContainer.Visible
+        indicator.Rotation = elementsContainer.Visible and 0 or -90
     end)
 
     return {
         Dropdown = dropdown,
-        Box = objects
+        Container = elementsContainer
     }
 end
 
 function RNOX:AddDropdownElement(dropdown, params)
-    local element = Instance.new("Frame")
-    element.Name = params.Nome or "DropdownElement"
-    element.Parent = dropdown.Box
-    element.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-    element.Size = UDim2.new(1, -10, 0, 30)
+    local container = dropdown.Container
+
+    local elementLabel = Instance.new("TextLabel")
+    elementLabel.Name = "ElementLabel"
+    elementLabel.Parent = container
+    elementLabel.BackgroundTransparency = 1
+    elementLabel.Size = UDim2.new(1, 0, 0, 20)
+    elementLabel.Font = Enum.Font.GothamSemibold
+    elementLabel.Text = params.TextLabel or ""
+    elementLabel.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
+    elementLabel.TextSize = 14
+    elementLabel.TextWrapped = true
+    elementLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+    local elementFrame = Instance.new("Frame")
+    elementFrame.Name = params.Nome or "DropdownElement"
+    elementFrame.Parent = container
+    elementFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+    elementFrame.Size = UDim2.new(1, -10, 0, 24) -- Menores que o normal
+    elementFrame.ZIndex = 3
 
     if params.Tipo == "Button" then
         local button = Instance.new("TextButton")
         button.Name = "Button"
-        button.Parent = element
+        button.Parent = elementFrame
         button.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
         button.Size = UDim2.new(1, 0, 1, 0)
         button.Font = Enum.Font.Gotham
         button.Text = params.Text or "Button"
         button.TextColor3 = Color3.new(1, 1, 1)
         button.TextSize = 14
-        button.TextWrapped = true
         button.MouseButton1Click:Connect(function()
             if params.Acao then
                 params.Acao()
@@ -449,14 +437,13 @@ function RNOX:AddDropdownElement(dropdown, params)
     elseif params.Tipo == "Toggle" then
         local toggleButton = Instance.new("TextButton")
         toggleButton.Name = "Toggle"
-        toggleButton.Parent = element
+        toggleButton.Parent = elementFrame
         toggleButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
         toggleButton.Size = UDim2.new(1, 0, 1, 0)
         toggleButton.Font = Enum.Font.Gotham
         toggleButton.Text = params.Text or "Toggle"
         toggleButton.TextColor3 = Color3.new(1, 1, 1)
         toggleButton.TextSize = 14
-        toggleButton.TextWrapped = true
 
         local isActive = false
         toggleButton.MouseButton1Click:Connect(function()
@@ -469,7 +456,7 @@ function RNOX:AddDropdownElement(dropdown, params)
     elseif params.Tipo == "Slider" then
         local slider = Instance.new("Frame")
         slider.Name = "Slider"
-        slider.Parent = element
+        slider.Parent = elementFrame
         slider.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
         slider.Size = UDim2.new(1, 0, 1, 0)
 
