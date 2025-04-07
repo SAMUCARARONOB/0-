@@ -34,14 +34,15 @@ function RNOX:CreateMainUI(params)
     cornerHeader.CornerRadius = UDim.new(0.1, 0)
     cornerHeader.Parent = header
 
+    function RNOX:CreateTabs(parent)
     local tabScrollFrame = Instance.new("ScrollingFrame")
     tabScrollFrame.Size = UDim2.new(1, 0, 0.1, 0)
     tabScrollFrame.Position = UDim2.new(0, 0, 0.17, 0)
     tabScrollFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     tabScrollFrame.ScrollBarThickness = 8
     tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-    tabScrollFrame.VerticalScrollBarInset = Enum.ScrollBarInset.Always
-    tabScrollFrame.Parent = baseFrame
+    tabScrollFrame.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+    tabScrollFrame.Parent = parent
 
     local cornerTabFrame = Instance.new("UICorner")
     cornerTabFrame.CornerRadius = UDim.new(0.1, 0)
@@ -53,32 +54,12 @@ function RNOX:CreateMainUI(params)
     tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
     tabLayout.Parent = tabScrollFrame
 
-tabLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    tabScrollFrame.CanvasSize = UDim2.new(0, tabLayout.AbsoluteContentSize.X + 10, 0, 0)
-end)
+    tabLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        tabScrollFrame.CanvasSize = UDim2.new(0, tabLayout.AbsoluteContentSize.X + 10, 0, 0)
+    end)
 
-    local tabLayout = Instance.new("UIListLayout")
-    tabLayout.FillDirection = Enum.FillDirection.Horizontal
-    tabLayout.Padding = UDim.new(0.02, 0)
-    tabLayout.Parent = tabScrollFrame
-
-    self.gui = gui
-    self.baseFrame = baseFrame
-    self.header = header
     self.tabScrollFrame = tabScrollFrame
     self.tabs = {}
-end
-
-function RNOX:UpdateHeader(params)
-    if params.Titulo then
-        self.header.Text = params.Titulo
-    end
-    if params.TituloCor then
-        self.header.BackgroundColor3 = params.TituloCor
-    end
-    if params.TituloTextoCor then
-        self.header.TextColor3 = params.TituloTextoCor
-    end
 end
 
 function RNOX:AddTab(params)
@@ -124,7 +105,6 @@ function RNOX:AddTab(params)
     end)
 
     tabButton.Parent = self.tabScrollFrame
-    self.tabScrollFrame.CanvasSize = UDim2.new(0, self.tabScrollFrame.UIListLayout.AbsoluteContentSize.X, 0, 0)
     table.insert(self.tabs, tabContent)
 
     if params.Default then
