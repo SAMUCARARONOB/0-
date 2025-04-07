@@ -1,191 +1,146 @@
 local RNOX = {}
 
-function RNOX:CreateMainUI(params)
+function RNOX:CreateWindow(params)
     local gui = Instance.new("ScreenGui")
-    gui.Parent = game.Players.LocalPlayer.PlayerGui
+    gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
     gui.ResetOnSpawn = false
 
-    local baseFrame = Instance.new("Frame")
-    baseFrame.Size = UDim2.new(0, 275, 0, 325)
-    baseFrame.Position = UDim2.new(0.5, -225, 0.5, -175)
-    baseFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-    baseFrame.BorderSizePixel = 0
-    baseFrame.Active = true
-    baseFrame.Draggable = true
-    baseFrame.Parent = gui
+    -- Base da Interface
+    local interfaceFrame = Instance.new("Frame")
+    interfaceFrame.Size = UDim2.new(0, 0, 0, 0) -- Inicia invisível (para animação de entrada)
+    interfaceFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    interfaceFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    interfaceFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    interfaceFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
+    interfaceFrame.BorderSizePixel = 1
+    interfaceFrame.Visible = true
+    interfaceFrame.Parent = gui
 
     local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.1, 0)
-    corner.Parent = baseFrame
+    corner.CornerRadius = UDim.new(0.05, 0) -- Borda arredondada suave
+    corner.Parent = interfaceFrame
 
-    local header = Instance.new("TextLabel")
-    header.Size = UDim2.new(1, -20, 0.25, 0)
-    header.Position = UDim2.new(0, 10, 0, -5)
-    header.BackgroundColor3 = params.TituloCor or Color3.fromRGB(0, 0, 0)
-    header.BackgroundTransparency = 1
-    header.Text = params.Titulo or "RNOX Interface"
-    header.TextColor3 = params.TituloTextoCor or Color3.fromRGB(10, 255, 10)
-    header.Font = Enum.Font.GothamBold
-    header.TextSize = 25
-    header.TextWrapped = true
-    header.Parent = baseFrame
+    -- Texto inicial de carregamento
+    local loadingText = Instance.new("TextLabel")
+    loadingText.Size = UDim2.new(1, 0, 0.2, 0)
+    loadingText.Position = UDim2.new(0, 0, 0.4, 0)
+    loadingText.Text = params.LoadingTitle or "Carregando..."
+    loadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    loadingText.BackgroundTransparency = 1
+    loadingText.Font = Enum.Font.GothamBold
+    loadingText.TextSize = 20
+    loadingText.Parent = interfaceFrame
 
-    local cornerHeader = Instance.new("UICorner")
-    cornerHeader.CornerRadius = UDim.new(0.1, 0)
-    cornerHeader.Parent = header
+    local subtitleText = Instance.new("TextLabel")
+    subtitleText.Size = UDim2.new(1, 0, 0.15, 0)
+    subtitleText.Position = UDim2.new(0, 0, 0.6, 0)
+    subtitleText.Text = params.LoadingSubtitle or "RNOX"
+    subtitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    subtitleText.BackgroundTransparency = 1
+    subtitleText.Font = Enum.Font.GothamBold
+    subtitleText.TextSize = 24
+    subtitleText.Parent = interfaceFrame
 
-    local tabScrollFrame = Instance.new("ScrollingFrame")
-    tabScrollFrame.Size = UDim2.new(1, 0, 0.065, 0)
-    tabScrollFrame.Position = UDim2.new(0, 0, 0.21, 0)
-    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    tabScrollFrame.ScrollBarThickness = 8
-    tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-    tabScrollFrame.VerticalScrollBarInset = Enum.ScrollBarInset.Always
-    tabScrollFrame.Parent = baseFrame
+    -- Botão de ocultar
+    local hideButton = Instance.new("ImageButton")
+    hideButton.Size = UDim2.new(0, 30, 0, 30)
+    hideButton.Position = UDim2.new(1, -40, 0, 10)
+    hideButton.AnchorPoint = Vector2.new(1, 0)
+    hideButton.Image = "rbxassetid://6035047409"
+    hideButton.BackgroundTransparency = 1
+    hideButton.Parent = interfaceFrame
 
-    local cornerTabFrame = Instance.new("UICorner")
-    cornerTabFrame.CornerRadius = UDim.new(0.1, 0)
-    cornerTabFrame.Parent = tabScrollFrame
+    -- Bola de menu para reexibir
+    local ballButton = Instance.new("ImageButton")
+    ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
+    ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
+    ballButton.Position = UDim2.new(0.1, 0, 0.9, 0)
+    ballButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    ballButton.Image = "rbxassetid://6337069410"
+    ballButton.BackgroundTransparency = 0
+    ballButton.Visible = false
+    ballButton.Active = true
+    ballButton.Draggable = true
+    ballButton.Parent = gui
 
-    local tabLayout = Instance.new("UIListLayout")
-    tabLayout.FillDirection = Enum.FillDirection.Horizontal
-    tabLayout.Padding = UDim.new(0.02, 0)
-    tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    tabLayout.Parent = tabScrollFrame
+    local ballCorner = Instance.new("UICorner")
+    ballCorner.CornerRadius = UDim.new(0.5, 0)
+    ballCorner.Parent = ballButton
 
-    tabLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        tabScrollFrame.CanvasSize = UDim2.new(0, tabLayout.AbsoluteContentSize.X + 10, 0, 0)
+    -- Animação de entrada
+    interfaceFrame:TweenSize(UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1, true, function()
+        wait(0.5)
+        loadingText.Visible = false
+        subtitleText.Visible = false
     end)
 
-    self.gui = gui
-    self.baseFrame = baseFrame
-    self.header = header
-    self.tabScrollFrame = tabScrollFrame
-    self.tabs = {}
-end
-
-function RNOX:UpdateHeader(params)
-    if params.Titulo then
-        self.header.Text = params.Titulo
-    end
-    if params.TituloCor then
-        self.header.BackgroundColor3 = params.TituloCor
-    end
-    if params.TituloTextoCor then
-        self.header.TextColor3 = params.TituloTextoCor
-    end
-end
-
-function RNOX:CreateTab(params)
-    local tabContent = Instance.new("ScrollingFrame")
-    tabContent.Size = UDim2.new(1, 0, 0.65, 0)
-    tabContent.Position = UDim2.new(0, 0, 0.27, 0)
-    tabContent.BackgroundColor3 = Color3.fromRGB(17, 17, 17)
-    tabContent.Visible = false
-    tabContent.ScrollBarThickness = 10
-    tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-    tabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    tabContent.Parent = self.baseFrame
-
-    local cornerTabContent = Instance.new("UICorner")
-    cornerTabContent.CornerRadius = UDim.new(0.1, 0)
-    cornerTabContent.Parent = tabContent
-
-    local gridLayout = Instance.new("UIGridLayout")
-    gridLayout.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
-    gridLayout.CellSize = UDim2.new(1 / params.Colunas, -10, 0.1, 0)
-    gridLayout.FillDirection = Enum.FillDirection.Horizontal
-    gridLayout.FillDirectionMaxCells = params.Colunas or 2
-    gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    gridLayout.Parent = tabContent
-
-    local tabButton = Instance.new("TextButton")
-    tabButton.Text = params.Nome or "Aba"
-    tabButton.Size = UDim2.new(0, 95, 0.95, 0)
-    tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
-    tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    tabButton.Font = Enum.Font.GothamBold
-    tabButton.TextSize = 15
-
-    local cornerTabButton = Instance.new("UICorner")
-    cornerTabButton.CornerRadius = UDim.new(0.2, 0)
-    cornerTabButton.Parent = tabButton
-
-    tabButton.MouseButton1Click:Connect(function()
-        for _, content in pairs(self.tabs) do
-            content.Visible = false
-        end
-        tabContent.Visible = true
-    end)
-
-    tabButton.Parent = self.tabScrollFrame
-    self.tabScrollFrame.CanvasSize = UDim2.new(0, self.tabScrollFrame.UIListLayout.AbsoluteContentSize.X, 0, 0)
-    table.insert(self.tabs, tabContent)
-
-    if params.Default then
-        tabContent.Visible = true
-    end
-
-    return tabContent
-end
-
-function RNOX:CreateButton(parent, params)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0.2, 0, 0.15, 0)
-    button.Text = params.Nome or "Botão"
-    button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.Font = Enum.Font.Gotham
-    button.TextSize = 18
-    button.TextWrapped = true
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 10)
-    corner.Parent = button
-    button.MouseButton1Click:Connect(function()
-        local success, err = pcall(function()
-            loadstring(params.Acao)()
+    -- Ocultar a interface
+    hideButton.MouseButton1Click:Connect(function()
+        interfaceFrame:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 0.3, true, function()
+            interfaceFrame.Visible = false
+            ballButton.Visible = true
         end)
-        if not success then
-            warn("Erro ao executar a função do botão: " .. err)
-        end
     end)
-    button.Parent = parent
-end
 
-function RNOX:CreateToggle(parent, params)
-    local toggleButton = Instance.new("TextButton")
-    toggleButton.Size = UDim2.new(0.2, 0, 0.15, 0)
-    toggleButton.Text = params.Nome or "Toggle"
-    toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggleButton.Font = Enum.Font.GothamBold
-    toggleButton.TextSize = 16
-    toggleButton.TextWrapped = true
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 10)
-    corner.Parent = toggleButton
-    local icon = Instance.new("ImageButton")
-    icon.Size = UDim2.new(0.1, 0, 0.8, 0)
-    icon.Position = UDim2.new(0.88, 0, 0.1, 0)
-    icon.BackgroundTransparency = 1
-    icon.Image = "rbxassetid://14293471713"
-    icon.ImageColor3 = Color3.fromRGB(255, 0, 0)
-    icon.Parent = toggleButton
-    local isActive = false
-    icon.MouseButton1Click:Connect(function()
-        isActive = not isActive
-        toggleButton.BackgroundColor3 = isActive and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(0, 0, 0)
-        icon.ImageColor3 = isActive and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
-        if params.Acao then
-            local success, err = pcall(function()
-                params.Acao(isActive)
-            end)
-            if not success then
-                warn("Erro no toggle: " .. err)
-            end
-        end
+    -- Reexibir a interface
+    ballButton.MouseButton1Click:Connect(function()
+        ballButton.Visible = false
+        interfaceFrame.Visible = true
+        interfaceFrame:TweenSize(UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     end)
-    toggleButton.Parent = parent
+
+    -- Métodos da interface
+    return {
+        CreateButton = function(params)
+            local button = Instance.new("TextButton")
+            button.Size = UDim2.new(0.8, 0, 0.1, 0)
+            button.Text = params.Name or "Botão"
+            button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+            button.TextColor3 = Color3.fromRGB(255, 255, 255)
+            button.Font = Enum.Font.GothamBold
+            button.TextSize = 18
+            button.Parent = interfaceFrame
+
+            button.MouseButton1Click:Connect(function()
+                if params.Callback then
+                    params.Callback()
+                end
+            end)
+        end,
+
+        CreateToggle = function(params)
+            local toggleFrame = Instance.new("Frame")
+            toggleFrame.Size = UDim2.new(0.8, 0, 0.1, 0)
+            toggleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+            toggleFrame.Parent = interfaceFrame
+
+            local label = Instance.new("TextLabel")
+            label.Text = params.Name or "Toggle"
+            label.Size = UDim2.new(0.7, 0, 1, 0)
+            label.TextColor3 = Color3.fromRGB(255, 255, 255)
+            label.Font = Enum.Font.Gotham
+            label.TextSize = 16
+            label.BackgroundTransparency = 1
+            label.Parent = toggleFrame
+
+            local icon = Instance.new("ImageButton")
+            icon.Size = UDim2.new(0.2, 0, 0.8, 0)
+            icon.Position = UDim2.new(0.75, 0, 0.1, 0)
+            icon.Image = params.Icon or "rbxassetid://14293471713"
+            icon.ImageColor3 = params.CurrentValue and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            icon.BackgroundTransparency = 1
+            icon.Parent = toggleFrame
+
+            local isActive = params.CurrentValue or false
+            icon.MouseButton1Click:Connect(function()
+                isActive = not isActive
+                icon.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+                if params.Callback then
+                    params.Callback(isActive)
+                end
+            end)
+        end
+    }
 end
 
 return RNOX
