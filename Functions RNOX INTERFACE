@@ -35,13 +35,13 @@ function RNOX:CreateMainUI(params)
     cornerHeader.Parent = header
 
     local tabScrollFrame = Instance.new("ScrollingFrame")
-    tabScrollFrame.Size = UDim2.new(1, 0, 0.12, 0)
+    tabScrollFrame.Name = "TabScrollFrame"
+    tabScrollFrame.Size = UDim2.new(1, 0, 0.1, 0)
     tabScrollFrame.Position = UDim2.new(0, 0, 0.15, 0)
-    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    tabScrollFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     tabScrollFrame.ScrollBarThickness = 8
-    tabScrollFrame.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-    tabScrollFrame.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
     tabScrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.X
+    tabScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(60, 60, 60)
     tabScrollFrame.ClipsDescendants = true
     tabScrollFrame.Parent = parent
 
@@ -65,15 +65,16 @@ end
 
 function RNOX:AddTab(params)
     local tabContent = Instance.new("ScrollingFrame")
-    tabContent.Size = UDim2.new(1, 0, 0.75, 0)
-    tabContent.Position = UDim2.new(0, 0, 0.27, 0)
-    tabContent.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    tabContent.Name = params.Nome or "TabContent"
+    tabContent.Size = UDim2.new(1, 0, 0.65, 0)
+    tabContent.Position = UDim2.new(0, 0, 0.25, 0)
+    tabContent.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     tabContent.Visible = false
-    tabContent.ScrollBarThickness = 10
-    tabContent.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+    tabContent.ScrollBarThickness = 8
     tabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    tabContent.ScrollBarImageColor3 = Color3.fromRGB(60, 60, 60)
     tabContent.ClipsDescendants = true
-    tabContent.Parent = self.baseFrame
+    tabContent.Parent = parent
 
     local cornerTabContent = Instance.new("UICorner")
     cornerTabContent.CornerRadius = UDim.new(0.1, 0)
@@ -81,19 +82,21 @@ function RNOX:AddTab(params)
 
     local gridLayout = Instance.new("UIGridLayout")
     gridLayout.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
-    gridLayout.CellSize = UDim2.new(1 / params.Colunas, -10, 0.12, 0)
+    gridLayout.CellSize = UDim2.new(1 / (params.Colunas or 2), -10, 0.1, 0)
     gridLayout.FillDirection = Enum.FillDirection.Horizontal
     gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
     gridLayout.Parent = tabContent
 
     local tabButton = Instance.new("TextButton")
+    tabButton.Name = params.Nome or "TabButton"
     tabButton.Text = params.Nome or "Aba"
-    tabButton.Size = UDim2.new(0, 90, 1, 0)
+    tabButton.Size = UDim2.new(0, 100, 1, 0)
     tabButton.BackgroundColor3 = params.Cor or Color3.fromRGB(70, 70, 70)
     tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     tabButton.Font = Enum.Font.GothamBold
     tabButton.TextSize = 16
     tabButton.ClipsDescendants = true
+    tabButton.Parent = self.tabScrollFrame
 
     local cornerTabButton = Instance.new("UICorner")
     cornerTabButton.CornerRadius = UDim.new(0.15, 0)
@@ -106,7 +109,6 @@ function RNOX:AddTab(params)
         tabContent.Visible = true
     end)
 
-    tabButton.Parent = self.tabScrollFrame
     table.insert(self.tabs, tabContent)
 
     if params.Default then
