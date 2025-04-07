@@ -83,7 +83,7 @@ function RNOX:CreateWindow(params)
             tabFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
             tabFrame.ScrollBarThickness = 6
             tabFrame.BackgroundTransparency = 1
-            tabFrame.Visible = true -- Agora visível por padrão
+            tabFrame.Visible = true
             tabFrame.Parent = tabContainer
 
             local listLayout = Instance.new("UIListLayout")
