@@ -396,7 +396,6 @@ function RNOX:AddDropdown(parent, params)
     }
 end
 
-function RNOX:AdjustPositions(parent)
     local cumulativeOffset = 0
     for _, element in ipairs(parent:GetChildren()) do
         if element:IsA("GuiObject") then
