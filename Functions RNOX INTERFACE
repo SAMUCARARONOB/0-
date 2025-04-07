@@ -344,125 +344,106 @@ function RNOX:AddDropdown(parent, params)
     local dropdown = Instance.new("TextButton")
     dropdown.Name = params.Nome or "Dropdown"
     dropdown.Parent = parent
-    dropdown.BackgroundColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-    dropdown.BackgroundTransparency = 1
+    dropdown.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    dropdown.BackgroundTransparency = 0
     dropdown.BorderSizePixel = 0
-    dropdown.Size = UDim2.new(1, 0, 0, 20)
-    dropdown.Font = Enum.Font.GothamSemibold
+    dropdown.Size = UDim2.new(0, 200, 0, 20)
+    dropdown.Font = Enum.Font.GothamBold
     dropdown.Text = params.Text or "Dropdown"
-    dropdown.TextColor3 = Color3.new(1, 1, 1)
+    dropdown.TextColor3 = Color3.fromRGB(200, 200, 200)
     dropdown.TextSize = 14
     dropdown.TextXAlignment = Enum.TextXAlignment.Left
 
-    local roundify = Instance.new("ImageLabel")
-    roundify.Name = "Roundify"
-    roundify.Parent = dropdown
-    roundify.BackgroundTransparency = 1
-    roundify.Size = UDim2.new(1, 0, 1, 0)
-    roundify.Image = "rbxassetid://2851929490"
-    roundify.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-    roundify.ScaleType = Enum.ScaleType.Slice
-    roundify.SliceCenter = Rect.new(4, 4, 4, 4)
+    local indicator = Instance.new("ImageLabel")
+    indicator.Name = "Indicator"
+    indicator.Parent = dropdown
+    indicator.BackgroundTransparency = 1
+    indicator.Position = UDim2.new(0.9, -10, 0.1, 0)
+    indicator.Size = UDim2.new(0, 15, 0, 15)
+    indicator.Image = "rbxassetid://2851929490"
+    indicator.ImageColor3 = Color3.fromRGB(200, 200, 200)
 
-    local elementsContainer = Instance.new("Frame")
-    elementsContainer.Name = "ElementsContainer"
-    elementsContainer.Parent = parent
-    elementsContainer.BackgroundColor3 = Color3.new(1, 1, 1)
-    elementsContainer.BackgroundTransparency = 1
-    elementsContainer.Position = UDim2.new(0, 0, 1, 5)
-    elementsContainer.Size = UDim2.new(1, 0, 0, 0)
-    elementsContainer.Visible = false
+    local box = Instance.new("Frame")
+    box.Name = "Box"
+    box.Parent = dropdown
+    box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    box.BackgroundTransparency = 0
+    box.BorderSizePixel = 0
+    box.Position = UDim2.new(0, 0, 1, 5)
+    box.Size = UDim2.new(1, 0, 0, 0)
+    box.ClipsDescendants = true
+    box.Visible = false
 
     local layout = Instance.new("UIListLayout")
-    layout.Parent = elementsContainer
+    layout.Parent = box
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Padding = UDim.new(0, 5)
 
     layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        elementsContainer.Size = UDim2.new(1, 0, 0, layout.AbsoluteContentSize.Y)
+        box.Size = UDim2.new(1, 0, 0, layout.AbsoluteContentSize.Y + 5)
     end)
 
     dropdown.MouseButton1Click:Connect(function()
-        elementsContainer.Visible = not elementsContainer.Visible
+        box.Visible = not box.Visible
+        indicator.Rotation = box.Visible and 90 or -90
     end)
 
     return {
         Dropdown = dropdown,
-        Container = elementsContainer
+        Box = box
     }
 end
 
-function RNOX:AddDropdownElement(dropdown, params)
-    local container = dropdown.Container
+function RNOX:AddDropdownButton(dropdown, params)
+    local button = Instance.new("TextButton")
+    button.Name = params.Nome or "DropdownButton"
+    button.Parent = dropdown.Box
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.Size = UDim2.new(1, 0, 0, 25)
+    button.Font = Enum.Font.Gotham
+    button.Text = params.Text or "Button"
+    button.TextColor3 = Color3.fromRGB(220, 220, 220)
+    button.TextSize = 14
+    button.MouseButton1Click:Connect(function()
+        if params.Acao then
+            params.Acao()
+        end
+    end)
+end
 
-    if params.Tipo == "Button" then
-        local button = Instance.new("TextButton")
-        button.Name = params.Nome or "Button"
-        button.Parent = container
-        button.BackgroundColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-        button.BackgroundTransparency = 1
-        button.Size = UDim2.new(0.8, 0, 0, 16) -- Ajustado para ser 20% menor
-        button.Font = Enum.Font.GothamSemibold
-        button.Text = params.Text or "Button"
-        button.TextColor3 = Color3.new(1, 1, 1)
-        button.TextSize = 12
-        button.TextXAlignment = Enum.TextXAlignment.Left
+function RNOX:AddDropdownToggle(dropdown, params)
+    local toggleFrame = Instance.new("Frame")
+    toggleFrame.Name = params.Nome or "DropdownToggle"
+    toggleFrame.Parent = dropdown.Box
+    toggleFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    toggleFrame.Size = UDim2.new(1, 0, 0, 25)
 
-        local roundify = Instance.new("ImageLabel")
-        roundify.Name = "Roundify"
-        roundify.Parent = button
-        roundify.BackgroundTransparency = 1
-        roundify.Size = UDim2.new(1, 0, 1, 0)
-        roundify.Image = "rbxassetid://2851929490"
-        roundify.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-        roundify.ScaleType = Enum.ScaleType.Slice
-        roundify.SliceCenter = Rect.new(4, 4, 4, 4)
+    local toggleLabel = Instance.new("TextLabel")
+    toggleLabel.Parent = toggleFrame
+    toggleLabel.BackgroundTransparency = 1
+    toggleLabel.Size = UDim2.new(0.8, 0, 1, 0)
+    toggleLabel.Font = Enum.Font.Gotham
+    toggleLabel.Text = params.Text or "Toggle"
+    toggleLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+    toggleLabel.TextSize = 14
+    toggleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-        button.MouseButton1Click:Connect(function()
-            if params.Acao then
-                params.Acao()
-            end
-        end)
-    elseif params.Tipo == "Toggle" then
-        local bar = Instance.new("Frame")
-        bar.Name = "Bar"
-        bar.Parent = container
-        bar.BackgroundColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-        bar.BorderSizePixel = 0
-        bar.Size = UDim2.new(0.8, 0, 0, 16) -- Ajustado para ser 20% menor
+    local toggleButton = Instance.new("ImageButton")
+    toggleButton.Name = "ToggleButton"
+    toggleButton.Parent = toggleFrame
+    toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    toggleButton.Position = UDim2.new(0.8, 5, 0.2, 0)
+    toggleButton.Size = UDim2.new(0, 20, 0, 20)
+    toggleButton.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4731371541"
 
-        local toggle = Instance.new("ImageButton")
-        toggle.Name = "Toggle"
-        toggle.Parent = bar
-        toggle.BackgroundColor3 = Color3.new(1, 1, 1)
-        toggle.BackgroundTransparency = 1
-        toggle.Position = UDim2.new(0, 5, 0, -2)
-        toggle.Rotation = 90
-        toggle.Size = UDim2.new(0, 20, 0, 20)
-        toggle.ZIndex = 2
-        toggle.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4731371541"
-
-        local base = Instance.new("ImageLabel")
-        base.Name = "Base"
-        base.Parent = bar
-        base.BackgroundColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-        base.BorderSizePixel = 0
-        base.Position = UDim2.new(0, 0, 0.8, 0)
-        base.Size = UDim2.new(1, 0, 0, 10)
-        base.Image = "rbxassetid://2851926732"
-        base.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-        base.ScaleType = Enum.ScaleType.Slice
-        base.SliceCenter = Rect.new(12, 12, 12, 12)
-
-        toggle.MouseButton1Click:Connect(function()
-            local isActive = toggle.ImageColor3 == Color3.new(0, 146, 214)
-            toggle.ImageColor3 = isActive and Color3.new(1, 1, 1) or Color3.new(0, 146, 214)
-            base.ImageColor3 = isActive and Color3.new(0.160784, 0.290196, 0.478431) or Color3.new(0, 146, 214)
-            if params.Acao then
-                params.Acao(not isActive)
-            end
-        end)
-    end
+    local isActive = false
+    toggleButton.MouseButton1Click:Connect(function()
+        isActive = not isActive
+        toggleButton.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        if params.Acao then
+            params.Acao(isActive)
+        end
+    end)
 end
 
 return RNOX
