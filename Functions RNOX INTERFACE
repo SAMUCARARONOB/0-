@@ -456,6 +456,7 @@ function RNOX:AddDropdownToggle(dropdown, params)
     toggleButton.Position = UDim2.new(0.88, -15, 0.2, 0)
     toggleButton.Size = UDim2.new(0, 20, 0, 20)
     toggleButton.Image = "rbxassetid://14293471713"
+    toggleButton.ImageColor3 = Color3.fromRGB(255, 0, 0)
 
     local isActive = false
     toggleButton.MouseButton1Click:Connect(function()
