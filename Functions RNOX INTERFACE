@@ -119,43 +119,46 @@ function RNOX:CreateWindow(params)
         return tabContent
     end
 
-    function window:CreateToggle(parent, params)
-        local toggleFrame = Instance.new("Frame")
-        toggleFrame.Size = UDim2.new(0.8, 0, 0.1, 0)
-        toggleFrame.BackgroundColor3 = params.Color or Color3.fromRGB(30, 30, 30)
-        toggleFrame.BorderSizePixel = 0
-        toggleFrame.Parent = parent
-
+    function window:CreateButton(parent, params)
+        local button = Instance.new("TextButton")
+        button.Size = UDim2.new(0.8, 0, 0.1, 0)
+        button.Text = params.Name or "Botão"
+        button.BackgroundColor3 = params.Color or Color3.fromRGB(30, 30, 30)
+        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+        button.Font = Enum.Font.Gotham
+        button.TextSize = 18
+        button.TextWrapped = true
         local corner = Instance.new("UICorner")
         corner.CornerRadius = UDim.new(0.1, 0)
-        corner.Parent = toggleFrame
+        corner.Parent = button
+        button.MouseButton1Click:Connect(function()
+            if params.Callback then
+                params.Callback()
+            end
+        end)
+        button.Parent = parent
+    end
 
-        local label = Instance.new("TextLabel")
-        label.Text = params.Name or "Toggle"
-        label.Size = UDim2.new(0.7, 0, 1, 0)
-        label.Position = UDim2.new(0, 5, 0, 0)
-        label.BackgroundTransparency = 1
-        label.TextColor3 = Color3.fromRGB(255, 255, 255)
-        label.Font = Enum.Font.Gotham
-        label.TextSize = 16
-        label.Parent = toggleFrame
-
-        local icon = Instance.new("ImageButton")
-        icon.Size = UDim2.new(0.2, 0, 0.8, 0)
-        icon.Position = UDim2.new(0.75, 0, 0.1, 0)
-        icon.BackgroundTransparency = 1
-        icon.Image = params.Icon or "rbxassetid://14293471713" -- Ícone padrão
-        icon.ImageColor3 = params.IconColor or Color3.fromRGB(255, 0, 0)
-        icon.Parent = toggleFrame
-
+    function window:CreateToggle(parent, params)
+        local toggle = Instance.new("TextButton")
+        toggle.Size = UDim2.new(0.8, 0, 0.1, 0)
+        toggle.Text = params.Name or "Toggle"
+        toggle.BackgroundColor3 = params.Color or Color3.fromRGB(30, 30, 30)
+        toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+        toggle.Font = Enum.Font.GothamBold
+        toggle.TextSize = 18
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0.1, 0)
+        corner.Parent = toggle
         local isActive = params.CurrentValue or false
-        icon.MouseButton1Click:Connect(function()
+        toggle.MouseButton1Click:Connect(function()
             isActive = not isActive
-            icon.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            toggle.Text = isActive and "Ativado" or "Desativado"
             if params.Callback then
                 params.Callback(isActive)
             end
         end)
+        toggle.Parent = parent
     end
 
     return window
