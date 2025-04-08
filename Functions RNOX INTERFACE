@@ -100,12 +100,24 @@ function RNOX:CreateWindow(params)
                 CreateButton = function(params)
                     local button = Instance.new("TextButton")
                     button.Size = UDim2.new(1, 0, 0, 40)
-                    button.Text = params.Name or "Button"
                     button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
                     button.TextColor3 = Color3.fromRGB(255, 255, 255)
                     button.Font = Enum.Font.GothamBold
                     button.TextSize = 18
                     button.Parent = tabFrame
+
+                    local function updateName()
+                        button.Text = params.Name or "Button"
+                    end
+                    updateName()
+
+                    local running = true
+                    task.spawn(function()
+                        while running do
+                            task.wait(0.1)
+                            updateName()
+                        end
+                    end)
 
                     button.MouseButton1Click:Connect(function()
                         if params.Callback then
@@ -114,8 +126,8 @@ function RNOX:CreateWindow(params)
                     end)
 
                     return {
-                        UpdateName = function(newName)
-                            button.Text = newName
+                        Destroy = function()
+                            running = false
                         end
                     }
                 end,
@@ -128,7 +140,6 @@ function RNOX:CreateWindow(params)
 
                     local label = Instance.new("TextLabel")
                     label.Size = UDim2.new(0.7, 0, 1, 0)
-                    label.Text = params.Name or "Toggle"
                     label.TextColor3 = Color3.fromRGB(255, 255, 255)
                     label.Font = Enum.Font.Gotham
                     label.TextSize = 16
@@ -143,6 +154,19 @@ function RNOX:CreateWindow(params)
                     icon.BackgroundTransparency = 1
                     icon.Parent = toggleFrame
 
+                    local function updateName()
+                        label.Text = params.Name or "Toggle"
+                    end
+                    updateName()
+
+                    local running = true
+                    task.spawn(function()
+                        while running do
+                            task.wait(0.1)
+                            updateName()
+                        end
+                    end)
+
                     local isActive = params.CurrentValue or false
                     icon.MouseButton1Click:Connect(function()
                         isActive = not isActive
@@ -153,8 +177,8 @@ function RNOX:CreateWindow(params)
                     end)
 
                     return {
-                        UpdateName = function(newName)
-                            label.Text = newName
+                        Destroy = function()
+                            running = false
                         end
                     }
                 end,
@@ -162,16 +186,28 @@ function RNOX:CreateWindow(params)
                 CreateLabel = function(params)
                     local label = Instance.new("TextLabel")
                     label.Size = UDim2.new(1, 0, 0, 20)
-                    label.Text = params.Name or "Label"
                     label.TextColor3 = Color3.fromRGB(175, 175, 175)
                     label.Font = Enum.Font.Gotham
                     label.TextSize = 14
                     label.BackgroundTransparency = 1
                     label.Parent = tabFrame
 
+                    local function updateName()
+                        label.Text = params.Name or "Label"
+                    end
+                    updateName()
+
+                    local running = true
+                    task.spawn(function()
+                        while running do
+                            task.wait(0.1)
+                            updateName()
+                        end
+                    end)
+
                     return {
-                        UpdateName = function(newName)
-                            label.Text = newName
+                        Destroy = function()
+                            running = false
                         end
                     }
                 end
