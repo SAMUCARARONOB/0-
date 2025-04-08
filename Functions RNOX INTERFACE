@@ -1,5 +1,4 @@
 local RNOX = {}
-local RunService = game:GetService("RunService")
 
 function RNOX:CreateWindow(params)
     local gui = Instance.new("ScreenGui")
@@ -77,14 +76,6 @@ function RNOX:CreateWindow(params)
         interfaceFrame:TweenSize(UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     end)
 
-    local elements = {}
-
-    RunService.RenderStepped:Connect(function()
-        for _, element in ipairs(elements) do
-            element.UpdateName()
-        end
-    end)
-
     return {
         CreateTab = function(tabName)
             local tabFrame = Instance.new("ScrollingFrame")
@@ -122,13 +113,12 @@ function RNOX:CreateWindow(params)
                         end
                     end)
 
-                    table.insert(elements, {
-                        UpdateName = function()
-                            button.Text = params.Name or "Button"
+                    return {
+                        UpdateName = function(newName)
+                            params.Name = newName
+                            button.Text = newName
                         end
-                    })
-
-                    return button
+                    }
                 end,
 
                 CreateToggle = function(params)
@@ -163,13 +153,12 @@ function RNOX:CreateWindow(params)
                         end
                     end)
 
-                    table.insert(elements, {
-                        UpdateName = function()
-                            label.Text = params.Name or "Toggle"
+                    return {
+                        UpdateName = function(newName)
+                            params.Name = newName
+                            label.Text = newName
                         end
-                    })
-
-                    return toggleFrame
+                    }
                 end,
 
                 CreateLabel = function(params)
@@ -182,13 +171,12 @@ function RNOX:CreateWindow(params)
                     label.BackgroundTransparency = 1
                     label.Parent = tabFrame
 
-                    table.insert(elements, {
-                        UpdateName = function()
-                            label.Text = params.Name or "Label"
+                    return {
+                        UpdateName = function(newName)
+                            params.Name = newName
+                            label.Text = newName
                         end
-                    })
-
-                    return label
+                    }
                 end
             }
         end
