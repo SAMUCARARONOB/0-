@@ -18,25 +18,43 @@ local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0.05, 0)
 corner.Parent = interfaceFrame
 
-local tabContainer = Instance.new("Frame")
-tabContainer.Size = UDim2.new(1, -20, 1, -70)
-tabContainer.Position = UDim2.new(0, 10, 0, 50)
-tabContainer.BackgroundTransparency = 1
-tabContainer.Parent = interfaceFrame
-
-local listLayout = Instance.new("UIListLayout")
-listLayout.FillDirection = Enum.FillDirection.Horizontal
-listLayout.Padding = UDim.new(0.02, 0)
-listLayout.SortOrder = Enum.SortOrder.LayoutOrder
-listLayout.Parent = tabContainer
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, -50, 0, 30)
+titleLabel.Position = UDim2.new(0, 10, 0, 10)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "RNOX Interface"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextSize = 20
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.Parent = interfaceFrame
 
 local hideButton = Instance.new("ImageButton")
 hideButton.Size = UDim2.new(0, 30, 0, 30)
-hideButton.Position = UDim2.new(1, -10, 0, 10)
+hideButton.Position = UDim2.new(1, -25, 0, 10)
 hideButton.AnchorPoint = Vector2.new(1, 0)
 hideButton.Image = "rbxassetid://6035047409"
 hideButton.BackgroundTransparency = 1
 hideButton.Parent = interfaceFrame
+
+local tabContainer = Instance.new("ScrollingFrame")
+tabContainer.Size = UDim2.new(1, -20, 1, -70)
+tabContainer.Position = UDim2.new(0, 10, 0, 50)
+tabContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
+tabContainer.ScrollBarThickness = 6
+tabContainer.ScrollingDirection = Enum.ScrollingDirection.Y
+tabContainer.BackgroundTransparency = 1
+tabContainer.Parent = interfaceFrame
+
+local listLayout = Instance.new("UIListLayout")
+listLayout.FillDirection = Enum.FillDirection.Vertical
+listLayout.Padding = UDim.new(0.02, 0)
+listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+listLayout.Parent = tabContainer
+
+listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y)
+end)
 
 local ballButton = Instance.new("ImageButton")
 ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
@@ -53,11 +71,11 @@ local ballCorner = Instance.new("UICorner")
 ballCorner.CornerRadius = UDim.new(0.5, 0)
 ballCorner.Parent = ballButton
 
-local function playAnimation(frame, targetSize, easingDirection, easingStyle, duration)
-    frame:TweenSize(targetSize, easingDirection, easingStyle, duration, true)
+local function playAnimation(frame, targetSize, direction, easingStyle, duration)
+    frame:TweenSize(targetSize, direction, easingStyle, duration, true)
 end
 
-playAnimation(interfaceFrame, UDim2.new(0, 600, 0, 400), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1)
+playAnimation(interfaceFrame, UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 1)
 
 hideButton.MouseButton1Click:Connect(function()
     playAnimation(interfaceFrame, UDim2.new(0, 0, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 0.3)
@@ -70,37 +88,10 @@ end)
 ballButton.MouseButton1Click:Connect(function()
     ballButton.Visible = false
     interfaceFrame.Visible = true
-    playAnimation(interfaceFrame, UDim2.new(0, 600, 0, 400), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3)
+    playAnimation(interfaceFrame, UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3)
 end)
 
-local columns = {}
-
-local function createColumns(columnCount)
-    for _, column in pairs(columns) do
-        column:Destroy()
-    end
-
-    columns = {}
-
-    for i = 1, columnCount do
-        local column = Instance.new("Frame")
-        column.Size = UDim2.new(1 / columnCount - 0.02, 0, 1, 0)
-        column.BackgroundTransparency = 1
-        column.Parent = tabContainer
-
-        local layout = Instance.new("UIListLayout")
-        layout.FillDirection = Enum.FillDirection.Vertical
-        layout.Padding = UDim.new(0.02, 0)
-        layout.SortOrder = Enum.SortOrder.LayoutOrder
-        layout.Parent = column
-
-        columns[i] = column
-    end
-end
-
-createColumns(1) -- Configuração inicial: 1 coluna
-
-function createButton(columnIndex, name, callback)
+function createButton(name, callback)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(1, 0, 0, 40)
     button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -108,20 +99,22 @@ function createButton(columnIndex, name, callback)
     button.Font = Enum.Font.GothamBold
     button.TextSize = 18
     button.Text = name
-    button.Parent = columns[columnIndex]
+    button.Parent = tabContainer
 
     button.MouseButton1Click:Connect(function()
         if callback then
             callback()
         end
     end)
+
+    return button
 end
 
-function createToggle(columnIndex, name, defaultValue, callback)
+function createToggle(name, defaultValue, callback)
     local toggleFrame = Instance.new("Frame")
     toggleFrame.Size = UDim2.new(1, 0, 0, 40)
     toggleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    toggleFrame.Parent = columns[columnIndex]
+    toggleFrame.Parent = tabContainer
 
     local label = Instance.new("TextLabel")
     label.Size = UDim2.new(0.7, 0, 1, 0)
@@ -133,11 +126,10 @@ function createToggle(columnIndex, name, defaultValue, callback)
     label.Parent = toggleFrame
 
     local icon = Instance.new("ImageButton")
-    icon.Size = UDim2.new(0, 25, 0, 25)
-    icon.Position = UDim2.new(0.9, 0, 0.5, 0)
-    icon.AnchorPoint = Vector2.new(0.5, 0.5)
+    icon.Size = UDim2.new(0, 25.9, 0, 25.9)
+    icon.Position = UDim2.new(0.89, 0, 0.22, 0)
     icon.Image = "rbxassetid://14293471713"
-    icon.ImageColor3 = defaultValue and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    icon.ImageColor3 = Color3.fromRGB(255, 0, 0)
     icon.BackgroundTransparency = 1
     icon.Parent = toggleFrame
 
@@ -151,7 +143,7 @@ function createToggle(columnIndex, name, defaultValue, callback)
     end)
 end
 
-function createLabel(columnIndex, name)
+function createLabel(name)
     local label = Instance.new("TextLabel")
     label.Size = UDim2.new(1, 0, 0, 20)
     label.TextColor3 = Color3.fromRGB(175, 175, 175)
@@ -159,15 +151,46 @@ function createLabel(columnIndex, name)
     label.TextSize = 14
     label.Text = name
     label.BackgroundTransparency = 1
-    label.Parent = columns[columnIndex]
+    label.Parent = tabContainer
 end
 
-function createSlider(columnIndex, name, range, color, callback)
+function createTextBox(name, placeholder, callback)
+    local textBoxFrame = Instance.new("Frame")
+    textBoxFrame.Size = UDim2.new(1, 0, 0, 40)
+    textBoxFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    textBoxFrame.BorderSizePixel = 0
+    textBoxFrame.Parent = tabContainer
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0.05, 0)
+    corner.Parent = textBoxFrame
+
+    local textBox = Instance.new("TextBox")
+    textBox.Size = UDim2.new(0.95, 0, 0.8, 0)
+    textBox.Position = UDim2.new(0.025, 0, 0.1, 0)
+    textBox.BackgroundTransparency = 1
+    textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textBox.TextSize = 14
+    textBox.Font = Enum.Font.GothamSemibold
+    textBox.PlaceholderText = placeholder or "Digite algo..."
+    textBox.Text = ""
+    textBox.ClearTextOnFocus = true
+    textBox.Parent = textBoxFrame
+
+    textBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed and callback then
+            pcall(callback, textBox.Text)
+        end
+    end)
+end
+
+function createSlider(name, range, color, callback)
     local minValue, maxValue = range:match("(%d+)/(%d+)")
     minValue = tonumber(minValue) or 0
     maxValue = tonumber(maxValue) or 100
     local initialValue = minValue
 
+    -- Convertendo a cor em valores RGB
     local sliderColor = color and {color:match("(%d+),(%d+),(%d+)")}
     sliderColor = sliderColor and Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3]) or Color3.fromRGB(255, 255, 255)
 
@@ -175,7 +198,7 @@ function createSlider(columnIndex, name, range, color, callback)
     sliderFrame.Size = UDim2.new(1, 0, 0, 40)
     sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     sliderFrame.BorderSizePixel = 0
-    sliderFrame.Parent = columns[columnIndex]
+    sliderFrame.Parent = tabContainer
 
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0.05, 0)
@@ -255,34 +278,4 @@ function createSlider(columnIndex, name, range, color, callback)
     end)
 
     updateSlider(initialValue)
-end
-
-function createTextBox(columnIndex, name, placeholder, callback)
-    local textBoxFrame = Instance.new("Frame")
-    textBoxFrame.Size = UDim2.new(1, 0, 0, 40)
-    textBoxFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    textBoxFrame.BorderSizePixel = 0
-    textBoxFrame.Parent = columns[columnIndex]
-
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.05, 0)
-    corner.Parent = textBoxFrame
-
-    local textBox = Instance.new("TextBox")
-    textBox.Size = UDim2.new(0.95, 0, 0.8, 0)
-    textBox.Position = UDim2.new(0.025, 0, 0.1, 0)
-    textBox.BackgroundTransparency = 1
-    textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    textBox.TextSize = 14
-    textBox.Font = Enum.Font.GothamSemibold
-    textBox.PlaceholderText = placeholder or "Digite algo..."
-    textBox.Text = ""
-    textBox.ClearTextOnFocus = true
-    textBox.Parent = textBoxFrame
-
-    textBox.FocusLost:Connect(function(enterPressed)
-        if enterPressed and callback then
-            pcall(callback, textBox.Text)
-        end
-    end)
 end
