@@ -91,44 +91,6 @@ ballButton.MouseButton1Click:Connect(function()
     playAnimation(interfaceFrame, UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3)
 end)
 
-local columns = {}
-
-local function createColumns(columnCount, parent)
-    for _, column in ipairs(columns) do
-        column:Destroy()
-    end
-
-    columns = {}
-
-    for i = 1, columnCount do
-        local column = Instance.new("Frame")
-        column.Size = UDim2.new(1 / columnCount, -5, 1, 0)
-        column.BackgroundTransparency = 1
-        column.Parent = parent
-
-        local layout = Instance.new("UIListLayout")
-        layout.FillDirection = Enum.FillDirection.Vertical
-        layout.SortOrder = Enum.SortOrder.LayoutOrder
-        layout.Padding = UDim.new(0.02, 0)
-        layout.Parent = column
-
-        table.insert(columns, column)
-    end
-end
-
-local function autoOrganizeElements(parent)
-    local columnIndex = 1
-    for _, element in ipairs(parent:GetChildren()) do
-        if element:IsA("GuiObject") then
-            element.Parent = columns[columnIndex]
-            columnIndex = columnIndex + 1
-            if columnIndex > #columns then
-                columnIndex = 1
-            end
-        end
-    end
-end
-
 function createButton(name, callback)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(1, 0, 0, 40)
