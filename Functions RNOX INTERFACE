@@ -57,6 +57,7 @@ local function updateCanvasSize()
 end
 
 listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvasSize)
+updateCanvasSize()
 
 local ballButton = Instance.new("ImageButton")
 ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
