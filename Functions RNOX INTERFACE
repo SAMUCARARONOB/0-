@@ -91,7 +91,7 @@ ballButton.MouseButton1Click:Connect(function()
     playAnimation(interfaceFrame, UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3)
 end)
 
-local function createButton(name, callback)
+function createButton(name, callback)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(1, 0, 0, 40)
     button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -110,7 +110,7 @@ local function createButton(name, callback)
     return button
 end
 
-local function createToggle(name, defaultValue, callback)
+function createToggle(name, defaultValue, callback)
     local toggleFrame = Instance.new("Frame")
     toggleFrame.Size = UDim2.new(1, 0, 0, 40)
     toggleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -143,7 +143,7 @@ local function createToggle(name, defaultValue, callback)
     end)
 end
 
-local function createLabel(name)
+function createLabel(name)
     local label = Instance.new("TextLabel")
     label.Size = UDim2.new(1, 0, 0, 20)
     label.TextColor3 = Color3.fromRGB(175, 175, 175)
@@ -154,40 +154,10 @@ local function createLabel(name)
     label.Parent = tabContainer
 end
 
-local function createTextBox(parent, name, placeholder, callback)
-    local textBoxFrame = Instance.new("Frame")
-    textBoxFrame.Size = UDim2.new(1, 0, 0, 40)
-    textBoxFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    textBoxFrame.BorderSizePixel = 0
-    textBoxFrame.Parent = parent
-
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.05, 0)
-    corner.Parent = textBoxFrame
-
-    local textBox = Instance.new("TextBox")
-    textBox.Size = UDim2.new(0.95, 0, 0.8, 0)
-    textBox.Position = UDim2.new(0.025, 0, 0.1, 0)
-    textBox.BackgroundTransparency = 1
-    textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    textBox.TextSize = 14
-    textBox.Font = Enum.Font.GothamSemibold
-    textBox.PlaceholderText = placeholder or "Digite algo..."
-    textBox.Text = ""
-    textBox.ClearTextOnFocus = true
-    textBox.Parent = textBoxFrame
-
-    textBox.FocusLost:Connect(function(enterPressed)
-        if enterPressed and callback then
-            pcall(callback, textBox.Text)
-        end
-    end)
-end
-
-local function createSlider(parent, name, range, color, callback)
+function createSlider(parent, name, range, color, callback)
     local minValue, maxValue = range:match("(%d+)/(%d+)")
-    minValue = tonumber(minValue) or 16
-    maxValue = tonumber(maxValue) or 1000
+    minValue = tonumber(minValue) or 0
+    maxValue = tonumber(maxValue) or 100
     local initialValue = minValue
     local sliderColor = color and {color:match("(%d+),(%d+),(%d+)")} or {255, 255, 255}
 
@@ -196,10 +166,6 @@ local function createSlider(parent, name, range, color, callback)
     sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     sliderFrame.BorderSizePixel = 0
     sliderFrame.Parent = parent
-
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.05, 0)
-    corner.Parent = sliderFrame
 
     local track = Instance.new("Frame")
     track.Size = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.4, 0)
@@ -217,6 +183,7 @@ local function createSlider(parent, name, range, color, callback)
     handle.BorderSizePixel = 0
     handle.Parent = sliderFrame
 
+    local valueTextBox = Instance.new("TextBox")
     local valueTextBox = Instance.new("TextBox")
     valueTextBox.Size = UDim2.new(0.3, 0, 0.6, 0)
     valueTextBox.Position = UDim2.new(0.5, 0, 0.5, 0)
@@ -276,3 +243,29 @@ local function createSlider(parent, name, range, color, callback)
 
     updateSlider(initialValue)
 end
+
+function createTextBox(parent, name, placeholder, callback)
+    local textBoxFrame = Instance.new("Frame")
+    textBoxFrame.Size = UDim2.new(1, 0, 0, 40)
+    textBoxFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    textBoxFrame.BorderSizePixel = 0
+    textBoxFrame.Parent = parent
+
+    local textBox = Instance.new("TextBox")
+    textBox.Size = UDim2.new(0.95, 0, 0.8, 0)
+    textBox.Position = UDim2.new(0.025, 0, 0.1, 0)
+    textBox.BackgroundTransparency = 1
+    textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textBox.TextSize = 14
+    textBox.Font = Enum.Font.GothamSemibold
+    textBox.PlaceholderText = placeholder or "Digite algo..."
+    textBox.Text = ""
+    textBox.ClearTextOnFocus = true
+    textBox.Parent = textBoxFrame
+
+    textBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed and callback then
+            pcall(callback, textBox.Text)
+        end
+    end)
+end 
