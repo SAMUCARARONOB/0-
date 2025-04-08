@@ -52,9 +52,11 @@ listLayout.Padding = UDim.new(0.02, 0)
 listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 listLayout.Parent = tabContainer
 
-listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y)
-end)
+local function updateCanvasSize()
+    tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 10)
+end
+
+listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvasSize)
 
 local ballButton = Instance.new("ImageButton")
 ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
