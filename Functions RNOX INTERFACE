@@ -97,17 +97,10 @@ function RNOX:CreateWindow(config)
             tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + box.AbsoluteSize.Y + 20)
         end)
 
-        local function manageBelowElements(visible)
-            local dropdownElements = {}
+        local function hideBelowElements(visible)
             for _, element in ipairs(tabContainer:GetChildren()) do
-                if not element:IsDescendantOf(box) and element ~= dropdown and element.Visible then
-                    table.insert(dropdownElements, element)
-                end
-            end
-
-            for i = 1, #dropdownElements do
-                if i <= #box:GetChildren() - 1 then -- Excluding the layout
-                    dropdownElements[i].Visible = visible
+                if not element:IsDescendantOf(box) and element ~= dropdown then
+                    element.Visible = visible
                 end
             end
         end
@@ -115,7 +108,7 @@ function RNOX:CreateWindow(config)
         dropdown.MouseButton1Click:Connect(function()
             box.Visible = not box.Visible
             indicator.Rotation = box.Visible and 180 or 0
-            manageBelowElements(not box.Visible)
+            hideBelowElements(not box.Visible)
             tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + (box.Visible and box.AbsoluteSize.Y or 0) + 20)
         end)
 
@@ -139,7 +132,7 @@ function RNOX:CreateWindow(config)
                 dropdown.Text = option
                 box.Visible = false
                 indicator.Rotation = 0
-                manageBelowElements(true)
+                hideBelowElements(true)
                 tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 20)
                 if dropdownConfig.Callback then
                     dropdownConfig.Callback(option)
