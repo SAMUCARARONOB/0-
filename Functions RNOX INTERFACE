@@ -184,7 +184,6 @@ function createSlider(parent, name, range, color, callback)
     handle.Parent = sliderFrame
 
     local valueTextBox = Instance.new("TextBox")
-    local valueTextBox = Instance.new("TextBox")
     valueTextBox.Size = UDim2.new(0.3, 0, 0.6, 0)
     valueTextBox.Position = UDim2.new(0.5, 0, 0.5, 0)
     valueTextBox.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -203,7 +202,6 @@ function createSlider(parent, name, range, color, callback)
         track.Size = UDim2.new(ratio, 0, 0.4, 0)
         handle.Position = UDim2.new(ratio, 0, 0.5, 0)
         valueTextBox.Text = tostring(value)
-
         if callback then
             pcall(callback, value)
         end
@@ -268,4 +266,4 @@ function createTextBox(parent, name, placeholder, callback)
             pcall(callback, textBox.Text)
         end
     end)
-end 
+end
