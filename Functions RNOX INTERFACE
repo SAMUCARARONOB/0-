@@ -154,12 +154,16 @@ function createLabel(name)
     label.Parent = tabContainer
 end
 
-function createTextBox(parent, name, placeholder, callback)
+local function createTextBox(parent, name, placeholder, callback)
     local textBoxFrame = Instance.new("Frame")
     textBoxFrame.Size = UDim2.new(1, 0, 0, 40)
     textBoxFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     textBoxFrame.BorderSizePixel = 0
     textBoxFrame.Parent = parent
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0.05, 0)
+    corner.Parent = textBoxFrame
 
     local textBox = Instance.new("TextBox")
     textBox.Size = UDim2.new(0.95, 0, 0.8, 0)
@@ -180,7 +184,7 @@ function createTextBox(parent, name, placeholder, callback)
     end)
 end
 
-function createSlider(parent, name, range, color, callback)
+local function createSlider(parent, name, range, color, callback)
     local minValue, maxValue = range:match("(%d+)/(%d+)")
     minValue = tonumber(minValue) or 0
     maxValue = tonumber(maxValue) or 100
@@ -192,6 +196,10 @@ function createSlider(parent, name, range, color, callback)
     sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     sliderFrame.BorderSizePixel = 0
     sliderFrame.Parent = parent
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0.05, 0)
+    corner.Parent = sliderFrame
 
     local track = Instance.new("Frame")
     track.Size = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.4, 0)
@@ -228,6 +236,7 @@ function createSlider(parent, name, range, color, callback)
         track.Size = UDim2.new(ratio, 0, 0.4, 0)
         handle.Position = UDim2.new(ratio, 0, 0.5, 0)
         valueTextBox.Text = tostring(value)
+
         if callback then
             pcall(callback, value)
         end
