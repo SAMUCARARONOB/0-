@@ -193,7 +193,7 @@ function createSlider(name, range, color, callback)
 
     local sliderFrame = Instance.new("Frame")
     sliderFrame.Size = UDim2.new(1, 0, 0, 40)
-    sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 255)
+    sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     sliderFrame.BorderSizePixel = 0
     sliderFrame.Parent = tabContainer
 
