@@ -104,8 +104,15 @@ function RNOX:CreateWindow(params)
                     button.TextColor3 = Color3.fromRGB(255, 255, 255)
                     button.Font = Enum.Font.GothamBold
                     button.TextSize = 18
-                    button.Text = params.Name or "Button"
                     button.Parent = tabFrame
+
+                    local function monitorChanges()
+                        button:GetPropertyChangedSignal("Text"):Connect(function()
+                            button.Text = params.Name or button.Text
+                        end)
+                    end
+
+                    monitorChanges()
 
                     button.MouseButton1Click:Connect(function()
                         if params.Callback then
@@ -113,12 +120,7 @@ function RNOX:CreateWindow(params)
                         end
                     end)
 
-                    return {
-                        UpdateName = function(newName)
-                            params.Name = newName
-                            button.Text = newName
-                        end
-                    }
+                    return button
                 end,
 
                 CreateToggle = function(params)
@@ -132,7 +134,6 @@ function RNOX:CreateWindow(params)
                     label.TextColor3 = Color3.fromRGB(255, 255, 255)
                     label.Font = Enum.Font.Gotham
                     label.TextSize = 16
-                    label.Text = params.Name or "Toggle"
                     label.BackgroundTransparency = 1
                     label.Parent = toggleFrame
 
@@ -144,6 +145,14 @@ function RNOX:CreateWindow(params)
                     icon.BackgroundTransparency = 1
                     icon.Parent = toggleFrame
 
+                    local function monitorChanges()
+                        label:GetPropertyChangedSignal("Text"):Connect(function()
+                            label.Text = params.Name or label.Text
+                        end)
+                    end
+
+                    monitorChanges()
+
                     local isActive = params.CurrentValue or false
                     icon.MouseButton1Click:Connect(function()
                         isActive = not isActive
@@ -153,12 +162,7 @@ function RNOX:CreateWindow(params)
                         end
                     end)
 
-                    return {
-                        UpdateName = function(newName)
-                            params.Name = newName
-                            label.Text = newName
-                        end
-                    }
+                    return toggleFrame
                 end,
 
                 CreateLabel = function(params)
@@ -167,16 +171,18 @@ function RNOX:CreateWindow(params)
                     label.TextColor3 = Color3.fromRGB(175, 175, 175)
                     label.Font = Enum.Font.Gotham
                     label.TextSize = 14
-                    label.Text = params.Name or "Label"
                     label.BackgroundTransparency = 1
                     label.Parent = tabFrame
 
-                    return {
-                        UpdateName = function(newName)
-                            params.Name = newName
-                            label.Text = newName
-                        end
-                    }
+                    local function monitorChanges()
+                        label:GetPropertyChangedSignal("Text"):Connect(function()
+                            label.Text = params.Name or label.Text
+                        end)
+                    end
+
+                    monitorChanges()
+
+                    return label
                 end
             }
         end
