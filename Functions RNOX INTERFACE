@@ -278,3 +278,105 @@ function createSlider(name, range, color, callback)
 
     updateSlider(initialValue)
 end
+
+function createDropdown(parent, params)
+    local dropdown = Instance.new("TextButton")
+    dropdown.Name = params.Name or "Dropdown"
+    dropdown.Parent = parent
+    dropdown.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    dropdown.Size = UDim2.new(1, 0, 0, 30)
+    dropdown.Font = Enum.Font.GothamBold
+    dropdown.Text = params.Text or "Dropdown"
+    dropdown.TextColor3 = Color3.fromRGB(200, 200, 200)
+    dropdown.TextSize = 14
+    dropdown.TextXAlignment = Enum.TextXAlignment.Left
+
+    local indicator = Instance.new("ImageLabel")
+    indicator.Name = "Indicator"
+    indicator.Parent = dropdown
+    indicator.BackgroundTransparency = 1
+    indicator.Position = UDim2.new(0.9, -10, 0.5, -7.5)
+    indicator.Size = UDim2.new(0, 15, 0, 15)
+    indicator.Image = "rbxassetid://4731371541"
+    indicator.ImageColor3 = Color3.fromRGB(200, 200, 200)
+
+    local box = Instance.new("Frame")
+    box.Name = "DropdownBox"
+    box.Parent = dropdown
+    box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    box.Position = UDim2.new(0, 0, 1, 5)
+    box.Size = UDim2.new(1, 0, 0, 0)
+    box.ClipsDescendants = true
+    box.Visible = false
+
+    local layout = Instance.new("UIListLayout")
+    layout.Parent = box
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 5)
+
+    layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        box.Size = UDim2.new(1, 0, 0, layout.AbsoluteContentSize.Y + 5)
+    end)
+
+    dropdown.MouseButton1Click:Connect(function()
+        box.Visible = not box.Visible
+        indicator.Rotation = box.Visible and 180 or 0
+    end)
+
+    return {
+        Dropdown = dropdown,
+        Box = box
+    }
+end
+
+function createDropdownButton(dropdown, params)
+    local button = Instance.new("TextButton")
+    button.Name = params.Name or "DropdownButton"
+    button.Parent = dropdown.Box
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.Size = UDim2.new(1, 0, 0, 30)
+    button.Font = Enum.Font.Gotham
+    button.Text = params.Text or "Button"
+    button.TextColor3 = Color3.fromRGB(220, 220, 220)
+    button.TextSize = 14
+    button.MouseButton1Click:Connect(function()
+        if params.Action then
+            params.Action()
+        end
+    end)
+end
+
+function createDropdownToggle(dropdown, params)
+    local toggleFrame = Instance.new("Frame")
+    toggleFrame.Name = params.Name or "DropdownToggle"
+    toggleFrame.Parent = dropdown.Box
+    toggleFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    toggleFrame.Size = UDim2.new(1, 0, 0, 30)
+
+    local toggleLabel = Instance.new("TextLabel")
+    toggleLabel.Parent = toggleFrame
+    toggleLabel.BackgroundTransparency = 1
+    toggleLabel.Size = UDim2.new(0.8, 0, 1, 0)
+    toggleLabel.Font = Enum.Font.Gotham
+    toggleLabel.Text = params.Text or "Toggle"
+    toggleLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+    toggleLabel.TextSize = 14
+    toggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+    local toggleButton = Instance.new("ImageButton")
+    toggleButton.Parent = toggleFrame
+    toggleButton.BackgroundTransparency = 1
+    toggleButton.Position = UDim2.new(0.88, 0, 0.5, -10)
+    toggleButton.Size = UDim2.new(0, 20, 0, 20)
+    toggleButton.Image = "rbxassetid://14293471713"
+    toggleButton.ImageColor3 = Color3.fromRGB(255, 0, 0)
+
+    local isActive = false
+    toggleButton.MouseButton1Click:Connect(function()
+        isActive = not isActive
+        toggleButton.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        if params.Action then
+            params.Action(isActive)
+        end
+    end)
+end
