@@ -184,7 +184,7 @@ function createTextBox(name, placeholder, callback)
     end)
 end
 
-function createSlider(name, range, color, callback)
+function createSlider(parent, name, range, color, callback)
     local minValue, maxValue = range:match("(%d+)/(%d+)")
     minValue = tonumber(minValue) or 0
     maxValue = tonumber(maxValue) or 100
@@ -195,7 +195,7 @@ function createSlider(name, range, color, callback)
     sliderFrame.Size = UDim2.new(1, 0, 0, 40)
     sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     sliderFrame.BorderSizePixel = 0
-    sliderFrame.Parent = tabContainer
+    sliderFrame.Parent = parent
 
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0.05, 0)
