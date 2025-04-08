@@ -76,6 +76,19 @@ function RNOX:CreateWindow(params)
         interfaceFrame:TweenSize(UDim2.new(0, 450, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     end)
 
+    local elements = {}
+
+    local function monitorChanges()
+        while true do
+            for _, element in ipairs(elements) do
+                element.UpdateName()
+            end
+            task.wait(0.1)
+        end
+    end
+
+    task.spawn(monitorChanges)
+
     return {
         CreateTab = function(tabName)
             local tabFrame = Instance.new("ScrollingFrame")
@@ -106,30 +119,19 @@ function RNOX:CreateWindow(params)
                     button.TextSize = 18
                     button.Parent = tabFrame
 
-                    local function updateName()
-                        button.Text = params.Name or "Button"
-                    end
-                    updateName()
-
-                    local running = true
-                    task.spawn(function()
-                        while running do
-                            task.wait(0.1)
-                            updateName()
-                        end
-                    end)
-
                     button.MouseButton1Click:Connect(function()
                         if params.Callback then
                             params.Callback()
                         end
                     end)
 
-                    return {
-                        Destroy = function()
-                            running = false
+                    table.insert(elements, {
+                        UpdateName = function()
+                            button.Text = params.Name or "Button"
                         end
-                    }
+                    })
+
+                    return button
                 end,
 
                 CreateToggle = function(params)
@@ -154,19 +156,6 @@ function RNOX:CreateWindow(params)
                     icon.BackgroundTransparency = 1
                     icon.Parent = toggleFrame
 
-                    local function updateName()
-                        label.Text = params.Name or "Toggle"
-                    end
-                    updateName()
-
-                    local running = true
-                    task.spawn(function()
-                        while running do
-                            task.wait(0.1)
-                            updateName()
-                        end
-                    end)
-
                     local isActive = params.CurrentValue or false
                     icon.MouseButton1Click:Connect(function()
                         isActive = not isActive
@@ -176,11 +165,13 @@ function RNOX:CreateWindow(params)
                         end
                     end)
 
-                    return {
-                        Destroy = function()
-                            running = false
+                    table.insert(elements, {
+                        UpdateName = function()
+                            label.Text = params.Name or "Toggle"
                         end
-                    }
+                    })
+
+                    return toggleFrame
                 end,
 
                 CreateLabel = function(params)
@@ -192,24 +183,13 @@ function RNOX:CreateWindow(params)
                     label.BackgroundTransparency = 1
                     label.Parent = tabFrame
 
-                    local function updateName()
-                        label.Text = params.Name or "Label"
-                    end
-                    updateName()
-
-                    local running = true
-                    task.spawn(function()
-                        while running do
-                            task.wait(0.1)
-                            updateName()
+                    table.insert(elements, {
+                        UpdateName = function()
+                            label.Text = params.Name or "Label"
                         end
-                    end)
+                    })
 
-                    return {
-                        Destroy = function()
-                            running = false
-                        end
-                    }
+                    return label
                 end
             }
         end
