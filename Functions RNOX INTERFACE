@@ -1,4 +1,5 @@
 local RNOX = {}
+local RunService = game:GetService("RunService")
 
 function RNOX:CreateWindow(params)
     local gui = Instance.new("ScreenGui")
@@ -78,16 +79,11 @@ function RNOX:CreateWindow(params)
 
     local elements = {}
 
-    local function monitorChanges()
-        while true do
-            for _, element in ipairs(elements) do
-                element.UpdateName()
-            end
-            task.wait(0.1)
+    RunService.RenderStepped:Connect(function()
+        for _, element in ipairs(elements) do
+            element.UpdateName()
         end
-    end
-
-    task.spawn(monitorChanges)
+    end)
 
     return {
         CreateTab = function(tabName)
@@ -117,6 +113,7 @@ function RNOX:CreateWindow(params)
                     button.TextColor3 = Color3.fromRGB(255, 255, 255)
                     button.Font = Enum.Font.GothamBold
                     button.TextSize = 18
+                    button.Text = params.Name or "Button"
                     button.Parent = tabFrame
 
                     button.MouseButton1Click:Connect(function()
@@ -145,6 +142,7 @@ function RNOX:CreateWindow(params)
                     label.TextColor3 = Color3.fromRGB(255, 255, 255)
                     label.Font = Enum.Font.Gotham
                     label.TextSize = 16
+                    label.Text = params.Name or "Toggle"
                     label.BackgroundTransparency = 1
                     label.Parent = toggleFrame
 
@@ -180,6 +178,7 @@ function RNOX:CreateWindow(params)
                     label.TextColor3 = Color3.fromRGB(175, 175, 175)
                     label.Font = Enum.Font.Gotham
                     label.TextSize = 14
+                    label.Text = params.Name or "Label"
                     label.BackgroundTransparency = 1
                     label.Parent = tabFrame
 
