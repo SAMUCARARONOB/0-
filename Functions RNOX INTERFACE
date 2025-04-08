@@ -154,7 +154,37 @@ function createLabel(name)
     label.Parent = tabContainer
 end
 
-function createSlider(parent, name, range, color, callback)
+function createTextBox(name, placeholder, callback)
+    local textBoxFrame = Instance.new("Frame")
+    textBoxFrame.Size = UDim2.new(1, 0, 0, 40)
+    textBoxFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    textBoxFrame.BorderSizePixel = 0
+    textBoxFrame.Parent = tabContainer
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0.05, 0)
+    corner.Parent = textBoxFrame
+
+    local textBox = Instance.new("TextBox")
+    textBox.Size = UDim2.new(0.95, 0, 0.8, 0)
+    textBox.Position = UDim2.new(0.025, 0, 0.1, 0)
+    textBox.BackgroundTransparency = 1
+    textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textBox.TextSize = 14
+    textBox.Font = Enum.Font.GothamSemibold
+    textBox.PlaceholderText = placeholder or "Digite algo..."
+    textBox.Text = ""
+    textBox.ClearTextOnFocus = true
+    textBox.Parent = textBoxFrame
+
+    textBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed and callback then
+            pcall(callback, textBox.Text)
+        end
+    end)
+end
+
+function createSlider(name, range, color, callback)
     local minValue, maxValue = range:match("(%d+)/(%d+)")
     minValue = tonumber(minValue) or 0
     maxValue = tonumber(maxValue) or 100
@@ -165,7 +195,7 @@ function createSlider(parent, name, range, color, callback)
     sliderFrame.Size = UDim2.new(1, 0, 0, 40)
     sliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     sliderFrame.BorderSizePixel = 0
-    sliderFrame.Parent = parent
+    sliderFrame.Parent = tabContainer
 
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0.05, 0)
@@ -245,34 +275,4 @@ function createSlider(parent, name, range, color, callback)
     end)
 
     updateSlider(initialValue)
-end
-
-function createTextBox(parent, name, placeholder, callback)
-    local textBoxFrame = Instance.new("Frame")
-    textBoxFrame.Size = UDim2.new(1, 0, 0, 40)
-    textBoxFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    textBoxFrame.BorderSizePixel = 0
-    textBoxFrame.Parent = parent
-
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.05, 0)
-    corner.Parent = textBoxFrame
-
-    local textBox = Instance.new("TextBox")
-    textBox.Size = UDim2.new(0.95, 0, 0.8, 0)
-    textBox.Position = UDim2.new(0.025, 0, 0.1, 0)
-    textBox.BackgroundTransparency = 1
-    textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    textBox.TextSize = 14
-    textBox.Font = Enum.Font.GothamSemibold
-    textBox.PlaceholderText = placeholder or "Digite algo..."
-    textBox.Text = ""
-    textBox.ClearTextOnFocus = true
-    textBox.Parent = textBoxFrame
-
-    textBox.FocusLost:Connect(function(enterPressed)
-        if enterPressed and callback then
-            pcall(callback, textBox.Text)
-        end
-    end)
 end
