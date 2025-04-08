@@ -186,10 +186,13 @@ end
 
 function createSlider(name, range, color, callback)
     local minValue, maxValue = range:match("(%d+)/(%d+)")
-    minValue = tonumber(minValue) or 16
-    maxValue = tonumber(maxValue) or 1000
+    minValue = tonumber(minValue) or 0
+    maxValue = tonumber(maxValue) or 100
     local initialValue = minValue
-    local sliderColor = color and {color:match("(%d+),(%d+),(%d+)")} or {255, 255, 255}
+
+    -- Convertendo a cor em valores RGB
+    local sliderColor = color and {color:match("(%d+),(%d+),(%d+)")}
+    sliderColor = sliderColor and Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3]) or Color3.fromRGB(255, 255, 255)
 
     local sliderFrame = Instance.new("Frame")
     sliderFrame.Size = UDim2.new(1, 0, 0, 40)
@@ -205,7 +208,7 @@ function createSlider(name, range, color, callback)
     track.Size = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.4, 0)
     track.Position = UDim2.new(0, 0, 0.5, 0)
     track.AnchorPoint = Vector2.new(0, 0.5)
-    track.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
+    track.BackgroundColor3 = sliderColor
     track.BorderSizePixel = 0
     track.Parent = sliderFrame
 
@@ -213,20 +216,21 @@ function createSlider(name, range, color, callback)
     handle.Size = UDim2.new(0.05, 0, 0.4, 0)
     handle.Position = UDim2.new((initialValue - minValue) / (maxValue - minValue), 0, 0.5, 0)
     handle.AnchorPoint = Vector2.new(0.5, 0.5)
-    handle.BackgroundColor3 = Color3.fromRGB(sliderColor[1], sliderColor[2], sliderColor[3])
+    handle.BackgroundColor3 = sliderColor
     handle.BorderSizePixel = 0
     handle.Parent = sliderFrame
 
-    local valueLabel = Instance.new("TextLabel")
-    valueLabel.Size = UDim2.new(0.3, 0, 0.6, 0)
-    valueLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
-    valueLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-    valueLabel.BackgroundTransparency = 1
-    valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    valueLabel.Font = Enum.Font.GothamBold
-    valueLabel.Text = tostring(initialValue)
-    valueLabel.TextSize = 14
-    valueLabel.Parent = sliderFrame
+    local valueTextBox = Instance.new("TextBox")
+    valueTextBox.Size = UDim2.new(0.3, 0, 0.6, 0)
+    valueTextBox.Position = UDim2.new(0.5, 0, 0.5, 0)
+    valueTextBox.AnchorPoint = Vector2.new(0.5, 0.5)
+    valueTextBox.BackgroundTransparency = 1
+    valueTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    valueTextBox.Font = Enum.Font.GothamBold
+    valueTextBox.Text = tostring(initialValue)
+    valueTextBox.TextSize = 14
+    valueTextBox.ClearTextOnFocus = false
+    valueTextBox.Parent = sliderFrame
 
     local dragging = false
 
@@ -234,7 +238,7 @@ function createSlider(name, range, color, callback)
         local ratio = math.clamp((value - minValue) / (maxValue - minValue), 0, 1)
         track.Size = UDim2.new(ratio, 0, 0.4, 0)
         handle.Position = UDim2.new(ratio, 0, 0.5, 0)
-        valueLabel.Text = tostring(value)
+        valueTextBox.Text = tostring(value)
 
         if callback then
             pcall(callback, value)
@@ -258,6 +262,18 @@ function createSlider(name, range, color, callback)
             local x = math.clamp((input.Position.X - sliderFrame.AbsolutePosition.X) / sliderFrame.AbsoluteSize.X, 0, 1)
             local value = math.floor(minValue + (maxValue - minValue) * x)
             updateSlider(value)
+        end
+    end)
+
+    valueTextBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            local enteredValue = tonumber(valueTextBox.Text)
+            if enteredValue then
+                enteredValue = math.clamp(enteredValue, minValue, maxValue)
+                updateSlider(enteredValue)
+            else
+                updateSlider(minValue)
+            end
         end
     end)
 
