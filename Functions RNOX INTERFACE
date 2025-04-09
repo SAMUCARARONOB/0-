@@ -65,16 +65,8 @@ function RNOX:CreateWindow(config)
         button.Parent = tabContainer
 
         local buttonCorner = Instance.new("UICorner")
-        buttonCorner.CornerRadius = UDim.new(0.1, 0)
+        buttonCorner.CornerRadius = UDim.new(0.05, 0)
         buttonCorner.Parent = button
-
-        local shadow = Instance.new("Frame")
-        shadow.Size = button.Size + UDim2.new(0, 4, 0, 4)
-        shadow.Position = button.Position + UDim2.new(0, 2, 0, 2)
-        shadow.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-        shadow.BorderSizePixel = 0
-        shadow.ZIndex = button.ZIndex - 1
-        shadow.Parent = button
 
         button.MouseButton1Click:Connect(function()
             if buttonConfig.Callback then
