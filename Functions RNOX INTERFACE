@@ -42,7 +42,7 @@ function RNOX:CreateWindow(config)
 
     local listLayout = Instance.new("UIListLayout")
     listLayout.FillDirection = Enum.FillDirection.Vertical
-    listLayout.Padding = UDim.new(0.02, 0)
+    listLayout.Padding = UDim.new(0.01, 0)  -- Espaçamento reduzido entre elementos menores
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
     listLayout.Parent = tabContainer
 
@@ -78,9 +78,9 @@ function RNOX:CreateWindow(config)
     function window:CreateToggle(toggleConfig)
         local toggleFrame = Instance.new("Frame")
         toggleFrame.Size = UDim2.new(1, 0, 0, 40)
-        toggleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-        toggleFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
-        toggleFrame.BorderSizePixel = 1
+        toggleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 60)
+        toggleFrame.BorderColor3 = Color3.fromRGB(0, 150, 255)
+        toggleFrame.BorderSizePixel = 2
         toggleFrame.Parent = tabContainer
 
         local toggleCorner = Instance.new("UICorner")
@@ -116,6 +116,18 @@ function RNOX:CreateWindow(config)
                 toggleConfig.Callback(isActive)
             end
         end)
+    end
+
+    function window:CreateLabel(labelConfig)
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1, 0, 0, 28)  -- Label é 70% menor que o botão
+        label.BackgroundTransparency = 1
+        label.Text = labelConfig.Name or "Label"
+        label.TextColor3 = Color3.fromRGB(200, 200, 200)
+        label.Font = Enum.Font.Gotham
+        label.TextSize = 14
+        label.TextXAlignment = Enum.TextXAlignment.Left
+        label.Parent = tabContainer
     end
 
     return window
