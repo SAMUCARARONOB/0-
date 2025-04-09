@@ -47,7 +47,7 @@ function RNOX:CreateWindow(config)
     listLayout.Parent = tabContainer
 
     listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 10)
+        tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 20)
     end)
 
     local window = {}
@@ -55,7 +55,7 @@ function RNOX:CreateWindow(config)
     function window:CreateButton(buttonConfig)
         local button = Instance.new("TextButton")
         button.Size = UDim2.new(1, 0, 0, 40)
-        button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
         button.BorderColor3 = Color3.fromRGB(255, 255, 255)
         button.BorderSizePixel = 1
         button.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -65,8 +65,16 @@ function RNOX:CreateWindow(config)
         button.Parent = tabContainer
 
         local buttonCorner = Instance.new("UICorner")
-        buttonCorner.CornerRadius = UDim.new(0.05, 0)
+        buttonCorner.CornerRadius = UDim.new(0.1, 0)
         buttonCorner.Parent = button
+
+        local shadow = Instance.new("Frame")
+        shadow.Size = button.Size + UDim2.new(0, 4, 0, 4)
+        shadow.Position = button.Position + UDim2.new(0, 2, 0, 2)
+        shadow.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        shadow.BorderSizePixel = 0
+        shadow.ZIndex = button.ZIndex - 1
+        shadow.Parent = button
 
         button.MouseButton1Click:Connect(function()
             if buttonConfig.Callback then
@@ -116,18 +124,6 @@ function RNOX:CreateWindow(config)
                 toggleConfig.Callback(isActive)
             end
         end)
-    end
-
-    function window:CreateLabel(labelConfig)
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, 0, 0, 30)
-        label.BackgroundTransparency = 1
-        label.Text = labelConfig.Name or "Label"
-        label.TextColor3 = Color3.fromRGB(200, 200, 200)
-        label.Font = Enum.Font.Gotham
-        label.TextSize = 14
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.Parent = tabContainer
     end
 
     return window
