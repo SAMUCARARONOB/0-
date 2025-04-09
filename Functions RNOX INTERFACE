@@ -47,99 +47,10 @@ function RNOX:CreateWindow(config)
     listLayout.Parent = tabContainer
 
     listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 20)
+        tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 10)
     end)
 
     local window = {}
-
-    function window:CreateDropdown(dropdownConfig)
-        local dropdown = Instance.new("TextButton")
-        dropdown.Size = UDim2.new(1, 0, 0, 40)
-        dropdown.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-        dropdown.BorderColor3 = Color3.fromRGB(255, 255, 255)
-        dropdown.BorderSizePixel = 1
-        dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
-        dropdown.Font = Enum.Font.GothamBold
-        dropdown.TextSize = 18
-        dropdown.Text = dropdownConfig.Name or "Dropdown"
-        dropdown.Parent = tabContainer
-
-        local dropdownCorner = Instance.new("UICorner")
-        dropdownCorner.CornerRadius = UDim.new(0.05, 0)
-        dropdownCorner.Parent = dropdown
-
-        local indicator = Instance.new("ImageLabel")
-        indicator.Size = UDim2.new(0, 20, 0, 20)
-        indicator.Position = UDim2.new(1, -25, 0.5, -10)
-        indicator.BackgroundTransparency = 1
-        indicator.Image = "rbxassetid://4731371541"
-        indicator.Parent = dropdown
-
-        local box = Instance.new("Frame")
-        box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        box.Position = UDim2.new(0, 0, 1, 5)
-        box.Size = UDim2.new(1, 0, 0, 0)
-        box.ClipsDescendants = true
-        box.Visible = false
-        box.Parent = dropdown
-
-        local boxCorner = Instance.new("UICorner")
-        boxCorner.CornerRadius = UDim.new(0.05, 0)
-        boxCorner.Parent = box
-
-        local layout = Instance.new("UIListLayout")
-        layout.Parent = box
-        layout.SortOrder = Enum.SortOrder.LayoutOrder
-        layout.Padding = UDim.new(0, 5)
-
-        layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            box.Size = UDim2.new(1, 0, 0, layout.AbsoluteContentSize.Y + 5)
-            tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + box.AbsoluteSize.Y + 20)
-        end)
-
-        local function hideBelowElements(visible)
-            for _, element in ipairs(tabContainer:GetChildren()) do
-                if not element:IsDescendantOf(box) and element ~= dropdown then
-                    element.Visible = visible
-                end
-            end
-        end
-
-        dropdown.MouseButton1Click:Connect(function()
-            box.Visible = not box.Visible
-            indicator.Rotation = box.Visible and 180 or 0
-            hideBelowElements(not box.Visible)
-            tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + (box.Visible and box.AbsoluteSize.Y or 0) + 20)
-        end)
-
-        for _, option in ipairs(dropdownConfig.Options or {}) do
-            local button = Instance.new("TextButton")
-            button.Size = UDim2.new(1, 0, 0, 30)
-            button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-            button.BorderColor3 = Color3.fromRGB(255, 255, 255)
-            button.BorderSizePixel = 1
-            button.TextColor3 = Color3.fromRGB(255, 255, 255)
-            button.Font = Enum.Font.Gotham
-            button.TextSize = 14
-            button.Text = option
-            button.Parent = box
-
-            local buttonCorner = Instance.new("UICorner")
-            buttonCorner.CornerRadius = UDim.new(0.05, 0)
-            buttonCorner.Parent = button
-
-            button.MouseButton1Click:Connect(function()
-                dropdown.Text = option
-                box.Visible = false
-                indicator.Rotation = 0
-                hideBelowElements(true)
-                tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 20)
-                if dropdownConfig.Callback then
-                    dropdownConfig.Callback(option)
-                end
-            end)
-        end
-    end
 
     function window:CreateButton(buttonConfig)
         local button = Instance.new("TextButton")
@@ -162,6 +73,69 @@ function RNOX:CreateWindow(config)
                 buttonConfig.Callback()
             end
         end)
+    end
+
+    function window:CreateToggle(toggleConfig)
+        local toggleFrame = Instance.new("Frame")
+        toggleFrame.Size = UDim2.new(1, 0, 0, 40)
+        toggleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        toggleFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
+        toggleFrame.BorderSizePixel = 1
+        toggleFrame.Parent = tabContainer
+
+        local toggleCorner = Instance.new("UICorner")
+        toggleCorner.CornerRadius = UDim.new(0.05, 0)
+        toggleCorner.Parent = toggleFrame
+
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(0.7, 0, 1, 0)
+        label.Position = UDim2.new(0, 10, 0, 0)
+        label.BackgroundTransparency = 1
+        label.Text = toggleConfig.Name or "Toggle"
+        label.TextColor3 = Color3.fromRGB(255, 255, 255)
+        label.Font = Enum.Font.GothamBold
+        label.TextSize = 16
+        label.TextXAlignment = Enum.TextXAlignment.Left
+        label.Parent = toggleFrame
+
+        local toggleButton = Instance.new("ImageButton")
+        toggleButton.Size = UDim2.new(0, 30, 0, 30)
+        toggleButton.Position = UDim2.new(1, -40, 0.5, -15)
+        toggleButton.BackgroundTransparency = 1
+        toggleButton.Image = "rbxassetid://14293471713"
+        toggleButton.ImageColor3 = toggleConfig.CurrentState and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        toggleButton.Parent = toggleFrame
+
+        local isActive = toggleConfig.CurrentState or false
+
+        toggleButton.MouseButton1Click:Connect(function()
+            isActive = not isActive
+            toggleButton.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+
+            toggleButton:TweenSize(
+                UDim2.new(0, isActive and 40 or 30, 0, isActive and 40 or 30),
+                Enum.EasingDirection.Out,
+                Enum.EasingStyle.Quad,
+                0.2,
+                true
+            )
+
+            if toggleConfig.Callback then
+                toggleConfig.Callback(isActive)
+            end
+        end)
+    end
+
+    function window:CreateLabel(labelConfig)
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1, 0, 0, 30)
+        label.BackgroundTransparency = 1
+        label.Text = labelConfig.Name or "Label"
+        label.TextColor3 = Color3.fromRGB(200, 200, 200)
+        label.Font = Enum.Font.Gotham
+        label.TextSize = 14
+        label.TextXAlignment = Enum.TextXAlignment.Left
+        label.Parent = tabContainer
     end
 
     return window
