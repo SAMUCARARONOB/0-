@@ -52,29 +52,6 @@ function RNOX:CreateWindow(config)
 
     local window = {}
 
-    function window:CreateButton(buttonConfig)
-        local button = Instance.new("TextButton")
-        button.Size = UDim2.new(1, 0, 0, 40)
-        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        button.BorderColor3 = Color3.fromRGB(255, 255, 255)
-        button.BorderSizePixel = 1
-        button.TextColor3 = Color3.fromRGB(255, 255, 255)
-        button.Font = Enum.Font.GothamBold
-        button.TextSize = 18
-        button.Text = buttonConfig.Name or "Button"
-        button.Parent = tabContainer
-
-        local buttonCorner = Instance.new("UICorner")
-        buttonCorner.CornerRadius = UDim.new(0.05, 0)
-        buttonCorner.Parent = button
-
-        button.MouseButton1Click:Connect(function()
-            if buttonConfig.Callback then
-                buttonConfig.Callback()
-            end
-        end)
-    end
-
     function window:CreateToggle(toggleConfig)
         local toggleFrame = Instance.new("Frame")
         toggleFrame.Size = UDim2.new(1, 0, 0, 40)
@@ -118,9 +95,63 @@ function RNOX:CreateWindow(config)
         end)
     end
 
+    function window:CreateTextBox(textBoxConfig)
+        local placeholderText = textBoxConfig.Placeholder or "Digite aqui"
+
+        local textBox = Instance.new("TextBox")
+        textBox.Size = UDim2.new(0, 100, 0, 28)
+        textBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+        textBox.Font = Enum.Font.Gotham
+        textBox.TextSize = 14
+        textBox.PlaceholderText = placeholderText
+        textBox.Text = ""
+        textBox.TextXAlignment = Enum.TextXAlignment.Left
+        textBox.ClearTextOnFocus = false
+        textBox.BorderColor3 = Color3.fromRGB(255, 255, 255)
+        textBox.BorderSizePixel = 1
+        textBox.Parent = tabContainer
+        textBox.ClipsDescendants = true
+
+        local textBoxCorner = Instance.new("UICorner")
+        textBoxCorner.CornerRadius = UDim.new(0.2, 0)
+        textBoxCorner.Parent = textBox
+
+        textBox:GetPropertyChangedSignal("Text"):Connect(function()
+            if textBox.Text ~= "" then
+                local textLength = string.len(textBox.Text)
+                local newSize = UDim2.new(0, math.min(100 + textLength * 8, 400), 0, 28)
+                textBox:TweenSize(newSize, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+            end
+        end)
+    end
+
+    function window:CreateButton(buttonConfig)
+        local button = Instance.new("TextButton")
+        button.Size = UDim2.new(1, 0, 0, 40)
+        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        button.BorderColor3 = Color3.fromRGB(255, 255, 255)
+        button.BorderSizePixel = 1
+        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+        button.Font = Enum.Font.GothamBold
+        button.TextSize = 18
+        button.Text = buttonConfig.Name or "Button"
+        button.Parent = tabContainer
+
+        local buttonCorner = Instance.new("UICorner")
+        buttonCorner.CornerRadius = UDim.new(0.05, 0)
+        buttonCorner.Parent = button
+
+        button.MouseButton1Click:Connect(function()
+            if buttonConfig.Callback then
+                buttonConfig.Callback()
+            end
+        end)
+    end
+
     function window:CreateLabel(labelConfig)
         local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, 0, 0, 28) -- Label é 70% menor que o botão
+        label.Size = UDim2.new(1, 0, 0, 28)
         label.BackgroundTransparency = 1
         label.Text = labelConfig.Name or "Label"
         label.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -128,32 +159,6 @@ function RNOX:CreateWindow(config)
         label.TextSize = 14
         label.TextXAlignment = Enum.TextXAlignment.Left
         label.Parent = tabContainer
-    end
-
-    function window:CreateTextBox(textBoxConfig)
-        local textBox = Instance.new("TextBox")
-        textBox.Size = UDim2.new(0, string.len(textBoxConfig.Placeholder or "") * 10, 0, 28)
-        textBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-        textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-        textBox.Font = Enum.Font.Gotham
-        textBox.TextSize = 14
-        textBox.PlaceholderText = textBoxConfig.Placeholder or "Digite aqui"
-        textBox.TextXAlignment = Enum.TextXAlignment.Left
-        textBox.ClearTextOnFocus = false
-        textBox.BorderColor3 = Color3.fromRGB(255, 255, 255)
-        textBox.BorderSizePixel = 1
-        textBox.Parent = tabContainer
-        textBox.TextWrapped = true
-
-        local textBoxCorner = Instance.new("UICorner")
-        textBoxCorner.CornerRadius = UDim.new(0.05, 0)
-        textBoxCorner.Parent = textBox
-
-        textBox:GetPropertyChangedSignal("Text"):Connect(function()
-            local textLength = string.len(textBox.Text)
-            local newSize = UDim2.new(0, math.min(200 + textLength * 10, 400), 0, 28) -- Expansão até o limite do botão normal
-            textBox:TweenSize(newSize, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
-        end)
     end
 
     return window
