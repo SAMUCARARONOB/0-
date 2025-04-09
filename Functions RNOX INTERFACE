@@ -112,14 +112,6 @@ function RNOX:CreateWindow(config)
             isActive = not isActive
             toggleButton.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
 
-            toggleButton:TweenSize(
-                UDim2.new(0, isActive and 40 or 30, 0, isActive and 40 or 30),
-                Enum.EasingDirection.Out,
-                Enum.EasingStyle.Quad,
-                0.2,
-                true
-            )
-
             if toggleConfig.Callback then
                 toggleConfig.Callback(isActive)
             end
