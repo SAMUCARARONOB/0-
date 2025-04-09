@@ -42,7 +42,7 @@ function RNOX:CreateWindow(config)
 
     local listLayout = Instance.new("UIListLayout")
     listLayout.FillDirection = Enum.FillDirection.Vertical
-    listLayout.Padding = UDim.new(0.01, 0)  -- Espaçamento reduzido entre elementos menores
+    listLayout.Padding = UDim.new(0.01, 0) -- Distância ajustada para labels menores
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
     listLayout.Parent = tabContainer
 
@@ -103,10 +103,10 @@ function RNOX:CreateWindow(config)
         toggleButton.Position = UDim2.new(1, -40, 0.5, -15)
         toggleButton.BackgroundTransparency = 1
         toggleButton.Image = "rbxassetid://14293471713"
-        toggleButton.ImageColor3 = toggleConfig.CurrentState and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+        toggleButton.ImageColor3 = Color3.fromRGB(255, 0, 0) -- Todos os toggles começam desativados
         toggleButton.Parent = toggleFrame
 
-        local isActive = toggleConfig.CurrentState or false
+        local isActive = false
 
         toggleButton.MouseButton1Click:Connect(function()
             isActive = not isActive
@@ -120,7 +120,7 @@ function RNOX:CreateWindow(config)
 
     function window:CreateLabel(labelConfig)
         local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, 0, 0, 28)  -- Label é 70% menor que o botão
+        label.Size = UDim2.new(1, 0, 0, 28) -- Label é 70% menor que o botão
         label.BackgroundTransparency = 1
         label.Text = labelConfig.Name or "Label"
         label.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -128,6 +128,31 @@ function RNOX:CreateWindow(config)
         label.TextSize = 14
         label.TextXAlignment = Enum.TextXAlignment.Left
         label.Parent = tabContainer
+    end
+
+    function window:CreateTextBox(textBoxConfig)
+        local textBox = Instance.new("TextBox")
+        textBox.Size = UDim2.new(1, -10, 0, 28) -- Começa do tamanho de um label
+        textBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+        textBox.Font = Enum.Font.Gotham
+        textBox.TextSize = 14
+        textBox.PlaceholderText = textBoxConfig.Placeholder or "Digite algo..."
+        textBox.TextXAlignment = Enum.TextXAlignment.Left
+        textBox.ClearTextOnFocus = false
+        textBox.BorderColor3 = Color3.fromRGB(255, 255, 255)
+        textBox.BorderSizePixel = 1
+        textBox.Parent = tabContainer
+
+        local textBoxCorner = Instance.new("UICorner")
+        textBoxCorner.CornerRadius = UDim.new(0.05, 0)
+        textBoxCorner.Parent = textBox
+
+        textBox:GetPropertyChangedSignal("Text"):Connect(function()
+            local textLength = string.len(textBox.Text)
+            local newSize = UDim2.new(0, math.min(200 + textLength * 10, 400), 0, 28)
+            textBox:TweenSize(newSize, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+        end)
     end
 
     return window
