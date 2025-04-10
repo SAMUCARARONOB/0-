@@ -5,14 +5,21 @@ function RNOX:CreateWindow(config)
     gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
     gui.ResetOnSpawn = false
 
-    local animationFrame = Instance.new("Frame")
-    animationFrame.Size = UDim2.new(0, 0, 0, 0)
-    animationFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    animationFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    animationFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    animationFrame.BorderSizePixel = 0
-    animationFrame.Visible = false
-    animationFrame.Parent = gui
+    local interfaceFrame = Instance.new("Frame")
+    interfaceFrame.Size = UDim2.new(0, 0, 0, 0)
+    interfaceFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    interfaceFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    interfaceFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    interfaceFrame.BorderSizePixel = 1
+    interfaceFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
+    interfaceFrame.Active = true
+    interfaceFrame.Draggable = true
+    interfaceFrame.Visible = true
+    interfaceFrame.Parent = gui
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0.05, 0)
+    corner.Parent = interfaceFrame
 
     local subtitle1 = Instance.new("TextLabel")
     subtitle1.Size = UDim2.new(1, -50, 0, 30)
@@ -23,8 +30,7 @@ function RNOX:CreateWindow(config)
     subtitle1.Font = Enum.Font.GothamBold
     subtitle1.TextSize = 18
     subtitle1.TextXAlignment = Enum.TextXAlignment.Center
-    subtitle1.Visible = false
-    subtitle1.Parent = animationFrame
+    subtitle1.Parent = interfaceFrame
 
     local subtitle2 = Instance.new("TextLabel")
     subtitle2.Size = UDim2.new(1, -50, 0, 30)
@@ -35,35 +41,22 @@ function RNOX:CreateWindow(config)
     subtitle2.Font = Enum.Font.GothamBold
     subtitle2.TextSize = 18
     subtitle2.TextXAlignment = Enum.TextXAlignment.Center
-    subtitle2.Visible = false
-    subtitle2.Parent = animationFrame
+    subtitle2.Parent = interfaceFrame
 
-    local interfaceFrame = Instance.new("Frame")
-    interfaceFrame.Size = UDim2.new(0, 450, 0, 350)
-    interfaceFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    interfaceFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    interfaceFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    interfaceFrame.BorderSizePixel = 1
-    interfaceFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
-    interfaceFrame.Active = true
-    interfaceFrame.Draggable = true
-    interfaceFrame.Visible = false
-    interfaceFrame.Parent = gui
+    local hideButton = Instance.new("TextButton")
+    hideButton.Size = UDim2.new(0, 100, 0, 30)
+    hideButton.Position = UDim2.new(0.5, -50, 1, -40)
+    hideButton.AnchorPoint = Vector2.new(0.5, 0.5)
+    hideButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    hideButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    hideButton.Font = Enum.Font.GothamBold
+    hideButton.TextSize = 14
+    hideButton.Text = "Ocultar Interface"
+    hideButton.Parent = interfaceFrame
 
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, -50, 0, 30)
-    titleLabel.Position = UDim2.new(0, 10, 0, 10)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = config.Name or "Interface Principal"
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 20
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Center
-    titleLabel.Parent = interfaceFrame
-
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.05, 0)
-    corner.Parent = interfaceFrame
+    local hideButtonCorner = Instance.new("UICorner")
+    hideButtonCorner.CornerRadius = UDim.new(0.05, 0)
+    hideButtonCorner.Parent = hideButton
 
     local ballButton = Instance.new("ImageButton")
     ballButton.Size = UDim2.new(0, 50, 0, 50)
@@ -75,37 +68,18 @@ function RNOX:CreateWindow(config)
     ballButton.Parent = gui
 
     function interfaceFrame:ShowAnimation()
-        animationFrame.Visible = true
-        subtitle1.Visible = true
-        subtitle2.Visible = true
-        animationFrame:TweenSize(
+        interfaceFrame.Size = UDim2.new(0, 0, 0, 0)
+        interfaceFrame.Visible = true
+        interfaceFrame:TweenSize(
             UDim2.new(0, 450, 0, 350),
             Enum.EasingDirection.Out,
             Enum.EasingStyle.Quad,
-            0.3,
+            0.5,
             true,
             function()
-                wait(3)
-                animationFrame:TweenSize(
-                    UDim2.new(0, 0, 0, 0),
-                    Enum.EasingDirection.Out,
-                    Enum.EasingStyle.Quad,
-                    0.3,
-                    true,
-                    function()
-                        animationFrame.Visible = false
-                        subtitle1.Visible = false
-                        subtitle2.Visible = false
-                        interfaceFrame.Visible = true
-                        interfaceFrame:TweenSize(
-                            UDim2.new(0, 450, 0, 350),
-                            Enum.EasingDirection.Out,
-                            Enum.EasingStyle.Quad,
-                            0.3,
-                            true
-                        )
-                    end
-                )
+                wait(2.5)
+                subtitle1.Visible = false
+                subtitle2.Visible = false
             end
         )
     end
@@ -117,7 +91,11 @@ function RNOX:CreateWindow(config)
 
     ballButton.MouseButton1Click:Connect(function()
         ballButton.Visible = false
-        interfaceFrame.Visible = true
+        interfaceFrame:ShowAnimation()
+    end)
+
+    hideButton.MouseButton1Click:Connect(function()
+        interfaceFrame:Hide()
     end)
 
     local window = {}
