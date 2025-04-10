@@ -35,7 +35,7 @@ function RNOX:CreateWindow(config)
 
     local hideButton = Instance.new("ImageButton")
     hideButton.Size = UDim2.new(0, 40, 0, 40)
-    hideButton.Position = UDim2.new(1, -52, 0, 13)
+    hideButton.Position = UDim2.new(1, -52, 0, 18)
     hideButton.AnchorPoint = Vector2.new(0.5, 0.5)
     hideButton.BackgroundTransparency = 1
     hideButton.Image = "rbxassetid://6035047409"
@@ -187,8 +187,10 @@ function RNOX:CreateWindow(config)
     end
 
     function window:CreateTextBox(textBoxConfig)
+        local placeholderText = textBoxConfig.Placeholder or "Digite aqui"
+
         local textBox = Instance.new("TextBox")
-        textBox.Size = UDim2.new(1, 0, 0, 28)
+        textBox.Size = UDim2.new(0, 100, 0, 28)
         textBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
         textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
         textBox.Font = Enum.Font.Gotham
@@ -200,6 +202,7 @@ function RNOX:CreateWindow(config)
         textBox.BorderColor3 = Color3.fromRGB(255, 255, 255)
         textBox.BorderSizePixel = 1
         textBox.Parent = tabContainer
+        textBox.ClipsDescendants = true
 
         local textBoxCorner = Instance.new("UICorner")
         textBoxCorner.CornerRadius = UDim.new(0.2, 0)
@@ -208,6 +211,11 @@ function RNOX:CreateWindow(config)
         textBox:GetPropertyChangedSignal("Text"):Connect(function()
             if textBox.Text ~= "" and textBoxConfig.Callback then
                 textBoxConfig.Callback(textBox.Text)
+            end
+            if textBox.Text ~= "" then
+                local textLength = string.len(textBox.Text)
+                local newSize = UDim2.new(0, math.min(100 + textLength * 8, 400), 0, 28)
+                textBox:TweenSize(newSize, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
             end
         end)
     end
