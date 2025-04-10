@@ -21,49 +21,31 @@ function RNOX:CreateWindow(config)
     corner.CornerRadius = UDim.new(0.05, 0)
     corner.Parent = interfaceFrame
 
-    local subtitle1 = Instance.new("TextLabel")
-    subtitle1.Size = UDim2.new(1, -50, 0, 30)
-    subtitle1.Position = UDim2.new(0, 10, 0, 50)
-    subtitle1.BackgroundTransparency = 1
-    subtitle1.Text = config.Subtitle1 or "Bem-vindo ao RNOX"
-    subtitle1.TextColor3 = Color3.fromRGB(255, 255, 255)
-    subtitle1.Font = Enum.Font.GothamBold
-    subtitle1.TextSize = 18
-    subtitle1.TextXAlignment = Enum.TextXAlignment.Center
-    subtitle1.Parent = interfaceFrame
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, -50, 0, 30)
+    titleLabel.Position = UDim2.new(0, 10, 0, 10)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Text = config.Name or "RNOX Interface"
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.TextSize = 20
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.Parent = interfaceFrame
 
-    local subtitle2 = Instance.new("TextLabel")
-    subtitle2.Size = UDim2.new(1, -50, 0, 30)
-    subtitle2.Position = UDim2.new(0, 10, 0, 90)
-    subtitle2.BackgroundTransparency = 1
-    subtitle2.Text = config.Subtitle2 or "Prepare-se para a interface"
-    subtitle2.TextColor3 = Color3.fromRGB(255, 255, 255)
-    subtitle2.Font = Enum.Font.GothamBold
-    subtitle2.TextSize = 18
-    subtitle2.TextXAlignment = Enum.TextXAlignment.Center
-    subtitle2.Parent = interfaceFrame
-
-    local hideButton = Instance.new("TextButton")
-    hideButton.Size = UDim2.new(0, 100, 0, 30)
-    hideButton.Position = UDim2.new(0.5, -50, 1, -40)
+    local hideButton = Instance.new("ImageButton")
+    hideButton.Size = UDim2.new(0, 40, 0, 40)
+    hideButton.Position = UDim2.new(1, -50, 0, 10)
     hideButton.AnchorPoint = Vector2.new(0.5, 0.5)
-    hideButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    hideButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    hideButton.Font = Enum.Font.GothamBold
-    hideButton.TextSize = 14
-    hideButton.Text = "Ocultar Interface"
+    hideButton.BackgroundTransparency = 1
+    hideButton.Image = "rbxassetid://6035047409"
     hideButton.Parent = interfaceFrame
-
-    local hideButtonCorner = Instance.new("UICorner")
-    hideButtonCorner.CornerRadius = UDim.new(0.05, 0)
-    hideButtonCorner.Parent = hideButton
 
     local ballButton = Instance.new("ImageButton")
     ballButton.Size = UDim2.new(0, 50, 0, 50)
     ballButton.Position = UDim2.new(0.5, 0, 0.9, 0)
     ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
     ballButton.BackgroundTransparency = 1
-    ballButton.Image = "rbxassetid://14293471713"
+    ballButton.Image = "rbxassetid://6337069410"
     ballButton.Visible = false
     ballButton.Parent = gui
 
@@ -75,30 +57,87 @@ function RNOX:CreateWindow(config)
             Enum.EasingDirection.Out,
             Enum.EasingStyle.Quad,
             0.5,
-            true,
-            function()
-                wait(2.5)
-                subtitle1.Visible = false
-                subtitle2.Visible = false
-            end
+            true
         )
     end
 
     function interfaceFrame:Hide()
-        interfaceFrame.Visible = false
-        ballButton.Visible = true
+        interfaceFrame:TweenSize(
+            UDim2.new(0, 0, 0, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quad,
+            0.5,
+            true,
+            function()
+                interfaceFrame.Visible = false
+                ballButton.Visible = true
+            end
+        )
     end
+
+    hideButton.MouseButton1Click:Connect(function()
+        interfaceFrame:Hide()
+    end)
 
     ballButton.MouseButton1Click:Connect(function()
         ballButton.Visible = false
         interfaceFrame:ShowAnimation()
     end)
 
-    hideButton.MouseButton1Click:Connect(function()
-        interfaceFrame:Hide()
+    local tabContainer = Instance.new("ScrollingFrame")
+    tabContainer.Size = UDim2.new(1, -20, 1, -70)
+    tabContainer.Position = UDim2.new(0, 10, 0, 50)
+    tabContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
+    tabContainer.ScrollBarThickness = 6
+    tabContainer.ScrollingDirection = Enum.ScrollingDirection.Y
+    tabContainer.BackgroundTransparency = 1
+    tabContainer.Parent = interfaceFrame
+
+    local listLayout = Instance.new("UIListLayout")
+    listLayout.FillDirection = Enum.FillDirection.Vertical
+    listLayout.Padding = UDim.new(0.01, 0)
+    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    listLayout.Parent = tabContainer
+
+    listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 20)
     end)
 
     local window = {}
+
+    function window:CreateTextBox(textBoxConfig)
+        local placeholderText = textBoxConfig.Placeholder or "Digite aqui"
+
+        local textBox = Instance.new("TextBox")
+        textBox.Size = UDim2.new(0, 100, 0, 28)
+        textBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+        textBox.Font = Enum.Font.Gotham
+        textBox.TextSize = 14
+        textBox.PlaceholderText = placeholderText
+        textBox.Text = ""
+        textBox.TextXAlignment = Enum.TextXAlignment.Left
+        textBox.ClearTextOnFocus = false
+        textBox.BorderColor3 = Color3.fromRGB(255, 255, 255)
+        textBox.BorderSizePixel = 1
+        textBox.Parent = tabContainer
+        textBox.ClipsDescendants = true
+
+        local textBoxCorner = Instance.new("UICorner")
+        textBoxCorner.CornerRadius = UDim.new(0.2, 0)
+        textBoxCorner.Parent = textBox
+
+        textBox:GetPropertyChangedSignal("Text"):Connect(function()
+            if textBox.Text ~= "" and textBoxConfig.Callback then
+                textBoxConfig.Callback(textBox.Text)
+            end
+            if textBox.Text ~= "" then
+                local textLength = string.len(textBox.Text)
+                local newSize = UDim2.new(0, math.min(100 + textLength * 8, 400), 0, 28)
+                textBox:TweenSize(newSize, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+            end
+        end)
+    end
 
     function window:CreateButton(buttonConfig)
         local button = Instance.new("TextButton")
@@ -110,7 +149,7 @@ function RNOX:CreateWindow(config)
         button.Font = Enum.Font.GothamBold
         button.TextSize = 18
         button.Text = buttonConfig.Name or "Button"
-        button.Parent = interfaceFrame
+        button.Parent = tabContainer
 
         local buttonCorner = Instance.new("UICorner")
         buttonCorner.CornerRadius = UDim.new(0.05, 0)
@@ -126,10 +165,10 @@ function RNOX:CreateWindow(config)
     function window:CreateToggle(toggleConfig)
         local toggleFrame = Instance.new("Frame")
         toggleFrame.Size = UDim2.new(1, 0, 0, 40)
-        toggleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 60)
+        toggleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
         toggleFrame.BorderColor3 = Color3.fromRGB(0, 150, 255)
         toggleFrame.BorderSizePixel = 2
-        toggleFrame.Parent = interfaceFrame
+        toggleFrame.Parent = tabContainer
 
         local toggleCorner = Instance.new("UICorner")
         toggleCorner.CornerRadius = UDim.new(0.05, 0)
@@ -160,11 +199,10 @@ function RNOX:CreateWindow(config)
             isActive = not isActive
             toggleButton.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
 
-            if toggleConfig.Callback then
-                toggleConfig.Callback(isActive)
-            end
-        end)
-    end
+        if toggleConfig.Callback then
+            toggleConfig.Callback(isActive)
+        end
+    end)
 
     function window:CreateLabel(labelConfig)
         local label = Instance.new("TextLabel")
@@ -175,41 +213,7 @@ function RNOX:CreateWindow(config)
         label.Font = Enum.Font.Gotham
         label.TextSize = 14
         label.TextXAlignment = Enum.TextXAlignment.Left
-        label.Parent = interfaceFrame
-    end
-
-    function window:CreateTextBox(textBoxConfig)
-        local placeholderText = textBoxConfig.Placeholder or "Digite aqui"
-
-        local textBox = Instance.new("TextBox")
-        textBox.Size = UDim2.new(0, 100, 0, 28)
-        textBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-        textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-        textBox.Font = Enum.Font.Gotham
-        textBox.TextSize = 14
-        textBox.PlaceholderText = placeholderText
-        textBox.Text = ""
-        textBox.TextXAlignment = Enum.TextXAlignment.Left
-        textBox.ClearTextOnFocus = false
-        textBox.BorderColor3 = Color3.fromRGB(255, 255, 255)
-        textBox.BorderSizePixel = 1
-        textBox.Parent = interfaceFrame
-        textBox.ClipsDescendants = true
-
-        local textBoxCorner = Instance.new("UICorner")
-        textBoxCorner.CornerRadius = UDim.new(0.2, 0)
-        textBoxCorner.Parent = textBox
-
-        textBox:GetPropertyChangedSignal("Text"):Connect(function()
-            if textBox.Text ~= "" and textBoxConfig.Callback then
-                textBoxConfig.Callback(textBox.Text)
-            end
-            if textBox.Text ~= "" then
-                local textLength = string.len(textBox.Text)
-                local newSize = UDim2.new(0, math.min(100 + textLength * 8, 400), 0, 28)
-                textBox:TweenSize(newSize, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
-            end
-        end)
+        label.Parent = tabContainer
     end
 
     return window
