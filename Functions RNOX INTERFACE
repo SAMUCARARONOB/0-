@@ -190,9 +190,10 @@ function RNOX:CreateWindow(config)
     local minValue = sliderConfig.Min or 0
     local maxValue = sliderConfig.Max or 100
     local defaultValue = sliderConfig.Default or minValue
+    local sliderColor = sliderConfig.Color or Color3.fromRGB(100, 200, 255)
 
     local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(1, 0, 0, 40) -- Largura reduzida para ficar mais fino
+    sliderFrame.Size = UDim2.new(1, 0, 0, 40)
     sliderFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     sliderFrame.BorderSizePixel = 0
     sliderFrame.Parent = tabContainer
@@ -202,15 +203,15 @@ function RNOX:CreateWindow(config)
     sliderCorner.Parent = sliderFrame
 
     local sliderBar = Instance.new("Frame")
-    sliderBar.Size = UDim2.new((defaultValue - minValue) / (maxValue - minValue), 0, 0.3, 0) -- Altura ajustada para barra mais fina
+    sliderBar.Size = UDim2.new((defaultValue - minValue) / (maxValue - minValue), 0, 0.3, 0)
     sliderBar.Position = UDim2.new(0, 0, 0.5, 0)
     sliderBar.AnchorPoint = Vector2.new(0, 0.5)
-    sliderBar.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
+    sliderBar.BackgroundColor3 = sliderColor
     sliderBar.BorderSizePixel = 0
     sliderBar.Parent = sliderFrame
 
     local sliderHandle = Instance.new("Frame")
-    sliderHandle.Size = UDim2.new(0, 8, 0.6, 0) -- Handle ajustado para se adequar à nova barra
+    sliderHandle.Size = UDim2.new(0, 8, 0.6, 0)
     sliderHandle.Position = UDim2.new((defaultValue - minValue) / (maxValue - minValue), 0, 0.5, 0)
     sliderHandle.AnchorPoint = Vector2.new(0.5, 0.5)
     sliderHandle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
