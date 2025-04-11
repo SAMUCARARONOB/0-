@@ -192,7 +192,7 @@ function RNOX:CreateWindow(config)
     local defaultValue = sliderConfig.Default or minValue
 
     local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(1, 0, 0, 50)
+    sliderFrame.Size = UDim2.new(1, 0, 0, 40) -- Largura reduzida para ficar mais fino
     sliderFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     sliderFrame.BorderSizePixel = 0
     sliderFrame.Parent = tabContainer
@@ -202,7 +202,7 @@ function RNOX:CreateWindow(config)
     sliderCorner.Parent = sliderFrame
 
     local sliderBar = Instance.new("Frame")
-    sliderBar.Size = UDim2.new((defaultValue - minValue) / (maxValue - minValue), 0, 0.4, 0)
+    sliderBar.Size = UDim2.new((defaultValue - minValue) / (maxValue - minValue), 0, 0.3, 0) -- Altura ajustada para barra mais fina
     sliderBar.Position = UDim2.new(0, 0, 0.5, 0)
     sliderBar.AnchorPoint = Vector2.new(0, 0.5)
     sliderBar.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
@@ -210,7 +210,7 @@ function RNOX:CreateWindow(config)
     sliderBar.Parent = sliderFrame
 
     local sliderHandle = Instance.new("Frame")
-    sliderHandle.Size = UDim2.new(0, 10, 0.8, 0)
+    sliderHandle.Size = UDim2.new(0, 8, 0.6, 0) -- Handle ajustado para se adequar à nova barra
     sliderHandle.Position = UDim2.new((defaultValue - minValue) / (maxValue - minValue), 0, 0.5, 0)
     sliderHandle.AnchorPoint = Vector2.new(0.5, 0.5)
     sliderHandle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -221,17 +221,17 @@ function RNOX:CreateWindow(config)
     sliderHandleCorner.CornerRadius = UDim.new(1, 0)
     sliderHandleCorner.Parent = sliderHandle
 
-    local valueLabel = Instance.new("TextLabel")
-    valueLabel.Size = UDim2.new(0.2, 0, 1, 0)
-    valueLabel.Position = UDim2.new(1, -50, 0, 0)
-    valueLabel.AnchorPoint = Vector2.new(1, 0.5)
-    valueLabel.BackgroundTransparency = 1
-    valueLabel.Text = tostring(defaultValue)
-    valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    valueLabel.Font = Enum.Font.GothamBold
-    valueLabel.TextSize = 14
-    valueLabel.TextXAlignment = Enum.TextXAlignment.Right
-    valueLabel.Parent = sliderFrame
+    local valueInput = Instance.new("TextBox")
+    valueInput.Size = UDim2.new(0.2, 0, 0.4, 0)
+    valueInput.Position = UDim2.new(0.5, 0, 0.5, 0)
+    valueInput.AnchorPoint = Vector2.new(0.5, 0.5)
+    valueInput.BackgroundTransparency = 1
+    valueInput.Text = tostring(defaultValue)
+    valueInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+    valueInput.Font = Enum.Font.GothamBold
+    valueInput.TextSize = 14
+    valueInput.TextXAlignment = Enum.TextXAlignment.Center
+    valueInput.Parent = sliderFrame
 
     local dragging = false
 
@@ -254,14 +254,32 @@ function RNOX:CreateWindow(config)
                 0, 
                 1
             )
-            sliderBar.Size = UDim2.new(relativePosition, 0, 0.4, 0)
+            sliderBar.Size = UDim2.new(relativePosition, 0, 0.3, 0)
             sliderHandle.Position = UDim2.new(relativePosition, 0, 0.5, 0)
 
             local sliderValue = math.floor((maxValue - minValue) * relativePosition + minValue)
-            valueLabel.Text = tostring(sliderValue)
+            valueInput.Text = tostring(sliderValue)
 
             if sliderConfig.Callback then
                 sliderConfig.Callback(sliderValue)
+            end
+        end
+    end)
+
+    valueInput.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            local inputValue = tonumber(valueInput.Text)
+            if inputValue then
+                inputValue = math.clamp(inputValue, minValue, maxValue)
+                local relativePosition = (inputValue - minValue) / (maxValue - minValue)
+                sliderBar.Size = UDim2.new(relativePosition, 0, 0.3, 0)
+                sliderHandle.Position = UDim2.new(relativePosition, 0, 0.5, 0)
+
+                if sliderConfig.Callback then
+                    sliderConfig.Callback(inputValue)
+                end
+            else
+                valueInput.Text = tostring(defaultValue)
             end
         end
     end)
