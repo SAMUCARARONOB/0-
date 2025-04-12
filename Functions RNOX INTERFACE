@@ -1,327 +1,168 @@
-local RNOX = {}
+local RNOX = loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/INTERFACE-RNOX-HUB"))()
 
-function RNOX:CreateWindow(config)
-    local tweenService = game:GetService("TweenService")
-    local gui = Instance.new("ScreenGui")
-    gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-    gui.ResetOnSpawn = false
+local Window = RNOX:CreateWindow({
+    Name = "Meu Script Roblox Aprimorado",
+    LoadingTitle = "Carregando...",
+    LoadingSubtitle = "Por favor, aguarde."
+})
 
-    local interfaceFrame = Instance.new("Frame")
-    interfaceFrame.Size = UDim2.new(0, 450, 0, 350)
-    interfaceFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    interfaceFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    interfaceFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    interfaceFrame.BorderSizePixel = 1
-    interfaceFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
-    interfaceFrame.Active = true
-    interfaceFrame.Draggable = true
-    interfaceFrame.Visible = true
-    interfaceFrame.Parent = gui
+local function showNotification(message)
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "✨ Notificação do Script ✨",
+        Text = message,
+        Duration = 5
+    })
+end
 
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.05, 0)
-    corner.Parent = interfaceFrame
-
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(0, 200, 0, 30)
-    titleLabel.Position = UDim2.new(0, 10, 0, 10)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = config.Name or "RNOX Interface"
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 20
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    titleLabel.Parent = interfaceFrame
-
-    local hideButton = Instance.new("ImageButton")
-    hideButton.Size = UDim2.new(0, 40, 0, 40)
-    hideButton.Position = UDim2.new(1, -57, 0, 22)
-    hideButton.AnchorPoint = Vector2.new(0.5, 0.5)
-    hideButton.BackgroundTransparency = 1
-    hideButton.Image = "rbxassetid://6035047409"
-    hideButton.Parent = interfaceFrame
-
-    local ballButton = Instance.new("ImageButton")
-    ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
-    ballButton.Position = UDim2.new(0.1, 0, 0.9, 0)
-    ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
-    ballButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    ballButton.Image = "rbxassetid://6337069410"
-    ballButton.BackgroundTransparency = 0
-    ballButton.Visible = false
-    ballButton.Active = true
-    ballButton.Draggable = true
-    ballButton.Parent = gui
-
-    local ballCorner = Instance.new("UICorner")
-    ballCorner.CornerRadius = UDim.new(0.5, 0)
-    ballCorner.Parent = ballButton
-
-    local tabContainer = Instance.new("ScrollingFrame")
-    tabContainer.Size = UDim2.new(1, -20, 1, -70)
-    tabContainer.Position = UDim2.new(0, 10, 0, 50)
-    tabContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
-    tabContainer.ScrollBarThickness = 6
-    tabContainer.ScrollingDirection = Enum.ScrollingDirection.Y
-    tabContainer.BackgroundTransparency = 1
-    tabContainer.Parent = interfaceFrame
-
-    local listLayout = Instance.new("UIListLayout")
-    listLayout.FillDirection = Enum.FillDirection.Vertical
-    listLayout.Padding = UDim.new(0.01, 0)
-    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    listLayout.Parent = tabContainer
-
-    listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 20)
-    end)
-
-    local function animateFrameIn()
-        interfaceFrame.Visible = true
-        local tweenIn = tweenService:Create(
-            interfaceFrame,
-            TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-            {Size = UDim2.new(0, 450, 0, 350)}
-        )
-        tweenIn:Play()
+local function applyWalkSpeed(speed)
+    if typeof(speed) == "number" then
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speed
+        showNotification("🚀 Velocidade ajustada para: " .. speed)
+    else
+        showNotification("❌ Valor de velocidade inválido.")
     end
+end
 
-    local function animateFrameOut()
-        local tweenOut = tweenService:Create(
-            interfaceFrame,
-            TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
-            {Size = UDim2.new(0, 0, 0, 0)}
-        )
-        tweenOut:Play()
-        tweenOut.Completed:Connect(function()
-            interfaceFrame.Visible = false
-            ballButton.Visible = true
-        end)
+local function applyJumpPower(power)
+    if typeof(power) == "number" then
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = power
+        showNotification("🦘 Força do pulo ajustada para: " .. power)
+    else
+        showNotification("❌ Valor de força do pulo inválido.")
     end
+end
 
-    hideButton.MouseButton1Click:Connect(function()
-        animateFrameOut()
-    end)
+Window:CreateLabel({
+    Name = "MODIFICADOR DE VELOCIDADE"
+})
 
-    ballButton.MouseButton1Click:Connect(function()
-        ballButton.Visible = false
-        animateFrameIn()
-    end)
+Window:CreateTextBox({
+    Placeholder = "Digite a velocidade",
+    Callback = function(text)
+        local speed = tonumber(text)
+        applyWalkSpeed(speed)
+    end
+})
 
-    local window = {}
+Window:CreateLabel({
+    Name = "MODIFICADOR DE PULO"
+})
 
-    function window:CreateButton(buttonConfig)
-        local button = Instance.new("TextButton")
-        button.Size = UDim2.new(1, 0, 0, 40)
-        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        button.TextColor3 = Color3.fromRGB(255, 255, 255)
-        button.Font = Enum.Font.GothamBold
-        button.TextSize = 18
-        button.Text = buttonConfig.Name or "Button"
-        button.Parent = tabContainer
+Window:CreateTextBox({
+    Placeholder = "Digite a força do pulo",
+    Callback = function(text)
+        local jumpPower = tonumber(text)
+        applyJumpPower(jumpPower)
+    end
+})
 
-        local buttonCorner = Instance.new("UICorner")
-        buttonCorner.CornerRadius = UDim.new(0.05, 0)
-        buttonCorner.Parent = button
+Window:CreateButton({
+    Name = "Teleporte Seguro",
+    Callback = function()
+        local foundSafePosition = false
+        local maxAttempts = 100
+        local attempts = 0
 
-        button.MouseButton1Click:Connect(function()
-            if buttonConfig.Callback then
-                buttonConfig.Callback()
+        while not foundSafePosition and attempts < maxAttempts do
+            local x = math.random(-1000, 1000)
+            local z = math.random(-1000, 1000)
+            local y = 100
+
+            local ray = Ray.new(Vector3.new(x, y, z), Vector3.new(0, -500, 0))
+            local part, position = workspace:FindPartOnRay(ray)
+
+            if part and position then
+                game.Players.LocalPlayer.Character:MoveTo(position + Vector3.new(0, 5, 0))
+                showNotification("✨ Teleportado com segurança!")
+                foundSafePosition = true
             end
-        end)
-    end
 
-    function window:CreateToggle(toggleConfig)
-        local toggleFrame = Instance.new("Frame")
-        toggleFrame.Size = UDim2.new(1, 0, 0, 40)
-        toggleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-        toggleFrame.BorderColor3 = Color3.fromRGB(0, 150, 255)
-        toggleFrame.BorderSizePixel = 2
-        toggleFrame.Parent = tabContainer
-
-        local toggleCorner = Instance.new("UICorner")
-        toggleCorner.CornerRadius = UDim.new(0.05, 0)
-        toggleCorner.Parent = toggleFrame
-
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(0.7, 0, 1, 0)
-        label.Position = UDim2.new(0, 10, 0, 0)
-        label.BackgroundTransparency = 1
-        label.Text = toggleConfig.Name or "Toggle"
-        label.TextColor3 = Color3.fromRGB(255, 255, 255)
-        label.Font = Enum.Font.GothamBold
-        label.TextSize = 16
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.Parent = toggleFrame
-
-        local toggleButton = Instance.new("ImageButton")
-        toggleButton.Size = UDim2.new(0, 30, 0, 30)
-        toggleButton.Position = UDim2.new(1, -40, 0.5, -15)
-        toggleButton.BackgroundTransparency = 1
-        toggleButton.Image = "rbxassetid://14293471713"
-        toggleButton.ImageColor3 = Color3.fromRGB(255, 0, 0)
-        toggleButton.Parent = toggleFrame
-
-        local isActive = false
-
-        toggleButton.MouseButton1Click:Connect(function()
-            isActive = not isActive
-            toggleButton.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-
-            if toggleConfig.Callback then
-                toggleConfig.Callback(isActive)
-            end
-        end)
-    end
-
-    function window:CreateLabel(labelConfig)
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, 0, 0, 28)
-        label.BackgroundTransparency = 1
-        label.Text = labelConfig.Name or "Label"
-        label.TextColor3 = Color3.fromRGB(200, 200, 200)
-        label.Font = Enum.Font.Gotham
-        label.TextSize = 14
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.Parent = tabContainer
-    end
-
-    function window:CreateSlider(sliderConfig)
-    local minValue = sliderConfig.Min or 0
-    local maxValue = sliderConfig.Max or 100
-    local defaultValue = math.clamp(sliderConfig.Default or minValue, minValue, maxValue)
-    local sliderColor = sliderConfig.Color or Color3.fromRGB(100, 200, 255)
-
-    local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(1, 0, 0, 40)
-    sliderFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    sliderFrame.BorderSizePixel = 0
-    sliderFrame.Parent = tabContainer
-
-    local sliderCorner = Instance.new("UICorner")
-    sliderCorner.CornerRadius = UDim.new(0.05, 0)
-    sliderCorner.Parent = sliderFrame
-
-    local sliderBar = Instance.new("Frame")
-    sliderBar.Size = UDim2.new((defaultValue - minValue) / (maxValue - minValue), 0, 0.3, 0)
-    sliderBar.Position = UDim2.new(0, 0, 0.5, 0)
-    sliderBar.AnchorPoint = Vector2.new(0, 0.5)
-    sliderBar.BackgroundColor3 = sliderColor
-    sliderBar.BorderSizePixel = 0
-    sliderBar.Parent = sliderFrame
-
-    local sliderHandle = Instance.new("Frame")
-    sliderHandle.Size = UDim2.new(0, 8, 0.6, 0)
-    sliderHandle.Position = UDim2.new((defaultValue - minValue) / (maxValue - minValue), 0, 0.5, 0)
-    sliderHandle.AnchorPoint = Vector2.new(0.5, 0.5)
-    sliderHandle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    sliderHandle.BorderSizePixel = 0
-    sliderHandle.Parent = sliderFrame
-
-    local sliderHandleCorner = Instance.new("UICorner")
-    sliderHandleCorner.CornerRadius = UDim.new(1, 0)
-    sliderHandleCorner.Parent = sliderHandle
-
-    local valueInput = Instance.new("TextBox")
-    valueInput.Size = UDim2.new(0.2, 0, 0.4, 0)
-    valueInput.Position = UDim2.new(0.5, 0, 0.5, 0)
-    valueInput.AnchorPoint = Vector2.new(0.5, 0.5)
-    valueInput.BackgroundTransparency = 1
-    valueInput.Text = tostring(defaultValue)
-    valueInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-    valueInput.Font = Enum.Font.GothamBold
-    valueInput.TextSize = 14
-    valueInput.TextXAlignment = Enum.TextXAlignment.Center
-    valueInput.Parent = sliderFrame
-
-    local dragging = false
-
-    sliderHandle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
+            attempts = attempts + 1
         end
-    end)
 
-    sliderHandle.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
+        if not foundSafePosition then
+            showNotification("❌ Não foi possível encontrar um local seguro.")
         end
-    end)
+    end
+})
 
-    game:GetService("UserInputService").InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local relativePosition = math.clamp(
-                (input.Position.X - sliderFrame.AbsolutePosition.X) / sliderFrame.AbsoluteSize.X, 
-                0, 
-                1
-            )
-            sliderBar.Size = UDim2.new(relativePosition, 0, 0.3, 0)
-            sliderHandle.Position = UDim2.new(relativePosition, 0, 0.5, 0)
+local noClipEnabled = false
+Window:CreateToggle({
+    Name = "Modo NoClip",
+    CurrentState = false,
+    Callback = function(state)
+        noClipEnabled = state
+        local character = game.Players.LocalPlayer.Character
 
-            local sliderValue = math.floor((maxValue - minValue) * relativePosition + minValue)
-            valueInput.Text = tostring(sliderValue)
-
-            if sliderConfig.Callback then
-                sliderConfig.Callback(sliderValue)
-            end
-        end
-    end)
-
-    valueInput.FocusLost:Connect(function(enterPressed)
-        if enterPressed then
-            local inputValue = tonumber(valueInput.Text)
-            if inputValue then
-                inputValue = math.clamp(inputValue, minValue, maxValue)
-                valueInput.Text = tostring(inputValue)
-                local relativePosition = (inputValue - minValue) / (maxValue - minValue)
-                sliderBar.Size = UDim2.new(relativePosition, 0, 0.3, 0)
-                sliderHandle.Position = UDim2.new(relativePosition, 0, 0.5, 0)
-
-                if sliderConfig.Callback then
-                    sliderConfig.Callback(inputValue)
+        game:GetService("RunService").Stepped:Connect(function()
+            if noClipEnabled and character and character:FindFirstChild("Humanoid") then
+                for _, part in pairs(character:GetDescendants()) do
+                    if part:IsA("BasePart") and part.CanCollide == true then
+                        part.CanCollide = false
+                    end
                 end
-            else
-                valueInput.Text = tostring(defaultValue)
-            end
-        end
-    end)
-end
-
-    function window:CreateTextBox(textBoxConfig)
-        local placeholderText = textBoxConfig.Placeholder or "Digite aqui"
-
-        local textBox = Instance.new("TextBox")
-        textBox.Size = UDim2.new(0, 100, 0, 28)
-        textBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-        textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-        textBox.Font = Enum.Font.Gotham
-        textBox.TextSize = 14
-        textBox.PlaceholderText = textBoxConfig.Placeholder or "Digite aqui"
-        textBox.Text = ""
-        textBox.TextXAlignment = Enum.TextXAlignment.Left
-        textBox.ClearTextOnFocus = false
-        textBox.BorderColor3 = Color3.fromRGB(255, 255, 255)
-        textBox.BorderSizePixel = 1
-        textBox.Parent = tabContainer
-        textBox.ClipsDescendants = true
-
-        local textBoxCorner = Instance.new("UICorner")
-        textBoxCorner.CornerRadius = UDim.new(0.2, 0)
-        textBoxCorner.Parent = textBox
-
-        textBox:GetPropertyChangedSignal("Text"):Connect(function()
-            if textBox.Text ~= "" and textBoxConfig.Callback then
-                textBoxConfig.Callback(textBox.Text)
-            end
-            if textBox.Text ~= "" then
-                local textLength = string.len(textBox.Text)
-                local newSize = UDim2.new(0, math.min(100 + textLength * 8, 400), 0, 28)
-                textBox:TweenSize(newSize, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
             end
         end)
+
+        showNotification("NoClip " .. (state and "ativado" or "desativado"))
     end
+})
 
-    return window
-end
+Window:CreateLabel({
+    Name = "Enviar Mensagem no Chat"
+})
 
-return RNOX
+local chatMessage = ""
+Window:CreateTextBox({
+    Placeholder = "Digite sua mensagem",
+    Callback = function(text)
+        chatMessage = text
+    end
+})
+
+Window:CreateButton({
+    Name = "Enviar Mensagem Bonita",
+    Callback = function()
+        if chatMessage ~= "" then
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(
+                chatMessage,
+                "All"
+            )
+            showNotification("💬 Mensagem enviada: \"" .. chatMessage .. "\"")
+        else
+            showNotification("❌ Digite uma mensagem válida.")
+        end
+    end
+})
+
+Window:CreateToggle({
+    Name = "Esconder/Mostrar GUI",
+    CurrentState = true,
+    Callback = function(state)
+        guiVisibility = state
+        Window:SetVisibility(state)
+        showNotification("GUI está agora: " .. (state and "visível" or "escondida"))
+    end
+})
+
+Window:CreateLabel({
+    Name = "Modificar Nome Visual"
+})
+
+Window:CreateTextBox({
+    Placeholder = "Novo nome visual",
+    Callback = function(text)
+        game.Players.LocalPlayer.DisplayName = text
+        showNotification("Nome visual alterado para: " .. text)
+    end
+})
+
+Window:CreateSlider({
+    Min = 0,
+    Max = 1000,
+    Default = 16,
+    Color = Color3.fromRGB(0, 255, 0),
+    Callback = function(value)
+        applyWalkSpeed(value)
+    end
+})
