@@ -1,5 +1,58 @@
 local RNOX = {}
 
+function RNOX:CreateLoadingScreen()
+    local loadingScreen = Instance.new("ScreenGui")
+    loadingScreen.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+    local blackBackground = Instance.new("Frame")
+    blackBackground.Size = UDim2.new(1, 0, 1, 0)
+    blackBackground.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    blackBackground.Parent = loadingScreen
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(0.8, 0, 0.1, 0)
+    titleLabel.Position = UDim2.new(0.5, 0, 0.4, 0)
+    titleLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Text = "Carregando..."
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.TextScaled = true
+    titleLabel.Parent = blackBackground
+
+    local subtitleLabel = Instance.new("TextLabel")
+    subtitleLabel.Size = UDim2.new(0.8, 0, 0.05, 0)
+    subtitleLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+    subtitleLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+    subtitleLabel.BackgroundTransparency = 1
+    subtitleLabel.Text = "Por favor, aguarde."
+    subtitleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    subtitleLabel.Font = Enum.Font.Gotham
+    subtitleLabel.TextScaled = true
+    subtitleLabel.Parent = blackBackground
+
+    blackBackground:TweenPosition(
+        UDim2.new(0, 0, 0, 0),
+        Enum.EasingDirection.Out,
+        Enum.EasingStyle.Quad,
+        0.5,
+        true
+    )
+
+    task.delay(2, function()
+        blackBackground:TweenPosition(
+            UDim2.new(0, 0, -1, 0),
+            Enum.EasingDirection.In,
+            Enum.EasingStyle.Quad,
+            0.5,
+            true,
+            function()
+                loadingScreen:Destroy()
+            end
+        )
+    end)
+end
+
 function RNOX:CreateWindow(config)
     local tweenService = game:GetService("TweenService")
     local gui = Instance.new("ScreenGui")
