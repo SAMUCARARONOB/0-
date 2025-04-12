@@ -189,7 +189,7 @@ function RNOX:CreateWindow(config)
     function window:CreateSlider(sliderConfig)
     local minValue = sliderConfig.Min or 0
     local maxValue = sliderConfig.Max or 100
-    local defaultValue = sliderConfig.Default or minValue
+    local defaultValue = math.clamp(sliderConfig.Default or minValue, minValue, maxValue)
     local sliderColor = sliderConfig.Color or Color3.fromRGB(100, 200, 255)
 
     local sliderFrame = Instance.new("Frame")
