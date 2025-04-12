@@ -272,6 +272,7 @@ function RNOX:CreateWindow(config)
             local inputValue = tonumber(valueInput.Text)
             if inputValue then
                 inputValue = math.clamp(inputValue, minValue, maxValue)
+                valueInput.Text = tostring(inputValue)
                 local relativePosition = (inputValue - minValue) / (maxValue - minValue)
                 sliderBar.Size = UDim2.new(relativePosition, 0, 0.3, 0)
                 sliderHandle.Position = UDim2.new(relativePosition, 0, 0.5, 0)
