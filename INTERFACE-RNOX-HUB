@@ -112,7 +112,7 @@ function RNOX:CreateWindow(config)
 
     function window:CreateButton(buttonConfig)
         local button = Instance.new("TextButton")
-        button.Size = UDim2.new(1, 0, 0, 40)
+        button.Size = UDim2.new(1, 0, 0, 30)
         button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
         button.TextColor3 = Color3.fromRGB(255, 255, 255)
         button.Font = Enum.Font.GothamBold
@@ -158,7 +158,7 @@ function RNOX:CreateWindow(config)
         toggleButton.Size = UDim2.new(0, 30, 0, 30)
         toggleButton.Position = UDim2.new(1, -40, 0.5, -15)
         toggleButton.BackgroundTransparency = 1
-        toggleButton.Image = "rbxassetid://14293471713"
+        toggleButton.Image = "rbxthumb://type=GameIcon&id=2905218052&w=128&h=128"
         toggleButton.ImageColor3 = Color3.fromRGB(255, 0, 0)
         toggleButton.Parent = toggleFrame
 
