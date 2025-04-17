@@ -132,47 +132,46 @@ function RNOX:CreateWindow(config)
     end
 
     function window:CreateToggle(toggleConfig)
-        local toggleFrame = Instance.new("Frame")
-        toggleFrame.Size = UDim2.new(1, 0, 0, 40)
-        toggleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-        toggleFrame.BorderColor3 = Color3.fromRGB(0, 150, 255)
-        toggleFrame.BorderSizePixel = 2
-        toggleFrame.Parent = tabContainer
+    local toggleFrame = Instance.new("Frame")
+    toggleFrame.Size = UDim2.new(1, 0, 0, 40)
+    toggleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    toggleFrame.BorderColor3 = Color3.fromRGB(0, 150, 255)
+    toggleFrame.BorderSizePixel = 2
+    toggleFrame.Parent = tabContainer
 
-        local toggleCorner = Instance.new("UICorner")
-        toggleCorner.CornerRadius = UDim.new(0.05, 0)
-        toggleCorner.Parent = toggleFrame
+    local toggleCorner = Instance.new("UICorner")
+    toggleCorner.CornerRadius = UDim.new(0.05, 0)
+    toggleCorner.Parent = toggleFrame
 
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(0.7, 0, 1, 0)
-        label.Position = UDim2.new(0, 10, 0, 0)
-        label.BackgroundTransparency = 1
-        label.Text = toggleConfig.Name or "Toggle"
-        label.TextColor3 = Color3.fromRGB(255, 255, 255)
-        label.Font = Enum.Font.GothamBold
-        label.TextSize = 16
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.Parent = toggleFrame
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(0.7, 0, 1, 0)
+    label.Position = UDim2.new(0, 10, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = toggleConfig.Name or "Toggle"
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 16
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = toggleFrame
 
-        local toggleButton = Instance.new("ImageButton")
-        toggleButton.Size = UDim2.new(0, 30, 0, 30)
-        toggleButton.Position = UDim2.new(1, -40, 0.5, -15)
-        toggleButton.BackgroundTransparency = 1
-        toggleButton.Image = "rbxthumb://type=GameIcon&id=2905218052&w=128&h=128"
-        toggleButton.ImageColor3 = Color3.fromRGB(255, 0, 0)
-        toggleButton.Parent = toggleFrame
+    local toggleButton = Instance.new("ImageButton")
+    toggleButton.Size = UDim2.new(0, 30, 0, 30)
+    toggleButton.Position = UDim2.new(1, -40, 0.5, -15)
+    toggleButton.BackgroundTransparency = 1
+    toggleButton.Image = "rbxthumb://type=GameIcon&id=5981638894&w=128&h=128"
+    toggleButton.Parent = toggleFrame
 
-        local isActive = false
+    local isActive = false
 
-        toggleButton.MouseButton1Click:Connect(function()
-            isActive = not isActive
-            toggleButton.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    toggleButton.MouseButton1Click:Connect(function()
+        isActive = not isActive
+        toggleButton.Image = isActive and "rbxthumb://type=GameIcon&id=2905218052&w=128&h=128" or "rbxthumb://type=GameIcon&id=5981638894&w=128&h=128"
 
-            if toggleConfig.Callback then
-                toggleConfig.Callback(isActive)
-            end
-        end)
-    end
+        if toggleConfig.Callback then
+            toggleConfig.Callback(isActive)
+        end
+    end)
+end
 
     function window:CreateLabel(labelConfig)
         local label = Instance.new("TextLabel")
