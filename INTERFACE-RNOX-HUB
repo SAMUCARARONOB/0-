@@ -158,7 +158,7 @@ function RNOX:CreateWindow(config)
     toggleButton.Size = UDim2.new(0, 30, 0, 30)
     toggleButton.Position = UDim2.new(1, -40, 0.5, -15)
     toggleButton.BackgroundTransparency = 1
-    toggleButton.Image = "rbxassetid://81232430833223"
+    toggleButton.Image = "rbxassetid://110013051256067"
     toggleButton.ImageColor3 = Color3.fromRGB(255, 0, 0)
     toggleButton.Parent = toggleFrame
 
