@@ -157,7 +157,6 @@ function RNOX:CreateWindow(config)
     local toggleButton = Instance.new("ImageButton")
     toggleButton.Size = UDim2.new(0, 30, 0, 30)
     toggleButton.Position = UDim2.new(1, -40, 0.5, -15)
-    toggleButton.BackgroundTransparency = 1
     toggleButton.Image = "rbxthumb://type=GameIcon&id=5981638894&w=128&h=128"
     toggleButton.Parent = toggleFrame
 
