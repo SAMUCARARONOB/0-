@@ -157,14 +157,14 @@ function RNOX:CreateWindow(config)
     local toggleButton = Instance.new("ImageButton")
     toggleButton.Size = UDim2.new(0, 30, 0, 30)
     toggleButton.Position = UDim2.new(1, -40, 0.5, -15)
-    toggleButton.Image = "rbxthumb://type=GameIcon&id=5981638894&w=128&h=128"
+    toggleButton.Image = "rbxasset://textures/loading/cancelButton.png"
     toggleButton.Parent = toggleFrame
 
     local isActive = false
 
     toggleButton.MouseButton1Click:Connect(function()
         isActive = not isActive
-        toggleButton.Image = isActive and "rbxthumb://type=GameIcon&id=2905218052&w=128&h=128" or "rbxthumb://type=GameIcon&id=5981638894&w=128&h=128"
+        toggleButton.Image = isActive and "rbxthumb://type=GameIcon&id=2905218052&w=128&h=128" or "rbxasset://textures/loading/cancelButton.png"
 
         if toggleConfig.Callback then
             toggleConfig.Callback(isActive)
