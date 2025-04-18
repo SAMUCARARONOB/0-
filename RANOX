@@ -6,7 +6,6 @@ local player = Players.LocalPlayer
 local mainUI = Instance.new("ScreenGui")
 mainUI.Name = "RanoxUI"
 mainUI.ResetOnSpawn = false
-mainUI.IgnoreGuiInset = true
 mainUI.Parent = player:WaitForChild("PlayerGui")
 
 local mainFrame = Instance.new("Frame")
@@ -18,9 +17,8 @@ mainFrame.Active = true
 mainFrame.Draggable = true
 mainFrame.Parent = mainUI
 
-local roundCorner = Instance.new("UICorner")
+local roundCorner = Instance.new("UICorner", mainFrame)
 roundCorner.CornerRadius = UDim.new(0, 12)
-roundCorner.Parent = mainFrame
 
 local header = Instance.new("Frame")
 header.Size = UDim2.new(1, 0, 0, 30)
@@ -32,7 +30,7 @@ title.Text = "RANOX"
 title.Size = UDim2.new(1, -30, 1, 0)
 title.Position = UDim2.new(0, 5, 0, 0)
 title.BackgroundTransparency = 1
-title.TextColor3 = Color3.new(1, 1, 1)
+title.TextColor3 = Color3.new(1,1,1)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 16
 title.TextXAlignment = Enum.TextXAlignment.Left
@@ -43,7 +41,7 @@ hideButton.Size = UDim2.new(0, 30, 1, 0)
 hideButton.Position = UDim2.new(1, -30, 0, 0)
 hideButton.BackgroundTransparency = 1
 hideButton.Text = "-"
-hideButton.TextColor3 = Color3.new(1, 1, 1)
+hideButton.TextColor3 = Color3.new(1,1,1)
 hideButton.Font = Enum.Font.GothamBold
 hideButton.TextSize = 20
 hideButton.Parent = header
@@ -72,17 +70,29 @@ tabPages.BackgroundTransparency = 1
 tabPages.ClipsDescendants = true
 tabPages.Parent = mainFrame
 
+local scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Size = UDim2.new(1, 0, 1, 0)
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollFrame.ScrollBarThickness = 6
+scrollFrame.ScrollBarImageTransparency = 1
+scrollFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+scrollFrame.BorderSizePixel = 0
+scrollFrame.Parent = tabPages
+
+local scrollCorner = Instance.new("UICorner", scrollFrame)
+scrollCorner.CornerRadius = UDim.new(0, 8)
+
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0, 5)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Parent = scrollFrame
+
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+end)
+
 function Ranox:CreateWindow(config)
 	title.Text = config.Name or "RANOX"
-
-	local tabs = {}
-
-	local function HideAllTabs()
-		for _, tab in pairs(tabs) do
-			tab.Frame.Visible = false
-		end
-	end
-
 	return {
 		CreateTab = function(_, tabName)
 			local tabButton = Instance.new("TextButton")
@@ -94,33 +104,28 @@ function Ranox:CreateWindow(config)
 			tabButton.TextSize = 14
 			tabButton.Parent = tabHolder
 
-			local scrollFrame = Instance.new("ScrollingFrame")
-			scrollFrame.Size = UDim2.new(1, 0, 1, 0)
-			scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-			scrollFrame.ScrollBarThickness = 6
-			scrollFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-			scrollFrame.BorderSizePixel = 0
-			scrollFrame.Visible = false
-			scrollFrame.Parent = tabPages
-			scrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
-			scrollFrame.ClipsDescendants = true
+			local tabContent = Instance.new("Frame")
+			tabContent.Name = tabName
+			tabContent.Size = UDim2.new(1, 0, 1, 0)
+			tabContent.BackgroundTransparency = 1
+			tabContent.Visible = false
+			tabContent.Parent = scrollFrame
 
-			local scrollCorner = Instance.new("UICorner", scrollFrame)
-			scrollCorner.CornerRadius = UDim.new(0, 8)
-
-			local layout = Instance.new("UIListLayout")
-			layout.Padding = UDim.new(0, 5)
-			layout.SortOrder = Enum.SortOrder.LayoutOrder
-			layout.Parent = scrollFrame
+			local tabLayout = Instance.new("UIListLayout")
+			tabLayout.Padding = UDim.new(0, 5)
+			tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+			tabLayout.Parent = tabContent
 
 			tabButton.MouseButton1Click:Connect(function()
-				HideAllTabs()
-				scrollFrame.Visible = true
+				for _, tab in pairs(scrollFrame:GetChildren()) do
+					if tab:IsA("Frame") then
+						tab.Visible = false
+					end
+				end
+				tabContent.Visible = true
 			end)
 
-			local tab = {
-				Frame = scrollFrame,
-				Buttons = {},
+			return {
 				CreateButton = function(_, buttonConfig)
 					local button = Instance.new("TextButton")
 					button.Text = buttonConfig.Name or "Botão"
@@ -133,7 +138,7 @@ function Ranox:CreateWindow(config)
 					button.Font = Enum.Font.Gotham
 					button.TextSize = 14
 					button.AutoButtonColor = true
-					button.Parent = scrollFrame
+					button.Parent = tabContent
 
 					button.MouseButton1Click:Connect(function()
 						if buttonConfig.Callback then
@@ -142,9 +147,6 @@ function Ranox:CreateWindow(config)
 					end)
 				end
 			}
-
-			tabs[tabName] = tab
-			return tab
 		end
 	}
 end
