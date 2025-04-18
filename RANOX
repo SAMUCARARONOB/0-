@@ -201,15 +201,17 @@ function Ranox:CreateWindow(config)
 				end,
 
                                 CreateTextBox = function(_, textBoxConfig)
+					local placeholderText = textBoxConfig.Placeholder or "Digite aqui"
+
 					local textBoxFrame = Instance.new("Frame")
-					textBoxFrame.Size = UDim2.new(0, 130, 0, 30)
+					textBoxFrame.Size = UDim2.new(0, 100, 0, 28)
 					textBoxFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 					textBoxFrame.BorderSizePixel = 1
 					textBoxFrame.BorderColor3 = Color3.fromRGB(100, 100, 100)
 					textBoxFrame.Parent = scrollFrame
 
 					local textBoxCorner = Instance.new("UICorner")
-					textBoxCorner.CornerRadius = UDim.new(0, 6)
+					textBoxCorner.CornerRadius = UDim.new(0.2, 0)
 					textBoxCorner.Parent = textBoxFrame
 
 					local textBox = Instance.new("TextBox")
@@ -219,34 +221,31 @@ function Ranox:CreateWindow(config)
 					textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 					textBox.Font = Enum.Font.GothamBold
 					textBox.TextSize = 14
+					textBox.PlaceholderText = placeholderText
+					textBox.Text = ""
 					textBox.TextXAlignment = Enum.TextXAlignment.Left
-					textBox.TextWrapped = true
 					textBox.ClearTextOnFocus = false
+					textBox.TextWrapped = true
 					textBox.Parent = textBoxFrame
 
 					local TweenService = game:GetService("TweenService")
 					local originalSize = textBoxFrame.Size
-					local maxSize = UDim2.new(0, 200, 0, 30)
+					local maxSize = UDim2.new(0, 400, 0, 28)
 
 					textBox:GetPropertyChangedSignal("Text"):Connect(function()
-						local textWidth = textBox.TextBounds.X
-						local newSize = math.min(originalSize.X.Offset + textWidth, maxSize.X.Offset)
-
-						local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-						local tween = TweenService:Create(textBoxFrame, tweenInfo, { Size = UDim2.new(0, newSize, 0, 30) })
-						tween:Play()
-
-						if newSize >= maxSize.X.Offset then
-							textBox.TextWrapped = true
-						else
-							textBox.TextWrapped = false
+						if textBox.Text ~= "" and textBoxConfig.Callback then
+							textBoxConfig.Callback(textBox.Text)
+						end
+						
+						if textBox.Text ~= "" then
+							local textLength = string.len(textBox.Text)
+							local newSize = UDim2.new(0, math.min(100 + textLength * 8, maxSize.X.Offset), 0, 28)
+							textBoxFrame:TweenSize(newSize, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
 						end
 					end)
 
 					textBox.FocusLost:Connect(function()
-						local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-						local tween = TweenService:Create(textBoxFrame, tweenInfo, { Size = originalSize })
-						tween:Play()
+						textBoxFrame:TweenSize(originalSize, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
 					end)
 				end,
 
