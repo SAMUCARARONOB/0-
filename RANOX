@@ -122,28 +122,28 @@ function Ranox:CreateWindow(config)
 			tabCorner.Parent = tabButton
 
 			local scrollFrame = Instance.new("ScrollingFrame")
-                        scrollFrame.Size = UDim2.new(1, 0, 1, 0)
-                        scrollFrame.CanvasSize = UDim2.new(1, 0, 0, math.min(layout.AbsoluteContentSize.Y + 10, scrollFrame.AbsoluteSize.Y))
-                        scrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
-                        scrollFrame.ScrollingEnabled = true
-                        scrollFrame.ScrollBarThickness = 6
-                        scrollFrame.ClipsDescendants = true
-                        scrollFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-                        scrollFrame.BorderSizePixel = 0
-                        scrollFrame.Parent = tabPages
+			scrollFrame.Size = UDim2.new(1, 0, 1, 0)
+			scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+			scrollFrame.ScrollBarThickness = 6
+			scrollFrame.ScrollBarImageTransparency = 1
+			scrollFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+			scrollFrame.BorderSizePixel = 0
+			scrollFrame.Visible = false
+			scrollFrame.ClipsDescendants = true
+			scrollFrame.Parent = tabPages
 
-                        local scrollCorner = Instance.new("UICorner")
-                        scrollCorner.CornerRadius = UDim.new(0, 8)
-                        scrollCorner.Parent = scrollFrame
+			local scrollCorner = Instance.new("UICorner")
+			scrollCorner.CornerRadius = UDim.new(0, 8)
+			scrollCorner.Parent = scrollFrame
 
-                        local layout = Instance.new("UIListLayout")
-                        layout.Padding = UDim.new(0, 5)
-                        layout.SortOrder = Enum.SortOrder.LayoutOrder
-                        layout.Parent = scrollFrame
+			local layout = Instance.new("UIListLayout")
+			layout.Padding = UDim.new(0, 5)
+			layout.SortOrder = Enum.SortOrder.LayoutOrder
+			layout.Parent = scrollFrame
 
-                        layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-	                        scrollFrame.CanvasSize = UDim2.new(1, 0, 0, math.min(layout.AbsoluteContentSize.Y + 10, scrollFrame.AbsoluteSize.Y))
-                        end)
+			layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+				scrollFrame.CanvasSize = UDim2.new(0, 0, 0, math.min(layout.AbsoluteContentSize.Y + 10, scrollFrame.AbsoluteSize.Y))
+			end)
 
 			tabButton.MouseButton1Click:Connect(function()
 				for _, tab in pairs(tabs) do
