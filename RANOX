@@ -1,6 +1,7 @@
 local Ranox = {}
 
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
 
 local mainUI = Instance.new("ScreenGui")
@@ -66,9 +67,9 @@ ballCorner.Parent = ballButton
 
 hideButton.MouseButton1Click:Connect(function()
 	local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-	local tween = game:GetService("TweenService"):Create(mainFrame, tweenInfo, { Transparency = 1 })
-	tween:Play()
-	tween.Completed:Connect(function()
+	local tweenSize = TweenService:Create(mainFrame, tweenInfo, { Size = UDim2.new(0, 0, 0, 0) })
+	tweenSize:Play()
+	tweenSize.Completed:Connect(function()
 		mainFrame.Visible = false
 		ballButton.Visible = true
 	end)
@@ -77,8 +78,8 @@ end)
 ballButton.MouseButton1Click:Connect(function()
 	mainFrame.Visible = true
 	local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-	local tween = game:GetService("TweenService"):Create(mainFrame, tweenInfo, { Transparency = 0 })
-	tween:Play()
+	local tweenSize = TweenService:Create(mainFrame, tweenInfo, { Size = UDim2.new(0, 500, 0, 375) })
+	tweenSize:Play()
 	ballButton.Visible = false
 end)
 
