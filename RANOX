@@ -221,6 +221,7 @@ function Ranox:CreateWindow(config)
 					textBox.TextSize = 14
 					textBox.TextXAlignment = Enum.TextXAlignment.Left
 					textBox.TextWrapped = true
+					textBox.ClearTextOnFocus = false
 					textBox.Parent = textBoxFrame
 
 					local TweenService = game:GetService("TweenService")
