@@ -110,25 +110,28 @@ function RNOX:CreateWindow(config)
 
     local window = {}
 
-    function window:CreateButton(buttonConfig, parent)
-	local button = Instance.new("TextButton")
-	button.Size = UDim2.new(0.9, 0, 0, 45)
-	button.Position = UDim2.new(0.05, 0, 0, 0) -- Você pode reposicionar depois
-	button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	button.TextColor3 = Color3.fromRGB(0, 255, 255)
-	button.Font = Enum.Font.GothamBold
-	button.TextSize = 18
-	button.Text = buttonConfig.Name or "Botão"
-	button.AutoButtonColor = true
-	button.Parent = parent
+    function window:CreateButton(buttonConfig)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, 0, 0, 45)
+    button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    button.TextColor3 = Color3.fromRGB(0, 255, 255)
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 18
+    button.Text = buttonConfig.Name or "Button"
+    button.Parent = tabContainer
 
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0.2, 0)
-	corner.Parent = button
+    local buttonCorner = Instance.new("UICorner")
+    buttonCorner.CornerRadius = UDim.new(0.2, 0)
+    buttonCorner.Parent = button
 
-	if buttonConfig.Callback then
-		button.MouseButton1Click:Connect(buttonConfig.Callback)
-	end
+    button.MouseButton1Click:Connect(function()
+        if buttonConfig.Callback then
+            buttonConfig.Callback()
+        end
+    end)
+
+    return button
+end
 
     function window:CreateToggle(toggleConfig)
     local toggleFrame = Instance.new("Frame")
