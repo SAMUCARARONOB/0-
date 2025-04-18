@@ -46,7 +46,7 @@ function RNOX:CreateWindow(config)
     ballButton.Position = UDim2.new(0.1, 0, 0.9, 0)
     ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
     ballButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    ballButton.Image = "rbxassetid://121785829679292"
+    ballButton.Image = "rbxassetid://71987401073501"
     ballButton.BackgroundTransparency = 0
     ballButton.Visible = false
     ballButton.Active = true
