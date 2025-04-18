@@ -1,64 +1,153 @@
-return function()
-    local RANOX = {}
+local Ranox = {}
 
-    function RANOX:CreateWindow(config)
-        local window = {
-            Name = config.Name or "Interface RANOX",
-            Width = config.Width or 500,
-            Height = config.Height or 375,
-            Title = config.Title or "Título Padrão",
-            TitleColor = config.TitleColor or Color3.fromRGB(255, 255, 255),
-            Tabs = {},
-            Hidden = false,
-            RoundedBorders = config.RoundedBorders or 12, -- Bordas arredondadas
-            ScrollColor = Color3.fromRGB(25, 25, 25),
-            ButtonColor = Color3.fromRGB(40, 40, 40),
-            ButtonBorder = Color3.fromRGB(100, 100, 100),
-            Movable = true
-        }
-        return setmetatable(window, {__index = RANOX})
-    end
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 
-    function RANOX:AddTitle(window, config)
-        local title = {
-            Text = config.Text or "Título da Interface",
-            Color = config.Color or Color3.fromRGB(255, 255, 255),
-            Font = config.Font or Enum.Font.GothamBold,
-            Size = config.Size or 24
-        }
-        window.Title = title
-    end
+local mainUI = Instance.new("ScreenGui")
+mainUI.Name = "RanoxUI"
+mainUI.ResetOnSpawn = false
+mainUI.Parent = player:WaitForChild("PlayerGui")
 
-    function RANOX:AddTab(window, name)
-        local tab = {
-            Name = name,
-            Buttons = {},
-            ScrollEnabled = true
-        }
-        table.insert(window.Tabs, tab)
-    end
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 500, 0, 375)
+mainFrame.Position = UDim2.new(0.5, -250, 0.5, -187)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Parent = mainUI
 
-    function RANOX:AddButton(tab, config)
-        local button = {
-            Name = config.Name or "Botão",
-            Color = config.Color or Color3.fromRGB(40, 40, 40),
-            BorderColor = config.BorderColor or Color3.fromRGB(100, 100, 100),
-            Callback = config.Callback or function() end
-        }
-        table.insert(tab.Buttons, button)
-    end
+local roundCorner = Instance.new("UICorner", mainFrame)
+roundCorner.CornerRadius = UDim.new(0, 12)
 
-    function RANOX:AddTabSwitcher(window)
-        local switcher = {
-            Tabs = window.Tabs,
-            LineSeparatorColor = Color3.fromRGB(60, 60, 60)
-        }
-        window.Switcher = switcher
-    end
+local header = Instance.new("Frame")
+header.Size = UDim2.new(1, 0, 0, 30)
+header.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+header.Parent = mainFrame
 
-    function RANOX:ToggleVisibility(window)
-        window.Hidden = not window.Hidden
-    end
+local title = Instance.new("TextLabel")
+title.Text = "RANOX"
+title.Size = UDim2.new(1, -30, 1, 0)
+title.Position = UDim2.new(0, 5, 0, 0)
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.new(1,1,1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = header
 
-    return RANOX
+local hideButton = Instance.new("TextButton")
+hideButton.Size = UDim2.new(0, 30, 1, 0)
+hideButton.Position = UDim2.new(1, -30, 0, 0)
+hideButton.BackgroundTransparency = 1
+hideButton.Text = "-"
+hideButton.TextColor3 = Color3.new(1,1,1)
+hideButton.Font = Enum.Font.GothamBold
+hideButton.TextSize = 20
+hideButton.Parent = header
+
+hideButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = not mainFrame.Visible
+end)
+
+local tabHolder = Instance.new("Frame")
+tabHolder.Size = UDim2.new(1, 0, 0, 30)
+tabHolder.Position = UDim2.new(0, 0, 0, 30)
+tabHolder.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+tabHolder.Parent = mainFrame
+
+local tabLine = Instance.new("Frame")
+tabLine.Size = UDim2.new(1, 0, 0, 2)
+tabLine.Position = UDim2.new(0, 0, 1, -2)
+tabLine.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+tabLine.BorderSizePixel = 0
+tabLine.Parent = tabHolder
+
+local tabPages = Instance.new("Frame")
+tabPages.Size = UDim2.new(1, 0, 1, -60)
+tabPages.Position = UDim2.new(0, 0, 0, 60)
+tabPages.BackgroundTransparency = 1
+tabPages.ClipsDescendants = true
+tabPages.Parent = mainFrame
+
+local scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Size = UDim2.new(1, 0, 1, 0)
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollFrame.ScrollBarThickness = 6
+scrollFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+scrollFrame.BorderSizePixel = 0
+scrollFrame.Parent = tabPages
+
+local scrollCorner = Instance.new("UICorner", scrollFrame)
+scrollCorner.CornerRadius = UDim.new(0, 8)
+
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0, 5)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Parent = scrollFrame
+
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+end)
+
+function Ranox:CreateWindow(config)
+	title.Text = config.Name or "RANOX"
+	return {
+		CreateTab = function(_, tabName)
+			local tabButton = Instance.new("TextButton")
+			tabButton.Text = tabName
+			tabButton.Size = UDim2.new(0, 100, 1, 0)
+			tabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+			tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+			tabButton.Font = Enum.Font.GothamBold
+			tabButton.TextSize = 14
+			tabButton.Parent = tabHolder
+
+			local tabContent = Instance.new("Frame")
+			tabContent.Name = tabName
+			tabContent.Size = UDim2.new(1, 0, 1, 0)
+			tabContent.BackgroundTransparency = 1
+			tabContent.Visible = false
+			tabContent.Parent = scrollFrame
+
+			local tabLayout = Instance.new("UIListLayout")
+			tabLayout.Padding = UDim.new(0, 5)
+			tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+			tabLayout.Parent = tabContent
+
+			tabButton.MouseButton1Click:Connect(function()
+				for _, tab in pairs(scrollFrame:GetChildren()) do
+					if tab:IsA("Frame") then
+						tab.Visible = false
+					end
+				end
+				tabContent.Visible = true
+			end)
+
+			return {
+				CreateButton = function(_, buttonConfig)
+					local button = Instance.new("TextButton")
+					button.Text = buttonConfig.Name or "Botão"
+					button.Size = UDim2.new(1, -10, 0, 30)
+					button.Position = UDim2.new(0, 5, 0, 0)
+					button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+					button.BorderSizePixel = 1
+					button.BorderColor3 = Color3.fromRGB(100, 100, 100)
+					button.TextColor3 = Color3.fromRGB(255, 255, 255)
+					button.Font = Enum.Font.Gotham
+					button.TextSize = 14
+					button.AutoButtonColor = true
+					button.Parent = tabContent
+
+					button.MouseButton1Click:Connect(function()
+						if buttonConfig.Callback then
+							pcall(buttonConfig.Callback)
+						end
+					end)
+				end
+			}
+		end
+	}
 end
+
+return Ranox
