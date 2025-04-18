@@ -112,9 +112,9 @@ function RNOX:CreateWindow(config)
 
     function window:CreateButton(buttonConfig)
     local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, 0, 0, 45)
-    button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    button.TextColor3 = Color3.fromRGB(0, 255, 255)
+    button.Size = UDim2.new(1, 0, 0, 30)
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.GothamBold
     button.TextSize = 18
     button.Text = buttonConfig.Name or "Button"
@@ -129,6 +129,7 @@ function RNOX:CreateWindow(config)
             buttonConfig.Callback()
         end
     end)
+end
 
     function window:CreateToggle(toggleConfig)
     local toggleFrame = Instance.new("Frame")
