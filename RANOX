@@ -105,6 +105,15 @@ function Ranox:CreateWindow(config)
 			scrollCorner.CornerRadius = UDim.new(0, 8)
 			scrollCorner.Parent = scrollFrame
 
+			local layout = Instance.new("UIListLayout")
+			layout.Padding = UDim.new(0, 5)
+			layout.SortOrder = Enum.SortOrder.LayoutOrder
+			layout.Parent = scrollFrame
+
+			layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+				scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+			end)
+
 			tabButton.MouseButton1Click:Connect(function()
 				for _, tab in pairs(tabs) do
 					tab.Visible = false
