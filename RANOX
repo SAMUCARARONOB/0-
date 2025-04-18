@@ -1,0 +1,64 @@
+return function()
+    local RANOX = {}
+
+    function RANOX:CreateWindow(config)
+        local window = {
+            Name = config.Name or "Interface RANOX",
+            Width = config.Width or 500,
+            Height = config.Height or 375,
+            Title = config.Title or "Título Padrão",
+            TitleColor = config.TitleColor or Color3.fromRGB(255, 255, 255),
+            Tabs = {},
+            Hidden = false,
+            RoundedBorders = config.RoundedBorders or 12, -- Bordas arredondadas
+            ScrollColor = Color3.fromRGB(25, 25, 25),
+            ButtonColor = Color3.fromRGB(40, 40, 40),
+            ButtonBorder = Color3.fromRGB(100, 100, 100),
+            Movable = true
+        }
+        return setmetatable(window, {__index = RANOX})
+    end
+
+    function RANOX:AddTitle(window, config)
+        local title = {
+            Text = config.Text or "Título da Interface",
+            Color = config.Color or Color3.fromRGB(255, 255, 255),
+            Font = config.Font or Enum.Font.GothamBold,
+            Size = config.Size or 24
+        }
+        window.Title = title
+    end
+
+    function RANOX:AddTab(window, name)
+        local tab = {
+            Name = name,
+            Buttons = {},
+            ScrollEnabled = true
+        }
+        table.insert(window.Tabs, tab)
+    end
+
+    function RANOX:AddButton(tab, config)
+        local button = {
+            Name = config.Name or "Botão",
+            Color = config.Color or Color3.fromRGB(40, 40, 40),
+            BorderColor = config.BorderColor or Color3.fromRGB(100, 100, 100),
+            Callback = config.Callback or function() end
+        }
+        table.insert(tab.Buttons, button)
+    end
+
+    function RANOX:AddTabSwitcher(window)
+        local switcher = {
+            Tabs = window.Tabs,
+            LineSeparatorColor = Color3.fromRGB(60, 60, 60)
+        }
+        window.Switcher = switcher
+    end
+
+    function RANOX:ToggleVisibility(window)
+        window.Hidden = not window.Hidden
+    end
+
+    return RANOX
+end
