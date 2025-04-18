@@ -102,6 +102,7 @@ tabPages.ClipsDescendants = true
 tabPages.Parent = mainFrame
 
 local tabs = {}
+local firstTab = nil
 
 function Ranox:CreateWindow(config)
 	title.Text = config.Name or "RANOX"
@@ -122,23 +123,23 @@ function Ranox:CreateWindow(config)
 			tabCorner.Parent = tabButton
 
 			local scrollFrame = Instance.new("ScrollingFrame")
-scrollFrame.Size = UDim2.new(1, -20, 1, -70)
-scrollFrame.Position = UDim2.new(0, 10, 0, 50)
-scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-scrollFrame.ScrollBarThickness = 6
-scrollFrame.ScrollingDirection = Enum.ScrollingDirection.Y
-scrollFrame.BackgroundTransparency = 1
-scrollFrame.Parent = tabPages
+			scrollFrame.Size = UDim2.new(1, -20, 1, -70)
+			scrollFrame.Position = UDim2.new(0, 10, 0, 50)
+			scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+			scrollFrame.ScrollBarThickness = 6
+			scrollFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+			scrollFrame.BackgroundTransparency = 1
+			scrollFrame.Parent = tabPages
 
-local layout = Instance.new("UIListLayout")
-layout.FillDirection = Enum.FillDirection.Vertical
-layout.Padding = UDim.new(0.01, 0)
-layout.SortOrder = Enum.SortOrder.LayoutOrder
-layout.Parent = scrollFrame
+			local layout = Instance.new("UIListLayout")
+			layout.FillDirection = Enum.FillDirection.Vertical
+			layout.Padding = UDim.new(0.01, 0)
+			layout.SortOrder = Enum.SortOrder.LayoutOrder
+			layout.Parent = scrollFrame
 
-layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 20)
-end)
+			layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+				scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 20)
+			end)
 
 			tabButton.MouseButton1Click:Connect(function()
 				for _, tab in pairs(tabs) do
@@ -149,8 +150,11 @@ end)
 
 			table.insert(tabs, scrollFrame)
 
-			if #tabs == 1 then
+			if not firstTab then
+				firstTab = scrollFrame
 				scrollFrame.Visible = true
+			else
+				scrollFrame.Visible = false
 			end
 
 			return {
