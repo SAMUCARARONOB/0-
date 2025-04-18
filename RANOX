@@ -176,6 +176,30 @@ function Ranox:CreateWindow(config)
 					btnCorner.Parent = button
 				end,
 
+                                CreateLabel = function(_, labelConfig)
+					local labelFrame = Instance.new("Frame")
+					labelFrame.Size = UDim2.new(1, -10, 0, 15) -- 50% menor que o botão normal
+					labelFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+					labelFrame.BorderSizePixel = 1
+					labelFrame.BorderColor3 = Color3.fromRGB(80, 80, 80)
+					labelFrame.Parent = scrollFrame
+
+					local labelCorner = Instance.new("UICorner")
+					labelCorner.CornerRadius = UDim.new(0, 6)
+					labelCorner.Parent = labelFrame
+
+					local labelText = Instance.new("TextLabel")
+					labelText.Text = labelConfig.Name or "Label"
+					labelText.Size = UDim2.new(1, -10, 1, 0)
+					labelText.Position = UDim2.new(0, 5, 0, 0)
+					labelText.BackgroundTransparency = 1
+					labelText.TextColor3 = Color3.fromRGB(255, 255, 255)
+					labelText.Font = Enum.Font.GothamBold
+					labelText.TextSize = 12
+					labelText.TextXAlignment = Enum.TextXAlignment.Left
+					labelText.Parent = labelFrame
+				end,
+
 				CreateToggle = function(_, toggleConfig)
 					local toggleFrame = Instance.new("Frame")
 					toggleFrame.Size = UDim2.new(1, -10, 0, 30)
