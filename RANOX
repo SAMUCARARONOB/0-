@@ -58,12 +58,10 @@ tabHolder.Position = UDim2.new(0, 0, 0, 30)
 tabHolder.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 tabHolder.Parent = mainFrame
 
-local tabLine = Instance.new("Frame")
-tabLine.Size = UDim2.new(1, 0, 0, 2)
-tabLine.Position = UDim2.new(0, 0, 1, -2)
-tabLine.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-tabLine.BorderSizePixel = 0
-tabLine.Parent = tabHolder
+local tabLayout = Instance.new("UIListLayout")
+tabLayout.FillDirection = Enum.FillDirection.Horizontal
+tabLayout.Padding = UDim.new(0, 5)
+tabLayout.Parent = tabHolder
 
 local tabPages = Instance.new("Frame")
 tabPages.Size = UDim2.new(1, 0, 1, -60)
@@ -106,15 +104,6 @@ function Ranox:CreateWindow(config)
 			local scrollCorner = Instance.new("UICorner")
 			scrollCorner.CornerRadius = UDim.new(0, 8)
 			scrollCorner.Parent = scrollFrame
-
-			local layout = Instance.new("UIListLayout")
-			layout.Padding = UDim.new(0, 5)
-			layout.SortOrder = Enum.SortOrder.LayoutOrder
-			layout.Parent = scrollFrame
-
-			layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-				scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
-			end)
 
 			tabButton.MouseButton1Click:Connect(function()
 				for _, tab in pairs(tabs) do
