@@ -241,7 +241,7 @@ function Ranox:CreateWindow(config)
 						local tween = TweenService:Create(textBoxFrame, tweenInfo, { Size = originalSize })
 						tween:Play()
 					end)
-				end
+				end,
 
 				CreateToggle = function(_, toggleConfig)
 					local toggleFrame = Instance.new("Frame")
