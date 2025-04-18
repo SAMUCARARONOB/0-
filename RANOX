@@ -19,7 +19,7 @@ mainFrame.Draggable = true
 mainFrame.Parent = mainUI
 
 local roundCorner = Instance.new("UICorner")
-roundCorner.CornerRadius = UDim.new(0, 12)
+roundCorner.CornerRadius = UDim.new(0.1, 0)
 roundCorner.Parent = mainFrame
 
 local header = Instance.new("Frame")
@@ -48,8 +48,38 @@ hideButton.Font = Enum.Font.GothamBold
 hideButton.TextSize = 20
 hideButton.Parent = header
 
+local ballButton = Instance.new("ImageButton")
+ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
+ballButton.Position = UDim2.new(0.1, 0, 0.9, 0)
+ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
+ballButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ballButton.Image = "rbxassetid://6337069410"
+ballButton.BackgroundTransparency = 0
+ballButton.Visible = false
+ballButton.Active = true
+ballButton.Draggable = true
+ballButton.Parent = mainUI
+
+local ballCorner = Instance.new("UICorner")
+ballCorner.CornerRadius = UDim.new(0.5, 0)
+ballCorner.Parent = ballButton
+
 hideButton.MouseButton1Click:Connect(function()
-	mainFrame.Visible = not mainFrame.Visible
+	local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	local tween = game:GetService("TweenService"):Create(mainFrame, tweenInfo, { Transparency = 1 })
+	tween:Play()
+	tween.Completed:Connect(function()
+		mainFrame.Visible = false
+		ballButton.Visible = true
+	end)
+end)
+
+ballButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = true
+	local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	local tween = game:GetService("TweenService"):Create(mainFrame, tweenInfo, { Transparency = 0 })
+	tween:Play()
+	ballButton.Visible = false
 end)
 
 local tabHolder = Instance.new("Frame")
@@ -104,15 +134,6 @@ function Ranox:CreateWindow(config)
 			local scrollCorner = Instance.new("UICorner")
 			scrollCorner.CornerRadius = UDim.new(0, 8)
 			scrollCorner.Parent = scrollFrame
-
-			local layout = Instance.new("UIListLayout")
-			layout.Padding = UDim.new(0, 5)
-			layout.SortOrder = Enum.SortOrder.LayoutOrder
-			layout.Parent = scrollFrame
-
-			layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-				scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
-			end)
 
 			tabButton.MouseButton1Click:Connect(function()
 				for _, tab in pairs(tabs) do
