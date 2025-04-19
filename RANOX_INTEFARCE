@@ -263,17 +263,16 @@ end
     local tab = pages[tabName]
     if not tab then return end
 
-    local dropdownContainer = Instance.new("Frame", tab)
-    dropdownContainer.Size = UDim2.new(1, -20, 0, 36)
-    dropdownContainer.BackgroundTransparency = 1
-    dropdownContainer.Position = UDim2.new(0, 10, 0, 0)
+    local dropdownHolder = Instance.new("Frame", tab)
+    dropdownHolder.Size = UDim2.new(1, -20, 0, 36)
+    dropdownHolder.Position = UDim2.new(0, 10, 0, 0)
+    dropdownHolder.BackgroundTransparency = 1
+    dropdownHolder.ClipsDescendants = false
 
-    local dropdownFrame = Instance.new("Frame", dropdownContainer)
+    local dropdownFrame = Instance.new("Frame", dropdownHolder)
     dropdownFrame.Size = UDim2.new(1, 0, 0, 36)
-    dropdownFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    dropdownFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     dropdownFrame.ZIndex = 2
-    dropdownFrame.ClipsDescendants = true
-    dropdownFrame.Name = "DropdownFrame"
     Instance.new("UICorner", dropdownFrame).CornerRadius = UDim.new(0, 6)
 
     local selectedLabel = Instance.new("TextLabel", dropdownFrame)
@@ -297,13 +296,13 @@ end
     arrow.BackgroundTransparency = 1
     arrow.ZIndex = 2
 
-    local dropdownList = Instance.new("Frame", dropdownFrame)
-    dropdownList.Position = UDim2.new(0, 0, 1, 0)
+    local dropdownList = Instance.new("Frame", dropdownHolder)
+    dropdownList.Position = UDim2.new(0, 0, 0, 36)
     dropdownList.Size = UDim2.new(1, 0, 0, 0)
-    dropdownList.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    dropdownList.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     dropdownList.Visible = false
-    dropdownList.ZIndex = 1
     dropdownList.ClipsDescendants = true
+    dropdownList.ZIndex = 1
     Instance.new("UICorner", dropdownList).CornerRadius = UDim.new(0, 6)
 
     local listLayout = Instance.new("UIListLayout", dropdownList)
@@ -312,13 +311,13 @@ end
 
     local isOpen = false
     local optionHeight = 30
+    local dropdownHeight = (#dropdownConfig.Options * (optionHeight + 4)) + 8
 
-    local function updateElementsBelow()
-        local openedHeight = #dropdownConfig.Options * (optionHeight + 4) + 8
+    local function shiftElements(belowFrame, direction)
         for _, sibling in ipairs(tab:GetChildren()) do
-            if sibling:IsA("Frame") and sibling ~= dropdownContainer and sibling.Position.Y.Offset > dropdownContainer.Position.Y.Offset then
-                local shift = isOpen and openedHeight or -openedHeight
-                sibling:TweenPosition(sibling.Position + UDim2.new(0, 0, 0, shift), "Out", "Quad", 0.25, true)
+            if sibling:IsA("Frame") and sibling ~= dropdownHolder and sibling.Position.Y.Offset > belowFrame.Position.Y.Offset then
+                local offset = direction and dropdownHeight or -dropdownHeight
+                sibling:TweenPosition(sibling.Position + UDim2.new(0, 0, 0, offset), "Out", "Quad", 0.25, true)
             end
         end
     end
@@ -328,42 +327,40 @@ end
             isOpen = not isOpen
             dropdownList.Visible = true
             arrow.Text = isOpen and "▲" or "▼"
-            local targetHeight = isOpen and #dropdownConfig.Options * (optionHeight + 4) + 8 or 0
-            updateElementsBelow()
-            dropdownList:TweenSize(UDim2.new(1, 0, 0, targetHeight), "Out", "Quad", 0.3, true, function()
+            shiftElements(dropdownHolder, isOpen)
+            dropdownList:TweenSize(UDim2.new(1, 0, 0, isOpen and dropdownHeight or 0), "Out", "Quad", 0.3, true, function()
                 if not isOpen then dropdownList.Visible = false end
             end)
         end
     end)
 
     for _, option in ipairs(dropdownConfig.Options) do
-        local btn = Instance.new("TextButton", dropdownList)
-        btn.Size = UDim2.new(1, -8, 0, optionHeight)
-        btn.Position = UDim2.new(0, 4, 0, 0)
-        btn.Text = option
-        btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        btn.Font = Enum.Font.Gotham
-        btn.TextSize = 13
-        btn.AutoButtonColor = false
-        btn.ZIndex = 2
-        Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+        local optBtn = Instance.new("TextButton", dropdownList)
+        optBtn.Size = UDim2.new(1, -8, 0, optionHeight)
+        optBtn.Position = UDim2.new(0, 4, 0, 0)
+        optBtn.Text = option
+        optBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        optBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        optBtn.Font = Enum.Font.Gotham
+        optBtn.TextSize = 13
+        optBtn.AutoButtonColor = false
+        optBtn.ZIndex = 2
+        Instance.new("UICorner", optBtn).CornerRadius = UDim.new(0, 6)
 
-        btn.MouseEnter:Connect(function()
-            btn.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
+        optBtn.MouseEnter:Connect(function()
+            optBtn.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
         end)
-        btn.MouseLeave:Connect(function()
-            btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        optBtn.MouseLeave:Connect(function()
+            optBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         end)
 
-        btn.MouseButton1Click:Connect(function()
+        optBtn.MouseButton1Click:Connect(function()
             selectedLabel.Text = option
+            dropdownList.Visible = false
+            arrow.Text = "▼"
             isOpen = false
-            updateElementsBelow()
-            dropdownList:TweenSize(UDim2.new(1, 0, 0, 0), "Out", "Quad", 0.25, true, function()
-                dropdownList.Visible = false
-                arrow.Text = "▼"
-            end)
+            shiftElements(dropdownHolder, false)
+            dropdownList:TweenSize(UDim2.new(1, 0, 0, 0), "Out", "Quad", 0.25, true)
             if dropdownConfig.Callback then
                 dropdownConfig.Callback(option)
             end
