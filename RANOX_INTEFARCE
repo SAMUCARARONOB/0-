@@ -256,7 +256,7 @@ end
     toggleButton.MouseButton1Click:Connect(function()
         isOn = not isOn
 
-        local bgColor = isOn and Color3.fromRGB(0, 170, 127) or Color3.fromRGB(60, 60, 60)
+        local bgColor = isOn and Color3.fromRGB(170, 30, 0) or Color3.fromRGB(60, 60, 60)
         local ballPosition = isOn and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
         local ballColor = isOn and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 200)
 
