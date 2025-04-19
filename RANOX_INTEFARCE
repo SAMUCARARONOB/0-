@@ -401,13 +401,13 @@ end
     if not tab then return end
 
     local sliderFrame = Instance.new("Frame", tab)
-    sliderFrame.Size = UDim2.new(1, -20, 0, 44)
+    sliderFrame.Size = UDim2.new(1, -20, 0, 50)
     sliderFrame.Position = UDim2.new(0, 10, 0, 0)
     sliderFrame.BackgroundTransparency = 1
     sliderFrame.ZIndex = 2
 
     local label = Instance.new("TextLabel", sliderFrame)
-    label.Size = UDim2.new(1, 0, 0, 18)
+    label.Size = UDim2.new(1, 0, 0, 20)
     label.Text = sliderConfig.Text or "Slider"
     label.TextColor3 = Color3.fromRGB(230, 230, 230)
     label.Font = Enum.Font.GothamMedium
@@ -417,39 +417,47 @@ end
     label.ZIndex = 2
 
     local sliderBar = Instance.new("Frame", sliderFrame)
-    sliderBar.Position = UDim2.new(0, 0, 0, 24)
-    sliderBar.Size = UDim2.new(1, 0, 0, 10)
-    sliderBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    sliderBar.Position = UDim2.new(0, 0, 0, 26)
+    sliderBar.Size = UDim2.new(1, -60, 0, 12)
+    sliderBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     sliderBar.BorderSizePixel = 0
     sliderBar.ZIndex = 2
-    Instance.new("UICorner", sliderBar).CornerRadius = UDim.new(0, 5)
+    Instance.new("UICorner", sliderBar).CornerRadius = UDim.new(0, 6)
 
-    local shadow = Instance.new("ImageLabel", sliderBar)
-    shadow.Size = UDim2.new(1, 6, 1, 6)
-    shadow.Position = UDim2.new(0, -3, 0, -3)
-    shadow.BackgroundTransparency = 1
-    shadow.Image = "rbxassetid://1316045217"
-    shadow.ImageTransparency = 0.6
-    shadow.ScaleType = Enum.ScaleType.Slice
-    shadow.SliceCenter = Rect.new(10, 10, 118, 118)
-    shadow.ZIndex = 1
+    local barGlow = Instance.new("ImageLabel", sliderBar)
+    barGlow.Size = UDim2.new(1, 12, 1, 12)
+    barGlow.Position = UDim2.new(0, -6, 0, -6)
+    barGlow.BackgroundTransparency = 1
+    barGlow.Image = "rbxassetid://1316045217"
+    barGlow.ImageTransparency = 0.75
+    barGlow.ScaleType = Enum.ScaleType.Slice
+    barGlow.SliceCenter = Rect.new(10, 10, 118, 118)
+    barGlow.ZIndex = 1
 
     local fill = Instance.new("Frame", sliderBar)
     fill.Size = UDim2.new(0, 0, 1, 0)
-    fill.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+    fill.BackgroundColor3 = Color3.fromRGB(0, 170, 127)
     fill.BorderSizePixel = 0
     fill.ZIndex = 3
-    Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 5)
+    Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 6)
 
-    local valueLabel = Instance.new("TextLabel", sliderBar)
-    valueLabel.Size = UDim2.new(0, 50, 1, 0)
-    valueLabel.Position = UDim2.new(1, 5, 0, 0)
+    local knob = Instance.new("Frame", sliderBar)
+    knob.Size = UDim2.new(0, 16, 0, 16)
+    knob.Position = UDim2.new(0, -8, 0.5, -8)
+    knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    knob.BorderSizePixel = 0
+    knob.ZIndex = 4
+    Instance.new("UICorner", knob).CornerRadius = UDim.new(1, 0)
+
+    local valueLabel = Instance.new("TextLabel", sliderFrame)
+    valueLabel.Size = UDim2.new(0, 50, 0, 20)
+    valueLabel.Position = UDim2.new(1, -50, 0, 24)
     valueLabel.BackgroundTransparency = 1
     valueLabel.Text = tostring(sliderConfig.Default or 0)
     valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     valueLabel.Font = Enum.Font.Gotham
-    valueLabel.TextSize = 12
-    valueLabel.TextXAlignment = Enum.TextXAlignment.Left
+    valueLabel.TextSize = 13
+    valueLabel.TextXAlignment = Enum.TextXAlignment.Right
     valueLabel.ZIndex = 2
 
     local min = sliderConfig.Min or 0
@@ -462,6 +470,7 @@ end
         local clamped = math.clamp((inputX - barAbsPos) / barWidth, 0, 1)
         local newValue = math.floor((min + (max - min) * clamped) + 0.5)
         fill:TweenSize(UDim2.new(clamped, 0, 1, 0), "Out", "Quad", 0.1, true)
+        knob:TweenPosition(UDim2.new(clamped, -8, 0.5, -8), "Out", "Quad", 0.1, true)
         valueLabel.Text = tostring(newValue)
         if sliderConfig.Callback then
             sliderConfig.Callback(newValue)
