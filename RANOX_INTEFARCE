@@ -269,7 +269,11 @@ end
     dropdownFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
     dropdownFrame.BorderSizePixel = 0
     dropdownFrame.ZIndex = 2
-    Instance.new("UICorner", dropdownFrame).CornerRadius = UDim.new(0, 6)
+    dropdownFrame.Name = "Dropdown_" .. dropdownConfig.Default or "Select"
+
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(0, 6)
+    uiCorner.Parent = dropdownFrame
 
     local selectedLabel = Instance.new("TextLabel", dropdownFrame)
     selectedLabel.Size = UDim2.new(1, -34, 1, 0)
@@ -286,24 +290,28 @@ end
     arrowIcon.Size = UDim2.new(0, 16, 0, 16)
     arrowIcon.Position = UDim2.new(1, -24, 0.5, -8)
     arrowIcon.BackgroundTransparency = 1
-    arrowIcon.Image = "rbxassetid://6031094678" -- ícone de seta
+    arrowIcon.Image = "rbxassetid://6031094678"
     arrowIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
     arrowIcon.ZIndex = 3
 
     local toggleButton = Instance.new("TextButton", dropdownFrame)
     toggleButton.Size = UDim2.new(1, 0, 1, 0)
+    toggleButton.Position = UDim2.new(0, 0, 0, 0)
     toggleButton.BackgroundTransparency = 1
     toggleButton.Text = ""
     toggleButton.ZIndex = 4
 
-    local dropdownList = Instance.new("Frame", dropdownFrame)
-    dropdownList.Position = UDim2.new(0, 0, 1, 4)
-    dropdownList.Size = UDim2.new(1, 0, 0, 0)
+    local dropdownList = Instance.new("Frame", tab)
+    dropdownList.Size = UDim2.new(1, -20, 0, 0)
+    dropdownList.Position = UDim2.new(0, 10, 0, dropdownFrame.Position.Y.Offset + 36)
     dropdownList.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
     dropdownList.Visible = false
     dropdownList.ClipsDescendants = true
-    dropdownList.ZIndex = 10
-    Instance.new("UICorner", dropdownList).CornerRadius = UDim.new(0, 6)
+    dropdownList.ZIndex = 5
+
+    local dropdownCorner = Instance.new("UICorner")
+    dropdownCorner.CornerRadius = UDim.new(0, 6)
+    dropdownCorner.Parent = dropdownList
 
     local listLayout = Instance.new("UIListLayout", dropdownList)
     listLayout.Padding = UDim.new(0, 3)
@@ -311,26 +319,12 @@ end
 
     local isOpen = false
 
-    local function shiftElementsBelow(offset)
-        for _, sibling in ipairs(tab:GetChildren()) do
-            if sibling:IsA("Frame") and sibling ~= dropdownFrame and sibling.Position.Y.Offset > dropdownFrame.Position.Y.Offset then
-                sibling:TweenPosition(
-                    sibling.Position + UDim2.new(0, 0, 0, offset),
-                    "Out", "Quad", 0.25, true
-                )
-            end
-        end
-    end
-
     toggleButton.MouseButton1Click:Connect(function()
         isOpen = not isOpen
         dropdownList.Visible = true
         local targetHeight = isOpen and (#dropdownConfig.Options * 30 + 6) or 0
 
-        arrowIcon:TweenRotation(isOpen and 180 or 0, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
-
-        dropdownList:TweenSize(UDim2.new(1, 0, 0, targetHeight), "Out", "Quad", 0.25, true)
-        shiftElementsBelow(isOpen and targetHeight + 6 or -(#dropdownConfig.Options * 30 + 6))
+        dropdownList:TweenSize(UDim2.new(1, -20, 0, targetHeight), "Out", "Quad", 0.25, true)
 
         if not isOpen then
             task.delay(0.25, function()
@@ -341,17 +335,17 @@ end
 
     for _, option in ipairs(dropdownConfig.Options) do
         local optBtn = Instance.new("TextButton", dropdownList)
-        optBtn.Size = UDim2.new(1, -10, 0, 30)
-        optBtn.Position = UDim2.new(0, 5, 0, 0)
+        optBtn.Size = UDim2.new(1, 0, 0, 30)
+        optBtn.Text = option
         optBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
         optBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
         optBtn.Font = Enum.Font.Gotham
         optBtn.TextSize = 13
-        optBtn.Text = option
-        optBtn.BorderSizePixel = 0
         optBtn.AutoButtonColor = false
-        optBtn.ZIndex = 11
-        Instance.new("UICorner", optBtn).CornerRadius = UDim.new(0, 4)
+        optBtn.ZIndex = 6
+
+        local corner = Instance.new("UICorner", optBtn)
+        corner.CornerRadius = UDim.new(0, 4)
 
         optBtn.MouseEnter:Connect(function()
             optBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 80)
@@ -362,16 +356,14 @@ end
 
         optBtn.MouseButton1Click:Connect(function()
             selectedLabel.Text = option
-            isOpen = false
-            dropdownList:TweenSize(UDim2.new(1, 0, 0, 0), "Out", "Quad", 0.25, true)
-            arrowIcon:TweenRotation(0, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
-            shiftElementsBelow(-(dropdownList.AbsoluteSize.Y + 6))
-            task.delay(0.25, function()
-                dropdownList.Visible = false
-            end)
             if dropdownConfig.Callback then
                 dropdownConfig.Callback(option)
             end
+            isOpen = false
+            dropdownList:TweenSize(UDim2.new(1, -20, 0, 0), "Out", "Quad", 0.25, true)
+            task.delay(0.25, function()
+                dropdownList.Visible = false
+            end)
         end)
     end
 end
