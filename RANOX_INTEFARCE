@@ -94,6 +94,22 @@ function RANOX:CreateWindow(config)
 	scrollHolder.ScrollBarThickness = 0
 	scrollHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
 
+	local ballButton = Instance.new("ImageButton")
+	ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
+	ballButton.Position = UDim2.new(0.1, 0, 0.9, 0)
+	ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
+	ballButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	ballButton.Image = "rbxassetid://6337069410"
+	ballButton.BackgroundTransparency = 0
+	ballButton.Visible = false
+	ballButton.Active = true
+	ballButton.Draggable = true
+	ballButton.Parent = screenGui
+
+	local ballCorner = Instance.new("UICorner")
+	ballCorner.CornerRadius = UDim.new(0.5, 0)
+	ballCorner.Parent = ballButton
+
 	local function switchTab(name)
 		for tabName, frame in pairs(pages) do
 			frame.Visible = (tabName == name)
@@ -189,7 +205,18 @@ function RANOX:CreateWindow(config)
 			Size = targetSize
 		})
 		tween:Play()
+
 		isHidden = not isHidden
+		ballButton.Visible = isHidden
+	end)
+
+	ballButton.MouseButton1Click:Connect(function()
+		local tween = TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Size = UDim2.new(0, 550, 0, 375)
+		})
+		tween:Play()
+		isHidden = false
+		ballButton.Visible = false
 	end)
 
 	return Window
