@@ -539,7 +539,7 @@ end
     shadow.Position = UDim2.new(0, -3, 0, -3)
     shadow.BackgroundTransparency = 1
     shadow.Image = "rbxassetid://1316045217"
-    shadow.ImageTransparency = 0.7
+    shadow.ImageTransparency = 0.9
     shadow.ScaleType = Enum.ScaleType.Slice
     shadow.SliceCenter = Rect.new(10, 10, 118, 118)
     shadow.ZIndex = 0
