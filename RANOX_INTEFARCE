@@ -511,26 +511,55 @@ end
 end
 
     function Window:CreateTextBox(tabName, placeholderText, callback)
-        local tab = pages[tabName]
-        if not tab then return end
+    local tab = pages[tabName]
+    if not tab then return end
 
-        local textBox = Instance.new("TextBox", tab)
-        textBox.Size = UDim2.new(1, -20, 0, 26)
-        textBox.Position = UDim2.new(0, 10, 0, 0)
-        textBox.PlaceholderText = placeholderText or "Enter text"
-        textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-        textBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        textBox.Font = Enum.Font.Gotham
-        textBox.TextSize = 14
-        textBox.ClearTextOnFocus = false
-        Instance.new("UICorner", textBox).CornerRadius = UDim.new(0, 4)
+    local container = Instance.new("Frame", tab)
+    container.Size = UDim2.new(1, -20, 0, 36)
+    container.Position = UDim2.new(0, 10, 0, 0)
+    container.BackgroundTransparency = 1
 
-        textBox.FocusLost:Connect(function(enterPressed)
-            if enterPressed and callback then
-                callback(textBox.Text)
-            end
-        end)
-    end
+    local textBox = Instance.new("TextBox", container)
+    textBox.Size = UDim2.new(1, 0, 1, 0)
+    textBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    textBox.PlaceholderText = placeholderText or "Digite algo..."
+    textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textBox.PlaceholderColor3 = Color3.fromRGB(160, 160, 160)
+    textBox.Font = Enum.Font.Gotham
+    textBox.TextSize = 14
+    textBox.ClearTextOnFocus = false
+    textBox.TextXAlignment = Enum.TextXAlignment.Left
+    textBox.Text = ""
+    textBox.ZIndex = 2
+    Instance.new("UICorner", textBox).CornerRadius = UDim.new(0, 6)
+
+    local icon = Instance.new("ImageLabel", textBox)
+    icon.Image = "rbxassetid://7072718362"
+    icon.Size = UDim2.new(0, 18, 0, 18)
+    icon.Position = UDim2.new(0, 10, 0.5, -9)
+    icon.BackgroundTransparency = 1
+    icon.ImageColor3 = Color3.fromRGB(200, 200, 200)
+    icon.ZIndex = 3
+
+    textBox.Padding = Instance.new("UIPadding", textBox)
+    textBox.Padding.PaddingLeft = UDim.new(0, 36)
+
+    local shadow = Instance.new("ImageLabel", container)
+    shadow.Size = UDim2.new(1, 6, 1, 6)
+    shadow.Position = UDim2.new(0, -3, 0, -3)
+    shadow.BackgroundTransparency = 1
+    shadow.Image = "rbxassetid://1316045217"
+    shadow.ImageTransparency = 0.7
+    shadow.ScaleType = Enum.ScaleType.Slice
+    shadow.SliceCenter = Rect.new(10, 10, 118, 118)
+    shadow.ZIndex = 1
+
+    textBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed and callback then
+            callback(textBox.Text)
+        end
+    end)
+end
 
     local isHidden = false
     hideButton.MouseButton1Click:Connect(function()
