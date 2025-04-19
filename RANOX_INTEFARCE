@@ -206,47 +206,53 @@ end
         end)
     end
 
-    function Window:CreateToggle(tabName, toggleConfig)
+    function RANOX:CreateToggle(tabName, toggleConfig)
     local tab = pages[tabName]
     if not tab then return end
 
     local toggleFrame = Instance.new("Frame", tab)
-    toggleFrame.Size = UDim2.new(1, -20, 0, 26)
+    toggleFrame.Size = UDim2.new(1, -20, 0, 34)
     toggleFrame.Position = UDim2.new(0, 10, 0, 0)
-    toggleFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    toggleFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
     toggleFrame.ClipsDescendants = true
-    Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 4)
+    Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 10)
 
     local label = Instance.new("TextLabel", toggleFrame)
-    label.Size = UDim2.new(1, -60, 1, 0)
+    label.Text = toggleConfig.Name or "Toggle"
+    label.Size = UDim2.new(1, -50, 1, 0)
     label.Position = UDim2.new(0, 10, 0, 0)
     label.BackgroundTransparency = 1
-    label.Text = toggleConfig.Text or "Toggle"
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextColor3 = Color3.fromRGB(240, 240, 240)
     label.Font = Enum.Font.Gotham
-    label.TextSize = 14
+    label.TextSize = 15
     label.TextXAlignment = Enum.TextXAlignment.Left
-    label.TextYAlignment = Enum.TextYAlignment.Center
 
-    local toggleButton = Instance.new("TextButton", toggleFrame)
-    toggleButton.Size = UDim2.new(0, 40, 1, 0)
-    toggleButton.Position = UDim2.new(1, -45, 0, 0)
-    toggleButton.Text = "OFF"
-    toggleButton.Font = Enum.Font.Gotham
-    toggleButton.TextSize = 14
-    toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggleButton.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
-    toggleButton.AutoButtonColor = false
-    Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(0, 4)
+    local indicator = Instance.new("Frame", toggleFrame)
+    indicator.Size = UDim2.new(0, 28, 0, 14)
+    indicator.Position = UDim2.new(1, -38, 0.5, -7)
+    indicator.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 
-    local isOn = false
-    toggleButton.MouseButton1Click:Connect(function()
-        isOn = not isOn
-        toggleButton.Text = isOn and "ON" or "OFF"
-        toggleButton.BackgroundColor3 = isOn and Color3.fromRGB(0, 60, 0) or Color3.fromRGB(60, 0, 0)
+    local indCorner = Instance.new("UICorner", indicator)
+    indCorner.CornerRadius = UDim.new(1, 0)
 
+    local ball = Instance.new("Frame", indicator)
+    ball.Size = UDim2.new(0, 14, 0, 14)
+    ball.Position = UDim2.new(0, 0, 0, 0)
+    ball.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+    local ballCorner = Instance.new("UICorner", ball)
+    ballCorner.CornerRadius = UDim.new(1, 0)
+
+    local toggled = false
+
+    toggleFrame.MouseButton1Click:Connect(function()
+        toggled = not toggled
+        TweenService:Create(ball, TweenInfo.new(0.2), {
+            Position = toggled and UDim2.new(1, -14, 0, 0) or UDim2.new(0, 0, 0, 0)
+        }):Play()
+        indicator.BackgroundColor3 = toggled and Color3.fromRGB(0, 200, 80) or Color3.fromRGB(100, 100, 100)
         if toggleConfig.Callback then
-            toggleConfig.Callback(isOn)
+            pcall(toggleConfig.Callback, toggled)
         end
     end)
 end
