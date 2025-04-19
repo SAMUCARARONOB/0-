@@ -4,129 +4,92 @@ local player = Players.LocalPlayer
 local RANOX = {}
 
 function RANOX:CreateWindow(config)
-	local Window = {}
+    local Window = {}
 
-	local screenGui = Instance.new("ScreenGui")
-	screenGui.Name = "RANOX_UI"
-	screenGui.ResetOnSpawn = false
-	screenGui.IgnoreGuiInset = true
-	screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-	screenGui.Parent = player:WaitForChild("PlayerGui")
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "RANOX_UI"
+    screenGui.ResetOnSpawn = false
+    screenGui.IgnoreGuiInset = true
+    screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    screenGui.Parent = player:WaitForChild("PlayerGui")
 
-	local mainFrame = Instance.new("TextButton")
-	mainFrame.Size = UDim2.new(0, 480, 0, 300)
-	mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-	mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-	mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-	mainFrame.Text = ""
-	mainFrame.AutoButtonColor = false
-	mainFrame.ClipsDescendants = true
-	mainFrame.Draggable = true
-	mainFrame.Active = true
-	mainFrame.Parent = screenGui
-	Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Size = UDim2.new(0, 480, 0, 300)
+    mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    mainFrame.Parent = screenGui
+    Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
 
-	local title = Instance.new("TextLabel", mainFrame)
-	title.Size = UDim2.new(1, 0, 0, 25)
-	title.BackgroundTransparency = 1
-	title.Text = config.Title or "RANOX Hub"
-	title.TextColor3 = Color3.fromRGB(255, 255, 255)
-	title.Font = Enum.Font.Gotham
-	title.TextSize = 18
-	title.TextXAlignment = Enum.TextXAlignment.Center
-	title.TextYAlignment = Enum.TextYAlignment.Center
+    local title = Instance.new("TextLabel", mainFrame)
+    title.Size = UDim2.new(1, 0, 0, 25)
+    title.BackgroundTransparency = 1
+    title.Text = config.Title or "RANOX Hub"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.Font = Enum.Font.Gotham
+    title.TextSize = 18
+    title.TextXAlignment = Enum.TextXAlignment.Center
 
-	local sidebar = Instance.new("ScrollingFrame", mainFrame)
-	sidebar.Size = UDim2.new(0, 75, 1, -25)
-	sidebar.Position = UDim2.new(0, 0, 0, 25)
-	sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-	sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
-	sidebar.ScrollBarThickness = 3
-	sidebar.BorderSizePixel = 0
-	sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
-	Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0, 6)
+    local sidebar = Instance.new("ScrollingFrame", mainFrame)
+    sidebar.Size = UDim2.new(0, 75, 1, -25)
+    sidebar.Position = UDim2.new(0, 0, 0, 25)
+    sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
+    sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    sidebar.ScrollBarThickness = 3
+    Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0, 6)
 
-	local sidebarLayout = Instance.new("UIListLayout", sidebar)
-	sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	sidebarLayout.Padding = UDim.new(0, 5)
+    local sidebarLayout = Instance.new("UIListLayout", sidebar)
+    sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    sidebarLayout.Padding = UDim.new(0, 5)
 
-	local tabButtons = {}
-	local pages = {}
-	local selectedTab = nil
+    local tabButtons = {}
+    local pages = {}
 
-	local scrollHolder = Instance.new("ScrollingFrame", mainFrame)
-	scrollHolder.Size = UDim2.new(1, -85, 1, -35)
-	scrollHolder.Position = UDim2.new(0, 80, 0, 30)
-	scrollHolder.BackgroundTransparency = 1
-	scrollHolder.BorderSizePixel = 0
-	scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
-	scrollHolder.ScrollBarThickness = 0
-	scrollHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    function Window:CreateTab(tabName)
+        local tabBtn = Instance.new("TextButton", sidebar)
+        tabBtn.Size = UDim2.new(1, -10, 0, 18)
+        tabBtn.Text = tabName
+        tabBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 5)
 
-	local function switchTab(name)
-		for tabName, frame in pairs(pages) do
-			frame.Visible = (tabName == name)
-		end
-		for tabName, btn in pairs(tabButtons) do
-			btn.BackgroundColor3 = (tabName == name) and Color3.fromRGB(30, 30, 30) or Color3.fromRGB(0, 0, 0)
-		end
-		selectedTab = name
-	end
+        local tabPage = Instance.new("Frame", mainFrame)
+        tabPage.Name = tabName
+        tabPage.Size = UDim2.new(1, -85, 1, -35)
+        tabPage.BackgroundTransparency = 1
+        tabPage.Visible = false
 
-	function Window:CreateTab(tabName)
-		local tabBtn = Instance.new("TextButton", sidebar)
-		tabBtn.Size = UDim2.new(1, -10, 0, 18)
-		tabBtn.Text = tabName
-		tabBtn.Font = Enum.Font.Gotham
-		tabBtn.TextSize = 12
-		tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		tabBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-		tabBtn.TextWrapped = false
-		tabBtn.AutoButtonColor = false
-		Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 5)
+        pages[tabName] = tabPage
 
-		tabButtons[tabName] = tabBtn
+        tabBtn.MouseButton1Click:Connect(function()
+            for _, page in pairs(pages) do
+                page.Visible = false
+            end
+            tabPage.Visible = true
+        end)
 
-		local tabPage = Instance.new("Frame", scrollHolder)
-		tabPage.Name = tabName
-		tabPage.Size = UDim2.new(1, 0, 0, 1000)
-		tabPage.BackgroundTransparency = 1
-		tabPage.Visible = false
+        tabButtons[tabName] = tabBtn
+        return tabPage
+    end
 
-		local layout = Instance.new("UIListLayout", tabPage)
-		layout.SortOrder = Enum.SortOrder.LayoutOrder
-		layout.Padding = UDim.new(0, 8)
+    function Window:CreateButton(tabName, text, callback)
+        local tab = pages[tabName]
+        if not tab then return end
 
-		pages[tabName] = tabPage
+        local btn = Instance.new("TextButton", tab)
+        btn.Size = UDim2.new(1, -20, 0, 36)
+        btn.Text = text
+        btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
 
-		tabBtn.MouseButton1Click:Connect(function()
-			switchTab(tabName)
-		end)
+        btn.MouseButton1Click:Connect(function()
+            pcall(callback)
+        end)
 
-		if not selectedTab then
-			switchTab(tabName)
-		end
-	end
+        return btn
+    end
 
-	function Window:CreateButton(tabName, text, callback)
-		local tab = pages[tabName]
-		if not tab then return end
-
-		local btn = Instance.new("TextButton", tab)
-		btn.Size = UDim2.new(1, -20, 0, 36)
-		btn.Position = UDim2.new(0, 10, 0, 0)
-		btn.Text = text
-		btn.Font = Enum.Font.Gotham
-		btn.TextSize = 14
-		btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-		btn.AutoButtonColor = false
-		Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-
-		btn.MouseButton1Click:Connect(function()
-			pcall(callback)
-		end)
-	end
-
-	return Window
+    return Window
 end
+
+return RANOX
