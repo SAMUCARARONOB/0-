@@ -143,6 +143,143 @@ Window:CreateToggle({
         Window:SetVisibility(state)
         showNotification("GUI está agora: " .. (state and "visível" or "escondida"))
     end
+}) -- segunda interface abaixo de exemplo de como usar
+local Ranox = loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/RANOX"))()
+
+local window = Ranox:CreateWindow({ Name = "Meu UI" })
+
+local tab1 = window:CreateTab("Aba 1")
+local tab2 = window:CreateTab("Aba 2")
+
+tab1:CreateButton({ Name = "Botão 1", Callback = function()
+    print("Botão 1 da Aba 1 pressionado!")
+end })
+
+tab1:CreateToggle({ Name = "Toggle 1", Callback = function(state)
+    print("Toggle 1 da Aba 1 ativado:", state)
+end })
+
+tab1:CreateToggle({ Name = "Toggle 2", Callback = function(state)
+    print("Toggle 2 da Aba 1 ativado:", state)
+end })
+
+tab2:CreateButton({ Name = "Botão 1", Callback = function()
+    print("Botão 1 da Aba 2 pressionado!")
+end })
+
+tab2:CreateButton({ Name = "Botão 2", Callback = function()
+    print("Botão 2 da Aba 2 pressionado!")
+end })
+
+tab2:CreateToggle({ Name = "Toggle 1", Callback = function(state)
+    print("Toggle 1 da Aba 2 ativado:", state)
+end })
+
+tab2:CreateToggle({ Name = "Toggle 2", Callback = function(state)
+    print("Toggle 2 da Aba 2 ativado:", state)
+end }) -- Terceira interface abaixo exemplo de como usar
+local HttpService = game:GetService("HttpService")
+local RANOX = loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/RANOX_INTEFARCE"))()
+
+local Window = RANOX:CreateWindow({
+    Title = "RANOX Hub"
+})
+
+-- Criando as abas
+Window:CreateTab("Principal", 4483362458)
+Window:CreateTab("Configuração", 4483362458)
+Window:CreateTab("Créditos", 4483362458)
+
+-- Toggles na aba Principal
+Window:CreateToggle("Principal", {
+    Text = "Ativar Modo Avançado",
+    Default = false,
+    Callback = function(isOn)
+        print("Modo Avançado ativado:", isOn)
+    end
+})
+
+Window:CreateToggle("Principal", {
+    Text = "Ativar Recurso X",
+    Default = true,
+    Callback = function(isOn)
+        print("Recurso X ativado:", isOn)
+    end
+})
+
+Window:CreateToggle("Principal", {
+    Text = "Habilitar Opção Y",
+    Default = false,
+    Callback = function(isOn)
+        print("Opção Y habilitada:", isOn)
+    end
+})
+
+-- Aba Configuração
+Window:CreateButton("Configuração", "Salvar Configurações", function()
+    print("Configurações salvas!")
+end)
+
+Window:CreateLabel("Configuração", "Altere as configurações abaixo:")
+
+Window:CreateTextBox("Configuração", "Digite seu nome", function(input)
+    print("Nome digitado:", input)
+end)
+
+-- ADICIONADO: Dropdown Estilizado
+Window:CreateDropdown("Configuração", {
+    Default = "Selecione uma opção",
+    Options = {"Opção 1", "Opção 2", "Opção 3"},
+    Callback = function(selected)
+        print("Selecionou:", selected)
+    end
+})
+
+-- ADICIONADO: Slider Funcional
+Window:CreateSlider("Configuração", {
+    Text = "Volume",
+    Min = 0,
+    Max = 100,
+    Default = 50,
+    Callback = function(value)
+        print("Volume ajustado para:", value)
+    end
+})
+
+-- Aba Créditos
+Window:CreateLabel("Créditos", "Feito por RANOX")
+Window:CreateLabel("Créditos", "Apoie nosso trabalho!")
+
+Window:CreateButton("Créditos", "Agradecimento", function()
+    print("Obrigado pelo apoio!")
+end)
+
+Window:CreateButton("Créditos", "Visite nosso site", function()
+    print("Redirecionando para o site...")
+end)
+
+Window:CreateTextBox("Créditos", "Digite seu feedback", function(input)
+    print("Feedback recebido:", input)
+end)
+
+Window:CreateTextBox("Créditos", "Digite seu email", function(input)
+    print("Email recebido:", input)
+end)
+
+Window:CreateToggle("Créditos", {
+    Text = "Aceitar Termos de Uso",
+    Default = false,
+    Callback = function(isOn)
+        print("Termos de uso aceitos:", isOn)
+    end
+})
+
+Window:CreateToggle("Créditos", {
+    Text = "Receber Notificações",
+    Default = true,
+    Callback = function(isOn)
+        print("Notificações ativadas:", isOn)
+    end
 })
 
 Window:CreateLabel({
