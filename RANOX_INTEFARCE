@@ -268,21 +268,10 @@ end
     dropdownFrame.Position = UDim2.new(0, 10, 0, 0)
     dropdownFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     dropdownFrame.BorderSizePixel = 0
-    dropdownFrame.ZIndex = 3
     Instance.new("UICorner", dropdownFrame).CornerRadius = UDim.new(0, 6)
 
-    local shadow = Instance.new("ImageLabel", dropdownFrame)
-    shadow.Size = UDim2.new(1, 6, 1, 6)
-    shadow.Position = UDim2.new(0, -3, 0, -3)
-    shadow.BackgroundTransparency = 1
-    shadow.Image = "rbxassetid://1316045217"
-    shadow.ImageTransparency = 0.6
-    shadow.ScaleType = Enum.ScaleType.Slice
-    shadow.SliceCenter = Rect.new(10, 10, 118, 118)
-    shadow.ZIndex = 2
-
     local selectedLabel = Instance.new("TextLabel", dropdownFrame)
-    selectedLabel.Size = UDim2.new(1, -40, 1, 0)
+    selectedLabel.Size = UDim2.new(1, -30, 1, 0)
     selectedLabel.Position = UDim2.new(0, 10, 0, 0)
     selectedLabel.BackgroundTransparency = 1
     selectedLabel.Text = dropdownConfig.Default or "Select Option"
@@ -290,56 +279,40 @@ end
     selectedLabel.Font = Enum.Font.GothamMedium
     selectedLabel.TextSize = 14
     selectedLabel.TextXAlignment = Enum.TextXAlignment.Left
-    selectedLabel.ZIndex = 4
 
     local toggleButton = Instance.new("TextButton", dropdownFrame)
     toggleButton.Size = UDim2.new(0, 20, 1, 0)
     toggleButton.Position = UDim2.new(1, -25, 0, 0)
     toggleButton.Text = "▼"
     toggleButton.BackgroundTransparency = 1
-    toggleButton.TextColor3 = Color3.fromRGB(180, 180, 180)
+    toggleButton.TextColor3 = Color3.fromRGB(200, 200, 200)
     toggleButton.Font = Enum.Font.Gotham
     toggleButton.TextSize = 14
     toggleButton.AutoButtonColor = false
-    toggleButton.ZIndex = 4
 
     local dropdownList = Instance.new("Frame", tab)
-    dropdownList.Position = UDim2.new(0, 10, 0, dropdownFrame.Position.Y.Offset + dropdownFrame.Size.Y.Offset + 4)
+    dropdownList.Position = UDim2.new(0, 10, 0, dropdownFrame.Position.Y.Offset + 36)
     dropdownList.Size = UDim2.new(1, -20, 0, 0)
     dropdownList.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    dropdownList.BorderSizePixel = 0
     dropdownList.Visible = false
     dropdownList.ClipsDescendants = true
-    dropdownList.ZIndex = 6
+    dropdownList.ZIndex = 10
     Instance.new("UICorner", dropdownList).CornerRadius = UDim.new(0, 6)
 
     local listLayout = Instance.new("UIListLayout", dropdownList)
-    listLayout.Padding = UDim.new(0, 2)
+    listLayout.Padding = UDim.new(0, 4)
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-    local dropdownItems = {}
-    for _, obj in ipairs(tab:GetChildren()) do
-        if obj ~= dropdownFrame and obj:IsA("GuiObject") then
-            table.insert(dropdownItems, obj)
-        end
-    end
-
     local isOpen = false
+
     toggleButton.MouseButton1Click:Connect(function()
         isOpen = not isOpen
         dropdownList.Visible = isOpen
-
-        if isOpen then
-            for _, item in ipairs(dropdownItems) do
-                item.Visible = false
-            end
-        else
-            for _, item in ipairs(dropdownItems) do
-                item.Visible = true
-            end
-        end
-
-        local targetSize = isOpen and #dropdownConfig.Options * 26 or 0
-        dropdownList:TweenSize(UDim2.new(1, -20, 0, targetSize), "Out", "Quad", 0.25, true)
+        local size = isOpen and #dropdownConfig.Options * 28 or 0
+        dropdownList:TweenSize(UDim2.new(1, -20, 0, size), "Out", "Quad", 0.25, true)
+        local rotation = isOpen and 180 or 0
+        toggleButton:TweenRotation(rotation, "Out", "Quad", 0.25, true)
     end)
 
     for _, option in ipairs(dropdownConfig.Options) do
@@ -351,11 +324,11 @@ end
         optBtn.Font = Enum.Font.Gotham
         optBtn.TextSize = 13
         optBtn.AutoButtonColor = false
-        optBtn.ZIndex = 6
+        optBtn.ZIndex = 11
         Instance.new("UICorner", optBtn).CornerRadius = UDim.new(0, 4)
 
         optBtn.MouseEnter:Connect(function()
-            optBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            optBtn.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
         end)
         optBtn.MouseLeave:Connect(function()
             optBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
@@ -365,14 +338,18 @@ end
             selectedLabel.Text = option
             dropdownList.Visible = false
             isOpen = false
-            for _, item in ipairs(dropdownItems) do
-                item.Visible = true
-            end
             if dropdownConfig.Callback then
                 dropdownConfig.Callback(option)
             end
         end)
     end
+
+    tab.MouseLeave:Connect(function()
+        if isOpen then
+            dropdownList.Visible = false
+            isOpen = false
+        end
+    end)
 end
 
     function Window:CreateSlider(tabName, sliderConfig)
