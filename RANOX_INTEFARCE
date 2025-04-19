@@ -79,7 +79,7 @@ function RANOX:CreateWindow(config)
 
     local sidebarLayout = Instance.new("UIListLayout", sidebar)
     sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    sidebarLayout.Padding = UDim.new(0, 6)
+    sidebarLayout.Padding = UDim.new(0, 1)
 
     local tabButtons = {}
     local pages = {}
