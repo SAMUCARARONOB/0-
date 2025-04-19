@@ -67,7 +67,7 @@ function RANOX:CreateWindow(config)
     line.BorderSizePixel = 0
 
     local sidebar = Instance.new("ScrollingFrame", mainFrame)
-sidebar.Size = UDim2.new(0, 105, 1, -25)
+sidebar.Size = UDim2.new(0, 89, 1, -25)
 sidebar.Position = UDim2.new(0, 0, 0, 25)
 sidebar.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -86,8 +86,8 @@ local pages = {}
 local selectedTab = nil
 
 local scrollHolder = Instance.new("ScrollingFrame", mainFrame)
-scrollHolder.Size = UDim2.new(1, -115, 1, -35)
-scrollHolder.Position = UDim2.new(0, 110, 0, 30)
+scrollHolder.Size = UDim2.new(1, -99, 1, -35)
+scrollHolder.Position = UDim2.new(0, 94, 0, 30)
 scrollHolder.BackgroundTransparency = 1
 scrollHolder.BorderSizePixel = 0
 scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
