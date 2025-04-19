@@ -11,58 +11,59 @@ mainUI.IgnoreGuiInset = true
 mainUI.Parent = player:WaitForChild("PlayerGui")
 
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 500, 0, 375)
+mainFrame.Size = UDim2.new(0, 520, 0, 390)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
 mainFrame.Draggable = true
 mainFrame.Parent = mainUI
 
 local roundCorner = Instance.new("UICorner")
-roundCorner.CornerRadius = UDim.new(0.1, 0)
+roundCorner.CornerRadius = UDim.new(0, 12)
 roundCorner.Parent = mainFrame
 
 local header = Instance.new("Frame")
-header.Size = UDim2.new(1, 0, 0, 30)
+header.Size = UDim2.new(1, 0, 0, 36)
 header.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+header.BorderSizePixel = 0
 header.Parent = mainFrame
 
 local title = Instance.new("TextLabel")
 title.Text = "RANOX"
-title.Size = UDim2.new(1, -30, 1, 0)
-title.Position = UDim2.new(0, 5, 0, 0)
+title.Size = UDim2.new(1, -36, 1, 0)
+title.Position = UDim2.new(0, 10, 0, 0)
 title.BackgroundTransparency = 1
-title.TextColor3 = Color3.new(1,1,1)
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Font = Enum.Font.GothamBold
-title.TextSize = 16
+title.TextSize = 17
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = header
 
 local hideButton = Instance.new("TextButton")
-hideButton.Size = UDim2.new(0, 30, 1, 0)
-hideButton.Position = UDim2.new(1, -30, 0, 0)
+hideButton.Size = UDim2.new(0, 36, 1, 0)
+hideButton.Position = UDim2.new(1, -36, 0, 0)
 hideButton.BackgroundTransparency = 1
 hideButton.Text = "-"
-hideButton.TextColor3 = Color3.new(1,1,1)
+hideButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 hideButton.Font = Enum.Font.GothamBold
-hideButton.TextSize = 20
+hideButton.TextSize = 22
 hideButton.Parent = header
 
 local ballButton = Instance.new("ImageButton")
-ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
-ballButton.Position = UDim2.new(0.1, 0, 0.9, 0)
+ballButton.Size = UDim2.new(0, 40, 0, 40)
+ballButton.Position = UDim2.new(0, 20, 1, -20)
 ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
-ballButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ballButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 ballButton.Image = "rbxassetid://6337069410"
-ballButton.BackgroundTransparency = 0
 ballButton.Visible = false
 ballButton.Active = true
 ballButton.Draggable = true
 ballButton.Parent = mainUI
 
 local ballCorner = Instance.new("UICorner")
-ballCorner.CornerRadius = UDim.new(0.5, 0)
+ballCorner.CornerRadius = UDim.new(1, 0)
 ballCorner.Parent = ballButton
 
 hideButton.MouseButton1Click:Connect(function()
@@ -78,15 +79,16 @@ end)
 ballButton.MouseButton1Click:Connect(function()
 	mainFrame.Visible = true
 	local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-	local tweenSize = TweenService:Create(mainFrame, tweenInfo, { Size = UDim2.new(0, 500, 0, 375) })
+	local tweenSize = TweenService:Create(mainFrame, tweenInfo, { Size = UDim2.new(0, 520, 0, 390) })
 	tweenSize:Play()
 	ballButton.Visible = false
 end)
 
 local tabHolder = Instance.new("Frame")
-tabHolder.Size = UDim2.new(1, 0, 0, 30)
-tabHolder.Position = UDim2.new(0, 0, 0, 30)
-tabHolder.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+tabHolder.Size = UDim2.new(1, 0, 0, 34)
+tabHolder.Position = UDim2.new(0, 0, 0, 36)
+tabHolder.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+tabHolder.BorderSizePixel = 0
 tabHolder.Parent = mainFrame
 
 local tabLayout = Instance.new("UIListLayout")
@@ -95,8 +97,8 @@ tabLayout.Padding = UDim.new(0, 5)
 tabLayout.Parent = tabHolder
 
 local tabPages = Instance.new("Frame")
-tabPages.Size = UDim2.new(1, 0, 1, -60)
-tabPages.Position = UDim2.new(0, 0, 0, 60)
+tabPages.Size = UDim2.new(1, 0, 1, -70)
+tabPages.Position = UDim2.new(0, 0, 0, 70)
 tabPages.BackgroundTransparency = 1
 tabPages.ClipsDescendants = true
 tabPages.Parent = mainFrame
@@ -106,12 +108,11 @@ local firstTab = nil
 
 function Ranox:CreateWindow(config)
 	title.Text = config.Name or "RANOX"
-
 	return {
 		CreateTab = function(_, tabName)
 			local tabButton = Instance.new("TextButton")
 			tabButton.Text = tabName
-			tabButton.Size = UDim2.new(0, 90, 0, 27)
+			tabButton.Size = UDim2.new(0, 100, 0, 30)
 			tabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 			tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 			tabButton.Font = Enum.Font.GothamBold
@@ -123,8 +124,8 @@ function Ranox:CreateWindow(config)
 			tabCorner.Parent = tabButton
 
 			local scrollFrame = Instance.new("ScrollingFrame")
-			scrollFrame.Size = UDim2.new(1, -20, 1, -50)
-			scrollFrame.Position = UDim2.new(0, 10, 0, 5)
+			scrollFrame.Size = UDim2.new(1, -20, 1, -10)
+			scrollFrame.Position = UDim2.new(0, 10, 0, 0)
 			scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 			scrollFrame.ScrollBarThickness = 6
 			scrollFrame.ScrollingDirection = Enum.ScrollingDirection.Y
@@ -161,26 +162,24 @@ function Ranox:CreateWindow(config)
 				CreateButton = function(_, buttonConfig)
 					local button = Instance.new("TextButton")
 					button.Text = buttonConfig.Name or "Botão"
-					button.Size = UDim2.new(1, -10, 0, 30)
-					button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-					button.BorderSizePixel = 1
-					button.BorderColor3 = Color3.fromRGB(100, 100, 100)
+					button.Size = UDim2.new(1, -10, 0, 32)
+					button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+					button.BorderSizePixel = 0
 					button.TextColor3 = Color3.fromRGB(255, 255, 255)
-					button.Font = Enum.Font.Gotham
+					button.Font = Enum.Font.GothamMedium
 					button.TextSize = 14
 					button.Parent = scrollFrame
 
 					local btnCorner = Instance.new("UICorner")
-					btnCorner.CornerRadius = UDim.new(0, 6)
+					btnCorner.CornerRadius = UDim.new(0, 8)
 					btnCorner.Parent = button
 				end,
 
-                                CreateLabel = function(_, labelConfig)
+				CreateLabel = function(_, labelConfig)
 					local labelFrame = Instance.new("Frame")
-					labelFrame.Size = UDim2.new(1, -10, 0, 15) -- 50% menor que o botão normal
-					labelFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-					labelFrame.BorderSizePixel = 1
-					labelFrame.BorderColor3 = Color3.fromRGB(80, 80, 80)
+					labelFrame.Size = UDim2.new(1, -10, 0, 20)
+					labelFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+					labelFrame.BorderSizePixel = 0
 					labelFrame.Parent = scrollFrame
 
 					local labelCorner = Instance.new("UICorner")
@@ -192,25 +191,24 @@ function Ranox:CreateWindow(config)
 					labelText.Size = UDim2.new(1, -10, 1, 0)
 					labelText.Position = UDim2.new(0, 5, 0, 0)
 					labelText.BackgroundTransparency = 1
-					labelText.TextColor3 = Color3.fromRGB(255, 255, 255)
-					labelText.Font = Enum.Font.GothamBold
+					labelText.TextColor3 = Color3.fromRGB(200, 200, 200)
+					labelText.Font = Enum.Font.Gotham
 					labelText.TextSize = 12
 					labelText.TextXAlignment = Enum.TextXAlignment.Left
 					labelText.Parent = labelFrame
 				end,
 
-                                CreateTextBox = function(_, textBoxConfig)
+				CreateTextBox = function(_, textBoxConfig)
 					local placeholderText = textBoxConfig.Placeholder or "Digite aqui"
 
 					local textBoxFrame = Instance.new("Frame")
-					textBoxFrame.Size = UDim2.new(0, 100, 0, 28)
-					textBoxFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-					textBoxFrame.BorderSizePixel = 1
-					textBoxFrame.BorderColor3 = Color3.fromRGB(100, 100, 100)
+					textBoxFrame.Size = UDim2.new(0, 120, 0, 30)
+					textBoxFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+					textBoxFrame.BorderSizePixel = 0
 					textBoxFrame.Parent = scrollFrame
 
 					local textBoxCorner = Instance.new("UICorner")
-					textBoxCorner.CornerRadius = UDim.new(0.2, 0)
+					textBoxCorner.CornerRadius = UDim.new(0, 8)
 					textBoxCorner.Parent = textBoxFrame
 
 					local textBox = Instance.new("TextBox")
@@ -218,7 +216,7 @@ function Ranox:CreateWindow(config)
 					textBox.Position = UDim2.new(0, 5, 0, 0)
 					textBox.BackgroundTransparency = 1
 					textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-					textBox.Font = Enum.Font.GothamBold
+					textBox.Font = Enum.Font.Gotham
 					textBox.TextSize = 14
 					textBox.PlaceholderText = placeholderText
 					textBox.Text = ""
@@ -227,18 +225,16 @@ function Ranox:CreateWindow(config)
 					textBox.TextWrapped = true
 					textBox.Parent = textBoxFrame
 
-					local TweenService = game:GetService("TweenService")
 					local originalSize = textBoxFrame.Size
-					local maxSize = UDim2.new(0, 400, 0, 28)
+					local maxSize = UDim2.new(0, 400, 0, 30)
 
 					textBox:GetPropertyChangedSignal("Text"):Connect(function()
 						if textBox.Text ~= "" and textBoxConfig.Callback then
 							textBoxConfig.Callback(textBox.Text)
 						end
-						
 						if textBox.Text ~= "" then
 							local textLength = string.len(textBox.Text)
-							local newSize = UDim2.new(0, math.min(100 + textLength * 8, maxSize.X.Offset), 0, 28)
+							local newSize = UDim2.new(0, math.min(120 + textLength * 8, maxSize.X.Offset), 0, 30)
 							textBoxFrame:TweenSize(newSize, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
 						end
 					end)
@@ -248,21 +244,190 @@ function Ranox:CreateWindow(config)
 					end)
 				end,
 
+                                CreateDropdown = function(_, dropdownConfig)
+	local dropdownFrame = Instance.new("Frame")
+	dropdownFrame.Size = UDim2.new(1, -10, 0, 32)
+	dropdownFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	dropdownFrame.BorderSizePixel = 0
+	dropdownFrame.ClipsDescendants = true
+	dropdownFrame.Parent = scrollFrame
+
+	local dropdownCorner = Instance.new("UICorner")
+	dropdownCorner.CornerRadius = UDim.new(0, 8)
+	dropdownCorner.Parent = dropdownFrame
+
+	local selectedLabel = Instance.new("TextLabel")
+	selectedLabel.Text = dropdownConfig.Name or "Dropdown"
+	selectedLabel.Size = UDim2.new(1, -32, 1, 0)
+	selectedLabel.Position = UDim2.new(0, 5, 0, 0)
+	selectedLabel.BackgroundTransparency = 1
+	selectedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	selectedLabel.Font = Enum.Font.Gotham
+	selectedLabel.TextSize = 14
+	selectedLabel.TextXAlignment = Enum.TextXAlignment.Left
+	selectedLabel.Parent = dropdownFrame
+
+	local arrow = Instance.new("TextLabel")
+	arrow.Text = "▼"
+	arrow.Size = UDim2.new(0, 20, 1, 0)
+	arrow.Position = UDim2.new(1, -24, 0, 0)
+	arrow.BackgroundTransparency = 1
+	arrow.TextColor3 = Color3.fromRGB(200, 200, 200)
+	arrow.Font = Enum.Font.GothamBold
+	arrow.TextSize = 16
+	arrow.Parent = dropdownFrame
+
+	local optionContainer = Instance.new("Frame")
+	optionContainer.Size = UDim2.new(1, 0, 0, 0)
+	optionContainer.Position = UDim2.new(0, 0, 1, 0)
+	optionContainer.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	optionContainer.BorderSizePixel = 0
+	optionContainer.Parent = dropdownFrame
+
+	local optionLayout = Instance.new("UIListLayout")
+	optionLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	optionLayout.Padding = UDim.new(0, 2)
+	optionLayout.Parent = optionContainer
+
+	local opened = false
+
+	local function toggleDropdown()
+		opened = not opened
+		arrow.Text = opened and "▲" or "▼"
+		local count = #dropdownConfig.Options
+		local newSize = opened and (32 * count) or 0
+		optionContainer:TweenSize(UDim2.new(1, 0, 0, newSize), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
+	end
+
+	dropdownFrame.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			toggleDropdown()
+		end
+	end)
+
+	for _, option in pairs(dropdownConfig.Options) do
+		local optionButton = Instance.new("TextButton")
+		optionButton.Text = option
+		optionButton.Size = UDim2.new(1, -10, 0, 28)
+		optionButton.Position = UDim2.new(0, 5, 0, 0)
+		optionButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+		optionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+		optionButton.Font = Enum.Font.Gotham
+		optionButton.TextSize = 13
+		optionButton.BorderSizePixel = 0
+		optionButton.Parent = optionContainer
+
+		local optCorner = Instance.new("UICorner")
+		optCorner.CornerRadius = UDim.new(0, 6)
+		optCorner.Parent = optionButton
+
+		optionButton.MouseButton1Click:Connect(function()
+			selectedLabel.Text = option
+			if dropdownConfig.Callback then
+				pcall(dropdownConfig.Callback, option)
+			end
+			toggleDropdown()
+		end)
+	end
+end,
+
+CreateSlider = function(_, sliderConfig)
+	local sliderFrame = Instance.new("Frame")
+	sliderFrame.Size = UDim2.new(1, -10, 0, 32)
+	sliderFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	sliderFrame.BorderSizePixel = 0
+	sliderFrame.Parent = scrollFrame
+
+	local sliderCorner = Instance.new("UICorner")
+	sliderCorner.CornerRadius = UDim.new(0, 8)
+	sliderCorner.Parent = sliderFrame
+
+	local title = Instance.new("TextLabel")
+	title.Text = sliderConfig.Name or "Slider"
+	title.Size = UDim2.new(0.3, 0, 1, 0)
+	title.Position = UDim2.new(0, 5, 0, 0)
+	title.BackgroundTransparency = 1
+	title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	title.Font = Enum.Font.Gotham
+	title.TextSize = 14
+	title.TextXAlignment = Enum.TextXAlignment.Left
+	title.Parent = sliderFrame
+
+	local valueLabel = Instance.new("TextLabel")
+	valueLabel.Text = tostring(sliderConfig.Default or 0)
+	valueLabel.Size = UDim2.new(0, 40, 1, 0)
+	valueLabel.Position = UDim2.new(1, -45, 0, 0)
+	valueLabel.BackgroundTransparency = 1
+	valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	valueLabel.Font = Enum.Font.GothamBold
+	valueLabel.TextSize = 14
+	valueLabel.TextXAlignment = Enum.TextXAlignment.Right
+	valueLabel.Parent = sliderFrame
+
+	local bar = Instance.new("Frame")
+	bar.Size = UDim2.new(0.4, 0, 0, 6)
+	bar.Position = UDim2.new(0.35, 0, 0.5, -3)
+	bar.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	bar.BorderSizePixel = 0
+	bar.Parent = sliderFrame
+
+	local barCorner = Instance.new("UICorner")
+	barCorner.CornerRadius = UDim.new(1, 0)
+	barCorner.Parent = bar
+
+	local fill = Instance.new("Frame")
+	fill.Size = UDim2.new((sliderConfig.Default or 0) / (sliderConfig.Max or 100), 0, 1, 0)
+	fill.BackgroundColor3 = Color3.fromRGB(0, 255, 120)
+	fill.BorderSizePixel = 0
+	fill.Parent = bar
+
+	local fillCorner = Instance.new("UICorner")
+	fillCorner.CornerRadius = UDim.new(1, 0)
+	fillCorner.Parent = fill
+
+	local dragging = false
+	bar.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+		end
+	end)
+
+	game:GetService("UserInputService").InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = false
+		end
+	end)
+
+	game:GetService("RunService").RenderStepped:Connect(function()
+		if dragging then
+			local mouse = game:GetService("UserInputService"):GetMouseLocation().X
+			local pos = bar.AbsolutePosition.X
+			local size = bar.AbsoluteSize.X
+			local ratio = math.clamp((mouse - pos) / size, 0, 1)
+			fill.Size = UDim2.new(ratio, 0, 1, 0)
+			local value = math.floor((sliderConfig.Min or 0) + ((sliderConfig.Max or 100) - (sliderConfig.Min or 0)) * ratio)
+			valueLabel.Text = tostring(value)
+			if sliderConfig.Callback then
+				pcall(sliderConfig.Callback, value)
+			end
+		end
+	end)
+end,
+
 				CreateToggle = function(_, toggleConfig)
 					local toggleFrame = Instance.new("Frame")
-					toggleFrame.Size = UDim2.new(1, -10, 0, 30)
+					toggleFrame.Size = UDim2.new(1, -10, 0, 32)
 					toggleFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-					toggleFrame.BorderSizePixel = 1
-					toggleFrame.BorderColor3 = Color3.fromRGB(100, 100, 100)
+					toggleFrame.BorderSizePixel = 0
 					toggleFrame.Parent = scrollFrame
 
 					local toggleCorner = Instance.new("UICorner")
-					toggleCorner.CornerRadius = UDim.new(0, 6)
+					toggleCorner.CornerRadius = UDim.new(0, 8)
 					toggleCorner.Parent = toggleFrame
 
 					local toggleLabel = Instance.new("TextLabel")
 					toggleLabel.Text = toggleConfig.Name or "Toggle"
-					toggleLabel.Size = UDim2.new(1, -30, 1, 0)
+					toggleLabel.Size = UDim2.new(1, -36, 1, 0)
 					toggleLabel.Position = UDim2.new(0, 5, 0, 0)
 					toggleLabel.BackgroundTransparency = 1
 					toggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -272,30 +437,32 @@ function Ranox:CreateWindow(config)
 					toggleLabel.Parent = toggleFrame
 
 					local toggleButton = Instance.new("ImageButton")
-					toggleButton.Size = UDim2.new(0, 30, 1, 0)
-					toggleButton.Position = UDim2.new(1, -30, 0, 0)
-					toggleButton.BackgroundTransparency = 1
-					toggleButton.Image = "rbxassetid://110013051256067"
-					toggleButton.ImageColor3 = Color3.fromRGB(255, 0, 0)
+					toggleButton.Size = UDim2.new(0, 28, 0, 28)
+					toggleButton.Position = UDim2.new(1, -32, 0.5, -14)
+					toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+					toggleButton.BorderSizePixel = 0
+					toggleButton.Image = ""
 					toggleButton.Parent = toggleFrame
 
-					local checkMark = Instance.new("TextLabel")
-					checkMark.Text = "✔️"
-					checkMark.Size = UDim2.new(0.5, 0, 0.5, 0)
-					checkMark.Position = UDim2.new(0.25, 0, 0.25, 0)
-					checkMark.BackgroundTransparency = 1
-					checkMark.TextColor3 = Color3.fromRGB(255, 255, 255)
-					checkMark.Font = Enum.Font.GothamBold
-					checkMark.TextSize = 18
-					checkMark.Parent = toggleButton
-					checkMark.Visible = false
+					local btnCorner = Instance.new("UICorner")
+					btnCorner.CornerRadius = UDim.new(1, 0)
+					btnCorner.Parent = toggleButton
+
+					local check = Instance.new("Frame")
+					check.Size = UDim2.new(1, 0, 1, 0)
+					check.BackgroundColor3 = Color3.fromRGB(0, 255, 120)
+					check.Visible = false
+					check.Parent = toggleButton
+
+					local checkCorner = Instance.new("UICorner")
+					checkCorner.CornerRadius = UDim.new(1, 0)
+					checkCorner.Parent = check
 
 					local toggled = false
 
 					toggleButton.MouseButton1Click:Connect(function()
 						toggled = not toggled
-						toggleButton.ImageColor3 = toggled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-						checkMark.Visible = toggled
+						check.Visible = toggled
 						if toggleConfig.Callback then
 							pcall(toggleConfig.Callback, toggled)
 						end
