@@ -259,180 +259,159 @@ end
         label.TextYAlignment = Enum.TextYAlignment.Center
     end
 
-    function CreateSlider(tab, config)
-    local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(1, 0, 0, 40)
+    function Window:CreateSlider(tabName, sliderConfig)
+    local tab = pages[tabName]
+    if not tab then return end
+
+    local sliderFrame = Instance.new("Frame", tab)
+    sliderFrame.Size = UDim2.new(1, -20, 0, 36)
+    sliderFrame.Position = UDim2.new(0, 10, 0, 0)
     sliderFrame.BackgroundTransparency = 1
-    sliderFrame.Parent = tab
 
-    local bar = Instance.new("Frame")
-    bar.Size = UDim2.new(1, 0, 0, 6)
-    bar.Position = UDim2.new(0, 0, 0.5, -3)
-    bar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    bar.BorderSizePixel = 0
-    bar.Parent = sliderFrame
-    Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 3)
+    local label = Instance.new("TextLabel", sliderFrame)
+    label.Size = UDim2.new(1, 0, 0, 16)
+    label.Text = sliderConfig.Text or "Slider"
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.Font = Enum.Font.Gotham
+    label.TextSize = 13
+    label.BackgroundTransparency = 1
+    label.TextXAlignment = Enum.TextXAlignment.Left
 
-    local fill = Instance.new("Frame")
+    local sliderBar = Instance.new("Frame", sliderFrame)
+    sliderBar.Position = UDim2.new(0, 0, 0, 20)
+    sliderBar.Size = UDim2.new(1, 0, 0, 8)
+    sliderBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    sliderBar.BorderSizePixel = 0
+    Instance.new("UICorner", sliderBar).CornerRadius = UDim.new(0, 4)
+
+    local fill = Instance.new("Frame", sliderBar)
     fill.Size = UDim2.new(0, 0, 1, 0)
-    fill.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+    fill.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
     fill.BorderSizePixel = 0
-    fill.Parent = bar
-    Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 3)
+    Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 4)
 
-    local valueLabel = Instance.new("TextLabel")
-    valueLabel.Size = UDim2.new(1, 0, 0, 20)
-    valueLabel.Position = UDim2.new(0, 0, 0, -20)
+    local valueLabel = Instance.new("TextLabel", sliderBar)
+    valueLabel.Size = UDim2.new(0, 50, 1, 0)
+    valueLabel.Position = UDim2.new(1, 5, 0, 0)
     valueLabel.BackgroundTransparency = 1
-    valueLabel.Text = config.Title .. ": " .. tostring(config.Min)
-    valueLabel.Font = Enum.Font.Gotham
-    valueLabel.TextSize = 14
+    valueLabel.Text = tostring(sliderConfig.Default or 0)
     valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    valueLabel.Parent = sliderFrame
+    valueLabel.Font = Enum.Font.Gotham
+    valueLabel.TextSize = 12
+    valueLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    local dragging = false
+    local min = sliderConfig.Min or 0
+    local max = sliderConfig.Max or 100
+    local value = sliderConfig.Default or min
 
-    local function updateInput(x)
-        local relX = math.clamp((x - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
-        local value = math.floor((config.Min + (config.Max - config.Min) * relX) + 0.5)
-        fill.Size = UDim2.new(relX, 0, 1, 0)
-        valueLabel.Text = config.Title .. ": " .. tostring(value)
-        if config.Callback then
-            config.Callback(value)
+    local function updateSlider(inputX)
+        local barAbsPos = sliderBar.AbsolutePosition.X
+        local barWidth = sliderBar.AbsoluteSize.X
+        local clamped = math.clamp((inputX - barAbsPos) / barWidth, 0, 1)
+        local newValue = math.floor((min + (max - min) * clamped) + 0.5)
+        fill.Size = UDim2.new(clamped, 0, 1, 0)
+        valueLabel.Text = tostring(newValue)
+        if sliderConfig.Callback then
+            sliderConfig.Callback(newValue)
         end
     end
 
-    bar.InputBegan:Connect(function(input)
+    sliderBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            updateInput(input.Position.X)
-        end
-    end)
-
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            updateInput(input.Position.X)
-        end
-    end)
-
-    UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-end
-
-    function CreateDropdown(tab, config)
-    local dropdownFrame = Instance.new("Frame")
-    dropdownFrame.Size = UDim2.new(1, 0, 0, 40)
-    dropdownFrame.BackgroundTransparency = 1
-    dropdownFrame.Parent = tab
-
-    local holder = Instance.new("Frame")
-    holder.Size = UDim2.new(1, 0, 0, 40)
-    holder.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    holder.BorderSizePixel = 0
-    holder.Parent = dropdownFrame
-
-    Instance.new("UICorner", holder).CornerRadius = UDim.new(0, 6)
-
-    local title = Instance.new("TextLabel")
-    title.Text = config.Title or "Dropdown"
-    title.Font = Enum.Font.GothamSemibold
-    title.TextSize = 14
-    title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.BackgroundTransparency = 1
-    title.Size = UDim2.new(1, -40, 1, 0)
-    title.Position = UDim2.new(0, 10, 0, 0)
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.Parent = holder
-
-    local toggleButton = Instance.new("TextButton")
-    toggleButton.Size = UDim2.new(0, 40, 1, 0)
-    toggleButton.Position = UDim2.new(1, -40, 0, 0)
-    toggleButton.BackgroundTransparency = 1
-    toggleButton.Text = "▼"
-    toggleButton.Font = Enum.Font.Gotham
-    toggleButton.TextSize = 18
-    toggleButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-    toggleButton.Parent = holder
-
-    local listFrame = Instance.new("Frame")
-    listFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    listFrame.BorderSizePixel = 0
-    listFrame.Position = UDim2.new(0, 0, 1, 0)
-    listFrame.Size = UDim2.new(1, 0, 0, 0)
-    listFrame.ClipsDescendants = true
-    listFrame.Visible = false
-    listFrame.Parent = dropdownFrame
-
-    Instance.new("UICorner", listFrame).CornerRadius = UDim.new(0, 6)
-
-    local layout = Instance.new("UIListLayout")
-    layout.Padding = UDim.new(0, 2)
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
-    layout.Parent = listFrame
-
-    local isOpen = false
-    local selected = nil
-
-    toggleButton.MouseButton1Click:Connect(function()
-        isOpen = not isOpen
-
-        if isOpen then
-            listFrame.Visible = true
-            TweenService:Create(listFrame, TweenInfo.new(0.25), {
-                Size = UDim2.new(1, 0, 0, #config.Options * 24)
-            }):Play()
-
-            local hide = false
-            for _, sibling in ipairs(tab:GetChildren()) do
-                if sibling == dropdownFrame then
-                    hide = true
-                elseif hide and sibling:IsA("GuiObject") then
-                    sibling.Visible = false
+            updateSlider(input.Position.X)
+            local conn
+            conn = game:GetService("UserInputService").InputChanged:Connect(function(move)
+                if move.UserInputType == Enum.UserInputType.MouseMovement then
+                    updateSlider(move.Position.X)
                 end
-            end
-        else
-            TweenService:Create(listFrame, TweenInfo.new(0.25), {
-                Size = UDim2.new(1, 0, 0, 0)
-            }):Play()
-
-            task.delay(0.25, function()
-                listFrame.Visible = false
-                local show = false
-                for _, sibling in ipairs(tab:GetChildren()) do
-                    if sibling == dropdownFrame then
-                        show = true
-                    elseif show and sibling:IsA("GuiObject") then
-                        sibling.Visible = true
-                    end
+            end)
+            game:GetService("UserInputService").InputEnded:Connect(function(endInput)
+                if endInput.UserInputType == Enum.UserInputType.MouseButton1 and conn then
+                    conn:Disconnect()
                 end
             end)
         end
     end)
 
-    for _, option in ipairs(config.Options or {}) do
-        local button = Instance.new("TextButton")
-        button.Text = option
-        button.Size = UDim2.new(1, 0, 0, 24)
-        button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-        button.TextColor3 = Color3.fromRGB(255, 255, 255)
-        button.Font = Enum.Font.Gotham
-        button.TextSize = 14
-        button.BorderSizePixel = 0
-        button.AutoButtonColor = true
-        button.Parent = listFrame
+    updateSlider(sliderBar.AbsolutePosition.X) -- inicia o visual corretamente
+end
 
-        Instance.new("UICorner", button).CornerRadius = UDim.new(0, 4)
+    function Window:CreateDropdown(tabName, dropdownConfig)
+    local tab = pages[tabName]
+    if not tab then return end
 
-        button.MouseButton1Click:Connect(function()
-            selected = option
-            title.Text = config.Title .. ": " .. option
-            if config.Callback then
-                config.Callback(option)
+    local dropdownFrame = Instance.new("Frame", tab)
+    dropdownFrame.Size = UDim2.new(1, -20, 0, 30)
+    dropdownFrame.Position = UDim2.new(0, 10, 0, 0)
+    dropdownFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Instance.new("UICorner", dropdownFrame).CornerRadius = UDim.new(0, 4)
+
+    local selectedLabel = Instance.new("TextLabel", dropdownFrame)
+    selectedLabel.Size = UDim2.new(1, -30, 1, 0)
+    selectedLabel.Position = UDim2.new(0, 10, 0, 0)
+    selectedLabel.BackgroundTransparency = 1
+    selectedLabel.Text = dropdownConfig.Default or "Select Option"
+    selectedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    selectedLabel.Font = Enum.Font.Gotham
+    selectedLabel.TextSize = 14
+    selectedLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+    local toggleButton = Instance.new("TextButton", dropdownFrame)
+    toggleButton.Size = UDim2.new(0, 20, 1, 0)
+    toggleButton.Position = UDim2.new(1, -25, 0, 0)
+    toggleButton.Text = "▼"
+    toggleButton.BackgroundTransparency = 1
+    toggleButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+    toggleButton.Font = Enum.Font.Gotham
+    toggleButton.TextSize = 14
+    toggleButton.AutoButtonColor = false
+
+    local dropdownList = Instance.new("Frame", dropdownFrame)
+    dropdownList.Position = UDim2.new(0, 0, 1, 2)
+    dropdownList.Size = UDim2.new(1, 0, 0, 0)
+    dropdownList.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    dropdownList.Visible = false
+    dropdownList.ClipsDescendants = true
+    dropdownList.ZIndex = 5
+    Instance.new("UICorner", dropdownList).CornerRadius = UDim.new(0, 4)
+
+    local listLayout = Instance.new("UIListLayout", dropdownList)
+    listLayout.Padding = UDim.new(0, 2)
+    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+    local isOpen = false
+    toggleButton.MouseButton1Click:Connect(function()
+        isOpen = not isOpen
+        dropdownList.Visible = isOpen
+        local targetSize = isOpen and #dropdownConfig.Options * 24 or 0
+        dropdownList:TweenSize(UDim2.new(1, 0, 0, targetSize), "Out", "Quad", 0.25, true)
+    end)
+
+    for _, option in ipairs(dropdownConfig.Options) do
+        local optBtn = Instance.new("TextButton", dropdownList)
+        optBtn.Size = UDim2.new(1, 0, 0, 24)
+        optBtn.Text = option
+        optBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        optBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        optBtn.Font = Enum.Font.Gotham
+        optBtn.TextSize = 13
+        optBtn.AutoButtonColor = false
+        Instance.new("UICorner", optBtn).CornerRadius = UDim.new(0, 4)
+
+        optBtn.MouseEnter:Connect(function()
+            optBtn.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
+        end)
+        optBtn.MouseLeave:Connect(function()
+            optBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        end)
+
+        optBtn.MouseButton1Click:Connect(function()
+            selectedLabel.Text = option
+            dropdownList.Visible = false
+            isOpen = false
+            if dropdownConfig.Callback then
+                dropdownConfig.Callback(option)
             end
-            toggleButton:FireMouseButton1Click()
         end)
     end
 end
