@@ -194,3 +194,5 @@ function RANOX:CreateWindow(config)
 
 	return Window
 end
+
+return RANOX
