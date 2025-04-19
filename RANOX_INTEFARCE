@@ -199,49 +199,49 @@ function RANOX:CreateWindow(config)
     end
 
     function Window:CreateToggle(tabName, toggleConfig)
-        local tab = pages[tabName]
-        if not tab then return end
+    local tab = pages[tabName]
+    if not tab then return end
 
-        local toggleFrame = Instance.new("Frame", tab)
-        toggleFrame.Size = UDim2.new(1, -20, 0, 26)
-        toggleFrame.Position = UDim2.new(0, 10, 0, 0)
-        toggleFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        toggleFrame.ClipsDescendants = true
-        Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 4)
+    local toggleFrame = Instance.new("Frame", tab)
+    toggleFrame.Size = UDim2.new(1, -20, 0, 26)
+    toggleFrame.Position = UDim2.new(0, 10, 0, 0)
+    toggleFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    toggleFrame.ClipsDescendants = true
+    Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 4)
 
-        local label = Instance.new("TextLabel", toggleFrame)
-        label.Size = UDim2.new(1, -60, 1, 0)
-        label.Position = UDim2.new(0, 10, 0, 0)
-        label.BackgroundTransparency = 1
-        label.Text = toggleConfig.Text or "Toggle"
-        label.TextColor3 = Color3.fromRGB(255, 255, 255)
-        label.Font = Enum.Font.Gotham
-        label.TextSize = 14
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.TextYAlignment = Enum.TextYAlignment.Center
+    local label = Instance.new("TextLabel", toggleFrame)
+    label.Size = UDim2.new(1, -60, 1, 0)
+    label.Position = UDim2.new(0, 10, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = toggleConfig.Text or "Toggle"
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.Font = Enum.Font.Gotham
+    label.TextSize = 14
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextYAlignment = Enum.TextYAlignment.Center
 
-        local toggleButton = Instance.new("TextButton", toggleFrame)
-        toggleButton.Size = UDim2.new(0, 40, 1, 0)
-        toggleButton.Position = UDim2.new(1, -45, 0, 0)
-        toggleButton.Text = toggleConfig.Default and "ON" or "OFF"
-        toggleButton.Font = Enum.Font.Gotham
-        toggleButton.TextSize = 14
-        toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        toggleButton.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
-        toggleButton.AutoButtonColor = false
-        Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(0, 4)
+    local toggleButton = Instance.new("TextButton", toggleFrame)
+    toggleButton.Size = UDim2.new(0, 40, 1, 0)
+    toggleButton.Position = UDim2.new(1, -45, 0, 0)
+    toggleButton.Text = "OFF"
+    toggleButton.Font = Enum.Font.Gotham
+    toggleButton.TextSize = 14
+    toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggleButton.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
+    toggleButton.AutoButtonColor = false
+    Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(0, 4)
 
-        local isOn = toggleConfig.Default or false
-        toggleButton.MouseButton1Click:Connect(function()
-            isOn = not isOn
-            toggleButton.Text = isOn and "ON" or "OFF"
-            toggleButton.BackgroundColor3 = isOn and Color3.fromRGB(0, 60, 0) or Color3.fromRGB(60, 0, 0)
+    local isOn = false
+    toggleButton.MouseButton1Click:Connect(function()
+        isOn = not isOn
+        toggleButton.Text = isOn and "ON" or "OFF"
+        toggleButton.BackgroundColor3 = isOn and Color3.fromRGB(0, 60, 0) or Color3.fromRGB(60, 0, 0)
 
-            if toggleConfig.Callback then
-                toggleConfig.Callback(isOn)
-            end
-        end)
-    end
+        if toggleConfig.Callback then
+            toggleConfig.Callback(isOn)
+        end
+    end)
+end
 
     function Window:CreateLabel(tabName, text)
         local tab = pages[tabName]
