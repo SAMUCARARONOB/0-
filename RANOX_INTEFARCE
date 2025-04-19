@@ -215,7 +215,8 @@ end
     toggleFrame.Position = UDim2.new(0, 10, 0, 0)
     toggleFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     toggleFrame.ClipsDescendants = true
-    Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 4)
+    toggleFrame.BackgroundTransparency = 0
+    Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 6)
 
     local label = Instance.new("TextLabel", toggleFrame)
     label.Size = UDim2.new(1, -60, 1, 0)
@@ -228,28 +229,39 @@ end
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.TextYAlignment = Enum.TextYAlignment.Center
 
-    local ballButton = Instance.new("Frame", toggleFrame)
-    ballButton.Size = UDim2.new(0, 26, 0, 26)
-    ballButton.Position = UDim2.new(1, -36, 0, 0)
-    ballButton.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
-    ballButton.BackgroundTransparency = 0
-    ballButton.ClipsDescendants = true
-    Instance.new("UICorner", ballButton).CornerRadius = UDim.new(0, 50)
+    local switch = Instance.new("Frame", toggleFrame)
+    switch.Size = UDim2.new(0, 40, 0, 20)
+    switch.Position = UDim2.new(1, -50, 0.5, -10)
+    switch.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    switch.BorderSizePixel = 0
+    Instance.new("UICorner", switch).CornerRadius = UDim.new(1, 0)
 
-    local ball = Instance.new("Frame", ballButton)
-    ball.Size = UDim2.new(0, 18, 0, 18)
-    ball.Position = UDim2.new(0, 4, 0, 4)
-    ball.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    ball.BackgroundTransparency = 0
-    Instance.new("UICorner", ball).CornerRadius = UDim.new(0, 50)
+    local ball = Instance.new("Frame", switch)
+    ball.Size = UDim2.new(0, 16, 0, 16)
+    ball.Position = UDim2.new(0, 2, 0.5, -8)
+    ball.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+    ball.BorderSizePixel = 0
+    Instance.new("UICorner", ball).CornerRadius = UDim.new(1, 0)
+
+    local toggleButton = Instance.new("TextButton", switch)
+    toggleButton.Size = UDim2.new(1, 0, 1, 0)
+    toggleButton.Position = UDim2.new(0, 0, 0, 0)
+    toggleButton.BackgroundTransparency = 1
+    toggleButton.Text = ""
+    toggleButton.AutoButtonColor = false
 
     local isOn = false
+    local tweenService = game:GetService("TweenService")
 
-    ballButton.MouseButton1Click:Connect(function()
+    toggleButton.MouseButton1Click:Connect(function()
         isOn = not isOn
-        local targetPosition = isOn and UDim2.new(1, -36, 0, 0) or UDim2.new(1, -36, 0, 0)
-        
-        ballButton:TweenPosition(targetPosition, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+
+        local bgColor = isOn and Color3.fromRGB(0, 170, 127) or Color3.fromRGB(60, 60, 60)
+        local ballPosition = isOn and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
+        local ballColor = isOn and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 200)
+
+        tweenService:Create(switch, TweenInfo.new(0.25), {BackgroundColor3 = bgColor}):Play()
+        tweenService:Create(ball, TweenInfo.new(0.25), {Position = ballPosition, BackgroundColor3 = ballColor}):Play()
 
         if toggleConfig.Callback then
             toggleConfig.Callback(isOn)
