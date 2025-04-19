@@ -259,6 +259,132 @@ end
         label.TextYAlignment = Enum.TextYAlignment.Center
     end
 
+    function Window:CreateSlider(tabName, config)
+    local tab = pages[tabName]
+    if not tab then return end
+
+    local sliderFrame = Instance.new("Frame", tab)
+    sliderFrame.Size = UDim2.new(1, -20, 0, 36)
+    sliderFrame.Position = UDim2.new(0, 10, 0, 0)
+    sliderFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    sliderFrame.ClipsDescendants = true
+    Instance.new("UICorner", sliderFrame).CornerRadius = UDim.new(0, 4)
+
+    local title = Instance.new("TextLabel", sliderFrame)
+    title.Size = UDim2.new(1, -10, 0, 18)
+    title.Position = UDim2.new(0, 5, 0, 0)
+    title.BackgroundTransparency = 1
+    title.Text = config.Text or "Slider"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.Font = Enum.Font.Gotham
+    title.TextSize = 13
+    title.TextXAlignment = Enum.TextXAlignment.Left
+
+    local sliderBar = Instance.new("Frame", sliderFrame)
+    sliderBar.Size = UDim2.new(1, -20, 0, 5)
+    sliderBar.Position = UDim2.new(0, 10, 1, -10)
+    sliderBar.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
+    sliderBar.BorderSizePixel = 0
+    Instance.new("UICorner", sliderBar).CornerRadius = UDim.new(1, 0)
+
+    local sliderFill = Instance.new("Frame", sliderBar)
+    sliderFill.Size = UDim2.new(0, 0, 1, 0)
+    sliderFill.BackgroundColor3 = Color3.fromRGB(0, 60, 0)
+    sliderFill.BorderSizePixel = 0
+    sliderFill.Name = "Fill"
+    Instance.new("UICorner", sliderFill).CornerRadius = UDim.new(1, 0)
+    sliderFill.Parent = sliderBar
+
+    local dragging = false
+    local min = config.Min or 0
+    local max = config.Max or 100
+    local callback = config.Callback or function() end
+
+    local function updateSlider(inputX)
+        local rel = math.clamp((inputX - sliderBar.AbsolutePosition.X) / sliderBar.AbsoluteSize.X, 0, 1)
+        sliderFill.Size = UDim2.new(rel, 0, 1, 0)
+        local value = math.floor((rel * (max - min)) + min + 0.5)
+        callback(value)
+    end
+
+    sliderBar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            updateSlider(input.Position.X)
+        end
+    end)
+
+    game:GetService("UserInputService").InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            updateSlider(input.Position.X)
+        end
+    end)
+end
+
+    function Window:CreateDropdown(tabName, config)
+    local tab = pages[tabName]
+    if not tab then return end
+
+    local dropdownFrame = Instance.new("Frame", tab)
+    dropdownFrame.Size = UDim2.new(1, -20, 0, 30)
+    dropdownFrame.Position = UDim2.new(0, 10, 0, 0)
+    dropdownFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Instance.new("UICorner", dropdownFrame).CornerRadius = UDim.new(0, 4)
+
+    local selected = Instance.new("TextButton", dropdownFrame)
+    selected.Size = UDim2.new(1, 0, 1, 0)
+    selected.BackgroundTransparency = 1
+    selected.Text = config.Default or "Select an option"
+    selected.TextColor3 = Color3.fromRGB(255, 255, 255)
+    selected.Font = Enum.Font.Gotham
+    selected.TextSize = 14
+    selected.TextXAlignment = Enum.TextXAlignment.Left
+
+    local optionFrame = Instance.new("Frame")
+    optionFrame.Size = UDim2.new(1, 0, 0, 0)
+    optionFrame.Position = UDim2.new(0, 10, 0, 0)
+    optionFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    optionFrame.BorderSizePixel = 0
+    optionFrame.ClipsDescendants = true
+    optionFrame.Visible = false
+    optionFrame.Parent = dropdownFrame
+    Instance.new("UICorner", optionFrame).CornerRadius = UDim.new(0, 4)
+
+    local listLayout = Instance.new("UIListLayout", optionFrame)
+    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+    selected.MouseButton1Click:Connect(function()
+        optionFrame.Visible = not optionFrame.Visible
+        optionFrame.Size = optionFrame.Visible and UDim2.new(1, 0, 0, #config.Options * 26) or UDim2.new(1, 0, 0, 0)
+    end)
+
+    for _, option in ipairs(config.Options or {}) do
+        local opt = Instance.new("TextButton", optionFrame)
+        opt.Size = UDim2.new(1, 0, 0, 26)
+        opt.BackgroundTransparency = 1
+        opt.Text = option
+        opt.TextColor3 = Color3.fromRGB(200, 200, 200)
+        opt.Font = Enum.Font.Gotham
+        opt.TextSize = 14
+        opt.AutoButtonColor = false
+
+        opt.MouseButton1Click:Connect(function()
+            selected.Text = option
+            optionFrame.Visible = false
+            optionFrame.Size = UDim2.new(1, 0, 0, 0)
+            if config.Callback then
+                config.Callback(option)
+            end
+        end)
+    end
+end
+
     function Window:CreateTextBox(tabName, placeholderText, callback)
         local tab = pages[tabName]
         if not tab then return end
