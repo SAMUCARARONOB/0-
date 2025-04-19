@@ -67,7 +67,7 @@ function RANOX:CreateWindow(config)
     line.BorderSizePixel = 0
 
     local sidebar = Instance.new("ScrollingFrame", mainFrame)
-sidebar.Size = UDim2.new(0, 89, 1, -25)
+sidebar.Size = UDim2.new(0, 89, 1, -28)
 sidebar.Position = UDim2.new(0, 0, 0, 25)
 sidebar.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -111,69 +111,74 @@ ballCorner.CornerRadius = UDim.new(0.5, 0)
 ballCorner.Parent = ballButton
 
 local function switchTab(name)
-    for tabName, frame in pairs(pages) do
-        frame.Visible = (tabName == name)
-    end
-    for tabName, btn in pairs(tabButtons) do
-        btn.BackgroundColor3 = (tabName == name) and Color3.fromRGB(40, 0, 0) or Color3.fromRGB(10, 10, 10)
-    end
-    selectedTab = name
+	for tabName, frame in pairs(pages) do
+		frame.Visible = (tabName == name)
+	end
+	for tabName, btn in pairs(tabButtons) do
+		btn.BackgroundColor3 = (tabName == name) and Color3.fromRGB(40, 0, 0) or Color3.fromRGB(15, 15, 15)
+	end
+	selectedTab = name
 end
 
 function Window:CreateTab(tabName, iconId)
-    local tabBtn = Instance.new("TextButton", sidebar)
-    tabBtn.Size = UDim2.new(1, 0, 0, 24)
-    tabBtn.Text = tabName
-    tabBtn.Font = Enum.Font.Gotham
-    tabBtn.TextSize = 12
-    tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    tabBtn.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-    tabBtn.AutoButtonColor = false
-    tabBtn.ClipsDescendants = true
-    tabBtn.TextXAlignment = Enum.TextXAlignment.Left
-    Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 3)
+	local tabBtn = Instance.new("TextButton", sidebar)
+	tabBtn.Size = UDim2.new(1, 0, 0, 28)
+	tabBtn.Text = tabName
+	tabBtn.Font = Enum.Font.GothamSemibold
+	tabBtn.TextSize = 13
+	tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	tabBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+	tabBtn.AutoButtonColor = false
+	tabBtn.ClipsDescendants = true
+	tabBtn.TextXAlignment = Enum.TextXAlignment.Left
+	Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 6)
 
-    if iconId then
-        local icon = Instance.new("ImageLabel", tabBtn)
-        icon.Size = UDim2.new(0, 16, 0, 16)
-        icon.Position = UDim2.new(1, -20, 0.5, -8)
-        icon.BackgroundTransparency = 1
-        icon.Image = "rbxassetid://" .. tostring(iconId)
-    end
+	local padding = Instance.new("UIPadding", tabBtn)
+	padding.Left = UDim.new(0, 8)
+	padding.Right = UDim.new(0, 24)
 
-    tabButtons[tabName] = tabBtn
+	if iconId then
+		local icon = Instance.new("ImageLabel", tabBtn)
+		icon.Size = UDim2.new(0, 16, 0, 16)
+		icon.Position = UDim2.new(1, -20, 0.5, -8)
+		icon.BackgroundTransparency = 1
+		icon.Image = "rbxassetid://" .. tostring(iconId)
+		icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+	end
 
-    tabBtn.MouseEnter:Connect(function()
-        if selectedTab ~= tabName then
-            tabBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-        end
-    end)
+	tabButtons[tabName] = tabBtn
 
-    tabBtn.MouseLeave:Connect(function()
-        if selectedTab ~= tabName then
-            tabBtn.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-        end
-    end)
+	tabBtn.MouseEnter:Connect(function()
+		if selectedTab ~= tabName then
+			tabBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+		end
+	end)
 
-    local tabPage = Instance.new("Frame", scrollHolder)
-    tabPage.Name = tabName
-    tabPage.Size = UDim2.new(1, 0, 0, 1000)
-    tabPage.BackgroundTransparency = 1
-    tabPage.Visible = false
+	tabBtn.MouseLeave:Connect(function()
+		if selectedTab ~= tabName then
+			tabBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+		end
+	end)
 
-    local layout = Instance.new("UIListLayout", tabPage)
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
-    layout.Padding = UDim.new(0, 8)
+	local tabPage = Instance.new("Frame", scrollHolder)
+	tabPage.Name = tabName
+	tabPage.Size = UDim2.new(1, 0, 0, 1000)
+	tabPage.BackgroundTransparency = 1
+	tabPage.Visible = false
 
-    pages[tabName] = tabPage
+	local layout = Instance.new("UIListLayout", tabPage)
+	layout.SortOrder = Enum.SortOrder.LayoutOrder
+	layout.Padding = UDim.new(0, 8)
 
-    tabBtn.MouseButton1Click:Connect(function()
-        switchTab(tabName)
-    end)
+	pages[tabName] = tabPage
 
-    if not selectedTab then
-        switchTab(tabName)
-    end
+	tabBtn.MouseButton1Click:Connect(function()
+		switchTab(tabName)
+	end)
+
+	if not selectedTab then
+		switchTab(tabName)
+	end
 end
 
     function Window:CreateButton(tabName, text, callback)
