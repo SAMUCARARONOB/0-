@@ -515,34 +515,24 @@ end
     if not tab then return end
 
     local container = Instance.new("Frame", tab)
-    container.Size = UDim2.new(1, -20, 0, 36)
+    container.Size = UDim2.new(1, -20, 0, 30)
     container.Position = UDim2.new(0, 10, 0, 0)
-    container.BackgroundTransparency = 1
+    container.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    container.BorderSizePixel = 0
+    Instance.new("UICorner", container).CornerRadius = UDim.new(0, 6)
 
     local textBox = Instance.new("TextBox", container)
-    textBox.Size = UDim2.new(1, 0, 1, 0)
-    textBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    textBox.Size = UDim2.new(1, -20, 1, 0)
+    textBox.Position = UDim2.new(0, 10, 0, 0)
+    textBox.BackgroundTransparency = 1
+    textBox.Text = ""
     textBox.PlaceholderText = placeholderText or "Digite algo..."
+    textBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
     textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    textBox.PlaceholderColor3 = Color3.fromRGB(160, 160, 160)
     textBox.Font = Enum.Font.Gotham
     textBox.TextSize = 14
     textBox.ClearTextOnFocus = false
     textBox.TextXAlignment = Enum.TextXAlignment.Left
-    textBox.Text = ""
-    textBox.ZIndex = 2
-    Instance.new("UICorner", textBox).CornerRadius = UDim.new(0, 6)
-
-    local icon = Instance.new("ImageLabel", textBox)
-    icon.Image = "rbxassetid://7072718362"
-    icon.Size = UDim2.new(0, 18, 0, 18)
-    icon.Position = UDim2.new(0, 10, 0.5, -9)
-    icon.BackgroundTransparency = 1
-    icon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-    icon.ZIndex = 3
-
-    textBox.Padding = Instance.new("UIPadding", textBox)
-    textBox.Padding.PaddingLeft = UDim.new(0, 36)
 
     local shadow = Instance.new("ImageLabel", container)
     shadow.Size = UDim2.new(1, 6, 1, 6)
@@ -552,7 +542,7 @@ end
     shadow.ImageTransparency = 0.7
     shadow.ScaleType = Enum.ScaleType.Slice
     shadow.SliceCenter = Rect.new(10, 10, 118, 118)
-    shadow.ZIndex = 1
+    shadow.ZIndex = 0
 
     textBox.FocusLost:Connect(function(enterPressed)
         if enterPressed and callback then
