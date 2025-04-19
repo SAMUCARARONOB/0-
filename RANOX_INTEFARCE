@@ -130,23 +130,3 @@ function RANOX:CreateWindow(config)
 
 	return Window
 end
-
-local Window = RANOX:CreateWindow({
-	Title = "RANOX Hub"
-})
-
-Window:CreateTab("Principal")
-Window:CreateTab("Configuração")
-Window:CreateTab("Créditos")
-
-Window:CreateButton("Principal", "Ativar Modo PRO", function()
-	print("Modo PRO ativado!")
-end)
-
-Window:CreateButton("Configuração", "Abrir Configuração", function()
-	print("Abrindo config")
-end)
-
-Window:CreateButton("Créditos", "Feito por RANOX", function()
-	print("Obrigado por usar!")
-end)
