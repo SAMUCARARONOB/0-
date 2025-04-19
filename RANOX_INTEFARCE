@@ -286,12 +286,14 @@ end
     selectedLabel.TextXAlignment = Enum.TextXAlignment.Left
     selectedLabel.ZIndex = 3
 
-    local arrowIcon = Instance.new("ImageLabel", dropdownFrame)
+    local arrowIcon = Instance.new("TextLabel", dropdownFrame)
     arrowIcon.Size = UDim2.new(0, 16, 0, 16)
     arrowIcon.Position = UDim2.new(1, -24, 0.5, -8)
     arrowIcon.BackgroundTransparency = 1
-    arrowIcon.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4744658743"
-    arrowIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
+    arrowIcon.Text = "˄"
+    arrowIcon.TextColor3 = Color3.fromRGB(200, 200, 200)
+    arrowIcon.Font = Enum.Font.Gotham
+    arrowIcon.TextSize = 14
     arrowIcon.ZIndex = 3
 
     local toggleButton = Instance.new("TextButton", dropdownFrame)
@@ -323,9 +325,8 @@ end
         isOpen = not isOpen
         dropdownList.Visible = true
         local targetHeight = isOpen and (#dropdownConfig.Options * 30 + 6) or 0
-
+        arrowIcon.Text = isOpen and "˅" or "˄"
         dropdownList:TweenSize(UDim2.new(1, -20, 0, targetHeight), "Out", "Quad", 0.25, true)
-
         if not isOpen then
             task.delay(0.25, function()
                 dropdownList.Visible = false
@@ -360,6 +361,7 @@ end
                 dropdownConfig.Callback(option)
             end
             isOpen = false
+            arrowIcon.Text = "˄"
             dropdownList:TweenSize(UDim2.new(1, -20, 0, 0), "Out", "Quad", 0.25, true)
             task.delay(0.25, function()
                 dropdownList.Visible = false
