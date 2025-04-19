@@ -408,17 +408,27 @@ end
 
     local label = Instance.new("TextLabel", sliderFrame)
     label.Size = UDim2.new(1, 0, 0, 20)
-    label.Text = sliderConfig.Text or "Slider"
+    label.Position = UDim2.new(0, 0, 0, 0)
+    label.BackgroundTransparency = 1
     label.TextColor3 = Color3.fromRGB(230, 230, 230)
     label.Font = Enum.Font.GothamMedium
     label.TextSize = 13
-    label.BackgroundTransparency = 1
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.ZIndex = 2
 
+    local valueLabel = Instance.new("TextLabel", label)
+    valueLabel.Size = UDim2.new(0, 60, 1, 0)
+    valueLabel.Position = UDim2.new(1, -60, 0, 0)
+    valueLabel.BackgroundTransparency = 1
+    valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    valueLabel.Font = Enum.Font.GothamMedium
+    valueLabel.TextSize = 13
+    valueLabel.TextXAlignment = Enum.TextXAlignment.Right
+    valueLabel.ZIndex = 2
+
     local sliderBar = Instance.new("Frame", sliderFrame)
     sliderBar.Position = UDim2.new(0, 0, 0, 26)
-    sliderBar.Size = UDim2.new(1, -60, 0, 12)
+    sliderBar.Size = UDim2.new(1, 0, 0, 12)
     sliderBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     sliderBar.BorderSizePixel = 0
     sliderBar.ZIndex = 2
@@ -436,7 +446,7 @@ end
 
     local fill = Instance.new("Frame", sliderBar)
     fill.Size = UDim2.new(0, 0, 1, 0)
-    fill.BackgroundColor3 = Color3.fromRGB(0, 170, 127)
+    fill.BackgroundColor3 = Color3.fromRGB(190, 30, 0)
     fill.BorderSizePixel = 0
     fill.ZIndex = 3
     Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 6)
@@ -448,17 +458,6 @@ end
     knob.BorderSizePixel = 0
     knob.ZIndex = 4
     Instance.new("UICorner", knob).CornerRadius = UDim.new(1, 0)
-
-    local valueLabel = Instance.new("TextLabel", sliderFrame)
-    valueLabel.Size = UDim2.new(0, 50, 0, 20)
-    valueLabel.Position = UDim2.new(1, -50, 0, 24)
-    valueLabel.BackgroundTransparency = 1
-    valueLabel.Text = tostring(sliderConfig.Default or 0)
-    valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    valueLabel.Font = Enum.Font.Gotham
-    valueLabel.TextSize = 13
-    valueLabel.TextXAlignment = Enum.TextXAlignment.Right
-    valueLabel.ZIndex = 2
 
     local min = sliderConfig.Min or 0
     local max = sliderConfig.Max or 100
@@ -472,6 +471,7 @@ end
         fill:TweenSize(UDim2.new(clamped, 0, 1, 0), "Out", "Quad", 0.1, true)
         knob:TweenPosition(UDim2.new(clamped, -8, 0.5, -8), "Out", "Quad", 0.1, true)
         valueLabel.Text = tostring(newValue)
+        label.Text = (sliderConfig.Text or "Slider") .. ":"
         if sliderConfig.Callback then
             sliderConfig.Callback(newValue)
         end
