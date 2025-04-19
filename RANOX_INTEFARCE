@@ -263,91 +263,106 @@ end
     local tab = pages[tabName]
     if not tab then return end
 
-    local container = Instance.new("Frame", tab)
-    container.Size = UDim2.new(1, -20, 0, 34)
-    container.Position = UDim2.new(0, 10, 0, 0)
-    container.BackgroundTransparency = 1
+    local dropdownContainer = Instance.new("Frame", tab)
+    dropdownContainer.Size = UDim2.new(1, -20, 0, 36)
+    dropdownContainer.BackgroundTransparency = 1
+    dropdownContainer.Position = UDim2.new(0, 10, 0, 0)
 
-    local dropdownFrame = Instance.new("Frame", container)
-    dropdownFrame.Size = UDim2.new(1, 0, 0, 34)
-    dropdownFrame.Position = UDim2.new(0, 0, 0, 0)
-    dropdownFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    dropdownFrame.BorderSizePixel = 0
+    local dropdownFrame = Instance.new("Frame", dropdownContainer)
+    dropdownFrame.Size = UDim2.new(1, 0, 0, 36)
+    dropdownFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    dropdownFrame.ZIndex = 2
+    dropdownFrame.ClipsDescendants = true
+    dropdownFrame.Name = "DropdownFrame"
     Instance.new("UICorner", dropdownFrame).CornerRadius = UDim.new(0, 6)
 
     local selectedLabel = Instance.new("TextLabel", dropdownFrame)
-    selectedLabel.Size = UDim2.new(1, -30, 1, 0)
+    selectedLabel.Size = UDim2.new(1, -36, 1, 0)
     selectedLabel.Position = UDim2.new(0, 10, 0, 0)
-    selectedLabel.BackgroundTransparency = 1
-    selectedLabel.Text = dropdownConfig.Default or "Select Option"
-    selectedLabel.TextColor3 = Color3.fromRGB(230, 230, 230)
-    selectedLabel.Font = Enum.Font.GothamMedium
+    selectedLabel.Text = dropdownConfig.Default or "Selecionar opção"
+    selectedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    selectedLabel.Font = Enum.Font.Gotham
     selectedLabel.TextSize = 14
     selectedLabel.TextXAlignment = Enum.TextXAlignment.Left
+    selectedLabel.BackgroundTransparency = 1
+    selectedLabel.ZIndex = 2
 
-    local toggleButton = Instance.new("TextButton", dropdownFrame)
-    toggleButton.Size = UDim2.new(0, 20, 1, 0)
-    toggleButton.Position = UDim2.new(1, -25, 0, 0)
-    toggleButton.Text = "▼"
-    toggleButton.BackgroundTransparency = 1
-    toggleButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-    toggleButton.Font = Enum.Font.Gotham
-    toggleButton.TextSize = 14
-    toggleButton.AutoButtonColor = false
+    local arrow = Instance.new("TextLabel", dropdownFrame)
+    arrow.Size = UDim2.new(0, 20, 1, 0)
+    arrow.Position = UDim2.new(1, -26, 0, 0)
+    arrow.Text = "▼"
+    arrow.TextColor3 = Color3.fromRGB(255, 255, 255)
+    arrow.Font = Enum.Font.GothamBold
+    arrow.TextSize = 14
+    arrow.BackgroundTransparency = 1
+    arrow.ZIndex = 2
 
-    local dropdownList = Instance.new("Frame", container)
-    dropdownList.Position = UDim2.new(0, 0, 0, 36)
+    local dropdownList = Instance.new("Frame", dropdownFrame)
+    dropdownList.Position = UDim2.new(0, 0, 1, 0)
     dropdownList.Size = UDim2.new(1, 0, 0, 0)
-    dropdownList.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    dropdownList.BorderSizePixel = 0
+    dropdownList.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     dropdownList.Visible = false
+    dropdownList.ZIndex = 1
     dropdownList.ClipsDescendants = true
-    dropdownList.ZIndex = 10
     Instance.new("UICorner", dropdownList).CornerRadius = UDim.new(0, 6)
 
     local listLayout = Instance.new("UIListLayout", dropdownList)
-    listLayout.Padding = UDim.new(0, 4)
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    listLayout.Padding = UDim.new(0, 4)
 
     local isOpen = false
+    local optionHeight = 30
 
-    toggleButton.MouseButton1Click:Connect(function()
-        isOpen = not isOpen
-        dropdownList.Visible = true
-        local size = isOpen and #dropdownConfig.Options * 30 or 0
-        dropdownList:TweenSize(UDim2.new(1, 0, 0, size), "Out", "Quad", 0.25, true)
-        if not isOpen then
-            task.delay(0.25, function()
-                dropdownList.Visible = false
+    local function updateElementsBelow()
+        local openedHeight = #dropdownConfig.Options * (optionHeight + 4) + 8
+        for _, sibling in ipairs(tab:GetChildren()) do
+            if sibling:IsA("Frame") and sibling ~= dropdownContainer and sibling.Position.Y.Offset > dropdownContainer.Position.Y.Offset then
+                local shift = isOpen and openedHeight or -openedHeight
+                sibling:TweenPosition(sibling.Position + UDim2.new(0, 0, 0, shift), "Out", "Quad", 0.25, true)
+            end
+        end
+    end
+
+    dropdownFrame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            isOpen = not isOpen
+            dropdownList.Visible = true
+            arrow.Text = isOpen and "▲" or "▼"
+            local targetHeight = isOpen and #dropdownConfig.Options * (optionHeight + 4) + 8 or 0
+            updateElementsBelow()
+            dropdownList:TweenSize(UDim2.new(1, 0, 0, targetHeight), "Out", "Quad", 0.3, true, function()
+                if not isOpen then dropdownList.Visible = false end
             end)
         end
     end)
 
     for _, option in ipairs(dropdownConfig.Options) do
-        local optBtn = Instance.new("TextButton", dropdownList)
-        optBtn.Size = UDim2.new(1, 0, 0, 28)
-        optBtn.Text = option
-        optBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        optBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        optBtn.Font = Enum.Font.Gotham
-        optBtn.TextSize = 13
-        optBtn.AutoButtonColor = false
-        optBtn.ZIndex = 11
-        Instance.new("UICorner", optBtn).CornerRadius = UDim.new(0, 4)
+        local btn = Instance.new("TextButton", dropdownList)
+        btn.Size = UDim2.new(1, -8, 0, optionHeight)
+        btn.Position = UDim2.new(0, 4, 0, 0)
+        btn.Text = option
+        btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btn.Font = Enum.Font.Gotham
+        btn.TextSize = 13
+        btn.AutoButtonColor = false
+        btn.ZIndex = 2
+        Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
 
-        optBtn.MouseEnter:Connect(function()
-            optBtn.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
+        btn.MouseEnter:Connect(function()
+            btn.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
         end)
-        optBtn.MouseLeave:Connect(function()
-            optBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        btn.MouseLeave:Connect(function()
+            btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         end)
 
-        optBtn.MouseButton1Click:Connect(function()
+        btn.MouseButton1Click:Connect(function()
             selectedLabel.Text = option
-            dropdownList:TweenSize(UDim2.new(1, 0, 0, 0), "Out", "Quad", 0.25, true)
-            task.delay(0.25, function()
+            isOpen = false
+            updateElementsBelow()
+            dropdownList:TweenSize(UDim2.new(1, 0, 0, 0), "Out", "Quad", 0.25, true, function()
                 dropdownList.Visible = false
-                isOpen = false
+                arrow.Text = "▼"
             end)
             if dropdownConfig.Callback then
                 dropdownConfig.Callback(option)
