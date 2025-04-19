@@ -263,9 +263,14 @@ end
     local tab = pages[tabName]
     if not tab then return end
 
-    local dropdownFrame = Instance.new("Frame", tab)
-    dropdownFrame.Size = UDim2.new(1, -20, 0, 34)
-    dropdownFrame.Position = UDim2.new(0, 10, 0, 0)
+    local container = Instance.new("Frame", tab)
+    container.Size = UDim2.new(1, -20, 0, 34)
+    container.Position = UDim2.new(0, 10, 0, 0)
+    container.BackgroundTransparency = 1
+
+    local dropdownFrame = Instance.new("Frame", container)
+    dropdownFrame.Size = UDim2.new(1, 0, 0, 34)
+    dropdownFrame.Position = UDim2.new(0, 0, 0, 0)
     dropdownFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     dropdownFrame.BorderSizePixel = 0
     Instance.new("UICorner", dropdownFrame).CornerRadius = UDim.new(0, 6)
@@ -290,9 +295,9 @@ end
     toggleButton.TextSize = 14
     toggleButton.AutoButtonColor = false
 
-    local dropdownList = Instance.new("Frame", tab)
-    dropdownList.Position = UDim2.new(0, 10, 0, dropdownFrame.Position.Y.Offset + 36)
-    dropdownList.Size = UDim2.new(1, -20, 0, 0)
+    local dropdownList = Instance.new("Frame", container)
+    dropdownList.Position = UDim2.new(0, 0, 0, 36)
+    dropdownList.Size = UDim2.new(1, 0, 0, 0)
     dropdownList.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     dropdownList.BorderSizePixel = 0
     dropdownList.Visible = false
@@ -308,16 +313,19 @@ end
 
     toggleButton.MouseButton1Click:Connect(function()
         isOpen = not isOpen
-        dropdownList.Visible = isOpen
-        local size = isOpen and #dropdownConfig.Options * 28 or 0
-        dropdownList:TweenSize(UDim2.new(1, -20, 0, size), "Out", "Quad", 0.25, true)
-        local rotation = isOpen and 180 or 0
-        toggleButton:TweenRotation(rotation, "Out", "Quad", 0.25, true)
+        dropdownList.Visible = true
+        local size = isOpen and #dropdownConfig.Options * 30 or 0
+        dropdownList:TweenSize(UDim2.new(1, 0, 0, size), "Out", "Quad", 0.25, true)
+        if not isOpen then
+            task.delay(0.25, function()
+                dropdownList.Visible = false
+            end)
+        end
     end)
 
     for _, option in ipairs(dropdownConfig.Options) do
         local optBtn = Instance.new("TextButton", dropdownList)
-        optBtn.Size = UDim2.new(1, 0, 0, 26)
+        optBtn.Size = UDim2.new(1, 0, 0, 28)
         optBtn.Text = option
         optBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         optBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -336,20 +344,16 @@ end
 
         optBtn.MouseButton1Click:Connect(function()
             selectedLabel.Text = option
-            dropdownList.Visible = false
-            isOpen = false
+            dropdownList:TweenSize(UDim2.new(1, 0, 0, 0), "Out", "Quad", 0.25, true)
+            task.delay(0.25, function()
+                dropdownList.Visible = false
+                isOpen = false
+            end)
             if dropdownConfig.Callback then
                 dropdownConfig.Callback(option)
             end
         end)
     end
-
-    tab.MouseLeave:Connect(function()
-        if isOpen then
-            dropdownList.Visible = false
-            isOpen = false
-        end
-    end)
 end
 
     function Window:CreateSlider(tabName, sliderConfig)
