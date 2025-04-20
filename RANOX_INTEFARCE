@@ -688,7 +688,7 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
         local shrink = tweenService:Create(box, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 24, 0, 24)})
 
         if toggled then
-            tweenBoxColor(Color3.fromRGB(130, 20, 20))
+            tweenBoxColor(Color3.fromRGB(170, 20, 20))
             grow:Play()
             grow.Completed:Connect(function()
                 shrink:Play()
