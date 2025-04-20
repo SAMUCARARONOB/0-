@@ -648,7 +648,7 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     checkmark.Size = UDim2.new(1, -6, 1, -6)
     checkmark.Position = UDim2.new(0, 3, 0, 3)
     checkmark.Text = "✔️"
-    checkmark.TextColor3 = Color3.fromRGB(0, 255, 120)
+    checkmark.TextColor3 = Color3.fromRGB(255, 255, 255)
     checkmark.TextScaled = true
     checkmark.BackgroundTransparency = 1
     checkmark.Visible = false
@@ -679,7 +679,17 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
         toggled = not toggled
         checkmark.Visible = toggled
 
+        local tweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+        local grow = tweenService:Create(box, tweenInfo, {Size = UDim2.new(0, 28, 0, 28)})
+        local shrink = tweenService:Create(box, tweenInfo, {Size = UDim2.new(0, 24, 0, 24)})
+
         if toggled then
+            checkmark.TextColor3 = Color3.fromRGB(100, 0, 0)
+            grow:Play()
+            grow.Completed:Connect(function()
+                shrink:Play()
+            end)
             running = true
             task.spawn(function()
                 while running and toggled do
@@ -688,17 +698,13 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
                 end
             end)
         else
+            checkmark.TextColor3 = Color3.fromRGB(255, 255, 255)
             running = false
         end
 
         if checkboxConfig.Callback then
             checkboxConfig.Callback(toggled)
         end
-
-        local tweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        local targetPosition = toggled and UDim2.new(1, -24, 0.5, -12) or UDim2.new(0, 3, 0.5, -12)
-        local tween = tweenService:Create(box, tweenInfo, {Position = targetPosition})
-        tween:Play()
     end)
 end
 
