@@ -38,32 +38,67 @@ function RANOX:CreateWindow(config)
         ColorSequenceKeypoint.new(1, Color3.fromRGB(50,50,50))
     }
 
-    local title = Instance.new("TextLabel", mainFrame)
-    title.Size = UDim2.new(1, -50, 0, 25)
-    title.Position = UDim2.new(0, 10, 0, 0)
-    title.BackgroundTransparency = 1
-    title.Text = config.Title or "RANOX Hub"
-    title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.Font = Enum.Font.GothamSemibold
-    title.TextSize = 16
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.TextYAlignment = Enum.TextYAlignment.Center
-    title.ClipsDescendants = true
+local title = Instance.new("TextLabel", mainFrame)
+title.Size = UDim2.new(1, -50, 0, 25)
+title.Position = UDim2.new(0, 10, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = config.Title or "RANOX Hub"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamSemibold
+title.TextSize = 16
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.TextYAlignment = Enum.TextYAlignment.Center
+title.ClipsDescendants = true
 
-    local hideButton = Instance.new("ImageButton", mainFrame)
+local hideButton = Instance.new("ImageButton", mainFrame)
 hideButton.Size = UDim2.new(0, 25, 0, 25)
 hideButton.Position = UDim2.new(1, -30, 0, 0)
 hideButton.Image = "rbxassetid://6035047409"
 hideButton.BackgroundTransparency = 1
 hideButton.AutoButtonColor = false
 
-    local line = Instance.new("Frame", mainFrame)
-    line.Size = UDim2.new(1, 0, 0, 1)
-    line.Position = UDim2.new(0, 0, 0, 25)
-    line.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
-    line.BorderSizePixel = 0
+local line = Instance.new("Frame", mainFrame)
+line.Size = UDim2.new(1, 0, 0, 1)
+line.Position = UDim2.new(0, 0, 0, 25)
+line.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
+line.BorderSizePixel = 0
 
-    local sidebar = Instance.new("ScrollingFrame", mainFrame)
+local searchButton = Instance.new("ImageButton", mainFrame)
+searchButton.Size = UDim2.new(0, 25, 0, 25)
+searchButton.Position = UDim2.new(1, -60, 0, 0)
+searchButton.Image = "rbxassetid://15999597378"
+searchButton.BackgroundTransparency = 1
+searchButton.AutoButtonColor = false
+
+local searchBox = Instance.new("TextBox", mainFrame)
+searchBox.Size = UDim2.new(1, -20, 0, 25)
+searchBox.Position = UDim2.new(0, 10, 0, 30)
+searchBox.PlaceholderText = "Pesquisar..."
+searchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+searchBox.Font = Enum.Font.Gotham
+searchBox.TextSize = 14
+searchBox.Visible = false
+searchBox.ClearTextOnFocus = false
+
+searchButton.MouseButton1Click:Connect(function()
+    searchBox.Visible = not searchBox.Visible
+    local goal = {BackgroundTransparency = searchBox.Visible and 0 or 1}
+    local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+    TweenService:Create(searchBox, tweenInfo, goal):Play()
+end)
+
+searchBox:GetPropertyChangedSignal("Text"):Connect(function()
+    local query = string.lower(searchBox.Text)
+    for _, button in pairs(mainFrame:GetDescendants()) do
+        if button:IsA("TextButton") then
+            local name = string.lower(button.Name)
+            button.Visible = query == "" or string.find(name, query)
+        end
+    end
+end)
+
+local sidebar = Instance.new("ScrollingFrame", mainFrame)
 sidebar.Size = UDim2.new(0, 107, 1, -25)
 sidebar.Position = UDim2.new(0, 0, 0, 25)
 sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
