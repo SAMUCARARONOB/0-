@@ -328,7 +328,7 @@ end
     arrowIcon.Size = UDim2.new(0, 16, 0, 16)
     arrowIcon.Position = UDim2.new(1, -24, 0.5, -8)
     arrowIcon.BackgroundTransparency = 1
-    arrowIcon.Text = "˄"
+    arrowIcon.Text = "▲"
     arrowIcon.TextColor3 = Color3.fromRGB(200, 200, 200)
     arrowIcon.Font = Enum.Font.Gotham
     arrowIcon.TextSize = 14
