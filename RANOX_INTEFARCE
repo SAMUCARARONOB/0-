@@ -928,6 +928,96 @@ function Window:CreateColorPicker(tabName, colorConfig)
     applyColorFromBox()
 end
 
+function Window:CreateSwitch(tabName, switchConfig)
+    local tab = pages[tabName]
+    if not tab then return end
+
+    local holder = Instance.new("Frame", tab)
+    holder.Size = UDim2.new(1, -20, 0, 40)
+    holder.Position = UDim2.new(0, 10, 0, 0)
+    holder.BackgroundTransparency = 1
+
+    local label = Instance.new("TextLabel", holder)
+    label.Size = UDim2.new(0.5, 0, 1, 0)
+    label.Position = UDim2.new(0, 0, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = switchConfig.Text or "Switch"
+    label.Font = Enum.Font.Gotham
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 14
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local switch = Instance.new("Frame", holder)
+    switch.Size = UDim2.new(0, 50, 0, 25)
+    switch.Position = UDim2.new(1, -60, 0.5, -12)
+    switch.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    switch.BorderSizePixel = 0
+    Instance.new("UICorner", switch).CornerRadius = UDim.new(1, 0)
+
+    local circle = Instance.new("Frame", switch)
+    circle.Size = UDim2.new(0, 20, 0, 20)
+    circle.Position = UDim2.new(0, 3, 0.5, -10)
+    circle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+    circle.BorderSizePixel = 0
+    Instance.new("UICorner", circle).CornerRadius = UDim.new(1, 0)
+
+    local stateLabel = Instance.new("TextLabel", holder)
+    stateLabel.Size = UDim2.new(0, 40, 1, 0)
+    stateLabel.Position = UDim2.new(1, -110, 0, 0)
+    stateLabel.BackgroundTransparency = 1
+    stateLabel.Font = Enum.Font.GothamBold
+    stateLabel.TextSize = 14
+    stateLabel.TextColor3 = Color3.fromRGB(255, 85, 85)
+    stateLabel.Text = "OFF"
+    stateLabel.TextXAlignment = Enum.TextXAlignment.Right
+
+    local particle = Instance.new("ParticleEmitter", circle)
+    particle.Enabled = false
+    particle.LightEmission = 1
+    particle.Rate = 30
+    particle.Lifetime = NumberRange.new(0.4, 0.5)
+    particle.Speed = NumberRange.new(1, 2)
+    particle.Size = NumberSequence.new(0.2)
+    particle.Rotation = NumberRange.new(0, 360)
+    particle.RotSpeed = NumberRange.new(-180, 180)
+    particle.Texture = "rbxassetid://296874871" 
+    particle.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 127))
+    }
+
+    local state = false
+
+    local function toggleSwitch()
+        state = not state
+        local goalPos = state and UDim2.new(1, -23, 0.5, -10) or UDim2.new(0, 3, 0.5, -10)
+        local bgColor = state and Color3.fromRGB(0, 170, 255) or Color3.fromRGB(80, 80, 80)
+        local circleColor = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 200)
+        local text = state and "ON" or "OFF"
+        local textColor = state and Color3.fromRGB(0, 255, 127) or Color3.fromRGB(255, 85, 85)
+
+        game:GetService("TweenService"):Create(circle, TweenInfo.new(0.2), {Position = goalPos}):Play()
+        game:GetService("TweenService"):Create(switch, TweenInfo.new(0.2), {BackgroundColor3 = bgColor}):Play()
+        game:GetService("TweenService"):Create(circle, TweenInfo.new(0.2), {BackgroundColor3 = circleColor}):Play()
+        game:GetService("TweenService"):Create(stateLabel, TweenInfo.new(0.2), {Text = text, TextColor3 = textColor}):Play()
+
+        particle.Enabled = true
+        task.delay(0.2, function()
+            particle.Enabled = false
+        end)
+
+        if switchConfig.Callback then
+            switchConfig.Callback(state)
+        end
+    end
+
+    switch.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            toggleSwitch()
+        end
+    end)
+end
+
     local isHidden = false
     hideButton.MouseButton1Click:Connect(function()
         local targetSize = isHidden and UDim2.new(0, 550, 0, 375) or UDim2.new(0, 0, 0, 0)
