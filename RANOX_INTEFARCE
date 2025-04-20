@@ -730,62 +730,100 @@ function Window:CreateColorPicker(tabName, colorConfig)
     local tab = pages[tabName]
     if not tab then return end
 
-    local colorPickerFrame = Instance.new("Frame", tab)
-    colorPickerFrame.Size = UDim2.new(1, -20, 0, 80)
-    colorPickerFrame.Position = UDim2.new(0, 10, 0, 0)
-    colorPickerFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    colorPickerFrame.ClipsDescendants = true
-    Instance.new("UICorner", colorPickerFrame).CornerRadius = UDim.new(0, 6)
+    local pickerFrame = Instance.new("Frame", tab)
+    pickerFrame.Size = UDim2.new(1, -20, 0, 220)
+    pickerFrame.Position = UDim2.new(0, 10, 0, 0)
+    pickerFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    pickerFrame.ClipsDescendants = true
+    Instance.new("UICorner", pickerFrame).CornerRadius = UDim.new(0, 10)
 
-    local label = Instance.new("TextLabel", colorPickerFrame)
+    local label = Instance.new("TextLabel", pickerFrame)
     label.Size = UDim2.new(1, -20, 0, 26)
     label.Position = UDim2.new(0, 10, 0, 0)
     label.BackgroundTransparency = 1
-    label.Text = colorConfig.Text or "Select Color"
+    label.Text = colorConfig.Text or "Escolha uma cor"
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
     label.Font = Enum.Font.Gotham
     label.TextSize = 14
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.TextYAlignment = Enum.TextYAlignment.Center
 
-    local colorDisplay = Instance.new("Frame", colorPickerFrame)
-    colorDisplay.Size = UDim2.new(1, -20, 0, 26)
+    local colorDisplay = Instance.new("Frame", pickerFrame)
+    colorDisplay.Size = UDim2.new(1, -20, 0, 40)
     colorDisplay.Position = UDim2.new(0, 10, 0, 30)
     colorDisplay.BackgroundColor3 = colorConfig.DefaultColor or Color3.fromRGB(255, 0, 0)
-    Instance.new("UICorner", colorDisplay).CornerRadius = UDim.new(0, 6)
+    Instance.new("UICorner", colorDisplay).CornerRadius = UDim.new(0, 10)
 
-    local slider = Instance.new("TextButton", colorPickerFrame)
-    slider.Size = UDim2.new(1, -20, 0, 20)
-    slider.Position = UDim2.new(0, 10, 0, 60)
-    slider.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-    slider.Text = ""
-    Instance.new("UICorner", slider).CornerRadius = UDim.new(0, 6)
+    local hueSlider = Instance.new("TextButton", pickerFrame)
+    hueSlider.Size = UDim2.new(1, -20, 0, 20)
+    hueSlider.Position = UDim2.new(0, 10, 0, 80)
+    hueSlider.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    hueSlider.Text = ""
+    Instance.new("UICorner", hueSlider).CornerRadius = UDim.new(0, 10)
 
-    local ball = Instance.new("Frame", slider)
-    ball.Size = UDim2.new(0, 16, 0, 16)
-    ball.Position = UDim2.new(0, 0, 0, 2)
-    ball.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    ball.BorderSizePixel = 0
-    Instance.new("UICorner", ball).CornerRadius = UDim.new(1, 0)
+    local hueBall = Instance.new("Frame", hueSlider)
+    hueBall.Size = UDim2.new(0, 16, 0, 16)
+    hueBall.Position = UDim2.new(0, 0, 0, 2)
+    hueBall.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    hueBall.BorderSizePixel = 0
+    Instance.new("UICorner", hueBall).CornerRadius = UDim.new(1, 0)
 
-    local isDragging = false
+    local brightnessSlider = Instance.new("TextButton", pickerFrame)
+    brightnessSlider.Size = UDim2.new(1, -20, 0, 20)
+    brightnessSlider.Position = UDim2.new(0, 10, 0, 110)
+    brightnessSlider.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    brightnessSlider.Text = ""
+    Instance.new("UICorner", brightnessSlider).CornerRadius = UDim.new(0, 10)
+
+    local brightnessBall = Instance.new("Frame", brightnessSlider)
+    brightnessBall.Size = UDim2.new(0, 16, 0, 16)
+    brightnessBall.Position = UDim2.new(0, 0, 0, 2)
+    brightnessBall.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    brightnessBall.BorderSizePixel = 0
+    Instance.new("UICorner", brightnessBall).CornerRadius = UDim.new(1, 0)
+
+    local isDraggingHue = false
+    local isDraggingBrightness = false
     local tweenService = game:GetService("TweenService")
 
-    slider.MouseButton1Down:Connect(function()
-        isDragging = true
+    hueSlider.MouseButton1Down:Connect(function()
+        isDraggingHue = true
     end)
 
-    slider.MouseButton1Up:Connect(function()
-        isDragging = false
+    hueSlider.MouseButton1Up:Connect(function()
+        isDraggingHue = false
     end)
 
-    slider.MouseMoved:Connect(function(_, y)
-        if isDragging then
-            local newPos = math.clamp(y - slider.AbsolutePosition.Y, 0, slider.AbsoluteSize.Y)
-            local colorValue = math.clamp(newPos / slider.AbsoluteSize.Y, 0, 1)
-            local newColor = Color3.fromHSV(colorValue, 1, 1)
+    hueSlider.MouseMoved:Connect(function(_, y)
+        if isDraggingHue then
+            local newPos = math.clamp(y - hueSlider.AbsolutePosition.Y, 0, hueSlider.AbsoluteSize.Y)
+            local hue = math.clamp(newPos / hueSlider.AbsoluteSize.Y, 0, 1)
+            local newColor = Color3.fromHSV(hue, 1, 1)
 
-            ball.Position = UDim2.new(0, 0, 0, newPos)
+            hueBall.Position = UDim2.new(0, 0, 0, newPos)
+            colorDisplay.BackgroundColor3 = newColor
+
+            if colorConfig.Callback then
+                colorConfig.Callback(newColor)
+            end
+        end
+    end)
+
+    brightnessSlider.MouseButton1Down:Connect(function()
+        isDraggingBrightness = true
+    end)
+
+    brightnessSlider.MouseButton1Up:Connect(function()
+        isDraggingBrightness = false
+    end)
+
+    brightnessSlider.MouseMoved:Connect(function(_, y)
+        if isDraggingBrightness then
+            local newPos = math.clamp(y - brightnessSlider.AbsolutePosition.Y, 0, brightnessSlider.AbsoluteSize.Y)
+            local brightness = math.clamp(newPos / brightnessSlider.AbsoluteSize.Y, 0, 1)
+            local newColor = colorDisplay.BackgroundColor3:Lerp(Color3.fromRGB(255, 255, 255), brightness)
+
+            brightnessBall.Position = UDim2.new(0, 0, 0, newPos)
             colorDisplay.BackgroundColor3 = newColor
 
             if colorConfig.Callback then
