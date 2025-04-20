@@ -522,7 +522,7 @@ end
     updateSlider(sliderBar.AbsolutePosition.X)
 end
 
-    function Window:CreateTextBox(tabName, placeholderText, callback)
+function Window:CreateTextBox(tabName, placeholderText, callback)
     local tab = pages[tabName]
     if not tab then return end
 
@@ -544,7 +544,7 @@ end
     highlight.Size = UDim2.new(1, 0, 0, 2)
     highlight.Position = UDim2.new(0, 0, 1, -2)
     highlight.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
-    highlight.BackgroundTransparency = 0.9
+    highlight.BackgroundTransparency = 0
     highlight.BorderSizePixel = 0
     highlight.Visible = false
     highlight.ZIndex = 2
@@ -584,40 +584,45 @@ end
     shadow.SliceCenter = Rect.new(10, 10, 118, 118)
     shadow.ZIndex = 0
 
-    local pulse = nil
+    local pulsing = false
+
+    local function startPulse()
+        pulsing = true
+        task.spawn(function()
+            while pulsing and textBox:IsFocused() do
+                highlight:TweenTransparency(0.9, Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.6, true)
+                task.wait(0.6)
+                highlight:TweenTransparency(0, Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.6, true)
+                task.wait(0.6)
+            end
+        end)
+    end
+
+    local function stopPulse()
+        pulsing = false
+        highlight.BackgroundTransparency = 0
+    end
 
     textBox.Focused:Connect(function()
         highlight.Visible = true
+        startPulse()
         placeholder:TweenPosition(UDim2.new(0, 10, 0, -8), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
         placeholder:TweenSize(UDim2.new(1, -20, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
-
         task.delay(0.2, function()
             if textBox:IsFocused() then
                 placeholder.Visible = false
             end
         end)
-
-        pulse = coroutine.create(function()
-            while textBox:IsFocused() do
-                highlight:TweenTransparency(0.1, Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.8, true)
-                task.wait(0.8)
-                highlight:TweenTransparency(0.9, Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.8, true)
-                task.wait(0.8)
-            end
-        end)
-        coroutine.resume(pulse)
     end)
 
     textBox.FocusLost:Connect(function(enterPressed)
+        stopPulse()
         highlight.Visible = false
-        highlight.BackgroundTransparency = 0.9
-
         if textBox.Text == "" then
             placeholder.Visible = true
             placeholder:TweenPosition(UDim2.new(0, 10, 0.5, -7), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
             placeholder:TweenSize(UDim2.new(1, -20, 0, 14), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
         end
-
         if enterPressed and callback then
             callback(textBox.Text)
         end
