@@ -675,17 +675,20 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     local running = false
     local tweenService = game:GetService("TweenService")
 
+    local function tweenBoxColor(toColor)
+        local tween = tweenService:Create(box, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = toColor})
+        tween:Play()
+    end
+
     button.MouseButton1Click:Connect(function()
         toggled = not toggled
         checkmark.Visible = toggled
 
-        local tweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-
-        local grow = tweenService:Create(box, tweenInfo, {Size = UDim2.new(0, 28, 0, 28)})
-        local shrink = tweenService:Create(box, tweenInfo, {Size = UDim2.new(0, 24, 0, 24)})
+        local grow = tweenService:Create(box, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 28, 0, 28)})
+        local shrink = tweenService:Create(box, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 24, 0, 24)})
 
         if toggled then
-            checkmark.TextColor3 = Color3.fromRGB(100, 0, 0)
+            tweenBoxColor(Color3.fromRGB(130, 20, 20))
             grow:Play()
             grow.Completed:Connect(function()
                 shrink:Play()
@@ -698,7 +701,7 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
                 end
             end)
         else
-            checkmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+            tweenBoxColor(Color3.fromRGB(30, 30, 30))
             running = false
         end
 
