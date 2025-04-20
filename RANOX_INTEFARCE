@@ -784,7 +784,16 @@ function Window:CreateColorPicker(tabName, colorConfig)
 
     local isDraggingHue = false
     local isDraggingBrightness = false
-    local tweenService = game:GetService("TweenService")
+
+    local function updateColor()
+        local hue = (hueBall.Position.Y.Scale * 360) % 360
+        local brightness = brightnessBall.Position.Y.Scale
+        local color = Color3.fromHSV(hue / 360, 1, brightness)
+        colorDisplay.BackgroundColor3 = color
+        if colorConfig.Callback then
+            colorConfig.Callback(color)
+        end
+    end
 
     hueSlider.MouseButton1Down:Connect(function()
         isDraggingHue = true
@@ -792,21 +801,6 @@ function Window:CreateColorPicker(tabName, colorConfig)
 
     hueSlider.MouseButton1Up:Connect(function()
         isDraggingHue = false
-    end)
-
-    hueSlider.MouseMoved:Connect(function(_, y)
-        if isDraggingHue then
-            local newPos = math.clamp(y - hueSlider.AbsolutePosition.Y, 0, hueSlider.AbsoluteSize.Y)
-            local hue = math.clamp(newPos / hueSlider.AbsoluteSize.Y, 0, 1)
-            local newColor = Color3.fromHSV(hue, 1, 1)
-
-            hueBall.Position = UDim2.new(0, 0, 0, newPos)
-            colorDisplay.BackgroundColor3 = newColor
-
-            if colorConfig.Callback then
-                colorConfig.Callback(newColor)
-            end
-        end
     end)
 
     brightnessSlider.MouseButton1Down:Connect(function()
@@ -817,20 +811,39 @@ function Window:CreateColorPicker(tabName, colorConfig)
         isDraggingBrightness = false
     end)
 
-    brightnessSlider.MouseMoved:Connect(function(_, y)
-        if isDraggingBrightness then
-            local newPos = math.clamp(y - brightnessSlider.AbsolutePosition.Y, 0, brightnessSlider.AbsoluteSize.Y)
-            local brightness = math.clamp(newPos / brightnessSlider.AbsoluteSize.Y, 0, 1)
-            local newColor = colorDisplay.BackgroundColor3:Lerp(Color3.fromRGB(255, 255, 255), brightness)
-
+    UIS.InputChanged:Connect(function(input)
+        if isDraggingHue then
+            local newPos = math.clamp(input.Position.Y - hueSlider.AbsolutePosition.Y, 0, hueSlider.AbsoluteSize.Y)
+            hueBall.Position = UDim2.new(0, 0, 0, newPos)
+            updateColor()
+        elseif isDraggingBrightness then
+            local newPos = math.clamp(input.Position.Y - brightnessSlider.AbsolutePosition.Y, 0, brightnessSlider.AbsoluteSize.Y)
             brightnessBall.Position = UDim2.new(0, 0, 0, newPos)
-            colorDisplay.BackgroundColor3 = newColor
-
-            if colorConfig.Callback then
-                colorConfig.Callback(newColor)
-            end
+            updateColor()
         end
     end)
+
+    local function showPicker()
+        local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+        local goal = {Size = UDim2.new(1, -20, 0, 220)}
+        local tween = TweenService:Create(pickerFrame, tweenInfo, goal)
+        tween:Play()
+    end
+
+    local function hidePicker()
+        local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.In)
+        local goal = {Size = UDim2.new(1, -20, 0, 26)}
+        local tween = TweenService:Create(pickerFrame, tweenInfo, goal)
+        tween:Play()
+    end
+
+    label.MouseButton1Click:Connect(function()
+        showPicker()
+        wait(5)
+        hidePicker()
+    end)
+
+    hidePicker()
 end
 
     local isHidden = false
