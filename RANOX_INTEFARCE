@@ -726,6 +726,52 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     end)
 end
 
+function Window:CreateColorPicker(tabName, data)
+    local tab = self.Tabs[tabName]
+    if not tab then return end
+
+    local colorPicker = Instance.new("Frame")
+    colorPicker.Size = UDim2.new(1, -20, 0, 40)
+    colorPicker.BackgroundTransparency = 1
+    colorPicker.Parent = tab
+
+    local label = Instance.new("TextLabel")
+    label.Text = data.Text or "Escolha uma cor"
+    label.Size = UDim2.new(0.6, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.new(1, 1, 1)
+    label.Font = Enum.Font.Gotham
+    label.TextSize = 14
+    label.Parent = colorPicker
+
+    local colorButton = Instance.new("TextButton")
+    colorButton.Size = UDim2.new(0.4, -10, 1, 0)
+    colorButton.Position = UDim2.new(0.6, 10, 0, 0)
+    colorButton.Text = ""
+    colorButton.BackgroundColor3 = Color3.fromHex(data.Default or "#ffffff")
+    colorButton.AutoButtonColor = false
+    colorButton.Parent = colorPicker
+
+    local currentColor = data.Default or "#ffffff"
+
+    colorButton.MouseEnter:Connect(function()
+        colorButton:TweenSize(UDim2.new(0.4, -8, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+    end)
+
+    colorButton.MouseLeave:Connect(function()
+        colorButton:TweenSize(UDim2.new(0.4, -10, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+    end)
+
+    colorButton.MouseButton1Click:Connect(function()
+        local newColor = "#b4dd1e"
+        currentColor = newColor
+        colorButton.BackgroundColor3 = Color3.fromHex(newColor)
+        if data.Callback then
+            data.Callback(newColor)
+        end
+    end)
+end
+
     local isHidden = false
     hideButton.MouseButton1Click:Connect(function()
         local targetSize = isHidden and UDim2.new(0, 550, 0, 375) or UDim2.new(0, 0, 0, 0)
