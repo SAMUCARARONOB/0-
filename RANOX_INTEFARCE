@@ -876,15 +876,12 @@ function Window:CreateColorPicker(tabName, colorConfig)
     end)
 
     local function animateTopLine()
-        local startColor = Color3.fromRGB(255, 0, 0)
-        local midColor = Color3.fromRGB(0, 255, 0)
-        local endColor = Color3.fromRGB(0, 0, 255)
         while true do
             for i = 0, 1, 0.01 do
                 uiGradient.Color = ColorSequence.new({
-                    ColorSequenceKeypoint.new(i, startColor),
-                    ColorSequenceKeypoint.new(i + 0.5, midColor),
-                    ColorSequenceKeypoint.new(i + 1, endColor)
+                    ColorSequenceKeypoint.new(i, Color3.fromRGB(255, 0, 0)),
+                    ColorSequenceKeypoint.new(i + 0.33, Color3.fromRGB(0, 255, 0)),
+                    ColorSequenceKeypoint.new(i + 0.66, Color3.fromRGB(0, 0, 255)),
                 })
                 wait(0.1)
             end
