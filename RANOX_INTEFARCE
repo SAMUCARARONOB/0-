@@ -933,12 +933,12 @@ function Window:CreateSwitch(tabName, switchConfig)
     if not tab then return end
 
     local holder = Instance.new("Frame", tab)
-    holder.Size = UDim2.new(1, -20, 0, 40)
+    holder.Size = UDim2.new(1, -20, 0, 50)
     holder.Position = UDim2.new(0, 10, 0, 0)
     holder.BackgroundTransparency = 1
 
     local label = Instance.new("TextLabel", holder)
-    label.Size = UDim2.new(0.5, 0, 1, 0)
+    label.Size = UDim2.new(0.5, 0, 1, -10)
     label.Position = UDim2.new(0, 0, 0, 0)
     label.BackgroundTransparency = 1
     label.Text = switchConfig.Text or "Switch"
@@ -962,7 +962,7 @@ function Window:CreateSwitch(tabName, switchConfig)
     Instance.new("UICorner", circle).CornerRadius = UDim.new(1, 0)
 
     local stateLabel = Instance.new("TextLabel", holder)
-    stateLabel.Size = UDim2.new(0, 40, 1, 0)
+    stateLabel.Size = UDim2.new(0, 40, 1, -10)
     stateLabel.Position = UDim2.new(1, -110, 0, 0)
     stateLabel.BackgroundTransparency = 1
     stateLabel.Font = Enum.Font.GothamBold
@@ -970,6 +970,12 @@ function Window:CreateSwitch(tabName, switchConfig)
     stateLabel.TextColor3 = Color3.fromRGB(255, 85, 85)
     stateLabel.Text = "OFF"
     stateLabel.TextXAlignment = Enum.TextXAlignment.Right
+
+    local underline = Instance.new("Frame", holder)
+    underline.Size = UDim2.new(1, 0, 0, 1)
+    underline.Position = UDim2.new(0, 0, 1, -3)
+    underline.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    underline.BorderSizePixel = 0
 
     local particle = Instance.new("ParticleEmitter", circle)
     particle.Enabled = false
@@ -980,10 +986,10 @@ function Window:CreateSwitch(tabName, switchConfig)
     particle.Size = NumberSequence.new(0.2)
     particle.Rotation = NumberRange.new(0, 360)
     particle.RotSpeed = NumberRange.new(-180, 180)
-    particle.Texture = "rbxassetid://296874871" 
+    particle.Texture = "rbxassetid://296874871"
     particle.Color = ColorSequence.new{
         ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 127))
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 20, 20))
     }
 
     local state = false
@@ -991,15 +997,16 @@ function Window:CreateSwitch(tabName, switchConfig)
     local function toggleSwitch()
         state = not state
         local goalPos = state and UDim2.new(1, -23, 0.5, -10) or UDim2.new(0, 3, 0.5, -10)
-        local bgColor = state and Color3.fromRGB(0, 170, 255) or Color3.fromRGB(80, 80, 80)
+        local bgColor = state and Color3.fromRGB(200, 20, 20) or Color3.fromRGB(80, 80, 80)
         local circleColor = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 200)
-        local text = state and "ON" or "OFF"
-        local textColor = state and Color3.fromRGB(0, 255, 127) or Color3.fromRGB(255, 85, 85)
+        local textColor = state and Color3.fromRGB(200, 20, 20) or Color3.fromRGB(255, 85, 85)
 
         game:GetService("TweenService"):Create(circle, TweenInfo.new(0.2), {Position = goalPos}):Play()
         game:GetService("TweenService"):Create(switch, TweenInfo.new(0.2), {BackgroundColor3 = bgColor}):Play()
         game:GetService("TweenService"):Create(circle, TweenInfo.new(0.2), {BackgroundColor3 = circleColor}):Play()
-        game:GetService("TweenService"):Create(stateLabel, TweenInfo.new(0.2), {Text = text, TextColor3 = textColor}):Play()
+        game:GetService("TweenService"):Create(stateLabel, TweenInfo.new(0.2), {TextColor3 = textColor}):Play()
+
+        stateLabel.Text = state and "ON" or "OFF"
 
         particle.Enabled = true
         task.delay(0.2, function()
