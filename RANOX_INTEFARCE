@@ -527,20 +527,43 @@ end
     if not tab then return end
 
     local container = Instance.new("Frame", tab)
-    container.Size = UDim2.new(1, -20, 0, 30)
+    container.Size = UDim2.new(1, -20, 0, 40)
     container.Position = UDim2.new(0, 10, 0, 0)
-    container.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    container.BorderSizePixel = 0
+    container.BackgroundTransparency = 1
     container.ClipsDescendants = true
-    Instance.new("UICorner", container).CornerRadius = UDim.new(0, 6)
 
-    local textBox = Instance.new("TextBox", container)
+    local background = Instance.new("Frame", container)
+    background.Size = UDim2.new(1, 0, 1, 0)
+    background.Position = UDim2.new(0, 0, 0, 0)
+    background.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    background.BorderSizePixel = 0
+    background.ZIndex = 1
+    Instance.new("UICorner", background).CornerRadius = UDim.new(0, 6)
+
+    local highlight = Instance.new("Frame", background)
+    highlight.Size = UDim2.new(1, 0, 0, 2)
+    highlight.Position = UDim2.new(0, 0, 1, -2)
+    highlight.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+    highlight.BorderSizePixel = 0
+    highlight.Visible = false
+    highlight.ZIndex = 2
+
+    local placeholder = Instance.new("TextLabel", background)
+    placeholder.Size = UDim2.new(1, -20, 0, 14)
+    placeholder.Position = UDim2.new(0, 10, 0.5, -7)
+    placeholder.BackgroundTransparency = 1
+    placeholder.Text = placeholderText or "Digite algo..."
+    placeholder.TextColor3 = Color3.fromRGB(150, 150, 150)
+    placeholder.Font = Enum.Font.Gotham
+    placeholder.TextSize = 14
+    placeholder.TextXAlignment = Enum.TextXAlignment.Left
+    placeholder.ZIndex = 2
+
+    local textBox = Instance.new("TextBox", background)
     textBox.Size = UDim2.new(1, -20, 1, 0)
     textBox.Position = UDim2.new(0, 10, 0, 0)
     textBox.BackgroundTransparency = 1
     textBox.Text = ""
-    textBox.PlaceholderText = placeholderText or "Digite algo..."
-    textBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
     textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
     textBox.Font = Enum.Font.Gotham
     textBox.TextSize = 14
@@ -548,6 +571,7 @@ end
     textBox.TextXAlignment = Enum.TextXAlignment.Left
     textBox.TextWrapped = false
     textBox.TextTruncate = Enum.TextTruncate.AtEnd
+    textBox.ZIndex = 3
 
     local shadow = Instance.new("ImageLabel", container)
     shadow.Size = UDim2.new(1, 6, 1, 6)
@@ -559,7 +583,18 @@ end
     shadow.SliceCenter = Rect.new(10, 10, 118, 118)
     shadow.ZIndex = 0
 
+    textBox.Focused:Connect(function()
+        highlight.Visible = true
+        placeholder:TweenPosition(UDim2.new(0, 10, 0, -8), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+        placeholder.TextSize = 12
+    end)
+
     textBox.FocusLost:Connect(function(enterPressed)
+        highlight.Visible = false
+        if textBox.Text == "" then
+            placeholder:TweenPosition(UDim2.new(0, 10, 0.5, -7), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+            placeholder.TextSize = 14
+        end
         if enterPressed and callback then
             callback(textBox.Text)
         end
