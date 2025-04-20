@@ -737,21 +737,30 @@ function Window:CreateColorPicker(tabName, colorConfig)
     pickerFrame.ClipsDescendants = true
     Instance.new("UICorner", pickerFrame).CornerRadius = UDim.new(0, 10)
 
-    local gradientLine = Instance.new("Frame", pickerFrame)
-    gradientLine.Size = UDim2.new(1, 0, 0, 1)
-    gradientLine.Position = UDim2.new(0, 0, 0, 0)
-    gradientLine.BorderSizePixel = 0
-    gradientLine.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    local topLine = Instance.new("Frame", pickerFrame)
+    topLine.Size = UDim2.new(1, 0, 0, 1)
+    topLine.Position = UDim2.new(0, 0, 0, 0)
+    topLine.BorderSizePixel = 0
+    topLine.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 
-    local gradient = Instance.new("UIGradient", gradientLine)
-    gradient.Color = ColorSequence.new({
+    local uiGradient = Instance.new("UIGradient", topLine)
+    uiGradient.Color = ColorSequence.new({
         ColorSequenceKeypoint.new(0.0, Color3.fromRGB(255, 0, 0)),
         ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
         ColorSequenceKeypoint.new(1.0, Color3.fromRGB(0, 0, 255))
     })
 
+    local toggleButton = Instance.new("TextButton", pickerFrame)
+    toggleButton.Size = UDim2.new(0, 20, 0, 20)
+    toggleButton.Position = UDim2.new(1, -30, 0, 5)
+    toggleButton.BackgroundTransparency = 1
+    toggleButton.Text = "▼"
+    toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggleButton.Font = Enum.Font.Gotham
+    toggleButton.TextSize = 14
+
     local label = Instance.new("TextLabel", pickerFrame)
-    label.Size = UDim2.new(1, -40, 0, 26)
+    label.Size = UDim2.new(1, -60, 0, 26)
     label.Position = UDim2.new(0, 10, 0, 0)
     label.BackgroundTransparency = 1
     label.Text = colorConfig.Text or "Escolha uma cor"
@@ -760,19 +769,15 @@ function Window:CreateColorPicker(tabName, colorConfig)
     label.TextSize = 14
     label.TextXAlignment = Enum.TextXAlignment.Left
 
-    local toggleArrow = Instance.new("TextButton", pickerFrame)
-    toggleArrow.Size = UDim2.new(0, 20, 0, 20)
-    toggleArrow.Position = UDim2.new(1, -25, 0, 3)
-    toggleArrow.Text = "^"
-    toggleArrow.BackgroundTransparency = 1
-    toggleArrow.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggleArrow.Font = Enum.Font.GothamBold
-    toggleArrow.TextSize = 16
-    toggleArrow.Rotation = 0
+    local container = Instance.new("Frame", pickerFrame)
+    container.Size = UDim2.new(1, 0, 0, 150)
+    container.Position = UDim2.new(0, 0, 0, 30)
+    container.BackgroundTransparency = 1
+    container.Name = "Container"
 
-    local colorDisplay = Instance.new("Frame", pickerFrame)
+    local colorDisplay = Instance.new("Frame", container)
     colorDisplay.Size = UDim2.new(1, -20, 0, 30)
-    colorDisplay.Position = UDim2.new(0, 10, 0, 30)
+    colorDisplay.Position = UDim2.new(0, 10, 0, 0)
     colorDisplay.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
     Instance.new("UICorner", colorDisplay).CornerRadius = UDim.new(0, 10)
 
@@ -806,12 +811,12 @@ function Window:CreateColorPicker(tabName, colorConfig)
         return bar
     end
 
-    local hueSlider = createGradientBar(pickerFrame, UDim2.new(0, 10, 0, 70), 20, "Hue")
-    local brightnessSlider = createGradientBar(pickerFrame, UDim2.new(0, 10, 0, 100), 20, "Brightness")
+    local hueSlider = createGradientBar(container, UDim2.new(0, 10, 0, 40), 20, "Hue")
+    local brightnessSlider = createGradientBar(container, UDim2.new(0, 10, 0, 70), 20, "Brightness")
 
-    local rgbBox = Instance.new("TextBox", pickerFrame)
+    local rgbBox = Instance.new("TextBox", container)
     rgbBox.Size = UDim2.new(0.25, 0, 0, 20)
-    rgbBox.Position = UDim2.new(0.75, 15, 0, 70)
+    rgbBox.Position = UDim2.new(0.75, 15, 0, 40)
     rgbBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     rgbBox.TextColor3 = Color3.fromRGB(255, 255, 255)
     rgbBox.Font = Enum.Font.Gotham
@@ -819,9 +824,9 @@ function Window:CreateColorPicker(tabName, colorConfig)
     rgbBox.Text = "0.255.255"
     Instance.new("UICorner", rgbBox).CornerRadius = UDim.new(0, 6)
 
-    local brightnessBox = Instance.new("TextBox", pickerFrame)
+    local brightnessBox = Instance.new("TextBox", container)
     brightnessBox.Size = UDim2.new(0.25, 0, 0, 20)
-    brightnessBox.Position = UDim2.new(0.75, 15, 0, 100)
+    brightnessBox.Position = UDim2.new(0.75, 15, 0, 70)
     brightnessBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     brightnessBox.TextColor3 = Color3.fromRGB(255, 255, 255)
     brightnessBox.Font = Enum.Font.Gotham
@@ -834,7 +839,6 @@ function Window:CreateColorPicker(tabName, colorConfig)
         local brightness = tonumber(brightnessBox.Text)
         r, g, b = tonumber(r), tonumber(g), tonumber(b)
         brightness = math.clamp(brightness or 255, 0, 255)
-
         if r and g and b then
             local adjusted = Color3.fromRGB(
                 math.clamp(r * brightness / 255, 0, 255),
@@ -871,29 +875,17 @@ function Window:CreateColorPicker(tabName, colorConfig)
         applyColorFromBox()
     end)
 
+    local opened = true
+    toggleButton.MouseButton1Click:Connect(function()
+        opened = not opened
+        toggleButton.Text = opened and "▼" or "▲"
+        local goalSize = opened and 180 or 30
+        local goalContentSize = opened and 150 or 0
+        game:GetService("TweenService"):Create(pickerFrame, TweenInfo.new(0.3), {Size = UDim2.new(1, -20, 0, goalSize)}):Play()
+        game:GetService("TweenService"):Create(container, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 0, goalContentSize)}):Play()
+    end)
+
     applyColorFromBox()
-
-    local elements = {colorDisplay, hueSlider, brightnessSlider, rgbBox, brightnessBox}
-    local isOpen = true
-
-    local function toggleElements()
-        isOpen = not isOpen
-        toggleArrow.Rotation = isOpen and 0 or 180
-
-        for _, elem in ipairs(elements) do
-            game.TweenService:Create(elem, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                Size = isOpen and elem.Size or UDim2.new(elem.Size.X.Scale, elem.Size.X.Offset, 0, 0),
-                Transparency = isOpen and 0 or 1
-            }):Play()
-        end
-
-        local newHeight = isOpen and 180 or 40
-        game.TweenService:Create(pickerFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            Size = UDim2.new(1, -20, 0, newHeight)
-        }):Play()
-    end
-
-    toggleArrow.MouseButton1Click:Connect(toggleElements)
 end
 
     local isHidden = false
