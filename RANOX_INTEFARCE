@@ -70,26 +70,36 @@ searchButton.Image = "rbxassetid://15999597378"
 searchButton.BackgroundTransparency = 1
 searchButton.AutoButtonColor = false
 
-local searchBox = Instance.new("TextBox", mainFrame)
-searchBox.Size = UDim2.new(1, -20, 0, 25)
-searchBox.Position = UDim2.new(0, 10, 0, 30)
-searchBox.PlaceholderText = "Pesquisar..."
-searchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-searchBox.Font = Enum.Font.Gotham
-searchBox.TextSize = 14
-searchBox.Visible = false
-searchBox.ClearTextOnFocus = false
+local isSearching = false
+local searchText = ""
 
 searchButton.MouseButton1Click:Connect(function()
-    searchBox.Visible = not searchBox.Visible
-    local goal = {BackgroundTransparency = searchBox.Visible and 0 or 1}
-    local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
-    TweenService:Create(searchBox, tweenInfo, goal):Play()
+    isSearching = not isSearching
+    searchText = ""
+    if not isSearching then
+        for _, obj in pairs(mainFrame:GetDescendants()) do
+            if obj:IsA("TextButton") then
+                obj.Visible = true
+            end
+        end
+    end
 end)
 
-searchBox:GetPropertyChangedSignal("Text"):Connect(function()
-    local query = string.lower(searchBox.Text)
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not isSearching or gameProcessed or input.UserInputType ~= Enum.UserInputType.Keyboard then return end
+
+    if input.KeyCode == Enum.KeyCode.Backspace then
+        searchText = string.sub(searchText, 1, #searchText - 1)
+    elseif input.KeyCode == Enum.KeyCode.Return then
+        isSearching = false
+    else
+        local char = input.KeyCode.Name
+        if #char == 1 or input.KeyCode.Value >= 65 and input.KeyCode.Value <= 122 then
+            searchText = searchText .. input.KeyCode.Name
+        end
+    end
+
+    local query = string.lower(searchText)
     for _, button in pairs(mainFrame:GetDescendants()) do
         if button:IsA("TextButton") then
             local name = string.lower(button.Name)
