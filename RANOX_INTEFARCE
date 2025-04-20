@@ -726,50 +726,135 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     end)
 end
 
-function Window:CreateColorPicker(tabName, data)
-    local tab = self.Tabs[tabName]
-    if not tab then return end
+local function CreateColorPicker(tabName, config)
+    local ColorPickerFrame = Instance.new("Frame")
+    local Title = Instance.new("TextLabel")
+    local ColorButton = Instance.new("TextButton")
+    local ColorDisplay = Instance.new("Frame")
+    local PickerFrame = Instance.new("Frame")
+    local SaturationBrightness = Instance.new("ImageLabel")
+    local SBPicker = Instance.new("ImageLabel")
+    local HueBar = Instance.new("ImageLabel")
+    local HueSelector = Instance.new("ImageLabel")
+    local HexBox = Instance.new("TextBox")
 
-    local colorPicker = Instance.new("Frame")
-    colorPicker.Size = UDim2.new(1, -20, 0, 40)
-    colorPicker.BackgroundTransparency = 1
-    colorPicker.Parent = tab
+    ColorPickerFrame.Name = "ColorPicker"
+    ColorPickerFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
+    ColorPickerFrame.BorderSizePixel = 0
+    ColorPickerFrame.Size = UDim2.new(1, 0, 0, 40)
 
-    local label = Instance.new("TextLabel")
-    label.Text = data.Text or "Escolha uma cor"
-    label.Size = UDim2.new(0.6, 0, 1, 0)
-    label.BackgroundTransparency = 1
-    label.TextColor3 = Color3.new(1, 1, 1)
-    label.Font = Enum.Font.Gotham
-    label.TextSize = 14
-    label.Parent = colorPicker
+    Title.Name = "Title"
+    Title.Parent = ColorPickerFrame
+    Title.BackgroundTransparency = 1
+    Title.Position = UDim2.new(0, 10, 0, 0)
+    Title.Size = UDim2.new(1, -20, 0, 20)
+    Title.Font = Enum.Font.Gotham
+    Title.Text = config.Text or "Color Picker"
+    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Title.TextSize = 14
+    Title.TextXAlignment = Enum.TextXAlignment.Left
 
-    local colorButton = Instance.new("TextButton")
-    colorButton.Size = UDim2.new(0.4, -10, 1, 0)
-    colorButton.Position = UDim2.new(0.6, 10, 0, 0)
-    colorButton.Text = ""
-    colorButton.BackgroundColor3 = Color3.fromHex(data.Default or "#ffffff")
-    colorButton.AutoButtonColor = false
-    colorButton.Parent = colorPicker
+    ColorButton.Name = "ColorButton"
+    ColorButton.Parent = ColorPickerFrame
+    ColorButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    ColorButton.Position = UDim2.new(0, 10, 0, 20)
+    ColorButton.Size = UDim2.new(1, -20, 0, 20)
+    ColorButton.Font = Enum.Font.Gotham
+    ColorButton.Text = "Selecionar Cor"
+    ColorButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ColorButton.TextSize = 12
 
-    local currentColor = data.Default or "#ffffff"
+    ColorDisplay.Name = "ColorDisplay"
+    ColorDisplay.Parent = ColorButton
+    ColorDisplay.AnchorPoint = Vector2.new(1, 0.5)
+    ColorDisplay.Position = UDim2.new(1, -6, 0.5, 0)
+    ColorDisplay.Size = UDim2.new(0, 20, 0, 20)
+    ColorDisplay.BackgroundColor3 = config.Default or Color3.fromRGB(255, 0, 0)
+    ColorDisplay.BorderSizePixel = 0
 
-    colorButton.MouseEnter:Connect(function()
-        colorButton:TweenSize(UDim2.new(0.4, -8, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+    PickerFrame.Name = "PickerFrame"
+    PickerFrame.Parent = ColorPickerFrame
+    PickerFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    PickerFrame.Position = UDim2.new(0, 0, 1, 0)
+    PickerFrame.Size = UDim2.new(1, 0, 0, 160)
+    PickerFrame.Visible = false
+    PickerFrame.ClipsDescendants = true
+
+    SaturationBrightness.Name = "SaturationBrightness"
+    SaturationBrightness.Parent = PickerFrame
+    SaturationBrightness.Position = UDim2.new(0, 10, 0, 10)
+    SaturationBrightness.Size = UDim2.new(0, 120, 0, 100)
+    SaturationBrightness.Image = "rbxassetid://4155801252"
+    SaturationBrightness.BackgroundColor3 = Color3.fromHSV(0, 1, 1)
+    SaturationBrightness.ScaleType = Enum.ScaleType.Stretch
+
+    SBPicker.Name = "SBPicker"
+    SBPicker.Parent = SaturationBrightness
+    SBPicker.Size = UDim2.new(0, 10, 0, 10)
+    SBPicker.AnchorPoint = Vector2.new(0.5, 0.5)
+    SBPicker.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    SBPicker.Position = UDim2.new(1, 0, 1, 0)
+    SBPicker.BorderSizePixel = 0
+
+    HueBar.Name = "HueBar"
+    HueBar.Parent = PickerFrame
+    HueBar.Position = UDim2.new(0, 140, 0, 10)
+    HueBar.Size = UDim2.new(0, 10, 0, 100)
+    HueBar.Image = "rbxassetid://3641079629"
+    HueBar.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+
+    HueSelector.Name = "HueSelector"
+    HueSelector.Parent = HueBar
+    HueSelector.Size = UDim2.new(1, 0, 0, 4)
+    HueSelector.Position = UDim2.new(0, 0, 0, 0)
+    HueSelector.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    HueSelector.BorderSizePixel = 0
+
+    HexBox.Name = "HexBox"
+    HexBox.Parent = PickerFrame
+    HexBox.Position = UDim2.new(0, 10, 0, 120)
+    HexBox.Size = UDim2.new(1, -20, 0, 20)
+    HexBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    HexBox.Text = "#ff0000"
+    HexBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    HexBox.TextSize = 12
+    HexBox.Font = Enum.Font.Gotham
+
+    local selectedColor = config.Default or Color3.fromRGB(255, 0, 0)
+
+    local function updateAll(color)
+        selectedColor = color
+        ColorDisplay.BackgroundColor3 = color
+        local r, g, b = math.floor(color.R * 255), math.floor(color.G * 255), math.floor(color.B * 255)
+        HexBox.Text = string.format("#%02x%02x%02x", r, g, b)
+        if config.Callback then
+            config.Callback(color)
+        end
+    end
+
+    ColorButton.MouseButton1Click:Connect(function()
+        PickerFrame.Visible = not PickerFrame.Visible
     end)
 
-    colorButton.MouseLeave:Connect(function()
-        colorButton:TweenSize(UDim2.new(0.4, -10, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
-    end)
-
-    colorButton.MouseButton1Click:Connect(function()
-        local newColor = "#b4dd1e"
-        currentColor = newColor
-        colorButton.BackgroundColor3 = Color3.fromHex(newColor)
-        if data.Callback then
-            data.Callback(newColor)
+    HexBox.FocusLost:Connect(function(enter)
+        if enter then
+            local hex = HexBox.Text:gsub("#", "")
+            if #hex == 6 then
+                local r = tonumber(hex:sub(1, 2), 16)
+                local g = tonumber(hex:sub(3, 4), 16)
+                local b = tonumber(hex:sub(5, 6), 16)
+                if r and g and b then
+                    updateAll(Color3.fromRGB(r, g, b))
+                end
+            end
         end
     end)
+
+    updateAll(selectedColor)
+
+    ColorPickerFrame.Parent = script.Parent or game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+    return ColorPickerFrame
 end
 
     local isHidden = false
