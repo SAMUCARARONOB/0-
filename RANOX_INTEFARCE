@@ -731,7 +731,7 @@ function Window:CreateColorPicker(tabName, colorConfig)
     if not tab then return end
 
     local pickerFrame = Instance.new("Frame", tab)
-    pickerFrame.Size = UDim2.new(1, -20, 0, 220)
+    pickerFrame.Size = UDim2.new(1, -20, 0, 160)
     pickerFrame.Position = UDim2.new(0, 10, 0, 0)
     pickerFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     pickerFrame.ClipsDescendants = true
@@ -751,99 +751,112 @@ function Window:CreateColorPicker(tabName, colorConfig)
     local colorDisplay = Instance.new("Frame", pickerFrame)
     colorDisplay.Size = UDim2.new(1, -20, 0, 40)
     colorDisplay.Position = UDim2.new(0, 10, 0, 30)
-    colorDisplay.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- Cor inicial é branca
+    colorDisplay.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
     Instance.new("UICorner", colorDisplay).CornerRadius = UDim.new(0, 10)
 
-    local hueSlider = Instance.new("TextButton", pickerFrame)
-    hueSlider.Size = UDim2.new(1, -20, 0, 20)
-    hueSlider.Position = UDim2.new(0, 10, 0, 80)
-    hueSlider.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    hueSlider.Text = ""
-    Instance.new("UICorner", hueSlider).CornerRadius = UDim.new(0, 10)
+    local function createGradientBar(parent, position, height, colorType)
+        local bar = Instance.new("TextButton", parent)
+        bar.Size = UDim2.new(1, -20, 0, height)
+        bar.Position = position
+        bar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        bar.AutoButtonColor = false
+        bar.Text = ""
+        Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 10)
+
+        local gradient = Instance.new("UIGradient", bar)
+        if colorType == "Hue" then
+            gradient.Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
+                ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255, 255, 0)),
+                ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 255, 0)),
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 255)),
+                ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
+                ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255, 0, 255)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0)),
+            })
+        elseif colorType == "Brightness" then
+            gradient.Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))
+            })
+        end
+
+        return bar
+    end
+
+    local hueSlider = createGradientBar(pickerFrame, UDim2.new(0, 10, 0, 80), 20, "Hue")
+    local brightnessSlider = createGradientBar(pickerFrame, UDim2.new(0, 10, 0, 110), 20, "Brightness")
 
     local hueBall = Instance.new("Frame", hueSlider)
     hueBall.Size = UDim2.new(0, 16, 0, 16)
     hueBall.Position = UDim2.new(0, 0, 0, 2)
-    hueBall.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     hueBall.BorderSizePixel = 0
+    hueBall.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
     Instance.new("UICorner", hueBall).CornerRadius = UDim.new(1, 0)
-
-    local brightnessSlider = Instance.new("TextButton", pickerFrame)
-    brightnessSlider.Size = UDim2.new(1, -20, 0, 20)
-    brightnessSlider.Position = UDim2.new(0, 10, 0, 110)
-    brightnessSlider.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    brightnessSlider.Text = ""
-    Instance.new("UICorner", brightnessSlider).CornerRadius = UDim.new(0, 10)
 
     local brightnessBall = Instance.new("Frame", brightnessSlider)
     brightnessBall.Size = UDim2.new(0, 16, 0, 16)
     brightnessBall.Position = UDim2.new(0, 0, 0, 2)
-    brightnessBall.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     brightnessBall.BorderSizePixel = 0
+    brightnessBall.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Instance.new("UICorner", brightnessBall).CornerRadius = UDim.new(1, 0)
 
-    local isDraggingHue = false
-    local isDraggingBrightness = false
+    local draggingHue = false
+    local draggingBrightness = false
+
+    local UIS = game:GetService("UserInputService")
 
     local function updateColor()
         local hue = (hueBall.Position.X.Scale * 360) % 360
-        local brightness = brightnessBall.Position.Y.Scale
+        local brightness = 1 - brightnessBall.Position.X.Scale
         local color = Color3.fromHSV(hue / 360, 1, brightness)
+        hueBall.BackgroundColor3 = Color3.fromHSV(hue / 360, 1, 1)
         colorDisplay.BackgroundColor3 = color
         if colorConfig.Callback then
             colorConfig.Callback(color)
         end
     end
 
-    hueSlider.MouseButton1Down:Connect(function()
-        isDraggingHue = true
-    end)
+    local function updateBallPosition(bar, ball, inputX)
+        local pos = math.clamp(inputX - bar.AbsolutePosition.X, 0, bar.AbsoluteSize.X)
+        ball.Position = UDim2.new(pos / bar.AbsoluteSize.X, -8, 0, 2)
+        updateColor()
+    end
 
-    hueSlider.MouseButton1Up:Connect(function()
-        isDraggingHue = false
-    end)
-
-    brightnessSlider.MouseButton1Down:Connect(function()
-        isDraggingBrightness = true
-    end)
-
-    brightnessSlider.MouseButton1Up:Connect(function()
-        isDraggingBrightness = false
-    end)
-
-    UIS.InputChanged:Connect(function(input)
-        if isDraggingHue then
-            local newPos = math.clamp(input.Position.X - hueSlider.AbsolutePosition.X, 0, hueSlider.AbsoluteSize.X)
-            hueBall.Position = UDim2.new(newPos / hueSlider.AbsoluteSize.X, 0, 0, 0)
-            updateColor()
-        elseif isDraggingBrightness then
-            local newPos = math.clamp(input.Position.Y - brightnessSlider.AbsolutePosition.Y, 0, brightnessSlider.AbsoluteSize.Y)
-            brightnessBall.Position = UDim2.new(0, 0, newPos / brightnessSlider.AbsoluteSize.Y, 0)
-            updateColor()
+    hueSlider.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            draggingHue = true
+            updateBallPosition(hueSlider, hueBall, input.Position.X)
         end
     end)
 
-    local function showPicker()
-        local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
-        local goal = {Size = UDim2.new(1, -20, 0, 220)}
-        local tween = TweenService:Create(pickerFrame, tweenInfo, goal)
-        tween:Play()
-    end
-
-    local function hidePicker()
-        local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.In)
-        local goal = {Size = UDim2.new(1, -20, 0, 26)}
-        local tween = TweenService:Create(pickerFrame, tweenInfo, goal)
-        tween:Play()
-    end
-
-    label.MouseButton1Click:Connect(function()
-        showPicker()
-        wait(5)
-        hidePicker()
+    brightnessSlider.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            draggingBrightness = true
+            updateBallPosition(brightnessSlider, brightnessBall, input.Position.X)
+        end
     end)
 
-    hidePicker()
+    UIS.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            if draggingHue then
+                updateBallPosition(hueSlider, hueBall, input.Position.X)
+            elseif draggingBrightness then
+                updateBallPosition(brightnessSlider, brightnessBall, input.Position.X)
+            end
+        end
+    end)
+
+    UIS.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            draggingHue = false
+            draggingBrightness = false
+        end
+    end)
+
+    hueBall.Position = UDim2.new(0, -8, 0, 2)
+    brightnessBall.Position = UDim2.new(0, -8, 0, 2)
+    updateColor()
 end
 
     local isHidden = false
