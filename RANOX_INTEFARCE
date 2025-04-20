@@ -731,7 +731,7 @@ function Window:CreateColorPicker(tabName, colorConfig)
     if not tab then return end
 
     local pickerFrame = Instance.new("Frame", tab)
-    pickerFrame.Size = UDim2.new(1, -20, 0, 160)
+    pickerFrame.Size = UDim2.new(1, -20, 0, 180)
     pickerFrame.Position = UDim2.new(0, 10, 0, 0)
     pickerFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     pickerFrame.ClipsDescendants = true
@@ -746,17 +746,16 @@ function Window:CreateColorPicker(tabName, colorConfig)
     label.Font = Enum.Font.Gotham
     label.TextSize = 14
     label.TextXAlignment = Enum.TextXAlignment.Left
-    label.TextYAlignment = Enum.TextYAlignment.Center
 
     local colorDisplay = Instance.new("Frame", pickerFrame)
-    colorDisplay.Size = UDim2.new(1, -20, 0, 40)
+    colorDisplay.Size = UDim2.new(1, -20, 0, 30)
     colorDisplay.Position = UDim2.new(0, 10, 0, 30)
     colorDisplay.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
     Instance.new("UICorner", colorDisplay).CornerRadius = UDim.new(0, 10)
 
     local function createGradientBar(parent, position, height, colorType)
         local bar = Instance.new("TextButton", parent)
-        bar.Size = UDim2.new(1, -20, 0, height)
+        bar.Size = UDim2.new(0.7, 0, 0, height)
         bar.Position = position
         bar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         bar.AutoButtonColor = false
@@ -784,79 +783,72 @@ function Window:CreateColorPicker(tabName, colorConfig)
         return bar
     end
 
-    local hueSlider = createGradientBar(pickerFrame, UDim2.new(0, 10, 0, 80), 20, "Hue")
-    local brightnessSlider = createGradientBar(pickerFrame, UDim2.new(0, 10, 0, 110), 20, "Brightness")
+    local hueSlider = createGradientBar(pickerFrame, UDim2.new(0, 10, 0, 70), 20, "Hue")
+    local brightnessSlider = createGradientBar(pickerFrame, UDim2.new(0, 10, 0, 100), 20, "Brightness")
 
-    local hueBall = Instance.new("Frame", hueSlider)
-    hueBall.Size = UDim2.new(0, 16, 0, 16)
-    hueBall.Position = UDim2.new(0, 0, 0, 2)
-    hueBall.BorderSizePixel = 0
-    hueBall.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    Instance.new("UICorner", hueBall).CornerRadius = UDim.new(1, 0)
+    local rgbBox = Instance.new("TextBox", pickerFrame)
+    rgbBox.Size = UDim2.new(0.25, 0, 0, 20)
+    rgbBox.Position = UDim2.new(0.75, 15, 0, 70)
+    rgbBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    rgbBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    rgbBox.Font = Enum.Font.Gotham
+    rgbBox.TextSize = 12
+    rgbBox.Text = "0.255.255"
+    Instance.new("UICorner", rgbBox).CornerRadius = UDim.new(0, 6)
 
-    local brightnessBall = Instance.new("Frame", brightnessSlider)
-    brightnessBall.Size = UDim2.new(0, 16, 0, 16)
-    brightnessBall.Position = UDim2.new(0, 0, 0, 2)
-    brightnessBall.BorderSizePixel = 0
-    brightnessBall.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Instance.new("UICorner", brightnessBall).CornerRadius = UDim.new(1, 0)
+    local brightnessBox = Instance.new("TextBox", pickerFrame)
+    brightnessBox.Size = UDim2.new(0.25, 0, 0, 20)
+    brightnessBox.Position = UDim2.new(0.75, 15, 0, 100)
+    brightnessBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    brightnessBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    brightnessBox.Font = Enum.Font.Gotham
+    brightnessBox.TextSize = 12
+    brightnessBox.Text = "255"
+    Instance.new("UICorner", brightnessBox).CornerRadius = UDim.new(0, 6)
 
-    local draggingHue = false
-    local draggingBrightness = false
+    local function applyColorFromBox()
+        local r, g, b = rgbBox.Text:match("(%d+)%.(%d+)%.(%d+)")
+        local brightness = tonumber(brightnessBox.Text)
+        r, g, b = tonumber(r), tonumber(g), tonumber(b)
+        brightness = math.clamp(brightness or 255, 0, 255)
 
-    local UIS = game:GetService("UserInputService")
-
-    local function updateColor()
-        local hue = (hueBall.Position.X.Scale * 360) % 360
-        local brightness = 1 - brightnessBall.Position.X.Scale
-        local color = Color3.fromHSV(hue / 360, 1, brightness)
-        hueBall.BackgroundColor3 = Color3.fromHSV(hue / 360, 1, 1)
-        colorDisplay.BackgroundColor3 = color
-        if colorConfig.Callback then
-            colorConfig.Callback(color)
-        end
-    end
-
-    local function updateBallPosition(bar, ball, inputX)
-        local pos = math.clamp(inputX - bar.AbsolutePosition.X, 0, bar.AbsoluteSize.X)
-        ball.Position = UDim2.new(pos / bar.AbsoluteSize.X, -8, 0, 2)
-        updateColor()
-    end
-
-    hueSlider.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            draggingHue = true
-            updateBallPosition(hueSlider, hueBall, input.Position.X)
-        end
-    end)
-
-    brightnessSlider.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            draggingBrightness = true
-            updateBallPosition(brightnessSlider, brightnessBall, input.Position.X)
-        end
-    end)
-
-    UIS.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            if draggingHue then
-                updateBallPosition(hueSlider, hueBall, input.Position.X)
-            elseif draggingBrightness then
-                updateBallPosition(brightnessSlider, brightnessBall, input.Position.X)
+        if r and g and b then
+            local adjusted = Color3.fromRGB(
+                math.clamp(r * brightness / 255, 0, 255),
+                math.clamp(g * brightness / 255, 0, 255),
+                math.clamp(b * brightness / 255, 0, 255)
+            )
+            colorDisplay.BackgroundColor3 = adjusted
+            if colorConfig.Callback then
+                colorConfig.Callback(adjusted)
             end
         end
+    end
+
+    hueSlider.MouseButton1Down:Connect(function(x, y)
+        local relX = math.clamp(x - hueSlider.AbsolutePosition.X, 0, hueSlider.AbsoluteSize.X)
+        local hue = relX / hueSlider.AbsoluteSize.X
+        local color = Color3.fromHSV(hue, 1, 1)
+        rgbBox.Text = math.floor(color.R * 255) .. "." .. math.floor(color.G * 255) .. "." .. math.floor(color.B * 255)
+        applyColorFromBox()
     end)
 
-    UIS.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            draggingHue = false
-            draggingBrightness = false
-        end
+    brightnessSlider.MouseButton1Down:Connect(function(x, y)
+        local relX = math.clamp(x - brightnessSlider.AbsolutePosition.X, 0, brightnessSlider.AbsoluteSize.X)
+        local brightness = math.floor(255 * (1 - (relX / brightnessSlider.AbsoluteSize.X)))
+        brightnessBox.Text = tostring(brightness)
+        applyColorFromBox()
     end)
 
-    hueBall.Position = UDim2.new(0, -8, 0, 2)
-    brightnessBall.Position = UDim2.new(0, -8, 0, 2)
-    updateColor()
+    rgbBox.FocusLost:Connect(function()
+        applyColorFromBox()
+    end)
+
+    brightnessBox.FocusLost:Connect(function()
+        applyColorFromBox()
+    end)
+
+    applyColorFromBox()
 end
 
     local isHidden = false
