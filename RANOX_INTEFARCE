@@ -112,7 +112,7 @@ local function switchTab(name)
 		frame.Visible = (tabName == name)
 	end
 	for tabName, btn in pairs(tabButtons) do
-		btn.BackgroundColor3 = (tabName == name) and Color3.fromRGB(100, 20, 20) or Color3.fromRGB(35, 35, 35)
+		btn.BackgroundColor3 = (tabName == name) and Color3.fromRGB(70, 20, 20) or Color3.fromRGB(35, 35, 35)
 	end
 	selectedTab = name
 end
