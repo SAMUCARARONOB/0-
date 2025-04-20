@@ -281,9 +281,11 @@ end
     end)
 end
 
-    function Window:CreateLabel(tabName, text)
+function Window:CreateLabel(tabName, text)
     local tab = pages[tabName]
     if not tab then return end
+
+    local textSize = TextService:GetTextSize(text, 14, Enum.Font.Gotham, Vector2.new(1000, 30))
 
     local container = Instance.new("Frame", tab)
     container.Size = UDim2.new(1, -20, 0, 30)
@@ -291,8 +293,8 @@ end
     container.BackgroundTransparency = 1
 
     local label = Instance.new("TextLabel", container)
-    label.Size = UDim2.new(0, 100, 1, 0)
-    label.Position = UDim2.new(0.5, -50, 0, 0)
+    label.Size = UDim2.new(0, textSize.X, 1, 0)
+    label.Position = UDim2.new(0.5, -textSize.X / 2, 0, 0)
     label.Text = text
     label.Font = Enum.Font.Gotham
     label.TextSize = 14
@@ -302,18 +304,18 @@ end
     label.TextYAlignment = Enum.TextYAlignment.Center
 
     local leftLine = Instance.new("Frame", container)
-    leftLine.Size = UDim2.new(0.5, -60, 0, 1)
+    leftLine.Size = UDim2.new(0, (container.AbsoluteSize.X - textSize.X) / 2 - 4, 0, 1)
     leftLine.Position = UDim2.new(0, 0, 0.5, 0)
     leftLine.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     leftLine.BorderSizePixel = 0
     leftLine.AnchorPoint = Vector2.new(0, 0.5)
 
     local rightLine = Instance.new("Frame", container)
-    rightLine.Size = UDim2.new(0.5, -60, 0, 1)
-    rightLine.Position = UDim2.new(0.5, 60, 0.5, 0)
+    rightLine.Size = UDim2.new(0, (container.AbsoluteSize.X - textSize.X) / 2 - 4, 0, 1)
+    rightLine.Position = UDim2.new(1, -((container.AbsoluteSize.X - textSize.X) / 2 - 4), 0.5, 0)
     rightLine.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     rightLine.BorderSizePixel = 0
-    rightLine.AnchorPoint = Vector2.new(0, 0.5)
+    rightLine.AnchorPoint = Vector2.new(1, 0.5)
 end
 
     function Window:CreateDropdown(tabName, dropdownConfig)
