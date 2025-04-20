@@ -57,6 +57,37 @@ hideButton.Image = "rbxassetid://6035047409"
 hideButton.BackgroundTransparency = 1
 hideButton.AutoButtonColor = false
 
+    local hidden = false
+
+local CollapseButton = Instance.new("TextButton")
+CollapseButton.Name = "CollapseButton"
+CollapseButton.Parent = Title
+CollapseButton.Text = "-"
+CollapseButton.Size = UDim2.new(0, 20, 0, 20)
+CollapseButton.Position = UDim2.new(1, -45, 0, 0)
+CollapseButton.BackgroundTransparency = 1
+CollapseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CollapseButton.Font = Enum.Font.GothamBold
+CollapseButton.TextSize = 18
+
+local contentSize = UDim2.new(1, 0, 1, -Title.AbsoluteSize.Y)
+
+local function collapseContent()
+	hidden = not hidden
+
+	if hidden then
+		TweenService:Create(Main, TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+			Size = UDim2.new(1, 0, 0, Title.AbsoluteSize.Y)
+		}):Play()
+	else
+		TweenService:Create(Main, TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+			Size = contentSize
+		}):Play()
+	end
+end
+
+CollapseButton.MouseButton1Click:Connect(collapseContent)
+
     local line = Instance.new("Frame", mainFrame)
     line.Size = UDim2.new(1, 0, 0, 1)
     line.Position = UDim2.new(0, 0, 0, 25)
