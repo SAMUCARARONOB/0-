@@ -63,8 +63,6 @@ local title = Instance.new("TextLabel", mainFrame)
     line.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
     line.BorderSizePixel = 0
 
-local mainFrame = script.Parent
-
 local searchButton = Instance.new("ImageButton", mainFrame)
 searchButton.Size = UDim2.new(0, 25, 0, 25)
 searchButton.Position = UDim2.new(1, -60, 0, 0)
