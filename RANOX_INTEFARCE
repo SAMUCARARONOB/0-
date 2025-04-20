@@ -726,129 +726,182 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     end)
 end
 
-function Window:CreateColorPicker(tabName, colorConfig)
-    local tab = pages[tabName]
-    if not tab then return end
+function Window:CreateColorPicker(tabName, colorConfig) local tab = pages[tabName] if not tab then return end
 
-    local pickerFrame = Instance.new("Frame", tab)
-    pickerFrame.Size = UDim2.new(1, -20, 0, 180)
-    pickerFrame.Position = UDim2.new(0, 10, 0, 0)
-    pickerFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    pickerFrame.ClipsDescendants = true
-    Instance.new("UICorner", pickerFrame).CornerRadius = UDim.new(0, 10)
+local pickerHolder = Instance.new("Frame", tab)
+pickerHolder.Size = UDim2.new(1, -20, 0, 40)
+pickerHolder.Position = UDim2.new(0, 10, 0, 0)
+pickerHolder.BackgroundTransparency = 1
+pickerHolder.ClipsDescendants = true
 
-    local label = Instance.new("TextLabel", pickerFrame)
-    label.Size = UDim2.new(1, -20, 0, 26)
-    label.Position = UDim2.new(0, 10, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = colorConfig.Text or "Escolha uma cor"
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.Font = Enum.Font.Gotham
-    label.TextSize = 14
-    label.TextXAlignment = Enum.TextXAlignment.Left
+local toggleArrow = Instance.new("TextButton", pickerHolder)
+toggleArrow.Size = UDim2.new(0, 20, 0, 20)
+toggleArrow.Position = UDim2.new(1, -25, 0, 10)
+toggleArrow.BackgroundTransparency = 1
+toggleArrow.Text = "^"
+toggleArrow.Font = Enum.Font.GothamBold
+toggleArrow.TextSize = 18
+toggleArrow.TextColor3 = Color3.fromRGB(255, 255, 255)
 
-    local colorDisplay = Instance.new("Frame", pickerFrame)
-    colorDisplay.Size = UDim2.new(1, -20, 0, 30)
-    colorDisplay.Position = UDim2.new(0, 10, 0, 30)
-    colorDisplay.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    Instance.new("UICorner", colorDisplay).CornerRadius = UDim.new(0, 10)
+local title = Instance.new("TextLabel", pickerHolder)
+title.Size = UDim2.new(1, -30, 0, 40)
+title.Position = UDim2.new(0, 10, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = colorConfig.Text or "Escolha uma cor"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 14
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
 
-    local function createGradientBar(parent, position, height, colorType)
-        local bar = Instance.new("TextButton", parent)
-        bar.Size = UDim2.new(0.7, 0, 0, height)
-        bar.Position = position
-        bar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        bar.AutoButtonColor = false
-        bar.Text = ""
-        Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 10)
+local neonLine = Instance.new("Frame", pickerHolder)
+neonLine.Size = UDim2.new(1, 0, 0, 1)
+neonLine.Position = UDim2.new(0, 0, 0, 0)
+neonLine.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 
-        local gradient = Instance.new("UIGradient", bar)
-        if colorType == "Hue" then
-            gradient.Color = ColorSequence.new({
-                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-                ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255, 255, 0)),
-                ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 255, 0)),
-                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 255)),
-                ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
-                ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255, 0, 255)),
-                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0)),
-            })
-        elseif colorType == "Brightness" then
-            gradient.Color = ColorSequence.new({
-                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)),
-                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))
-            })
-        end
+local neonGradient = Instance.new("UIGradient", neonLine)
+neonGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
+})
 
-        return bar
+local pickerFrame = Instance.new("Frame", pickerHolder)
+pickerFrame.Size = UDim2.new(1, 0, 0, 160)
+pickerFrame.Position = UDim2.new(0, 0, 0, 40)
+pickerFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+pickerFrame.Visible = false
+Instance.new("UICorner", pickerFrame).CornerRadius = UDim.new(0, 10)
+
+local tweenService = game:GetService("TweenService")
+local opened = false
+
+toggleArrow.MouseButton1Click:Connect(function()
+    opened = not opened
+    toggleArrow.Text = opened and "v" or "^"
+    pickerFrame.Visible = true
+    local goal = {}
+    goal.Size = opened and UDim2.new(1, -20, 0, 200) or UDim2.new(1, -20, 0, 40)
+
+    local tween = tweenService:Create(pickerHolder, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), goal)
+    tween:Play()
+
+    if not opened then
+        tween.Completed:Connect(function()
+            pickerFrame.Visible = false
+        end)
+    end
+end)
+
+local colorDisplay = Instance.new("Frame", pickerFrame)
+colorDisplay.Size = UDim2.new(1, -20, 0, 40)
+colorDisplay.Position = UDim2.new(0, 10, 0, 0)
+colorDisplay.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+Instance.new("UICorner", colorDisplay).CornerRadius = UDim.new(0, 10)
+
+local function createBar(position, colorType)
+    local bar = Instance.new("TextButton", pickerFrame)
+    bar.Size = UDim2.new(1, -20, 0, 20)
+    bar.Position = position
+    bar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    bar.AutoButtonColor = false
+    bar.Text = ""
+    Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 10)
+
+    local gradient = Instance.new("UIGradient", bar)
+    if colorType == "Hue" then
+        gradient.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
+            ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255, 255, 0)),
+            ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 255, 0)),
+            ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 255)),
+            ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
+            ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255, 0, 255)),
+            ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0)),
+        })
+    elseif colorType == "Brightness" then
+        gradient.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)),
+            ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))
+        })
     end
 
-    local hueSlider = createGradientBar(pickerFrame, UDim2.new(0, 10, 0, 70), 20, "Hue")
-    local brightnessSlider = createGradientBar(pickerFrame, UDim2.new(0, 10, 0, 100), 20, "Brightness")
+    return bar
+end
 
-    local rgbBox = Instance.new("TextBox", pickerFrame)
-    rgbBox.Size = UDim2.new(0.25, 0, 0, 20)
-    rgbBox.Position = UDim2.new(0.75, 15, 0, 70)
-    rgbBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    rgbBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    rgbBox.Font = Enum.Font.Gotham
-    rgbBox.TextSize = 12
-    rgbBox.Text = "0.255.255"
-    Instance.new("UICorner", rgbBox).CornerRadius = UDim.new(0, 6)
+local hueSlider = createBar(UDim2.new(0, 10, 0, 50), "Hue")
+local brightnessSlider = createBar(UDim2.new(0, 10, 0, 80), "Brightness")
 
-    local brightnessBox = Instance.new("TextBox", pickerFrame)
-    brightnessBox.Size = UDim2.new(0.25, 0, 0, 20)
-    brightnessBox.Position = UDim2.new(0.75, 15, 0, 100)
-    brightnessBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    brightnessBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    brightnessBox.Font = Enum.Font.Gotham
-    brightnessBox.TextSize = 12
-    brightnessBox.Text = "255"
-    Instance.new("UICorner", brightnessBox).CornerRadius = UDim.new(0, 6)
+local hueBall = Instance.new("Frame", hueSlider)
+hueBall.Size = UDim2.new(0, 16, 0, 16)
+hueBall.Position = UDim2.new(0, -8, 0, 2)
+hueBall.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+hueBall.BorderSizePixel = 0
+Instance.new("UICorner", hueBall).CornerRadius = UDim.new(1, 0)
 
-    local function applyColorFromBox()
-        local r, g, b = rgbBox.Text:match("(%d+)%.(%d+)%.(%d+)")
-        local brightness = tonumber(brightnessBox.Text)
-        r, g, b = tonumber(r), tonumber(g), tonumber(b)
-        brightness = math.clamp(brightness or 255, 0, 255)
+local brightnessBall = Instance.new("Frame", brightnessSlider)
+brightnessBall.Size = UDim2.new(0, 16, 0, 16)
+brightnessBall.Position = UDim2.new(0, -8, 0, 2)
+brightnessBall.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+brightnessBall.BorderSizePixel = 0
+Instance.new("UICorner", brightnessBall).CornerRadius = UDim.new(1, 0)
 
-        if r and g and b then
-            local adjusted = Color3.fromRGB(
-                math.clamp(r * brightness / 255, 0, 255),
-                math.clamp(g * brightness / 255, 0, 255),
-                math.clamp(b * brightness / 255, 0, 255)
-            )
-            colorDisplay.BackgroundColor3 = adjusted
-            if colorConfig.Callback then
-                colorConfig.Callback(adjusted)
-            end
+local draggingHue = false
+local draggingBrightness = false
+
+local UIS = game:GetService("UserInputService")
+
+local function updateColor()
+    local hue = (hueBall.Position.X.Scale * 360) % 360
+    local brightness = 1 - brightnessBall.Position.X.Scale
+    local color = Color3.fromHSV(hue / 360, 1, brightness)
+    hueBall.BackgroundColor3 = Color3.fromHSV(hue / 360, 1, 1)
+    colorDisplay.BackgroundColor3 = color
+    if colorConfig.Callback then
+        colorConfig.Callback(color)
+    end
+end
+
+local function updateBallPosition(bar, ball, inputX)
+    local pos = math.clamp(inputX - bar.AbsolutePosition.X, 0, bar.AbsoluteSize.X)
+    ball.Position = UDim2.new(pos / bar.AbsoluteSize.X, -8, 0, 2)
+    updateColor()
+end
+
+hueSlider.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        draggingHue = true
+        updateBallPosition(hueSlider, hueBall, input.Position.X)
+    end
+end)
+
+brightnessSlider.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        draggingBrightness = true
+        updateBallPosition(brightnessSlider, brightnessBall, input.Position.X)
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        if draggingHue then
+            updateBallPosition(hueSlider, hueBall, input.Position.X)
+        elseif draggingBrightness then
+            updateBallPosition(brightnessSlider, brightnessBall, input.Position.X)
         end
     end
+end)
 
-    hueSlider.MouseButton1Down:Connect(function(x, y)
-        local relX = math.clamp(x - hueSlider.AbsolutePosition.X, 0, hueSlider.AbsoluteSize.X)
-        local hue = relX / hueSlider.AbsoluteSize.X
-        local color = Color3.fromHSV(hue, 1, 1)
-        rgbBox.Text = math.floor(color.R * 255) .. "." .. math.floor(color.G * 255) .. "." .. math.floor(color.B * 255)
-        applyColorFromBox()
-    end)
+UIS.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        draggingHue = false
+        draggingBrightness = false
+    end
+end)
 
-    brightnessSlider.MouseButton1Down:Connect(function(x, y)
-        local relX = math.clamp(x - brightnessSlider.AbsolutePosition.X, 0, brightnessSlider.AbsoluteSize.X)
-        local brightness = math.floor(255 * (1 - (relX / brightnessSlider.AbsoluteSize.X)))
-        brightnessBox.Text = tostring(brightness)
-        applyColorFromBox()
-    end)
+hueBall.Position = UDim2.new(0, -8, 0, 2)
+brightnessBall.Position = UDim2.new(0, -8, 0, 2)
+updateColor()
 
-    rgbBox.FocusLost:Connect(function()
-        applyColorFromBox()
-    end)
-
-    brightnessBox.FocusLost:Connect(function()
-        applyColorFromBox()
-    end)
-
-    applyColorFromBox()
 end
 
     local isHidden = false
