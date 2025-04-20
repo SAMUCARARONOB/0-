@@ -886,6 +886,21 @@ function Window:CreateColorPicker(tabName, colorConfig)
     end)
 
     applyColorFromBox()
+
+    local function updateTopLineColor()
+        while true do
+            for _, color in ipairs({
+                Color3.fromRGB(255, 0, 0),
+                Color3.fromRGB(0, 255, 0),
+                Color3.fromRGB(0, 0, 255)
+            }) do
+                topLine.BackgroundColor3 = color
+                wait(0.5)
+            end
+        end
+    end
+
+    spawn(updateTopLineColor)
 end
 
     local isHidden = false
