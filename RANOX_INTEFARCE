@@ -751,7 +751,7 @@ function Window:CreateColorPicker(tabName, colorConfig)
     local colorDisplay = Instance.new("Frame", pickerFrame)
     colorDisplay.Size = UDim2.new(1, -20, 0, 40)
     colorDisplay.Position = UDim2.new(0, 10, 0, 30)
-    colorDisplay.BackgroundColor3 = colorConfig.DefaultColor or Color3.fromRGB(255, 0, 0)
+    colorDisplay.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- Cor inicial é branca
     Instance.new("UICorner", colorDisplay).CornerRadius = UDim.new(0, 10)
 
     local hueSlider = Instance.new("TextButton", pickerFrame)
@@ -786,7 +786,7 @@ function Window:CreateColorPicker(tabName, colorConfig)
     local isDraggingBrightness = false
 
     local function updateColor()
-        local hue = (hueBall.Position.Y.Scale * 360) % 360
+        local hue = (hueBall.Position.X.Scale * 360) % 360
         local brightness = brightnessBall.Position.Y.Scale
         local color = Color3.fromHSV(hue / 360, 1, brightness)
         colorDisplay.BackgroundColor3 = color
@@ -813,12 +813,12 @@ function Window:CreateColorPicker(tabName, colorConfig)
 
     UIS.InputChanged:Connect(function(input)
         if isDraggingHue then
-            local newPos = math.clamp(input.Position.Y - hueSlider.AbsolutePosition.Y, 0, hueSlider.AbsoluteSize.Y)
-            hueBall.Position = UDim2.new(0, 0, 0, newPos)
+            local newPos = math.clamp(input.Position.X - hueSlider.AbsolutePosition.X, 0, hueSlider.AbsoluteSize.X)
+            hueBall.Position = UDim2.new(newPos / hueSlider.AbsoluteSize.X, 0, 0, 0)
             updateColor()
         elseif isDraggingBrightness then
             local newPos = math.clamp(input.Position.Y - brightnessSlider.AbsolutePosition.Y, 0, brightnessSlider.AbsoluteSize.Y)
-            brightnessBall.Position = UDim2.new(0, 0, 0, newPos)
+            brightnessBall.Position = UDim2.new(0, 0, newPos / brightnessSlider.AbsoluteSize.Y, 0)
             updateColor()
         end
     end)
