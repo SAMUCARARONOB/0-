@@ -741,7 +741,6 @@ function Window:CreateColorPicker(tabName, colorConfig)
     topLine.Size = UDim2.new(1, 0, 0, 1)
     topLine.Position = UDim2.new(0, 0, 0, 0)
     topLine.BorderSizePixel = 0
-    topLine.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 
     local uiGradient = Instance.new("UIGradient", topLine)
     uiGradient.Color = ColorSequence.new({
@@ -874,21 +873,6 @@ function Window:CreateColorPicker(tabName, colorConfig)
     brightnessBox.FocusLost:Connect(function()
         applyColorFromBox()
     end)
-
-    local function animateTopLine()
-        while true do
-            for i = 0, 1, 0.01 do
-                uiGradient.Color = ColorSequence.new({
-                    ColorSequenceKeypoint.new(i, Color3.fromRGB(255, 0, 0)),
-                    ColorSequenceKeypoint.new(i + 0.33, Color3.fromRGB(0, 255, 0)),
-                    ColorSequenceKeypoint.new(i + 0.66, Color3.fromRGB(0, 0, 255)),
-                })
-                wait(0.1)
-            end
-        end
-    end
-
-    coroutine.wrap(animateTopLine)()
 
     local opened = true
     toggleButton.MouseButton1Click:Connect(function()
