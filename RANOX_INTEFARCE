@@ -741,12 +741,11 @@ function Window:CreateColorPicker(tabName, colorConfig)
     topLine.Size = UDim2.new(1, 0, 0, 1)
     topLine.Position = UDim2.new(0, 0, 0, 0)
     topLine.BorderSizePixel = 0
-
     local uiGradient = Instance.new("UIGradient", topLine)
     uiGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.0, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(1.0, Color3.fromRGB(0, 0, 255))
+        ColorSequenceKeypoint.new(0.0, Color3.fromRGB(0, 255, 0)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 0, 255)),
+        ColorSequenceKeypoint.new(1.0, Color3.fromRGB(255, 0, 0))
     })
 
     local toggleButton = Instance.new("TextButton", pickerFrame)
@@ -807,11 +806,20 @@ function Window:CreateColorPicker(tabName, colorConfig)
             })
         end
 
-        return bar
+        local marker = Instance.new("Frame", bar)
+        marker.Name = "Marker"
+        marker.Size = UDim2.new(0, 6, 1, 6)
+        marker.AnchorPoint = Vector2.new(0.5, 0.5)
+        marker.Position = UDim2.new(0, 0, 0.5, 0)
+        marker.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        marker.BorderSizePixel = 0
+        Instance.new("UICorner", marker).CornerRadius = UDim.new(1, 0)
+
+        return bar, marker
     end
 
-    local hueSlider = createGradientBar(container, UDim2.new(0, 10, 0, 40), 20, "Hue")
-    local brightnessSlider = createGradientBar(container, UDim2.new(0, 10, 0, 70), 20, "Brightness")
+    local hueSlider, hueMarker = createGradientBar(container, UDim2.new(0, 10, 0, 40), 20, "Hue")
+    local brightnessSlider, brightnessMarker = createGradientBar(container, UDim2.new(0, 10, 0, 70), 20, "Brightness")
 
     local rgbBox = Instance.new("TextBox", container)
     rgbBox.Size = UDim2.new(0.25, 0, 0, 20)
@@ -856,6 +864,7 @@ function Window:CreateColorPicker(tabName, colorConfig)
         local hue = relX / hueSlider.AbsoluteSize.X
         local color = Color3.fromHSV(hue, 1, 1)
         rgbBox.Text = math.floor(color.R * 255) .. "." .. math.floor(color.G * 255) .. "." .. math.floor(color.B * 255)
+        hueMarker.Position = UDim2.new(relX / hueSlider.AbsoluteSize.X, 0, 0.5, 0)
         applyColorFromBox()
     end)
 
@@ -863,16 +872,12 @@ function Window:CreateColorPicker(tabName, colorConfig)
         local relX = math.clamp(x - brightnessSlider.AbsolutePosition.X, 0, brightnessSlider.AbsoluteSize.X)
         local brightness = math.floor(255 * (1 - (relX / brightnessSlider.AbsoluteSize.X)))
         brightnessBox.Text = tostring(brightness)
+        brightnessMarker.Position = UDim2.new(relX / brightnessSlider.AbsoluteSize.X, 0, 0.5, 0)
         applyColorFromBox()
     end)
 
-    rgbBox.FocusLost:Connect(function()
-        applyColorFromBox()
-    end)
-
-    brightnessBox.FocusLost:Connect(function()
-        applyColorFromBox()
-    end)
+    rgbBox.FocusLost:Connect(applyColorFromBox)
+    brightnessBox.FocusLost:Connect(applyColorFromBox)
 
     local opened = true
     toggleButton.MouseButton1Click:Connect(function()
