@@ -543,7 +543,8 @@ end
     local highlight = Instance.new("Frame", background)
     highlight.Size = UDim2.new(1, 0, 0, 2)
     highlight.Position = UDim2.new(0, 0, 1, -2)
-    highlight.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+    highlight.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+    highlight.BackgroundTransparency = 0.5
     highlight.BorderSizePixel = 0
     highlight.Visible = false
     highlight.ZIndex = 2
@@ -552,7 +553,7 @@ end
     placeholder.Size = UDim2.new(1, -20, 0, 14)
     placeholder.Position = UDim2.new(0, 10, 0.5, -7)
     placeholder.BackgroundTransparency = 1
-    placeholder.Text = placeholderText or "Digite algo..."
+    placeholder.Text = placeholderText or "Escreva aqui"
     placeholder.TextColor3 = Color3.fromRGB(150, 150, 150)
     placeholder.Font = Enum.Font.Gotham
     placeholder.TextSize = 14
@@ -586,14 +587,20 @@ end
     textBox.Focused:Connect(function()
         highlight.Visible = true
         placeholder:TweenPosition(UDim2.new(0, 10, 0, -8), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
-        placeholder.TextSize = 12
+        placeholder:TweenSize(UDim2.new(1, -20, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+        task.delay(0.2, function()
+            if textBox:IsFocused() then
+                placeholder.Visible = false
+            end
+        end)
     end)
 
     textBox.FocusLost:Connect(function(enterPressed)
         highlight.Visible = false
         if textBox.Text == "" then
+            placeholder.Visible = true
             placeholder:TweenPosition(UDim2.new(0, 10, 0.5, -7), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
-            placeholder.TextSize = 14
+            placeholder:TweenSize(UDim2.new(1, -20, 0, 14), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
         end
         if enterPressed and callback then
             callback(textBox.Text)
