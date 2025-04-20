@@ -144,54 +144,19 @@ Window:CreateToggle({
         showNotification("GUI está agora: " .. (state and "visível" or "escondida"))
     end
 }) -- segunda interface abaixo de exemplo de como usar
-local Ranox = loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/RANOX"))()
-
-local window = Ranox:CreateWindow({ Name = "Meu UI" })
-
-local tab1 = window:CreateTab("Aba 1")
-local tab2 = window:CreateTab("Aba 2")
-
-tab1:CreateButton({ Name = "Botão 1", Callback = function()
-    print("Botão 1 da Aba 1 pressionado!")
-end })
-
-tab1:CreateToggle({ Name = "Toggle 1", Callback = function(state)
-    print("Toggle 1 da Aba 1 ativado:", state)
-end })
-
-tab1:CreateToggle({ Name = "Toggle 2", Callback = function(state)
-    print("Toggle 2 da Aba 1 ativado:", state)
-end })
-
-tab2:CreateButton({ Name = "Botão 1", Callback = function()
-    print("Botão 1 da Aba 2 pressionado!")
-end })
-
-tab2:CreateButton({ Name = "Botão 2", Callback = function()
-    print("Botão 2 da Aba 2 pressionado!")
-end })
-
-tab2:CreateToggle({ Name = "Toggle 1", Callback = function(state)
-    print("Toggle 1 da Aba 2 ativado:", state)
-end })
-
-tab2:CreateToggle({ Name = "Toggle 2", Callback = function(state)
-    print("Toggle 2 da Aba 2 ativado:", state)
-end }) -- Terceira interface abaixo exemplo de como usar
 local HttpService = game:GetService("HttpService")
 local RANOX = loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/RANOX_INTEFARCE"))()
 
 local Window = RANOX:CreateWindow({
-    Title = "RANOX Hub"
+    Title = "RANOX_HUB",
+    Subtitle = "v1.0"
 })
 
--- Criando as abas
-Window:CreateTab("Principal", 4483362458)
-Window:CreateTab("Configuração", 4483362458)
-Window:CreateTab("Créditos", 4483362458)
+Window:CreateTab("PRINCIPAL", 4483362458)
+Window:CreateTab("SETTING", 4483362458)
+Window:CreateTab("CRÉDITOS", 4483362458)
 
--- Toggles na aba Principal
-Window:CreateToggle("Principal", {
+Window:CreateToggle("PRINCIPAL", {
     Text = "Ativar Modo Avançado",
     Default = false,
     Callback = function(isOn)
@@ -199,7 +164,7 @@ Window:CreateToggle("Principal", {
     end
 })
 
-Window:CreateToggle("Principal", {
+Window:CreateToggle("PRINCIPAL", {
     Text = "Ativar Recurso X",
     Default = true,
     Callback = function(isOn)
@@ -207,7 +172,7 @@ Window:CreateToggle("Principal", {
     end
 })
 
-Window:CreateToggle("Principal", {
+Window:CreateToggle("PRINCIPAL", {
     Text = "Habilitar Opção Y",
     Default = false,
     Callback = function(isOn)
@@ -215,19 +180,17 @@ Window:CreateToggle("Principal", {
     end
 })
 
--- Aba Configuração
-Window:CreateButton("Configuração", "Salvar Configurações", function()
+Window:CreateButton("SETTING", "Salvar Configurações", function()
     print("Configurações salvas!")
 end)
 
-Window:CreateLabel("Configuração", "Altere as configurações abaixo:")
+Window:CreateLabel("SETTING", "Altere as configurações abaixo:")
 
-Window:CreateTextBox("Configuração", "Digite seu nome", function(input)
+Window:CreateTextBox("SETTING", "SPEED MODIFIER", function(input)
     print("Nome digitado:", input)
 end)
 
--- ADICIONADO: Dropdown Estilizado
-Window:CreateDropdown("Configuração", {
+Window:CreateDropdown("SETTING", {
     Default = "Selecione uma opção",
     Options = {"Opção 1", "Opção 2", "Opção 3"},
     Callback = function(selected)
@@ -235,10 +198,9 @@ Window:CreateDropdown("Configuração", {
     end
 })
 
--- ADICIONADO: Slider Funcional
-Window:CreateSlider("Configuração", {
+Window:CreateSlider("SETTING", {
     Text = "Volume",
-    Min = 0,
+    Min = 50,
     Max = 100,
     Default = 50,
     Callback = function(value)
@@ -246,27 +208,26 @@ Window:CreateSlider("Configuração", {
     end
 })
 
--- Aba Créditos
-Window:CreateLabel("Créditos", "Feito por RANOX")
-Window:CreateLabel("Créditos", "Apoie nosso trabalho!")
+Window:CreateLabel("CRÉDITOS", "Feito por RANOX")
+Window:CreateLabel("CRÉDITOS", "Apoie nosso trabalho!")
 
-Window:CreateButton("Créditos", "Agradecimento", function()
+Window:CreateButton("CRÉDITOS", "Agradecimento", function()
     print("Obrigado pelo apoio!")
 end)
 
-Window:CreateButton("Créditos", "Visite nosso site", function()
+Window:CreateButton("CRÉDITOS", "Visite nosso site", function()
     print("Redirecionando para o site...")
 end)
 
-Window:CreateTextBox("Créditos", "Digite seu feedback", function(input)
+Window:CreateTextBox("CRÉDITOS", "JUMP MODIFIER", function(input)
     print("Feedback recebido:", input)
 end)
 
-Window:CreateTextBox("Créditos", "Digite seu email", function(input)
+Window:CreateTextBox("CRÉDITOS", "MONEY MODIFIER", function(input)
     print("Email recebido:", input)
 end)
 
-Window:CreateToggle("Créditos", {
+Window:CreateToggle("CRÉDITOS", {
     Text = "Aceitar Termos de Uso",
     Default = false,
     Callback = function(isOn)
@@ -274,7 +235,7 @@ Window:CreateToggle("Créditos", {
     end
 })
 
-Window:CreateToggle("Créditos", {
+Window:CreateToggle("CRÉDITOS", {
     Text = "Receber Notificações",
     Default = true,
     Callback = function(isOn)
@@ -282,24 +243,37 @@ Window:CreateToggle("Créditos", {
     end
 })
 
-Window:CreateLabel({
-    Name = "Modificar Nome Visual"
-})
-
-Window:CreateTextBox({
-    Placeholder = "Novo nome visual",
-    Callback = function(text)
-        game.Players.LocalPlayer.DisplayName = text
-        showNotification("Nome visual alterado para: " .. text)
+Window:CreateCheckbox("PRINCIPAL", {
+    Text = "Aceitar Termos de Uso",
+    Callback = function(isChecked)
+        print("Checkbox ativado:", isChecked)
     end
 })
 
-Window:CreateSlider({
-    Min = 0,
-    Max = 1000,
-    Default = 16,
-    Color = Color3.fromRGB(0, 255, 0),
-    Callback = function(value)
-        applyWalkSpeed(value)
+Window:CreateCheckbox("PRINCIPAL", {
+    Text = "Aceitar Termos de Uso",
+    Callback = function(isChecked)
+        print("Checkbox ativado:", isChecked)
+    end
+})
+
+Window:CreateCheckbox("PRINCIPAL", {
+    Text = "Aceitar Termos de Uso",
+    Callback = function(isChecked)
+        print("Checkbox ativado:", isChecked)
+    end
+})
+
+Window:CreateColorPicker("PRINCIPAL", {
+    Text = "Escolha uma cor",
+    Callback = function(color)
+    end
+})
+
+Window:CreateSwitch("PRINCIPAL", {
+    Text = "Modo Turbo",
+    State = false,
+    Callback = function(state)
+        print("Modo Turbo:", state)
     end
 })
