@@ -15,7 +15,7 @@ function RANOX:CreateWindow(config)
     screenGui.Parent = player:WaitForChild("PlayerGui")
 
     local mainFrame = Instance.new("TextButton")
-    mainFrame.Size = UDim2.new(0, 550, 0, 375)
+    mainFrame.Size = UDim2.new(0, 600, 0, 370)
     mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
     mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
@@ -25,6 +25,10 @@ function RANOX:CreateWindow(config)
     mainFrame.Draggable = true
     mainFrame.Active = true
     mainFrame.Parent = screenGui
+    mainFrame.BackgroundTransparency = 1
+    mainFrame.Position = UDim2.new(0.5, 0, 0.55, 0)
+    mainFrame.Size = UDim2.new(0, 0, 0, 0)
+
     Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
 
     local stroke = Instance.new("UIStroke", mainFrame)
@@ -37,6 +41,17 @@ function RANOX:CreateWindow(config)
         ColorSequenceKeypoint.new(0, Color3.fromRGB(35,35,35)),
         ColorSequenceKeypoint.new(1, Color3.fromRGB(50,50,50))
     }
+
+    task.delay(0.05, function()
+        game:GetService("TweenService"):Create(mainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0, 550, 0, 375),
+            Position = UDim2.new(0.5, 0, 0.5, 0),
+            BackgroundTransparency = 0
+        }):Play()
+    end)
+
+    return Window
+end
 
 local title = Instance.new("TextLabel", mainFrame)
 title.Size = UDim2.new(1, -50, 0, 25)
