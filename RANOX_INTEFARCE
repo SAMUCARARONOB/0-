@@ -933,37 +933,43 @@ function Window:CreateSwitch(tabName, switchConfig)
     if not tab then return end
 
     local holder = Instance.new("Frame", tab)
-    holder.Size = UDim2.new(1, -20, 0, 50)
+    holder.Size = UDim2.new(1, -20, 0, 55)
     holder.Position = UDim2.new(0, 10, 0, 0)
     holder.BackgroundTransparency = 1
 
     local label = Instance.new("TextLabel", holder)
-    label.Size = UDim2.new(0.5, 0, 1, -10)
+    label.Size = UDim2.new(0.6, 0, 1, -10)
     label.Position = UDim2.new(0, 0, 0, 0)
     label.BackgroundTransparency = 1
     label.Text = switchConfig.Text or "Switch"
-    label.Font = Enum.Font.Gotham
+    label.Font = Enum.Font.GothamBold
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.TextSize = 14
+    label.TextSize = 15
     label.TextXAlignment = Enum.TextXAlignment.Left
 
     local switch = Instance.new("Frame", holder)
-    switch.Size = UDim2.new(0, 50, 0, 25)
-    switch.Position = UDim2.new(1, -60, 0.5, -12)
-    switch.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    switch.Size = UDim2.new(0, 60, 0, 26)
+    switch.Position = UDim2.new(1, -65, 0.5, -13)
+    switch.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     switch.BorderSizePixel = 0
+    switch.BackgroundTransparency = 0.05
     Instance.new("UICorner", switch).CornerRadius = UDim.new(1, 0)
 
+    local glow = Instance.new("UIStroke", switch)
+    glow.Thickness = 1.3
+    glow.Color = Color3.fromRGB(255, 0, 0)
+    glow.Transparency = 1
+
     local circle = Instance.new("Frame", switch)
-    circle.Size = UDim2.new(0, 20, 0, 20)
-    circle.Position = UDim2.new(0, 3, 0.5, -10)
+    circle.Size = UDim2.new(0, 22, 0, 22)
+    circle.Position = UDim2.new(0, 3, 0.5, -11)
     circle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
     circle.BorderSizePixel = 0
     Instance.new("UICorner", circle).CornerRadius = UDim.new(1, 0)
 
     local stateLabel = Instance.new("TextLabel", holder)
     stateLabel.Size = UDim2.new(0, 40, 1, -10)
-    stateLabel.Position = UDim2.new(1, -110, 0, 0)
+    stateLabel.Position = UDim2.new(1, -115, 0, 0)
     stateLabel.BackgroundTransparency = 1
     stateLabel.Font = Enum.Font.GothamBold
     stateLabel.TextSize = 14
@@ -980,7 +986,7 @@ function Window:CreateSwitch(tabName, switchConfig)
     local particle = Instance.new("ParticleEmitter", circle)
     particle.Enabled = false
     particle.LightEmission = 1
-    particle.Rate = 30
+    particle.Rate = 40
     particle.Lifetime = NumberRange.new(0.4, 0.5)
     particle.Speed = NumberRange.new(1, 2)
     particle.Size = NumberSequence.new(0.2)
@@ -996,15 +1002,17 @@ function Window:CreateSwitch(tabName, switchConfig)
 
     local function toggleSwitch()
         state = not state
-        local goalPos = state and UDim2.new(1, -23, 0.5, -10) or UDim2.new(0, 3, 0.5, -10)
-        local bgColor = state and Color3.fromRGB(200, 20, 20) or Color3.fromRGB(80, 80, 80)
+        local goalPos = state and UDim2.new(1, -25, 0.5, -11) or UDim2.new(0, 3, 0.5, -11)
+        local bgColor = state and Color3.fromRGB(200, 20, 20) or Color3.fromRGB(50, 50, 50)
         local circleColor = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 200)
         local textColor = state and Color3.fromRGB(200, 20, 20) or Color3.fromRGB(255, 85, 85)
+        local glowTrans = state and 0 or 1
 
-        game:GetService("TweenService"):Create(circle, TweenInfo.new(0.2), {Position = goalPos}):Play()
-        game:GetService("TweenService"):Create(switch, TweenInfo.new(0.2), {BackgroundColor3 = bgColor}):Play()
-        game:GetService("TweenService"):Create(circle, TweenInfo.new(0.2), {BackgroundColor3 = circleColor}):Play()
-        game:GetService("TweenService"):Create(stateLabel, TweenInfo.new(0.2), {TextColor3 = textColor}):Play()
+        game:GetService("TweenService"):Create(circle, TweenInfo.new(0.25), {Position = goalPos}):Play()
+        game:GetService("TweenService"):Create(switch, TweenInfo.new(0.25), {BackgroundColor3 = bgColor}):Play()
+        game:GetService("TweenService"):Create(circle, TweenInfo.new(0.25), {BackgroundColor3 = circleColor}):Play()
+        game:GetService("TweenService"):Create(stateLabel, TweenInfo.new(0.25), {TextColor3 = textColor}):Play()
+        game:GetService("TweenService"):Create(glow, TweenInfo.new(0.25), {Transparency = glowTrans}):Play()
 
         stateLabel.Text = state and "ON" or "OFF"
 
@@ -1022,6 +1030,14 @@ function Window:CreateSwitch(tabName, switchConfig)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             toggleSwitch()
         end
+    end)
+
+    switch.MouseEnter:Connect(function()
+        game:GetService("TweenService"):Create(glow, TweenInfo.new(0.2), {Transparency = state and 0 or 0.5}):Play()
+    end)
+
+    switch.MouseLeave:Connect(function()
+        game:GetService("TweenService"):Create(glow, TweenInfo.new(0.2), {Transparency = 1}):Play()
     end)
 end
 
