@@ -56,14 +56,14 @@ function RANOX:CreateWindow(config)
     hideButton.Text = "-"
     hideButton.Font = Enum.Font.GothamBold
     hideButton.TextSize = 18
-    hideButton.TextColor3 = Color3.fromRGB(30, 0, 150)
+    hideButton.TextColor3 = Color3.fromRGB(30, 0, 165)
     hideButton.BackgroundTransparency = 1
     hideButton.AutoButtonColor = false
 
     local line = Instance.new("Frame", mainFrame)
     line.Size = UDim2.new(1, 0, 0, 1)
     line.Position = UDim2.new(0, 0, 0, 25)
-    line.BackgroundColor3 = Color3.fromRGB(30, 0, 150)
+    line.BackgroundColor3 = Color3.fromRGB(30, 0, 165)
     line.BorderSizePixel = 0
 
     local sidebar = Instance.new("ScrollingFrame", mainFrame)
@@ -115,7 +115,7 @@ local function switchTab(name)
 		frame.Visible = (tabName == name)
 	end
 	for tabName, btn in pairs(tabButtons) do
-		btn.BackgroundColor3 = (tabName == name) and Color3.fromRGB(30, 0, 150) or Color3.fromRGB(35, 35, 35)
+		btn.BackgroundColor3 = (tabName == name) and Color3.fromRGB(30, 0, 165) or Color3.fromRGB(35, 35, 35)
 	end
 	selectedTab = name
 end
@@ -271,7 +271,7 @@ end
     toggleButton.MouseButton1Click:Connect(function()
         isOn = not isOn
 
-        local bgColor = isOn and Color3.fromRGB(30, 0, 150) or Color3.fromRGB(70, 70, 70)
+        local bgColor = isOn and Color3.fromRGB(30, 0, 165) or Color3.fromRGB(70, 70, 70)
         local ballPosition = isOn and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
         local ballColor = isOn and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 200)
 
@@ -461,7 +461,7 @@ end
 
     local fill = Instance.new("Frame", sliderBar)
     fill.Size = UDim2.new(0, 0, 1, 0)
-    fill.BackgroundColor3 = Color3.fromRGB(30, 0, 150)
+    fill.BackgroundColor3 = Color3.fromRGB(30, 0, 165)
     fill.BorderSizePixel = 0
     fill.ZIndex = 3
     Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 6)
