@@ -39,80 +39,29 @@ function RANOX:CreateWindow(config)
     }
 
 local title = Instance.new("TextLabel", mainFrame)
-title.Size = UDim2.new(1, -50, 0, 25)
-title.Position = UDim2.new(0, 10, 0, 0)
-title.BackgroundTransparency = 1
-title.Text = config.Title or "RANOX HUB"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Font = Enum.Font.GothamSemibold
-title.TextSize = 16
-title.TextXAlignment = Enum.TextXAlignment.Left
-title.TextYAlignment = Enum.TextYAlignment.Center
-title.ClipsDescendants = true
+    title.Size = UDim2.new(1, -50, 0, 25)
+    title.Position = UDim2.new(0, 10, 0, 0)
+    title.BackgroundTransparency = 1
+    title.Text = config.Title or "RANOX Hub"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.Font = Enum.Font.GothamSemibold
+    title.TextSize = 16
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.TextYAlignment = Enum.TextYAlignment.Center
+    title.ClipsDescendants = true
 
-local hideButton = Instance.new("ImageButton", mainFrame)
-hideButton.Size = UDim2.new(0, 25, 0, 25)
-hideButton.Position = UDim2.new(1, -30, 0, 0)
-hideButton.Image = "rbxassetid://6035047409"
-hideButton.BackgroundTransparency = 1
-hideButton.AutoButtonColor = false
+    local hideButton = Instance.new("ImageButton", mainFrame)
+    hideButton.Size = UDim2.new(0, 25, 0, 25)
+    hideButton.Position = UDim2.new(1, -30, 0, 0)
+    hideButton.Image = "rbxassetid://6035047409"
+    hideButton.BackgroundTransparency = 1
+    hideButton.AutoButtonColor = false
 
-local searchButton = Instance.new("ImageButton", mainFrame)
-searchButton.Size = UDim2.new(0, 25, 0, 25)
-searchButton.Position = UDim2.new(1, -60, 0, 0)
-searchButton.Image = "rbxassetid://15999597378"
-searchButton.BackgroundTransparency = 1
-searchButton.AutoButtonColor = false
-
-local line = Instance.new("Frame", mainFrame)
-line.Size = UDim2.new(1, 0, 0, 1)
-line.Position = UDim2.new(0, 0, 0, 25)
-line.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
-line.BorderSizePixel = 0
-
-local isSearching = false
-local searchText = ""
-
-searchButton.MouseButton1Click:Connect(function()
-	isSearching = not isSearching
-	searchText = ""
-	if not isSearching then
-		for _, obj in pairs(mainFrame:GetDescendants()) do
-			if obj:IsA("TextButton") then
-				obj.Visible = true
-			end
-		end
-	end
-end)
-
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-	if not isSearching or gameProcessed or input.UserInputType ~= Enum.UserInputType.Keyboard then return end
-
-	if input.KeyCode == Enum.KeyCode.Backspace then
-		searchText = string.sub(searchText, 1, #searchText - 1)
-	elseif input.KeyCode == Enum.KeyCode.Return then
-		isSearching = false
-		for _, obj in pairs(mainFrame:GetDescendants()) do
-			if obj:IsA("TextButton") then
-				obj.Visible = true
-			end
-		end
-	else
-		local key = input.KeyCode
-		local char = key.Name
-		if #char == 1 or (key.Value >= 65 and key.Value <= 122) then
-			searchText = searchText .. char
-		end
-	end
-
-	local query = string.lower(searchText)
-	for _, button in pairs(mainFrame:GetDescendants()) do
-		if button:IsA("TextButton") then
-			local name = string.lower(button.Name)
-			button.Visible = query == "" or string.find(name, query)
-		end
-	end
-end)
+    local line = Instance.new("Frame", mainFrame)
+    line.Size = UDim2.new(1, 0, 0, 1)
+    line.Position = UDim2.new(0, 0, 0, 25)
+    line.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
+    line.BorderSizePixel = 0
 
 local sidebar = Instance.new("ScrollingFrame", mainFrame)
 sidebar.Size = UDim2.new(0, 107, 1, -25)
