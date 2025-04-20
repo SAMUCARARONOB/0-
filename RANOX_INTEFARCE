@@ -63,6 +63,109 @@ local title = Instance.new("TextLabel", mainFrame)
     line.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
     line.BorderSizePixel = 0
 
+local mainFrame = script.Parent
+
+local searchButton = Instance.new("ImageButton", mainFrame)
+searchButton.Size = UDim2.new(0, 25, 0, 25)
+searchButton.Position = UDim2.new(1, -60, 0, 0)
+searchButton.Image = "rbxassetid://15999597378"
+searchButton.BackgroundTransparency = 1
+searchButton.AutoButtonColor = false
+
+local searchBox = Instance.new("TextBox", mainFrame)
+searchBox.Size = UDim2.new(1, -20, 0, 30)
+searchBox.Position = UDim2.new(0, 10, 0, -35)
+searchBox.PlaceholderText = "Pesquisar..."
+searchBox.Text = ""
+searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+searchBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+searchBox.BorderSizePixel = 0
+searchBox.ClearTextOnFocus = false
+searchBox.Visible = false
+
+local resultsFrame = Instance.new("ScrollingFrame", mainFrame)
+resultsFrame.Size = UDim2.new(1, -20, 0, 100)
+resultsFrame.Position = UDim2.new(0, 10, 0, -135)
+resultsFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+resultsFrame.ScrollBarThickness = 6
+resultsFrame.BackgroundTransparency = 1
+resultsFrame.BorderSizePixel = 0
+resultsFrame.Visible = false
+
+local function updateSearchResults(query)
+    for _, child in pairs(resultsFrame:GetChildren()) do
+        if child:IsA("TextButton") then
+            child:Destroy()
+        end
+    end
+
+    local yPos = 0
+    for _, element in pairs(mainFrame:GetDescendants()) do
+        if element:IsA("GuiObject") and element.Name:lower():find(query:lower()) then
+            local resultButton = Instance.new("TextButton", resultsFrame)
+            resultButton.Size = UDim2.new(1, 0, 0, 25)
+            resultButton.Position = UDim2.new(0, 0, 0, yPos)
+            resultButton.Text = element.Name
+            resultButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            resultButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            resultButton.BorderSizePixel = 0
+
+            resultButton.MouseButton1Click:Connect(function()
+                local originalColor = element.BackgroundColor3
+                element.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+                wait(0.5)
+                element.BackgroundColor3 = originalColor
+            end)
+
+            yPos = yPos + 30
+        end
+    end
+
+    resultsFrame.CanvasSize = UDim2.new(0, 0, 0, yPos)
+end
+
+local function showSearchBox()
+    searchBox.Visible = true
+    resultsFrame.Visible = true
+    searchBox:TweenPosition(UDim2.new(0, 10, 0, -35), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+    resultsFrame:TweenPosition(UDim2.new(0, 10, 0, -135), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+    searchBox:CaptureFocus()
+end
+
+local function hideSearchBox()
+    searchBox:TweenPosition(UDim2.new(0, 10, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+    resultsFrame:TweenPosition(UDim2.new(0, 10, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+    wait(0.3)
+    searchBox.Visible = false
+    resultsFrame.Visible = false
+    searchBox.Text = ""
+    updateSearchResults("")
+end
+
+searchButton.MouseButton1Click:Connect(function()
+    if not searchBox.Visible then
+        showSearchBox()
+    else
+        hideSearchBox()
+    end
+end)
+
+searchBox:GetPropertyChangedSignal("Text"):Connect(function()
+    updateSearchResults(searchBox.Text)
+end)
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if input.UserInputType == Enum.UserInputType.Keyboard then
+        if input.KeyCode == Enum.KeyCode.Return then
+            hideSearchBox()
+        end
+    elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if not searchBox:IsFocused() then
+            hideSearchBox()
+        end
+    end
+end)
+
 local sidebar = Instance.new("ScrollingFrame", mainFrame)
 sidebar.Size = UDim2.new(0, 107, 1, -25)
 sidebar.Position = UDim2.new(0, 0, 0, 25)
