@@ -15,7 +15,7 @@ function RANOX:CreateWindow(config)
     screenGui.Parent = player:WaitForChild("PlayerGui")
 
     local mainFrame = Instance.new("TextButton")
-    mainFrame.Size = UDim2.new(0, 550, 0, 375)
+    mainFrame.Size = UDim2.new(0, 600, 0, 375)
     mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
     mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
@@ -75,7 +75,7 @@ end)
     local line = Instance.new("Frame", mainFrame)
     line.Size = UDim2.new(1, 0, 0, 1)
     line.Position = UDim2.new(0, 0, 0, 25)
-    line.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
+    line.BackgroundColor3 = Color3.fromRGB(35, 0, 255)
     line.BorderSizePixel = 0
 
 local sidebar = Instance.new("ScrollingFrame", mainFrame)
@@ -127,7 +127,7 @@ local function switchTab(name)
 		frame.Visible = (tabName == name)
 	end
 	for tabName, btn in pairs(tabButtons) do
-		btn.BackgroundColor3 = (tabName == name) and Color3.fromRGB(70, 20, 20) or Color3.fromRGB(35, 35, 35)
+		btn.BackgroundColor3 = (tabName == name) and Color3.fromRGB(35, 20, 255) or Color3.fromRGB(35, 35, 35)
 	end
 	selectedTab = name
 end
@@ -221,7 +221,7 @@ end
         Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 4)
 
         btn.MouseEnter:Connect(function()
-            btn.BackgroundColor3 = Color3.fromRGB(60, 20, 20)
+            btn.BackgroundColor3 = Color3.fromRGB(25, 0, 225)
         end)
 
         btn.MouseLeave:Connect(function()
@@ -283,7 +283,7 @@ end
     toggleButton.MouseButton1Click:Connect(function()
         isOn = not isOn
 
-        local bgColor = isOn and Color3.fromRGB(170, 0, 0) or Color3.fromRGB(70, 70, 70)
+        local bgColor = isOn and Color3.fromRGB(35, 0, 255) or Color3.fromRGB(70, 70, 70)
         local ballPosition = isOn and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
         local ballColor = isOn and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 200)
 
@@ -473,7 +473,7 @@ end
 
     local fill = Instance.new("Frame", sliderBar)
     fill.Size = UDim2.new(0, 0, 1, 0)
-    fill.BackgroundColor3 = Color3.fromRGB(170, 20, 20)
+    fill.BackgroundColor3 = Color3.fromRGB(35, 0, 255)
     fill.BorderSizePixel = 0
     fill.ZIndex = 3
     Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 6)
@@ -558,7 +558,7 @@ function Window:CreateTextBox(tabName, placeholderText, callback)
     local highlight = Instance.new("Frame", background)
     highlight.Size = UDim2.new(1, 0, 0, 2)
     highlight.Position = UDim2.new(0, 0, 1, -2)
-    highlight.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+    highlight.BackgroundColor3 = Color3.fromRGB(35, 0, 255)
     highlight.BackgroundTransparency = 0.5
     highlight.BorderSizePixel = 0
     highlight.Visible = false
@@ -703,7 +703,7 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
         local shrink = tweenService:Create(box, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 24, 0, 24)})
 
         if toggled then
-            tweenBoxColor(Color3.fromRGB(170, 20, 20))
+            tweenBoxColor(Color3.fromRGB(35, 0, 255))
             grow:Play()
             grow.Completed:Connect(function()
                 shrink:Play()
@@ -995,7 +995,7 @@ function Window:CreateSwitch(tabName, switchConfig)
     particle.Texture = "rbxassetid://296874871"
     particle.Color = ColorSequence.new{
         ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 20, 20))
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(35, 0, 255))
     }
 
     local state = false
@@ -1003,9 +1003,9 @@ function Window:CreateSwitch(tabName, switchConfig)
     local function toggleSwitch()
         state = not state
         local goalPos = state and UDim2.new(1, -25, 0.5, -11) or UDim2.new(0, 3, 0.5, -11)
-        local bgColor = state and Color3.fromRGB(200, 20, 20) or Color3.fromRGB(50, 50, 50)
+        local bgColor = state and Color3.fromRGB(35, 0, 255) or Color3.fromRGB(50, 50, 50)
         local circleColor = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 200)
-        local textColor = state and Color3.fromRGB(200, 20, 20) or Color3.fromRGB(255, 85, 85)
+        local textColor = state and Color3.fromRGB(0, 255, 90) or Color3.fromRGB(255, 85, 85)
         local glowTrans = state and 0 or 1
 
         game:GetService("TweenService"):Create(circle, TweenInfo.new(0.25), {Position = goalPos}):Play()
