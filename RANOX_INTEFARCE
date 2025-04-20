@@ -39,16 +39,31 @@ function RANOX:CreateWindow(config)
     }
 
 local title = Instance.new("TextLabel", mainFrame)
-    title.Size = UDim2.new(1, -50, 0, 25)
-    title.Position = UDim2.new(0, 10, 0, 0)
-    title.BackgroundTransparency = 1
-    title.Text = config.Title or "RANOX Hub"
-    title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.Font = Enum.Font.GothamSemibold
-    title.TextSize = 16
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.TextYAlignment = Enum.TextYAlignment.Center
-    title.ClipsDescendants = true
+title.Size = UDim2.new(1, -50, 0, 25)
+title.Position = UDim2.new(0, 10, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = config.Title or "RANOX Hub"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamSemibold
+title.TextSize = 16
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.TextYAlignment = Enum.TextYAlignment.Center
+title.ClipsDescendants = true
+
+local subtitle = Instance.new("TextLabel", mainFrame)
+subtitle.BackgroundTransparency = 1
+subtitle.Text = config.Subtitle or "v1.0"
+subtitle.TextColor3 = Color3.fromRGB(100, 100, 100)
+subtitle.Font = Enum.Font.Gotham
+subtitle.TextSize = 8
+subtitle.TextXAlignment = Enum.TextXAlignment.Left
+subtitle.TextYAlignment = Enum.TextYAlignment.Center
+subtitle.Size = UDim2.new(0, 100, 0, 25)
+
+task.defer(function()
+    local textWidth = title.TextBounds.X
+    subtitle.Position = UDim2.new(0, 10 + textWidth + 6, 0, 0)
+end)
 
     local hideButton = Instance.new("ImageButton", mainFrame)
     hideButton.Size = UDim2.new(0, 25, 0, 25)
