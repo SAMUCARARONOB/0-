@@ -726,6 +726,75 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     end)
 end
 
+function Window:CreateColorPicker(tabName, colorConfig)
+    local tab = pages[tabName]
+    if not tab then return end
+
+    local colorPickerFrame = Instance.new("Frame", tab)
+    colorPickerFrame.Size = UDim2.new(1, -20, 0, 80)
+    colorPickerFrame.Position = UDim2.new(0, 10, 0, 0)
+    colorPickerFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    colorPickerFrame.ClipsDescendants = true
+    Instance.new("UICorner", colorPickerFrame).CornerRadius = UDim.new(0, 6)
+
+    local label = Instance.new("TextLabel", colorPickerFrame)
+    label.Size = UDim2.new(1, -20, 0, 26)
+    label.Position = UDim2.new(0, 10, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = colorConfig.Text or "Select Color"
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.Font = Enum.Font.Gotham
+    label.TextSize = 14
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextYAlignment = Enum.TextYAlignment.Center
+
+    local colorDisplay = Instance.new("Frame", colorPickerFrame)
+    colorDisplay.Size = UDim2.new(1, -20, 0, 26)
+    colorDisplay.Position = UDim2.new(0, 10, 0, 30)
+    colorDisplay.BackgroundColor3 = colorConfig.DefaultColor or Color3.fromRGB(255, 0, 0)
+    Instance.new("UICorner", colorDisplay).CornerRadius = UDim.new(0, 6)
+
+    local slider = Instance.new("TextButton", colorPickerFrame)
+    slider.Size = UDim2.new(1, -20, 0, 20)
+    slider.Position = UDim2.new(0, 10, 0, 60)
+    slider.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    slider.Text = ""
+    Instance.new("UICorner", slider).CornerRadius = UDim.new(0, 6)
+
+    local ball = Instance.new("Frame", slider)
+    ball.Size = UDim2.new(0, 16, 0, 16)
+    ball.Position = UDim2.new(0, 0, 0, 2)
+    ball.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    ball.BorderSizePixel = 0
+    Instance.new("UICorner", ball).CornerRadius = UDim.new(1, 0)
+
+    local isDragging = false
+    local tweenService = game:GetService("TweenService")
+
+    slider.MouseButton1Down:Connect(function()
+        isDragging = true
+    end)
+
+    slider.MouseButton1Up:Connect(function()
+        isDragging = false
+    end)
+
+    slider.MouseMoved:Connect(function(_, y)
+        if isDragging then
+            local newPos = math.clamp(y - slider.AbsolutePosition.Y, 0, slider.AbsoluteSize.Y)
+            local colorValue = math.clamp(newPos / slider.AbsoluteSize.Y, 0, 1)
+            local newColor = Color3.fromHSV(colorValue, 1, 1)
+
+            ball.Position = UDim2.new(0, 0, 0, newPos)
+            colorDisplay.BackgroundColor3 = newColor
+
+            if colorConfig.Callback then
+                colorConfig.Callback(newColor)
+            end
+        end
+    end)
+end
+
     local isHidden = false
     hideButton.MouseButton1Click:Connect(function()
         local targetSize = isHidden and UDim2.new(0, 550, 0, 375) or UDim2.new(0, 0, 0, 0)
