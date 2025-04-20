@@ -549,7 +549,6 @@ function Window:CreateTextBox(tabName, placeholderText, callback)
     highlight.Visible = false
     highlight.ZIndex = 2
 
-    -- Animação de transparência pulsante
     task.spawn(function()
         local increasing = true
         while true do
@@ -620,6 +619,78 @@ function Window:CreateTextBox(tabName, placeholderText, callback)
         end
         if enterPressed and callback then
             callback(textBox.Text)
+        end
+    end)
+end
+
+function Window:CreateCheckbox(tabName, checkboxConfig)
+    local tab = pages[tabName]
+    if not tab then return end
+
+    local checkboxFrame = Instance.new("Frame", tab)
+    checkboxFrame.Size = UDim2.new(1, -20, 0, 36)
+    checkboxFrame.Position = UDim2.new(0, 10, 0, 0)
+    checkboxFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    checkboxFrame.ClipsDescendants = true
+    checkboxFrame.BackgroundTransparency = 0
+    Instance.new("UICorner", checkboxFrame).CornerRadius = UDim.new(0, 6)
+
+    local box = Instance.new("Frame", checkboxFrame)
+    box.Size = UDim2.new(0, 24, 0, 24)
+    box.Position = UDim2.new(0, 0, 0.5, -12)
+    box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    box.BorderSizePixel = 0
+    Instance.new("UICorner", box).CornerRadius = UDim.new(0, 6)
+    Instance.new("UIStroke", box).Color = Color3.fromRGB(90, 90, 90)
+    Instance.new("UIStroke", box).Thickness = 1.3
+
+    local check = Instance.new("Frame", box)
+    check.Size = UDim2.new(1, -6, 1, -6)
+    check.Position = UDim2.new(0, 3, 0, 3)
+    check.BackgroundColor3 = Color3.fromRGB(0, 255, 120)
+    check.Visible = false
+    check.BorderSizePixel = 0
+    Instance.new("UICorner", check).CornerRadius = UDim.new(0, 4)
+
+    local label = Instance.new("TextLabel", checkboxFrame)
+    label.Size = UDim2.new(1, -60, 1, 0)
+    label.Position = UDim2.new(0, 32, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = checkboxConfig.Text or "Checkbox"
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.Font = Enum.Font.Gotham
+    label.TextSize = 14
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextYAlignment = Enum.TextYAlignment.Center
+
+    local button = Instance.new("TextButton", checkboxFrame)
+    button.Size = UDim2.new(1, 0, 1, 0)
+    button.BackgroundTransparency = 1
+    button.Text = ""
+    button.AutoButtonColor = false
+
+    local toggled = false
+    local running = false
+    local tweenService = game:GetService("TweenService")
+
+    button.MouseButton1Click:Connect(function()
+        toggled = not toggled
+        check.Visible = toggled
+
+        if toggled then
+            running = true
+            task.spawn(function()
+                while running and toggled do
+                    pcall(checkboxConfig.Callback)
+                    task.wait()
+                end
+            end)
+        else
+            running = false
+        end
+
+        if checkboxConfig.Callback then
+            checkboxConfig.Callback(toggled)
         end
     end)
 end
