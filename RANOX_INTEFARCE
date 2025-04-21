@@ -672,42 +672,60 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     if not tab then return end
 
     local checkboxFrame = Instance.new("Frame", tab)
-    checkboxFrame.Size = UDim2.new(1, -20, 0, 36)
+    checkboxFrame.Size = UDim2.new(1, -20, 0, 40)
     checkboxFrame.Position = UDim2.new(0, 10, 0, 0)
-    checkboxFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    checkboxFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     checkboxFrame.ClipsDescendants = true
     checkboxFrame.BackgroundTransparency = 0
-    Instance.new("UICorner", checkboxFrame).CornerRadius = UDim.new(0, 6)
+    Instance.new("UICorner", checkboxFrame).CornerRadius = UDim.new(0, 8)
+
+    local rgbLine = Instance.new("Frame", checkboxFrame)
+    rgbLine.Size = UDim2.new(1, 0, 0, 1)
+    rgbLine.Position = UDim2.new(0, 0, 0, 0)
+    rgbLine.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    rgbLine.BorderSizePixel = 0
+
+    local gradient = Instance.new("UIGradient", rgbLine)
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
+    }
+    gradient.Rotation = 0
+
+    local label = Instance.new("TextLabel", checkboxFrame)
+    label.Size = UDim2.new(1, -70, 1, 0)
+    label.Position = UDim2.new(0, 10, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = checkboxConfig.Text or "Checkbox"
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.Font = Enum.Font.GothamMedium
+    label.TextSize = 14
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextYAlignment = Enum.TextYAlignment.Center
 
     local box = Instance.new("Frame", checkboxFrame)
     box.Size = UDim2.new(0, 24, 0, 24)
-    box.Position = UDim2.new(0, 3, 0.5, -12)
+    box.Position = UDim2.new(1, -32, 0.5, -12)
+    box.AnchorPoint = Vector2.new(1, 0.5)
     box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     box.BorderSizePixel = 0
     Instance.new("UICorner", box).CornerRadius = UDim.new(0, 6)
-    Instance.new("UIStroke", box).Color = Color3.fromRGB(90, 90, 90)
-    Instance.new("UIStroke", box).Thickness = 1.3
+
+    local stroke = Instance.new("UIStroke", box)
+    stroke.Color = Color3.fromRGB(0, 170, 255)
+    stroke.Thickness = 1.5
 
     local checkmark = Instance.new("TextLabel", box)
     checkmark.Size = UDim2.new(1, -6, 1, -6)
-    checkmark.Position = UDim2.new(0, 3, 0, 3)
-    checkmark.Text = "✔️"
+    checkmark.Position = UDim2.new(0.5, 0, 0.5, 0)
+    checkmark.AnchorPoint = Vector2.new(0.5, 0.5)
+    checkmark.Text = "✓"
     checkmark.TextColor3 = Color3.fromRGB(255, 255, 255)
     checkmark.TextScaled = true
     checkmark.BackgroundTransparency = 1
     checkmark.Visible = false
-    Instance.new("UICorner", checkmark).CornerRadius = UDim.new(0, 4)
-
-    local label = Instance.new("TextLabel", checkboxFrame)
-    label.Size = UDim2.new(1, -60, 1, 0)
-    label.Position = UDim2.new(0, 32, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = checkboxConfig.Text or "Checkbox"
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.Font = Enum.Font.Gotham
-    label.TextSize = 14
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.TextYAlignment = Enum.TextYAlignment.Center
+    checkmark.Font = Enum.Font.GothamBold
 
     local button = Instance.new("TextButton", checkboxFrame)
     button.Size = UDim2.new(1, 0, 1, 0)
@@ -720,23 +738,26 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     local tweenService = game:GetService("TweenService")
 
     local function tweenBoxColor(toColor)
-        local tween = tweenService:Create(box, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = toColor})
+        local tween = tweenService:Create(box, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = toColor})
         tween:Play()
+    end
+
+    local function pulseBox()
+        local grow = tweenService:Create(box, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 28, 0, 28)})
+        local shrink = tweenService:Create(box, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 24, 0, 24)})
+        grow:Play()
+        grow.Completed:Connect(function()
+            shrink:Play()
+        end)
     end
 
     button.MouseButton1Click:Connect(function()
         toggled = not toggled
         checkmark.Visible = toggled
 
-        local grow = tweenService:Create(box, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 28, 0, 28)})
-        local shrink = tweenService:Create(box, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 24, 0, 24)})
-
         if toggled then
-            tweenBoxColor(Color3.fromRGB(170, 20, 20))
-            grow:Play()
-            grow.Completed:Connect(function()
-                shrink:Play()
-            end)
+            tweenBoxColor(Color3.fromRGB(0, 170, 255))
+            pulseBox()
             running = true
             task.spawn(function()
                 while running and toggled do
