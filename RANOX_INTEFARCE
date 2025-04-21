@@ -672,7 +672,7 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     if not tab then return end
 
     local checkboxFrame = Instance.new("Frame", tab)
-    checkboxFrame.Size = UDim2.new(1, -20, 0, 40)
+    checkboxFrame.Size = UDim2.new(1, -20, 0, 60)
     checkboxFrame.Position = UDim2.new(0, 10, 0, 0)
     checkboxFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     checkboxFrame.ClipsDescendants = true
@@ -694,7 +694,7 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     gradient.Rotation = 0
 
     local label = Instance.new("TextLabel", checkboxFrame)
-    label.Size = UDim2.new(1, -70, 1, 0)
+    label.Size = UDim2.new(1, -70, 0.5, 0)
     label.Position = UDim2.new(0, 10, 0, 0)
     label.BackgroundTransparency = 1
     label.Text = checkboxConfig.Text or "Checkbox"
@@ -703,6 +703,17 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     label.TextSize = 14
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.TextYAlignment = Enum.TextYAlignment.Center
+
+    local description = Instance.new("TextLabel", checkboxFrame)
+    description.Size = UDim2.new(1, -70, 0.5, 0)
+    description.Position = UDim2.new(0, 10, 0, 20)
+    description.BackgroundTransparency = 1
+    description.Text = checkboxConfig.Description or "Descrição do Checkbox"
+    description.TextColor3 = Color3.fromRGB(90, 90, 90)
+    description.Font = Enum.Font.GothamLight
+    description.TextSize = 7
+    description.TextXAlignment = Enum.TextXAlignment.Left
+    description.TextYAlignment = Enum.TextYAlignment.Center
 
     local box = Instance.new("Frame", checkboxFrame)
     box.Size = UDim2.new(0, 24, 0, 24)
@@ -742,6 +753,11 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
         tween:Play()
     end
 
+    local function tweenBorderColor(toColor)
+        local tween = tweenService:Create(stroke, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Color = toColor})
+        tween:Play()
+    end
+
     local function pulseBox()
         local grow = tweenService:Create(box, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 28, 0, 28)})
         local shrink = tweenService:Create(box, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 24, 0, 24)})
@@ -756,7 +772,8 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
         checkmark.Visible = toggled
 
         if toggled then
-            tweenBoxColor(Color3.fromRGB(0, 170, 255))
+            tweenBoxColor(Color3.fromRGB(190, 0, 0))
+            tweenBorderColor(Color3.fromRGB(70, 0, 0))
             pulseBox()
             running = true
             task.spawn(function()
@@ -767,6 +784,7 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
             end)
         else
             tweenBoxColor(Color3.fromRGB(30, 30, 30))
+            tweenBorderColor(Color3.fromRGB(0, 170, 255))
             running = false
         end
 
