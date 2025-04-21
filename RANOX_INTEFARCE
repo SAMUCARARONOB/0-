@@ -153,7 +153,7 @@ function Window:CreateTab(tabName, iconId)
 marker.Name = "TabMarker"
 marker.Size = UDim2.new(0, 4, 1, -8)
 marker.Position = UDim2.new(0, 0, 0, 4)
-marker.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+marker.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
 marker.BorderSizePixel = 0
 marker.Visible = false
 Instance.new("UICorner", marker).CornerRadius = UDim.new(0, 4)
