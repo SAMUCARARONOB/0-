@@ -129,7 +129,13 @@ local function switchTab(name)
 	for tabName, btn in pairs(tabButtons) do
 		local marker = btn:FindFirstChild("TabMarker")
 		if marker then
-			marker.Visible = (tabName == name)
+			if tabName == name then
+				marker.Visible = true
+				marker.BackgroundTransparency = 1
+				marker:TweenTransparency(0.5, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+			else
+				marker.Visible = false
+			end
 		end
 		btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 	end
@@ -151,11 +157,14 @@ function Window:CreateTab(tabName, iconId)
 
 	local marker = Instance.new("Frame", tabBtn)
 	marker.Name = "TabMarker"
-	marker.Size = UDim2.new(1, 0, 0, 2)
-	marker.Position = UDim2.new(0, 0, 1, -2)
-	marker.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+	marker.Size = UDim2.new(0, 4, 1, -6)
+	marker.Position = UDim2.new(0, 2, 0, 3)
+	marker.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 	marker.BorderSizePixel = 0
+	marker.BackgroundTransparency = 1
 	marker.Visible = false
+	local markerCorner = Instance.new("UICorner", marker)
+	markerCorner.CornerRadius = UDim.new(0.5, 0)
 
 	local label = Instance.new("TextLabel", tabBtn)
 	label.BackgroundTransparency = 1
@@ -169,14 +178,14 @@ function Window:CreateTab(tabName, iconId)
 	if iconId then
 		local icon = Instance.new("ImageLabel", tabBtn)
 		icon.Size = UDim2.new(0, 16, 0, 16)
-		icon.Position = UDim2.new(0, 6, 0.5, -8)
+		icon.Position = UDim2.new(0, 10, 0.5, -8)
 		icon.BackgroundTransparency = 1
 		icon.Image = "rbxassetid://" .. tostring(iconId)
-		label.Position = UDim2.new(0, 26, 0, 0)
-		label.Size = UDim2.new(1, -28, 1, 0)
+		label.Position = UDim2.new(0, 32, 0, 0)
+		label.Size = UDim2.new(1, -34, 1, 0)
 	else
-		label.Position = UDim2.new(0, 10, 0, 0)
-		label.Size = UDim2.new(1, -10, 1, 0)
+		label.Position = UDim2.new(0, 12, 0, 0)
+		label.Size = UDim2.new(1, -12, 1, 0)
 	end
 
 	tabButtons[tabName] = tabBtn
