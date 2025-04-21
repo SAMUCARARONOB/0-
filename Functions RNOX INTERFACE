@@ -1,149 +1,3 @@
-local RNOX = loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/INTERFACE-RNOX-HUB"))()
-
-local Window = RNOX:CreateWindow({
-    Name = "Meu Script Roblox Aprimorado",
-    LoadingTitle = "Carregando...",
-    LoadingSubtitle = "Por favor, aguarde."
-})
-
-local function showNotification(message)
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "✨ Notificação do Script ✨",
-        Text = message,
-        Duration = 5
-    })
-end
-
-local function applyWalkSpeed(speed)
-    if typeof(speed) == "number" then
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speed
-        showNotification("🚀 Velocidade ajustada para: " .. speed)
-    else
-        showNotification("❌ Valor de velocidade inválido.")
-    end
-end
-
-local function applyJumpPower(power)
-    if typeof(power) == "number" then
-        game.Players.LocalPlayer.Character.Humanoid.JumpPower = power
-        showNotification("🦘 Força do pulo ajustada para: " .. power)
-    else
-        showNotification("❌ Valor de força do pulo inválido.")
-    end
-end
-
-Window:CreateLabel({
-    Name = "MODIFICADOR DE VELOCIDADE"
-})
-
-Window:CreateTextBox({
-    Placeholder = "Digite a velocidade",
-    Callback = function(text)
-        local speed = tonumber(text)
-        applyWalkSpeed(speed)
-    end
-})
-
-Window:CreateLabel({
-    Name = "MODIFICADOR DE PULO"
-})
-
-Window:CreateTextBox({
-    Placeholder = "Digite a força do pulo",
-    Callback = function(text)
-        local jumpPower = tonumber(text)
-        applyJumpPower(jumpPower)
-    end
-})
-
-Window:CreateButton({
-    Name = "Teleporte Seguro",
-    Callback = function()
-        local foundSafePosition = false
-        local maxAttempts = 100
-        local attempts = 0
-
-        while not foundSafePosition and attempts < maxAttempts do
-            local x = math.random(-1000, 1000)
-            local z = math.random(-1000, 1000)
-            local y = 100
-
-            local ray = Ray.new(Vector3.new(x, y, z), Vector3.new(0, -500, 0))
-            local part, position = workspace:FindPartOnRay(ray)
-
-            if part and position then
-                game.Players.LocalPlayer.Character:MoveTo(position + Vector3.new(0, 5, 0))
-                showNotification("✨ Teleportado com segurança!")
-                foundSafePosition = true
-            end
-
-            attempts = attempts + 1
-        end
-
-        if not foundSafePosition then
-            showNotification("❌ Não foi possível encontrar um local seguro.")
-        end
-    end
-})
-
-local noClipEnabled = false
-Window:CreateToggle({
-    Name = "Modo NoClip",
-    CurrentState = false,
-    Callback = function(state)
-        noClipEnabled = state
-        local character = game.Players.LocalPlayer.Character
-
-        game:GetService("RunService").Stepped:Connect(function()
-            if noClipEnabled and character and character:FindFirstChild("Humanoid") then
-                for _, part in pairs(character:GetDescendants()) do
-                    if part:IsA("BasePart") and part.CanCollide == true then
-                        part.CanCollide = false
-                    end
-                end
-            end
-        end)
-
-        showNotification("NoClip " .. (state and "ativado" or "desativado"))
-    end
-})
-
-Window:CreateLabel({
-    Name = "Enviar Mensagem no Chat"
-})
-
-local chatMessage = ""
-Window:CreateTextBox({
-    Placeholder = "Digite sua mensagem",
-    Callback = function(text)
-        chatMessage = text
-    end
-})
-
-Window:CreateButton({
-    Name = "Enviar Mensagem Bonita",
-    Callback = function()
-        if chatMessage ~= "" then
-            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(
-                chatMessage,
-                "All"
-            )
-            showNotification("💬 Mensagem enviada: \"" .. chatMessage .. "\"")
-        else
-            showNotification("❌ Digite uma mensagem válida.")
-        end
-    end
-})
-
-Window:CreateToggle({
-    Name = "Esconder/Mostrar GUI",
-    CurrentState = true,
-    Callback = function(state)
-        guiVisibility = state
-        Window:SetVisibility(state)
-        showNotification("GUI está agora: " .. (state and "visível" or "escondida"))
-    end
-}) -- segunda interface abaixo de exemplo de como usar
 local HttpService = game:GetService("HttpService")
 local RANOX = loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/RANOX_INTEFARCE"))()
 
@@ -158,6 +12,7 @@ Window:CreateTab("CRÉDITOS", 4483362458)
 
 Window:CreateToggle("PRINCIPAL", {
     Text = "Ativar Modo Avançado",
+    Description = "Ativa recursos adicionais e avançados",
     Default = false,
     Callback = function(isOn)
         print("Modo Avançado ativado:", isOn)
@@ -166,6 +21,7 @@ Window:CreateToggle("PRINCIPAL", {
 
 Window:CreateToggle("PRINCIPAL", {
     Text = "Ativar Recurso X",
+    Description = "Liga a função especial X do jogo",
     Default = true,
     Callback = function(isOn)
         print("Recurso X ativado:", isOn)
@@ -174,6 +30,7 @@ Window:CreateToggle("PRINCIPAL", {
 
 Window:CreateToggle("PRINCIPAL", {
     Text = "Habilitar Opção Y",
+    Description = "Ativa a opção extra Y no ambiente",
     Default = false,
     Callback = function(isOn)
         print("Opção Y habilitada:", isOn)
@@ -229,6 +86,7 @@ end)
 
 Window:CreateToggle("CRÉDITOS", {
     Text = "Aceitar Termos de Uso",
+    Description = "Confirma que você leu e concorda com os termos",
     Default = false,
     Callback = function(isOn)
         print("Termos de uso aceitos:", isOn)
@@ -237,6 +95,7 @@ Window:CreateToggle("CRÉDITOS", {
 
 Window:CreateToggle("CRÉDITOS", {
     Text = "Receber Notificações",
+    Description = "Ativa ou desativa notificações do sistema",
     Default = true,
     Callback = function(isOn)
         print("Notificações ativadas:", isOn)
@@ -245,20 +104,23 @@ Window:CreateToggle("CRÉDITOS", {
 
 Window:CreateCheckbox("PRINCIPAL", {
     Text = "Aceitar Termos de Uso",
+    Description = "Confirma sua aceitação aos termos de uso",
     Callback = function(isChecked)
         print("Checkbox ativado:", isChecked)
     end
 })
 
 Window:CreateCheckbox("PRINCIPAL", {
-    Text = "Aceitar Termos de Uso",
+    Text = "Ativar Sombras Dinâmicas",
+    Description = "Habilita o efeito visual de sombras dinâmicas",
     Callback = function(isChecked)
         print("Checkbox ativado:", isChecked)
     end
 })
 
 Window:CreateCheckbox("PRINCIPAL", {
-    Text = "Aceitar Termos de Uso",
+    Text = "Mostrar FPS",
+    Description = "Exibe a taxa de quadros por segundo na tela",
     Callback = function(isChecked)
         print("Checkbox ativado:", isChecked)
     end
@@ -272,6 +134,7 @@ Window:CreateColorPicker("PRINCIPAL", {
 
 Window:CreateSwitch("PRINCIPAL", {
     Text = "Modo Turbo",
+    Description = "Ativa a velocidade máxima de execução",
     State = false,
     Callback = function(state)
         print("Modo Turbo:", state)
