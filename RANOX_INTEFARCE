@@ -127,7 +127,11 @@ local function switchTab(name)
 		frame.Visible = (tabName == name)
 	end
 	for tabName, btn in pairs(tabButtons) do
-		btn.BackgroundColor3 = (tabName == name) and Color3.fromRGB(77, 7, 0) or Color3.fromRGB(35, 35, 35)
+		local marker = btn:FindFirstChild("TabMarker")
+		if marker then
+			marker.Visible = (tabName == name)
+		end
+		btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 	end
 	selectedTab = name
 end
@@ -145,6 +149,14 @@ function Window:CreateTab(tabName, iconId)
 	tabBtn.TextXAlignment = Enum.TextXAlignment.Left
 	Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 6)
 
+	local marker = Instance.new("Frame", tabBtn)
+	marker.Name = "TabMarker"
+	marker.Size = UDim2.new(1, 0, 0, 2)
+	marker.Position = UDim2.new(0, 0, 1, -2)
+	marker.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+	marker.BorderSizePixel = 0
+	marker.Visible = false
+
 	local label = Instance.new("TextLabel", tabBtn)
 	label.BackgroundTransparency = 1
 	label.Text = tabName
@@ -160,7 +172,6 @@ function Window:CreateTab(tabName, iconId)
 		icon.Position = UDim2.new(0, 6, 0.5, -8)
 		icon.BackgroundTransparency = 1
 		icon.Image = "rbxassetid://" .. tostring(iconId)
-
 		label.Position = UDim2.new(0, 26, 0, 0)
 		label.Size = UDim2.new(1, -28, 1, 0)
 	else
