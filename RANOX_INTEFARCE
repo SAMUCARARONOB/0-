@@ -348,14 +348,14 @@ function Window:CreateDropdown(tabName, dropdownConfig)
     dropdownFrame.ZIndex = 2
 
     local uiCorner = Instance.new("UICorner", dropdownFrame)
-    uiCorner.CornerRadius = UDim.new(0, 8)
+    uiCorner.CornerRadius = UDim.new(0, 10)
 
     local title = Instance.new("TextLabel", dropdownFrame)
     title.Size = UDim2.new(0.5, -10, 1, 0)
     title.Position = UDim2.new(0, 10, 0, 0)
     title.BackgroundTransparency = 1
-    title.Text = dropdownConfig.Title or "Select Option"
-    title.TextColor3 = Color3.fromRGB(200, 200, 200)
+    title.Text = dropdownConfig.Title or "Selecione uma opção"
+    title.TextColor3 = Color3.fromRGB(220, 220, 220)
     title.Font = Enum.Font.GothamBold
     title.TextSize = 14
     title.TextXAlignment = Enum.TextXAlignment.Left
@@ -365,7 +365,7 @@ function Window:CreateDropdown(tabName, dropdownConfig)
     selectedLabel.Size = UDim2.new(0.5, -26, 1, 0)
     selectedLabel.Position = UDim2.new(0.5, 0, 0, 0)
     selectedLabel.BackgroundTransparency = 1
-    selectedLabel.Text = dropdownConfig.Default or "None"
+    selectedLabel.Text = dropdownConfig.Default or "Nenhuma opção"
     selectedLabel.TextColor3 = Color3.fromRGB(240, 240, 240)
     selectedLabel.Font = Enum.Font.Gotham
     selectedLabel.TextSize = 14
@@ -379,7 +379,7 @@ function Window:CreateDropdown(tabName, dropdownConfig)
     arrowIcon.Text = "˄"
     arrowIcon.TextColor3 = Color3.fromRGB(220, 220, 220)
     arrowIcon.Font = Enum.Font.Gotham
-    arrowIcon.TextSize = 14
+    arrowIcon.TextSize = 16
     arrowIcon.ZIndex = 3
 
     local toggleButton = Instance.new("TextButton", dropdownFrame)
@@ -404,7 +404,6 @@ function Window:CreateDropdown(tabName, dropdownConfig)
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
     local isOpen = false
-
     toggleButton.MouseButton1Click:Connect(function()
         isOpen = not isOpen
         dropdownList.Visible = true
