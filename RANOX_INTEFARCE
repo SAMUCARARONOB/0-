@@ -133,7 +133,11 @@ local function switchTab(name)
 		if marker then
 			marker.Visible = (tabName == name)
 		end
-		btn.BackgroundColor3 = (tabName == name) and Color3.fromRGB(30, 30, 30) or Color3.fromRGB(0, 0, 0)
+		if tabName == name then
+			btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		else
+			btn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+		end
 	end
 	selectedTab = name
 end
