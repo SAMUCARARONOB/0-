@@ -15,17 +15,18 @@ function RANOX:CreateWindow(config)
     screenGui.Parent = player:WaitForChild("PlayerGui")
 
     local mainFrame = Instance.new("TextButton")
-    mainFrame.Size = UDim2.new(0, 550, 0, 375)
-    mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    mainFrame.Text = ""
-    mainFrame.AutoButtonColor = false
-    mainFrame.ClipsDescendants = true
-    mainFrame.Draggable = true
-    mainFrame.Active = true
-    mainFrame.Parent = screenGui
-    Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
+mainFrame.Size = UDim2.new(0, 550, 0, 375)
+mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+mainFrame.BackgroundTransparency = 0.4
+mainFrame.Text = ""
+mainFrame.AutoButtonColor = false
+mainFrame.ClipsDescendants = true
+mainFrame.Draggable = true
+mainFrame.Active = true
+mainFrame.Parent = screenGui
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
 
     local stroke = Instance.new("UIStroke", mainFrame)
     stroke.Color = Color3.fromRGB(60, 0, 0)
@@ -82,6 +83,7 @@ local sidebar = Instance.new("ScrollingFrame", mainFrame)
 sidebar.Size = UDim2.new(0, 107, 1, -25)
 sidebar.Position = UDim2.new(0, 0, 0, 25)
 sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+sidebar.BackgroundTransparency = 0.4
 sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
 sidebar.ScrollBarThickness = 5
 sidebar.BorderSizePixel = 0
