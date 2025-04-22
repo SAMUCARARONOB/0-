@@ -454,7 +454,7 @@ function Window:CreateLabel(tabName, text)
     end
 end
 
-    function Window:CreateSlider(tabName, sliderConfig)
+function Window:CreateSlider(tabName, sliderConfig)
     local tab = pages[tabName]
     if not tab then return end
 
@@ -464,8 +464,13 @@ end
     sliderFrame.BackgroundTransparency = 1
     sliderFrame.ZIndex = 2
 
-    local title = Instance.new("TextLabel", sliderFrame)
-    title.Size = UDim2.new(1, 0, 0, 18)
+    local titleFrame = Instance.new("Frame", sliderFrame)
+    titleFrame.Size = UDim2.new(1, 0, 0, 18)
+    titleFrame.BackgroundTransparency = 1
+    titleFrame.Position = UDim2.new(0, 0, 0, 0)
+
+    local title = Instance.new("TextLabel", titleFrame)
+    title.Size = UDim2.new(1, -50, 1, 0)
     title.Position = UDim2.new(0, 0, 0, 0)
     title.BackgroundTransparency = 1
     title.Text = sliderConfig.Text or "Slider"
@@ -474,6 +479,16 @@ end
     title.TextSize = 14
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.ZIndex = 2
+
+    local valueLabel = Instance.new("TextLabel", titleFrame)
+    valueLabel.Size = UDim2.new(0, 50, 1, 0)
+    valueLabel.Position = UDim2.new(1, -50, 0, 0)
+    valueLabel.BackgroundTransparency = 1
+    valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    valueLabel.Font = Enum.Font.GothamSemibold
+    valueLabel.TextSize = 14
+    valueLabel.TextXAlignment = Enum.TextXAlignment.Right
+    valueLabel.ZIndex = 2
 
     local description = Instance.new("TextLabel", sliderFrame)
     description.Size = UDim2.new(1, 0, 0, 16)
@@ -486,16 +501,6 @@ end
     description.TextXAlignment = Enum.TextXAlignment.Left
     description.ZIndex = 2
 
-    local valueLabel = Instance.new("TextLabel", sliderFrame)
-    valueLabel.Size = UDim2.new(0, 40, 0, 20)
-    valueLabel.Position = UDim2.new(1, -40, 0, 18)
-    valueLabel.BackgroundTransparency = 1
-    valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    valueLabel.Font = Enum.Font.GothamSemibold
-    valueLabel.TextSize = 14
-    valueLabel.TextXAlignment = Enum.TextXAlignment.Right
-    valueLabel.ZIndex = 2
-
     local sliderBar = Instance.new("Frame", sliderFrame)
     sliderBar.Position = UDim2.new(0, 0, 0, 38)
     sliderBar.Size = UDim2.new(1, 0, 0, 12)
@@ -506,7 +511,7 @@ end
 
     local fill = Instance.new("Frame", sliderBar)
     fill.Size = UDim2.new(0, 0, 1, 0)
-    fill.BackgroundColor3 = Color3.fromRGB(70, 125, 255)
+    fill.BackgroundColor3 = Color3.fromRGB(170, 20, 20)
     fill.BorderSizePixel = 0
     fill.ZIndex = 3
     Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 6)
