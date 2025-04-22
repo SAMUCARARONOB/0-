@@ -343,41 +343,41 @@ function Window:CreateDropdown(tabName, dropdownConfig)
     local dropdownFrame = Instance.new("Frame", tab)
     dropdownFrame.Size = UDim2.new(1, -20, 0, 40)
     dropdownFrame.Position = UDim2.new(0, 10, 0, 0)
-    dropdownFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    dropdownFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     dropdownFrame.BorderSizePixel = 0
     dropdownFrame.ZIndex = 2
 
     local uiCorner = Instance.new("UICorner", dropdownFrame)
-    uiCorner.CornerRadius = UDim.new(0, 10)
+    uiCorner.CornerRadius = UDim.new(0, 8)
 
     local title = Instance.new("TextLabel", dropdownFrame)
-    title.Size = UDim2.new(0.5, -10, 1, 0)
-    title.Position = UDim2.new(0, 10, 0, 0)
+    title.Size = UDim2.new(0.5, -20, 1, 0)
+    title.Position = UDim2.new(0, 12, 0, 0)
     title.BackgroundTransparency = 1
-    title.Text = dropdownConfig.Title or "Selecione uma opção"
-    title.TextColor3 = Color3.fromRGB(220, 220, 220)
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 14
+    title.Text = dropdownConfig.Title or "Select Island"
+    title.TextColor3 = Color3.fromRGB(200, 200, 200)
+    title.Font = Enum.Font.GothamMedium
+    title.TextSize = 15
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.ZIndex = 3
 
     local selectedLabel = Instance.new("TextLabel", dropdownFrame)
-    selectedLabel.Size = UDim2.new(0.5, -26, 1, 0)
-    selectedLabel.Position = UDim2.new(0.5, 0, 0, 0)
+    selectedLabel.Size = UDim2.new(0.4, -30, 1, 0)
+    selectedLabel.Position = UDim2.new(0.6, 0, 0, 0)
     selectedLabel.BackgroundTransparency = 1
-    selectedLabel.Text = dropdownConfig.Default or "Nenhuma opção"
-    selectedLabel.TextColor3 = Color3.fromRGB(240, 240, 240)
-    selectedLabel.Font = Enum.Font.Gotham
-    selectedLabel.TextSize = 14
+    selectedLabel.Text = dropdownConfig.Default or "None"
+    selectedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    selectedLabel.Font = Enum.Font.GothamBold
+    selectedLabel.TextSize = 15
     selectedLabel.TextXAlignment = Enum.TextXAlignment.Right
     selectedLabel.ZIndex = 3
 
     local arrowIcon = Instance.new("TextLabel", dropdownFrame)
-    arrowIcon.Size = UDim2.new(0, 16, 0, 16)
-    arrowIcon.Position = UDim2.new(1, -22, 0.5, -8)
+    arrowIcon.Size = UDim2.new(0, 14, 0, 14)
+    arrowIcon.Position = UDim2.new(1, -24, 0.5, -7)
     arrowIcon.BackgroundTransparency = 1
     arrowIcon.Text = "˄"
-    arrowIcon.TextColor3 = Color3.fromRGB(220, 220, 220)
+    arrowIcon.TextColor3 = Color3.fromRGB(200, 200, 200)
     arrowIcon.Font = Enum.Font.Gotham
     arrowIcon.TextSize = 16
     arrowIcon.ZIndex = 3
@@ -390,8 +390,8 @@ function Window:CreateDropdown(tabName, dropdownConfig)
 
     local dropdownList = Instance.new("Frame", tab)
     dropdownList.Size = UDim2.new(1, -20, 0, 0)
-    dropdownList.Position = UDim2.new(0, 10, 0, dropdownFrame.Position.Y.Offset + 40)
-    dropdownList.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    dropdownList.Position = UDim2.new(0, 10, 0, dropdownFrame.Position.Y.Offset + 45)
+    dropdownList.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     dropdownList.Visible = false
     dropdownList.ClipsDescendants = true
     dropdownList.ZIndex = 5
@@ -407,7 +407,7 @@ function Window:CreateDropdown(tabName, dropdownConfig)
     toggleButton.MouseButton1Click:Connect(function()
         isOpen = not isOpen
         dropdownList.Visible = true
-        local targetHeight = isOpen and (#dropdownConfig.Options * 40 + 8) or 0
+        local targetHeight = isOpen and (#dropdownConfig.Options * 38 + 8) or 0
         arrowIcon.Text = isOpen and "˅" or "˄"
         dropdownList:TweenSize(UDim2.new(1, -20, 0, targetHeight), "Out", "Quad", 0.25, true)
         if not isOpen then
@@ -419,9 +419,9 @@ function Window:CreateDropdown(tabName, dropdownConfig)
 
     for _, option in ipairs(dropdownConfig.Options) do
         local optBtn = Instance.new("TextButton", dropdownList)
-        optBtn.Size = UDim2.new(1, 0, 0, 40)
+        optBtn.Size = UDim2.new(1, 0, 0, 38)
         optBtn.Text = option
-        optBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+        optBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         optBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
         optBtn.Font = Enum.Font.Gotham
         optBtn.TextSize = 14
@@ -432,10 +432,10 @@ function Window:CreateDropdown(tabName, dropdownConfig)
         corner.CornerRadius = UDim.new(0, 6)
 
         optBtn.MouseEnter:Connect(function()
-            optBtn.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            optBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
         end)
         optBtn.MouseLeave:Connect(function()
-            optBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+            optBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         end)
 
         optBtn.MouseButton1Click:Connect(function()
