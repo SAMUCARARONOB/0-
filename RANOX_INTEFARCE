@@ -221,109 +221,62 @@ function Window:CreateButton(tabName, text, description, callback)
     local tab = pages[tabName]
     if not tab then return end
 
-    local btn = Instance.new("TextButton", tab)
-    btn.Size = UDim2.new(1, -20, 0, 28)
-    btn.Position = UDim2.new(0, 10, 0, 0)
+    local buttonHolder = Instance.new("Frame", tab)
+    buttonHolder.Size = UDim2.new(1, -20, 0, 46)
+    buttonHolder.Position = UDim2.new(0, 10, 0, 0)
+    buttonHolder.BackgroundTransparency = 1
+
+    local btn = Instance.new("TextButton", buttonHolder)
+    btn.Size = UDim2.new(1, 0, 0, 28)
+    btn.Position = UDim2.new(0, 0, 0, 0)
     btn.Text = text
     btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 15
+    btn.TextSize = 14
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     btn.AutoButtonColor = false
     btn.ClipsDescendants = true
-    btn.TextWrapped = true
-    btn.ZIndex = 2
 
     local corner = Instance.new("UICorner", btn)
     corner.CornerRadius = UDim.new(0, 6)
 
     local stroke = Instance.new("UIStroke", btn)
-    stroke.Thickness = 1
-    stroke.Color = Color3.fromRGB(90, 0, 0)
+    stroke.Color = Color3.fromRGB(80, 0, 0)
+    stroke.Thickness = 1.2
 
-    local shadow = Instance.new("ImageLabel", btn)
-    shadow.BackgroundTransparency = 1
-    shadow.Size = UDim2.new(1, 6, 1, 6)
-    shadow.Position = UDim2.new(0, -3, 0, -3)
-    shadow.Image = "rbxassetid://1316045217"
-    shadow.ImageColor3 = Color3.fromRGB(255, 0, 0)
-    shadow.ImageTransparency = 0.8
-    shadow.ZIndex = 1
-
-    local tooltip = Instance.new("TextLabel", btn)
-    tooltip.AnchorPoint = Vector2.new(0.5, 1)
-    tooltip.Position = UDim2.new(0.5, 0, 0, -6)
-    tooltip.Size = UDim2.new(0, 0, 0, 0)
-    tooltip.BackgroundTransparency = 0.3
-    tooltip.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    tooltip.TextColor3 = Color3.fromRGB(255, 255, 255)
-    tooltip.Font = Enum.Font.Gotham
-    tooltip.TextSize = 13
-    tooltip.Text = description or ""
-    tooltip.Visible = false
-    tooltip.ClipsDescendants = true
-    tooltip.ZIndex = 3
-
-    local tooltipCorner = Instance.new("UICorner", tooltip)
-    tooltipCorner.CornerRadius = UDim.new(0, 4)
-
-    local function animateTooltip(show)
-        if show then
-            tooltip.Visible = true
-            tooltip:TweenSizeAndPosition(
-                UDim2.new(0, 160, 0, 24),
-                UDim2.new(0.5, -80, 0, -30),
-                Enum.EasingDirection.Out,
-                Enum.EasingStyle.Quad,
-                0.2, true
-            )
-        else
-            tooltip:TweenSizeAndPosition(
-                UDim2.new(0, 0, 0, 0),
-                UDim2.new(0.5, 0, 0, -6),
-                Enum.EasingDirection.In,
-                Enum.EasingStyle.Quad,
-                0.2, true,
-                function() tooltip.Visible = false end
-            )
-        end
-    end
+    local desc = Instance.new("TextLabel", buttonHolder)
+    desc.Size = UDim2.new(1, 0, 0, 16)
+    desc.Position = UDim2.new(0, 2, 0, 30)
+    desc.Text = description or ""
+    desc.TextColor3 = Color3.fromRGB(180, 180, 180)
+    desc.Font = Enum.Font.Gotham
+    desc.TextSize = 11
+    desc.TextXAlignment = Enum.TextXAlignment.Left
+    desc.BackgroundTransparency = 1
 
     local ts = game:GetService("TweenService")
 
     btn.MouseEnter:Connect(function()
-        animateTooltip(true)
-
-        local colorAnim = ts:Create(btn, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        ts:Create(btn, TweenInfo.new(0.25), {
             BackgroundColor3 = Color3.fromRGB(80, 0, 0)
-        })
-        colorAnim:Play()
-
-        local strokeAnim = ts:Create(stroke, TweenInfo.new(0.25), {
+        }):Play()
+        ts:Create(stroke, TweenInfo.new(0.25), {
             Color = Color3.fromRGB(255, 0, 0)
-        })
-        strokeAnim:Play()
+        }):Play()
     end)
 
     btn.MouseLeave:Connect(function()
-        animateTooltip(false)
-
-        local colorAnim = ts:Create(btn, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-        })
-        colorAnim:Play()
-
-        local strokeAnim = ts:Create(stroke, TweenInfo.new(0.25), {
-            Color = Color3.fromRGB(90, 0, 0)
-        })
-        strokeAnim:Play()
+        ts:Create(btn, TweenInfo.new(0.25), {
+            BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        }):Play()
+        ts:Create(stroke, TweenInfo.new(0.25), {
+            Color = Color3.fromRGB(80, 0, 0)
+        }):Play()
     end)
 
     btn.MouseButton1Click:Connect(function()
         pcall(callback)
     end)
-
-    return btn
 end
 
 function Window:CreateToggle(tabName, toggleConfig)
