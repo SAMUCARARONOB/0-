@@ -458,79 +458,85 @@ function Window:CreateSlider(tabName, sliderConfig)
     local tab = pages[tabName]
     if not tab then return end
 
-    local sliderFrame = Instance.new("Frame", tab)
-    sliderFrame.Size = UDim2.new(1, -20, 0, 60)
-    sliderFrame.Position = UDim2.new(0, 10, 0, 0)
-    sliderFrame.BackgroundTransparency = 1
-    sliderFrame.ZIndex = 2
+    local sliderHolder = Instance.new("Frame", tab)
+    sliderHolder.Size = UDim2.new(1, -20, 0, 70)
+    sliderHolder.BackgroundTransparency = 1
+    sliderHolder.Position = UDim2.new(0, 10, 0, 0)
+    sliderHolder.ZIndex = 2
 
-    local titleFrame = Instance.new("Frame", sliderFrame)
-    titleFrame.Size = UDim2.new(1, 0, 0, 18)
-    titleFrame.BackgroundTransparency = 1
-    titleFrame.Position = UDim2.new(0, 0, 0, 0)
+    local bg = Instance.new("Frame", sliderHolder)
+    bg.Size = UDim2.new(1, 0, 0, 50)
+    bg.Position = UDim2.new(0, 0, 0, 0)
+    bg.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    bg.BorderSizePixel = 0
+    bg.ZIndex = 2
+    local corner = Instance.new("UICorner", bg)
+    corner.CornerRadius = UDim.new(0, 8)
+    local shadow = Instance.new("UIStroke", bg)
+    shadow.Color = Color3.fromRGB(50, 50, 50)
+    shadow.Thickness = 1
+    shadow.Transparency = 0.6
 
-    local title = Instance.new("TextLabel", titleFrame)
-    title.Size = UDim2.new(1, -50, 1, 0)
-    title.Position = UDim2.new(0, 0, 0, 0)
-    title.BackgroundTransparency = 1
+    local title = Instance.new("TextLabel", bg)
+    title.Size = UDim2.new(1, -60, 0, 20)
+    title.Position = UDim2.new(0, 10, 0, 5)
     title.Text = sliderConfig.Text or "Slider"
-    title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.Font = Enum.Font.GothamSemibold
+    title.TextColor3 = Color3.fromRGB(200, 200, 200)
     title.TextSize = 14
+    title.Font = Enum.Font.GothamMedium
+    title.BackgroundTransparency = 1
     title.TextXAlignment = Enum.TextXAlignment.Left
-    title.ZIndex = 2
+    title.ZIndex = 3
 
-    local valueLabel = Instance.new("TextLabel", titleFrame)
-    valueLabel.Size = UDim2.new(0, 50, 1, 0)
-    valueLabel.Position = UDim2.new(1, -50, 0, 0)
-    valueLabel.BackgroundTransparency = 1
+    local valueLabel = Instance.new("TextLabel", bg)
+    valueLabel.Size = UDim2.new(0, 50, 0, 20)
+    valueLabel.Position = UDim2.new(1, -60, 0, 5)
     valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    valueLabel.Font = Enum.Font.GothamSemibold
     valueLabel.TextSize = 14
+    valueLabel.Font = Enum.Font.GothamBold
+    valueLabel.BackgroundTransparency = 1
     valueLabel.TextXAlignment = Enum.TextXAlignment.Right
-    valueLabel.ZIndex = 2
+    valueLabel.ZIndex = 3
 
-    local description = Instance.new("TextLabel", sliderFrame)
-    description.Size = UDim2.new(1, 0, 0, 16)
-    description.Position = UDim2.new(0, 0, 0, 18)
-    description.BackgroundTransparency = 1
-    description.Text = sliderConfig.Description or ""
-    description.TextColor3 = Color3.fromRGB(200, 200, 200)
-    description.Font = Enum.Font.Gotham
-    description.TextSize = 12
-    description.TextXAlignment = Enum.TextXAlignment.Left
-    description.ZIndex = 2
+    local bar = Instance.new("Frame", bg)
+    bar.Size = UDim2.new(1, -20, 0, 10)
+    bar.Position = UDim2.new(0, 10, 0, 30)
+    bar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    bar.BorderSizePixel = 0
+    bar.ZIndex = 2
+    Instance.new("UICorner", bar).CornerRadius = UDim.new(1, 0)
 
-    local sliderBar = Instance.new("Frame", sliderFrame)
-    sliderBar.Position = UDim2.new(0, 0, 0, 38)
-    sliderBar.Size = UDim2.new(1, 0, 0, 12)
-    sliderBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    sliderBar.BorderSizePixel = 0
-    sliderBar.ZIndex = 2
-    Instance.new("UICorner", sliderBar).CornerRadius = UDim.new(0, 6)
-
-    local fill = Instance.new("Frame", sliderBar)
+    local fill = Instance.new("Frame", bar)
     fill.Size = UDim2.new(0, 0, 1, 0)
     fill.BackgroundColor3 = Color3.fromRGB(170, 20, 20)
     fill.BorderSizePixel = 0
     fill.ZIndex = 3
-    Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 6)
+    Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
 
-    local knob = Instance.new("Frame", sliderBar)
+    local glow = Instance.new("UIStroke", fill)
+    glow.Thickness = 2
+    glow.Transparency = 0.3
+    glow.Color = Color3.fromRGB(255, 60, 60)
+
+    local knob = Instance.new("Frame", bar)
     knob.Size = UDim2.new(0, 16, 0, 16)
     knob.Position = UDim2.new(0, -8, 0.5, -8)
     knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     knob.BorderSizePixel = 0
     knob.ZIndex = 4
     Instance.new("UICorner", knob).CornerRadius = UDim.new(1, 0)
+    local knobShadow = Instance.new("UIStroke", knob)
+    knobShadow.Color = Color3.fromRGB(100, 100, 100)
+    knobShadow.Transparency = 0.3
+    knobShadow.Thickness = 1
 
     local min = sliderConfig.Min or 0
     local max = sliderConfig.Max or 100
     local value = sliderConfig.Default or min
 
     local function updateSlider(inputX)
-        local barAbsPos = sliderBar.AbsolutePosition.X
-        local barWidth = sliderBar.AbsoluteSize.X
+        local barAbsPos = bar.AbsolutePosition.X
+        local barWidth = bar.AbsoluteSize.X
         local clamped = math.clamp((inputX - barAbsPos) / barWidth, 0, 1)
         local newValue = math.floor((min + (max - min) * clamped) + 0.5)
         fill:TweenSize(UDim2.new(clamped, 0, 1, 0), "Out", "Quad", 0.1, true)
@@ -553,7 +559,7 @@ function Window:CreateSlider(tabName, sliderConfig)
         dragging = false
     end
 
-    sliderBar.InputBegan:Connect(function(input)
+    bar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             beginDrag(input)
         end
@@ -571,7 +577,7 @@ function Window:CreateSlider(tabName, sliderConfig)
         end
     end)
 
-    updateSlider(sliderBar.AbsolutePosition.X)
+    updateSlider(bar.AbsolutePosition.X)
 end
 
 function Window:CreateTextBox(tabName, placeholderText, callback)
