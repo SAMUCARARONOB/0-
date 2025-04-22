@@ -341,60 +341,80 @@ function Window:CreateLabel(tabName, text)
     if not tab then return end
 
     local dropdownFrame = Instance.new("Frame", tab)
-    dropdownFrame.Size = UDim2.new(1, -20, 0, 36)
+    dropdownFrame.Size = UDim2.new(1, -20, 0, 52)
     dropdownFrame.Position = UDim2.new(0, 10, 0, 0)
-    dropdownFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    dropdownFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     dropdownFrame.BorderSizePixel = 0
     dropdownFrame.ZIndex = 2
 
     local uiCorner = Instance.new("UICorner", dropdownFrame)
-    uiCorner.CornerRadius = UDim.new(0, 6)
+    uiCorner.CornerRadius = UDim.new(0, 8)
 
     local title = Instance.new("TextLabel", dropdownFrame)
-    title.Size = UDim2.new(0.5, -10, 1, 0)
-    title.Position = UDim2.new(0, 10, 0, 0)
+    title.Size = UDim2.new(1, -20, 0, 16)
+    title.Position = UDim2.new(0, 10, 0, 4)
     title.BackgroundTransparency = 1
     title.Text = dropdownConfig.Title or "Select"
-    title.TextColor3 = Color3.fromRGB(190, 190, 190)
-    title.Font = Enum.Font.Gotham
+    title.TextColor3 = Color3.fromRGB(200, 200, 200)
+    title.Font = Enum.Font.GothamMedium
     title.TextSize = 13
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.ZIndex = 3
 
-    local selectedLabel = Instance.new("TextLabel", dropdownFrame)
-    selectedLabel.Size = UDim2.new(0.5, -26, 1, 0)
-    selectedLabel.Position = UDim2.new(0.5, 0, 0, 0)
+    local description = Instance.new("TextLabel", dropdownFrame)
+    description.Size = UDim2.new(1, -20, 0, 14)
+    description.Position = UDim2.new(0, 10, 0, 20)
+    description.BackgroundTransparency = 1
+    description.Text = dropdownConfig.Description or ""
+    description.TextColor3 = Color3.fromRGB(130, 130, 130)
+    description.Font = Enum.Font.Gotham
+    description.TextSize = 12
+    description.TextXAlignment = Enum.TextXAlignment.Left
+    description.ZIndex = 3
+
+    local selectionBox = Instance.new("Frame", dropdownFrame)
+    selectionBox.Size = UDim2.new(1, -20, 0, 20)
+    selectionBox.Position = UDim2.new(0, 10, 1, -24)
+    selectionBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    selectionBox.ZIndex = 3
+
+    local selectionCorner = Instance.new("UICorner", selectionBox)
+    selectionCorner.CornerRadius = UDim.new(0, 6)
+
+    local selectedLabel = Instance.new("TextLabel", selectionBox)
+    selectedLabel.Size = UDim2.new(1, -30, 1, 0)
+    selectedLabel.Position = UDim2.new(0, 10, 0, 0)
     selectedLabel.BackgroundTransparency = 1
     selectedLabel.Text = dropdownConfig.Default or "None"
-    selectedLabel.TextColor3 = Color3.fromRGB(240, 240, 240)
+    selectedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     selectedLabel.Font = Enum.Font.GothamSemibold
     selectedLabel.TextSize = 13
-    selectedLabel.TextXAlignment = Enum.TextXAlignment.Right
-    selectedLabel.ZIndex = 3
+    selectedLabel.TextXAlignment = Enum.TextXAlignment.Left
+    selectedLabel.ZIndex = 4
 
-    local arrowIcon = Instance.new("TextLabel", dropdownFrame)
-    arrowIcon.Size = UDim2.new(0, 16, 0, 16)
-    arrowIcon.Position = UDim2.new(1, -22, 0.5, -8)
+    local arrowIcon = Instance.new("TextLabel", selectionBox)
+    arrowIcon.Size = UDim2.new(0, 20, 0, 20)
+    arrowIcon.Position = UDim2.new(1, -26, 0, 0)
     arrowIcon.BackgroundTransparency = 1
     arrowIcon.Text = "˄"
-    arrowIcon.TextColor3 = Color3.fromRGB(200, 200, 200)
+    arrowIcon.TextColor3 = Color3.fromRGB(180, 180, 180)
     arrowIcon.Font = Enum.Font.Gotham
-    arrowIcon.TextSize = 13
-    arrowIcon.ZIndex = 3
+    arrowIcon.TextSize = 14
+    arrowIcon.ZIndex = 4
 
-    local toggleButton = Instance.new("TextButton", dropdownFrame)
+    local toggleButton = Instance.new("TextButton", selectionBox)
     toggleButton.Size = UDim2.new(1, 0, 1, 0)
     toggleButton.BackgroundTransparency = 1
     toggleButton.Text = ""
-    toggleButton.ZIndex = 4
+    toggleButton.ZIndex = 5
 
     local dropdownList = Instance.new("Frame", tab)
     dropdownList.Size = UDim2.new(1, -20, 0, 0)
-    dropdownList.Position = UDim2.new(0, 10, 0, dropdownFrame.Position.Y.Offset + 40)
+    dropdownList.Position = UDim2.new(0, 10, 0, dropdownFrame.Position.Y.Offset + 60)
     dropdownList.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     dropdownList.Visible = false
     dropdownList.ClipsDescendants = true
-    dropdownList.ZIndex = 5
+    dropdownList.ZIndex = 6
 
     local dropdownCorner = Instance.new("UICorner", dropdownList)
     dropdownCorner.CornerRadius = UDim.new(0, 6)
@@ -422,21 +442,21 @@ function Window:CreateLabel(tabName, text)
         local optBtn = Instance.new("TextButton", dropdownList)
         optBtn.Size = UDim2.new(1, 0, 0, 30)
         optBtn.Text = option
-        optBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        optBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
         optBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
         optBtn.Font = Enum.Font.Gotham
         optBtn.TextSize = 13
         optBtn.AutoButtonColor = false
-        optBtn.ZIndex = 6
+        optBtn.ZIndex = 7
 
         local corner = Instance.new("UICorner", optBtn)
         corner.CornerRadius = UDim.new(0, 4)
 
         optBtn.MouseEnter:Connect(function()
-            optBtn.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            optBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
         end)
         optBtn.MouseLeave:Connect(function()
-            optBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+            optBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
         end)
 
         optBtn.MouseButton1Click:Connect(function()
