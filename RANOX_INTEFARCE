@@ -354,7 +354,7 @@ function Window:CreateDropdown(tabName, dropdownConfig)
     title.Size = UDim2.new(0.5, -20, 1, 0)
     title.Position = UDim2.new(0, 12, 0, 0)
     title.BackgroundTransparency = 1
-    title.Text = dropdownConfig.Title or "Select Island"
+    title.Text = dropdownConfig.Text or "Select Island"
     title.TextColor3 = Color3.fromRGB(200, 200, 200)
     title.Font = Enum.Font.GothamMedium
     title.TextSize = 15
@@ -391,7 +391,7 @@ function Window:CreateDropdown(tabName, dropdownConfig)
     local dropdownList = Instance.new("Frame", tab)
     dropdownList.Size = UDim2.new(1, -20, 0, 0)
     dropdownList.Position = UDim2.new(0, 10, 0, dropdownFrame.Position.Y.Offset + 45)
-    dropdownList.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    dropdownList.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     dropdownList.Visible = false
     dropdownList.ClipsDescendants = true
     dropdownList.ZIndex = 5
