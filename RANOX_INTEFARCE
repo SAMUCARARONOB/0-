@@ -321,20 +321,26 @@ function Window:CreateToggle(tabName, toggleConfig)
 end
 
 function Window:CreateLabel(tabName, text)
-        local tab = pages[tabName]
-        if not tab then return end
+    local tab = pages[tabName]
+    if not tab then return end
 
-        local label = Instance.new("TextLabel", tab)
-        label.Size = UDim2.new(1, -20, 0, 30)
-        label.Position = UDim2.new(0, 10, 0, 0)
-        label.Text = text
-        label.Font = Enum.Font.Gotham
-        label.TextSize = 14
-        label.TextColor3 = Color3.fromRGB(255, 255, 255)
-        label.BackgroundTransparency = 1
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.TextYAlignment = Enum.TextYAlignment.Center
-    end
+    local label = Instance.new("TextLabel", tab)
+    label.Size = UDim2.new(1, -20, 0, 28)
+    label.Position = UDim2.new(0, 10, 0, 0)
+    label.Text = "  " .. text:upper()
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 16
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.BackgroundTransparency = 1
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextYAlignment = Enum.TextYAlignment.Center
+
+    local underline = Instance.new("Frame", label)
+    underline.Size = UDim2.new(1, -20, 0, 1)
+    underline.Position = UDim2.new(0, 10, 1, -3)
+    underline.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
+    underline.BorderSizePixel = 0
+end
 
 function Window:CreateDropdown(tabName, dropdownConfig)
     local tab = pages[tabName]
@@ -1123,6 +1129,17 @@ function Window:CreateSwitch(tabName, switchConfig)
     switch.MouseLeave:Connect(function()
         game:GetService("TweenService"):Create(glow, TweenInfo.new(0.2), {Transparency = 1}):Play()
     end)
+end
+
+function Window:CreateLine(tabName, color)
+    local tab = pages[tabName]
+    if not tab then return end
+
+    local line = Instance.new("Frame", tab)
+    line.Size = UDim2.new(1, -20, 0, 1)
+    line.Position = UDim2.new(0, 10, 0, 0)
+    line.BackgroundColor3 = color or Color3.fromRGB(255, 255, 255)
+    line.BorderSizePixel = 0
 end
 
     local isHidden = false
