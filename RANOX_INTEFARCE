@@ -341,7 +341,7 @@ function Window:CreateDropdown(tabName, dropdownConfig)
     if not tab then return end
 
     local dropdownContainer = Instance.new("Frame", tab)
-    dropdownContainer.Size = UDim2.new(1, -20, 0, 68)
+    dropdownContainer.Size = UDim2.new(1, -20, 0, 90)
     dropdownContainer.Position = UDim2.new(0, 10, 0, 0)
     dropdownContainer.BackgroundTransparency = 1
     dropdownContainer.ZIndex = 1
@@ -381,26 +381,15 @@ function Window:CreateDropdown(tabName, dropdownConfig)
     local uiCorner = Instance.new("UICorner", dropdownFrame)
     uiCorner.CornerRadius = UDim.new(0, 6)
 
-    local leftLabel = Instance.new("TextLabel", dropdownFrame)
-    leftLabel.Size = UDim2.new(0.5, -10, 1, 0)
-    leftLabel.Position = UDim2.new(0, 10, 0, 0)
-    leftLabel.BackgroundTransparency = 1
-    leftLabel.Text = "Material List"
-    leftLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-    leftLabel.Font = Enum.Font.Gotham
-    leftLabel.TextSize = 13
-    leftLabel.TextXAlignment = Enum.TextXAlignment.Left
-    leftLabel.ZIndex = 3
-
     local selectedLabel = Instance.new("TextLabel", dropdownFrame)
-    selectedLabel.Size = UDim2.new(0.5, -30, 1, 0)
-    selectedLabel.Position = UDim2.new(0.5, 0, 0, 0)
+    selectedLabel.Size = UDim2.new(1, -32, 1, 0)
+    selectedLabel.Position = UDim2.new(0, 10, 0, 0)
     selectedLabel.BackgroundTransparency = 1
     selectedLabel.Text = dropdownConfig.Default or "nil"
     selectedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     selectedLabel.Font = Enum.Font.GothamSemibold
     selectedLabel.TextSize = 13
-    selectedLabel.TextXAlignment = Enum.TextXAlignment.Right
+    selectedLabel.TextXAlignment = Enum.TextXAlignment.Left
     selectedLabel.ZIndex = 3
 
     local arrowIcon = Instance.new("TextLabel", dropdownFrame)
@@ -421,7 +410,7 @@ function Window:CreateDropdown(tabName, dropdownConfig)
 
     local dropdownList = Instance.new("Frame", tab)
     dropdownList.Size = UDim2.new(1, -20, 0, 0)
-    dropdownList.Position = UDim2.new(0, 10, 0, dropdownContainer.Position.Y.Offset + 74)
+    dropdownList.Position = UDim2.new(0, 10, 0, dropdownContainer.Position.Y.Offset + dropdownContainer.Size.Y.Offset + 2)
     dropdownList.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     dropdownList.Visible = false
     dropdownList.ClipsDescendants = true
