@@ -459,38 +459,49 @@ function Window:CreateSlider(tabName, sliderConfig)
     if not tab then return end
 
     local sliderHolder = Instance.new("Frame", tab)
-    sliderHolder.Size = UDim2.new(1, -20, 0, 70)
+    sliderHolder.Size = UDim2.new(1, -20, 0, 90)
     sliderHolder.BackgroundTransparency = 1
     sliderHolder.Position = UDim2.new(0, 10, 0, 0)
     sliderHolder.ZIndex = 2
 
     local bg = Instance.new("Frame", sliderHolder)
-    bg.Size = UDim2.new(1, 0, 0, 50)
+    bg.Size = UDim2.new(1, 0, 0, 70)
     bg.Position = UDim2.new(0, 0, 0, 0)
     bg.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     bg.BorderSizePixel = 0
     bg.ZIndex = 2
-    local corner = Instance.new("UICorner", bg)
-    corner.CornerRadius = UDim.new(0, 8)
-    local shadow = Instance.new("UIStroke", bg)
-    shadow.Color = Color3.fromRGB(50, 50, 50)
-    shadow.Thickness = 1
-    shadow.Transparency = 0.6
+    Instance.new("UICorner", bg).CornerRadius = UDim.new(0, 8)
+
+    local border = Instance.new("UIStroke", bg)
+    border.Color = Color3.fromRGB(50, 50, 50)
+    border.Thickness = 1
+    border.Transparency = 0.6
 
     local title = Instance.new("TextLabel", bg)
-    title.Size = UDim2.new(1, -60, 0, 20)
-    title.Position = UDim2.new(0, 10, 0, 5)
+    title.Size = UDim2.new(1, -60, 0, 18)
+    title.Position = UDim2.new(0, 10, 0, 4)
     title.Text = sliderConfig.Text or "Slider"
-    title.TextColor3 = Color3.fromRGB(200, 200, 200)
+    title.TextColor3 = Color3.fromRGB(220, 220, 220)
     title.TextSize = 14
     title.Font = Enum.Font.GothamMedium
     title.BackgroundTransparency = 1
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.ZIndex = 3
 
+    local desc = Instance.new("TextLabel", bg)
+    desc.Size = UDim2.new(1, -20, 0, 14)
+    desc.Position = UDim2.new(0, 10, 0, 22)
+    desc.Text = sliderConfig.Description or "Descrição do slider"
+    desc.TextColor3 = Color3.fromRGB(170, 170, 170)
+    desc.TextSize = 12
+    desc.Font = Enum.Font.Gotham
+    desc.BackgroundTransparency = 1
+    desc.TextXAlignment = Enum.TextXAlignment.Left
+    desc.ZIndex = 3
+
     local valueLabel = Instance.new("TextLabel", bg)
-    valueLabel.Size = UDim2.new(0, 50, 0, 20)
-    valueLabel.Position = UDim2.new(1, -60, 0, 5)
+    valueLabel.Size = UDim2.new(0, 50, 0, 18)
+    valueLabel.Position = UDim2.new(1, -60, 0, 4)
     valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     valueLabel.TextSize = 14
     valueLabel.Font = Enum.Font.GothamBold
@@ -500,23 +511,38 @@ function Window:CreateSlider(tabName, sliderConfig)
 
     local bar = Instance.new("Frame", bg)
     bar.Size = UDim2.new(1, -20, 0, 10)
-    bar.Position = UDim2.new(0, 10, 0, 30)
-    bar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    bar.Position = UDim2.new(0, 10, 0, 45)
+    bar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     bar.BorderSizePixel = 0
     bar.ZIndex = 2
     Instance.new("UICorner", bar).CornerRadius = UDim.new(1, 0)
 
     local fill = Instance.new("Frame", bar)
     fill.Size = UDim2.new(0, 0, 1, 0)
-    fill.BackgroundColor3 = Color3.fromRGB(170, 20, 20)
+    fill.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
     fill.BorderSizePixel = 0
     fill.ZIndex = 3
     Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
 
-    local glow = Instance.new("UIStroke", fill)
-    glow.Thickness = 2
-    glow.Transparency = 0.3
-    glow.Color = Color3.fromRGB(255, 60, 60)
+    local neonStroke = Instance.new("UIStroke", fill)
+    neonStroke.Thickness = 3
+    neonStroke.Transparency = 0.2
+    neonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    neonStroke.Color = fill.BackgroundColor3
+
+    -- Animação de brilho neon vermelho alternando tons
+    task.spawn(function()
+        local TweenService = game:GetService("TweenService")
+        local state = true
+        while fill.Parent do
+            local goal = { BackgroundColor3 = state and Color3.fromRGB(150, 20, 20) or Color3.fromRGB(255, 0, 0) }
+            local tween = TweenService:Create(fill, TweenInfo.new(1.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), goal)
+            tween:Play()
+            neonStroke.Color = goal.BackgroundColor3
+            state = not state
+            tween.Completed:Wait()
+        end
+    end)
 
     local knob = Instance.new("Frame", bar)
     knob.Size = UDim2.new(0, 16, 0, 16)
