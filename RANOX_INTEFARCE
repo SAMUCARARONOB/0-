@@ -336,19 +336,44 @@ function Window:CreateLabel(tabName, text)
         label.TextYAlignment = Enum.TextYAlignment.Center
     end
 
-    function Window:CreateDropdown(tabName, dropdownConfig)
+function Window:CreateDropdown(tabName, dropdownConfig)
     local tab = pages[tabName]
     if not tab then return end
 
     local dropdownContainer = Instance.new("Frame", tab)
-    dropdownContainer.Size = UDim2.new(1, -20, 0, 56)
+    dropdownContainer.Size = UDim2.new(1, -20, 0, 68)
     dropdownContainer.Position = UDim2.new(0, 10, 0, 0)
     dropdownContainer.BackgroundTransparency = 1
     dropdownContainer.ZIndex = 1
 
+    local title = Instance.new("TextLabel", dropdownContainer)
+    title.Size = UDim2.new(1, 0, 0, 16)
+    title.Position = UDim2.new(0, 0, 0, 0)
+    title.BackgroundTransparency = 1
+    title.Text = dropdownConfig.Title or "Dropdown"
+    title.TextColor3 = Color3.fromRGB(240, 240, 240)
+    title.Font = Enum.Font.GothamSemibold
+    title.TextSize = 13
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.ZIndex = 3
+
+    local description
+    if dropdownConfig.Description then
+        description = Instance.new("TextLabel", dropdownContainer)
+        description.Size = UDim2.new(1, 0, 0, 14)
+        description.Position = UDim2.new(0, 0, 0, 18)
+        description.BackgroundTransparency = 1
+        description.Text = dropdownConfig.Description
+        description.TextColor3 = Color3.fromRGB(150, 150, 150)
+        description.Font = Enum.Font.Gotham
+        description.TextSize = 11
+        description.TextXAlignment = Enum.TextXAlignment.Left
+        description.ZIndex = 3
+    end
+
     local dropdownFrame = Instance.new("Frame", dropdownContainer)
-    dropdownFrame.Size = UDim2.new(1, 0, 0, 36)
-    dropdownFrame.Position = UDim2.new(0, 0, 0, 20)
+    dropdownFrame.Size = UDim2.new(1, 0, 0, 32)
+    dropdownFrame.Position = UDim2.new(0, 0, 0, 38)
     dropdownFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     dropdownFrame.BorderSizePixel = 0
     dropdownFrame.ZIndex = 2
@@ -356,44 +381,31 @@ function Window:CreateLabel(tabName, text)
     local uiCorner = Instance.new("UICorner", dropdownFrame)
     uiCorner.CornerRadius = UDim.new(0, 6)
 
-    local title = Instance.new("TextLabel", dropdownContainer)
-    title.Size = UDim2.new(1, 0, 0, 16)
-    title.Position = UDim2.new(0, 0, 0, 0)
-    title.BackgroundTransparency = 1
-    title.Text = dropdownConfig.Title or "Select"
-    title.TextColor3 = Color3.fromRGB(240, 240, 240)
-    title.Font = Enum.Font.GothamSemibold
-    title.TextSize = 13
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.ZIndex = 3
-
-    if dropdownConfig.Description then
-        local desc = Instance.new("TextLabel", dropdownContainer)
-        desc.Size = UDim2.new(1, 0, 0, 14)
-        desc.Position = UDim2.new(0, 0, 0, 36)
-        desc.BackgroundTransparency = 1
-        desc.Text = dropdownConfig.Description
-        desc.TextColor3 = Color3.fromRGB(150, 150, 150)
-        desc.Font = Enum.Font.Gotham
-        desc.TextSize = 11
-        desc.TextXAlignment = Enum.TextXAlignment.Left
-        desc.ZIndex = 3
-    end
+    local leftLabel = Instance.new("TextLabel", dropdownFrame)
+    leftLabel.Size = UDim2.new(0.5, -10, 1, 0)
+    leftLabel.Position = UDim2.new(0, 10, 0, 0)
+    leftLabel.BackgroundTransparency = 1
+    leftLabel.Text = "Material List"
+    leftLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    leftLabel.Font = Enum.Font.Gotham
+    leftLabel.TextSize = 13
+    leftLabel.TextXAlignment = Enum.TextXAlignment.Left
+    leftLabel.ZIndex = 3
 
     local selectedLabel = Instance.new("TextLabel", dropdownFrame)
-    selectedLabel.Size = UDim2.new(1, -40, 1, 0)
-    selectedLabel.Position = UDim2.new(0, 12, 0, 0)
+    selectedLabel.Size = UDim2.new(0.5, -30, 1, 0)
+    selectedLabel.Position = UDim2.new(0.5, 0, 0, 0)
     selectedLabel.BackgroundTransparency = 1
     selectedLabel.Text = dropdownConfig.Default or "nil"
     selectedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     selectedLabel.Font = Enum.Font.GothamSemibold
     selectedLabel.TextSize = 13
-    selectedLabel.TextXAlignment = Enum.TextXAlignment.Left
+    selectedLabel.TextXAlignment = Enum.TextXAlignment.Right
     selectedLabel.ZIndex = 3
 
     local arrowIcon = Instance.new("TextLabel", dropdownFrame)
     arrowIcon.Size = UDim2.new(0, 16, 0, 16)
-    arrowIcon.Position = UDim2.new(1, -20, 0.5, -8)
+    arrowIcon.Position = UDim2.new(1, -22, 0.5, -8)
     arrowIcon.BackgroundTransparency = 1
     arrowIcon.Text = "˄"
     arrowIcon.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -409,7 +421,7 @@ function Window:CreateLabel(tabName, text)
 
     local dropdownList = Instance.new("Frame", tab)
     dropdownList.Size = UDim2.new(1, -20, 0, 0)
-    dropdownList.Position = UDim2.new(0, 10, 0, dropdownContainer.Position.Y.Offset + 60)
+    dropdownList.Position = UDim2.new(0, 10, 0, dropdownContainer.Position.Y.Offset + 74)
     dropdownList.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     dropdownList.Visible = false
     dropdownList.ClipsDescendants = true
