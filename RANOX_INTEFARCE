@@ -133,7 +133,7 @@ local function switchTab(name)
 		if marker then
 			marker.Visible = (tabName == name)
 		end
-		btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+		btn.BackgroundColor3 = (tabName == name) and Color3.fromRGB(30, 30, 30) or Color3.fromRGB(0, 0, 0)
 	end
 	selectedTab = name
 end
@@ -145,20 +145,38 @@ function Window:CreateTab(tabName, iconId)
 	tabBtn.Font = Enum.Font.Gotham
 	tabBtn.TextSize = 12
 	tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	tabBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	tabBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 	tabBtn.AutoButtonColor = false
 	tabBtn.ClipsDescendants = true
 	tabBtn.TextXAlignment = Enum.TextXAlignment.Left
 	Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 6)
 
 	local marker = Instance.new("Frame", tabBtn)
-marker.Name = "TabMarker"
-marker.Size = UDim2.new(0, 4, 1, -8)
-marker.Position = UDim2.new(0, 0, 0, 4)
-marker.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
-marker.BorderSizePixel = 0
-marker.Visible = false
-Instance.new("UICorner", marker).CornerRadius = UDim.new(0, 4)
+	marker.Name = "TabMarker"
+	marker.Size = UDim2.new(0, 4, 1, -8)
+	marker.Position = UDim2.new(0, 0, 0, 4)
+	marker.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
+	marker.BorderSizePixel = 0
+	marker.Visible = false
+	Instance.new("UICorner", marker).CornerRadius = UDim.new(0, 4)
+
+	tabButtons[tabName] = tabBtn
+
+	tabBtn.MouseButton1Click:Connect(function()
+		switchTab(tabName)
+	end)
+
+	local page = Instance.new("Frame", content)
+	page.Name = tabName
+	page.Size = UDim2.new(1, 0, 1, 0)
+	page.BackgroundTransparency = 1
+	page.Visible = false
+	pages[tabName] = page
+
+	if not selectedTab then
+		switchTab(tabName)
+	end
+end
 
 	local label = Instance.new("TextLabel", tabBtn)
 	label.BackgroundTransparency = 1
