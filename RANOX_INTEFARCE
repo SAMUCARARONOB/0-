@@ -530,12 +530,11 @@ function Window:CreateSlider(tabName, sliderConfig)
     neonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
     neonStroke.Color = fill.BackgroundColor3
 
-    -- Animação de brilho neon vermelho alternando tons
     task.spawn(function()
         local TweenService = game:GetService("TweenService")
         local state = true
         while fill.Parent do
-            local goal = { BackgroundColor3 = state and Color3.fromRGB(150, 20, 20) or Color3.fromRGB(255, 0, 0) }
+            local goal = { BackgroundColor3 = state and Color3.fromRGB(195, 20, 20) or Color3.fromRGB(255, 0, 0) }
             local tween = TweenService:Create(fill, TweenInfo.new(1.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), goal)
             tween:Play()
             neonStroke.Color = goal.BackgroundColor3
