@@ -217,66 +217,61 @@ Instance.new("UICorner", marker).CornerRadius = UDim.new(0, 4)
 	end
 end
 
-function Window:CreateButton(tabName, text, description, callback)
+function Window:CreateButton(tabName, data, callback)
     local tab = pages[tabName]
     if not tab then return end
 
-    local buttonHolder = Instance.new("Frame", tab)
-    buttonHolder.Size = UDim2.new(1, -20, 0, 46)
-    buttonHolder.Position = UDim2.new(0, 10, 0, 0)
+    local buttonHolder = Instance.new("Frame")
+    buttonHolder.Name = "ButtonHolder"
+    buttonHolder.Size = UDim2.new(1, -20, 0, data.Description and 50 or 30)
     buttonHolder.BackgroundTransparency = 1
+    buttonHolder.Parent = tab
 
-    local btn = Instance.new("TextButton", buttonHolder)
-    btn.Size = UDim2.new(1, 0, 0, 28)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 0, 30)
     btn.Position = UDim2.new(0, 0, 0, 0)
-    btn.Text = text
-    btn.Font = Enum.Font.GothamBold
+    btn.Text = data.Text or "Botão"
+    btn.Font = Enum.Font.GothamMedium
     btn.TextSize = 14
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     btn.AutoButtonColor = false
     btn.ClipsDescendants = true
+    btn.TextWrapped = true
+    btn.Parent = buttonHolder
 
-    local corner = Instance.new("UICorner", btn)
+    local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = btn
 
-    local stroke = Instance.new("UIStroke", btn)
-    stroke.Color = Color3.fromRGB(80, 0, 0)
-    stroke.Thickness = 1.2
-
-    local desc = Instance.new("TextLabel", buttonHolder)
-    desc.Size = UDim2.new(1, 0, 0, 16)
-    desc.Position = UDim2.new(0, 2, 0, 30)
-    desc.Text = description or ""
-    desc.TextColor3 = Color3.fromRGB(180, 180, 180)
-    desc.Font = Enum.Font.Gotham
-    desc.TextSize = 11
-    desc.TextXAlignment = Enum.TextXAlignment.Left
-    desc.BackgroundTransparency = 1
-
-    local ts = game:GetService("TweenService")
+    if data.Description then
+        local desc = Instance.new("TextLabel")
+        desc.Size = UDim2.new(1, 0, 0, 18)
+        desc.Position = UDim2.new(0, 0, 1, 2)
+        desc.BackgroundTransparency = 1
+        desc.Text = data.Description
+        desc.Font = Enum.Font.Gotham
+        desc.TextSize = 12
+        desc.TextColor3 = Color3.fromRGB(170, 170, 170)
+        desc.TextWrapped = true
+        desc.TextXAlignment = Enum.TextXAlignment.Left
+        desc.TextYAlignment = Enum.TextYAlignment.Top
+        desc.Parent = buttonHolder
+    end
 
     btn.MouseEnter:Connect(function()
-        ts:Create(btn, TweenInfo.new(0.25), {
-            BackgroundColor3 = Color3.fromRGB(80, 0, 0)
-        }):Play()
-        ts:Create(stroke, TweenInfo.new(0.25), {
-            Color = Color3.fromRGB(255, 0, 0)
-        }):Play()
+        btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     end)
 
     btn.MouseLeave:Connect(function()
-        ts:Create(btn, TweenInfo.new(0.25), {
-            BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        }):Play()
-        ts:Create(stroke, TweenInfo.new(0.25), {
-            Color = Color3.fromRGB(80, 0, 0)
-        }):Play()
+        btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     end)
 
     btn.MouseButton1Click:Connect(function()
         pcall(callback)
     end)
+
+    addToLayout(tab, buttonHolder)
 end
 
 function Window:CreateToggle(tabName, toggleConfig)
