@@ -217,61 +217,49 @@ Instance.new("UICorner", marker).CornerRadius = UDim.new(0, 4)
 	end
 end
 
-function Window:CreateButton(tabName, data, callback)
+function Window:CreateButton(tabName, title, description, callback)
     local tab = pages[tabName]
     if not tab then return end
 
-    local buttonHolder = Instance.new("Frame")
-    buttonHolder.Name = "ButtonHolder"
-    buttonHolder.Size = UDim2.new(1, -20, 0, data.Description and 50 or 30)
-    buttonHolder.BackgroundTransparency = 1
-    buttonHolder.Parent = tab
+    local btnFrame = Instance.new("Frame", tab)
+    btnFrame.Size = UDim2.new(1, -20, 0, 60)
+    btnFrame.Position = UDim2.new(0, 10, 0, 0)
+    btnFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    btnFrame.BorderSizePixel = 0
+    btnFrame.ClipsDescendants = true
+    Instance.new("UICorner", btnFrame).CornerRadius = UDim.new(0, 8)
 
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 30)
-    btn.Position = UDim2.new(0, 0, 0, 0)
-    btn.Text = data.Text or "Botão"
-    btn.Font = Enum.Font.GothamMedium
-    btn.TextSize = 14
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    btn.AutoButtonColor = false
-    btn.ClipsDescendants = true
-    btn.TextWrapped = true
-    btn.Parent = buttonHolder
+    local btnTitle = Instance.new("TextLabel", btnFrame)
+    btnTitle.Size = UDim2.new(1, 0, 0.5, 0)
+    btnTitle.Position = UDim2.new(0, 0, 0, 0)
+    btnTitle.Text = title
+    btnTitle.Font = Enum.Font.GothamBold
+    btnTitle.TextSize = 16
+    btnTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btnTitle.BackgroundTransparency = 1
+    btnTitle.TextWrapped = true
 
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 6)
-    corner.Parent = btn
+    local btnDescription = Instance.new("TextLabel", btnFrame)
+    btnDescription.Size = UDim2.new(1, 0, 0.5, 0)
+    btnDescription.Position = UDim2.new(0, 0, 0.5, 0)
+    btnDescription.Text = description
+    btnDescription.Font = Enum.Font.Gotham
+    btnDescription.TextSize = 14
+    btnDescription.TextColor3 = Color3.fromRGB(200, 200, 200)
+    btnDescription.BackgroundTransparency = 1
+    btnDescription.TextWrapped = true
 
-    if data.Description then
-        local desc = Instance.new("TextLabel")
-        desc.Size = UDim2.new(1, 0, 0, 18)
-        desc.Position = UDim2.new(0, 0, 1, 2)
-        desc.BackgroundTransparency = 1
-        desc.Text = data.Description
-        desc.Font = Enum.Font.Gotham
-        desc.TextSize = 12
-        desc.TextColor3 = Color3.fromRGB(170, 170, 170)
-        desc.TextWrapped = true
-        desc.TextXAlignment = Enum.TextXAlignment.Left
-        desc.TextYAlignment = Enum.TextYAlignment.Top
-        desc.Parent = buttonHolder
-    end
-
-    btn.MouseEnter:Connect(function()
-        btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    btnFrame.MouseEnter:Connect(function()
+        btnFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     end)
 
-    btn.MouseLeave:Connect(function()
-        btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    btnFrame.MouseLeave:Connect(function()
+        btnFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     end)
 
-    btn.MouseButton1Click:Connect(function()
+    btnFrame.MouseButton1Click:Connect(function()
         pcall(callback)
     end)
-
-    addToLayout(tab, buttonHolder)
 end
 
 function Window:CreateToggle(tabName, toggleConfig)
