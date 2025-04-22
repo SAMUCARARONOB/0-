@@ -190,7 +190,7 @@ task.spawn(function()
 end)
 
 Window:CreateDropdown("AIM/ESP", {
-	Default = "Nada...",
+	Text = "Funções de visão",
 	Options = {"Nada...", "Visão Noturna", "Visão de Calor"},
 	Callback = function(mode)
 		game.Lighting.Brightness = 1
