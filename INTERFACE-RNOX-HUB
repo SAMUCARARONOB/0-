@@ -17,8 +17,8 @@ Window:CreateLabel("PRINCIPAL", "FUNÇÕES AQUI")
 
 local tocarVidros = nil
 Window:CreateToggle("PRINCIPAL", {
-    Text = "ATIVAR TOQUE NOS VIDROS",
-    Description = "Aplica toque nos vidros verdadeiros e falsos",
+    Text = "DESTRUIR VIDROS",
+    Description = "Destruir Vidros Falsos",
     Callback = function(state)
         if state then
             tocarVidros = RunService.Heartbeat:Connect(function()
