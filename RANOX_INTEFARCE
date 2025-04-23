@@ -1172,6 +1172,49 @@ function Window:CreateLine(tabName, color)
     line.BorderSizePixel = 0
 end
 
+local function NotifyCustom(title, text, icon)
+    local player = game:GetService("Players").LocalPlayer
+    local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+    screenGui.Name = "CustomNotification"
+    
+    local frame = Instance.new("Frame", screenGui)
+    frame.Size = UDim2.new(0, 300, 0, 100)
+    frame.Position = UDim2.new(0.5, -150, 0, 60)
+    frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+
+    local iconImage = Instance.new("ImageLabel", frame)
+    iconImage.Size = UDim2.new(0, 50, 0, 50)
+    iconImage.Position = UDim2.new(0, 10, 0, 25)
+    iconImage.BackgroundTransparency = 1
+    iconImage.Image = "rbxassetid://" .. tostring(icon)
+
+    local titleLabel = Instance.new("TextLabel", frame)
+    titleLabel.Size = UDim2.new(1, -70, 0, 30)
+    titleLabel.Position = UDim2.new(0, 70, 0, 10)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Text = title
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextSize = 14
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+    local textLabel = Instance.new("TextLabel", frame)
+    textLabel.Size = UDim2.new(1, -70, 0, 20)
+    textLabel.Position = UDim2.new(0, 70, 0, 40)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Text = text
+    textLabel.Font = Enum.Font.Gotham
+    textLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    textLabel.TextSize = 12
+    textLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+    task.delay(1, function()
+        screenGui:Destroy()
+    end)
+end
+
     local isHidden = false
     hideButton.MouseButton1Click:Connect(function()
         local targetSize = isHidden and UDim2.new(0, 550, 0, 375) or UDim2.new(0, 0, 0, 0)
