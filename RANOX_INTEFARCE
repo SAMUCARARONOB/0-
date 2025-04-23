@@ -1172,45 +1172,66 @@ function Window:CreateLine(tabName, color)
     line.BorderSizePixel = 0
 end
 
-local function NotifyCustom(title, text, icon)
-    local player = game:GetService("Players").LocalPlayer
-    local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+local function CreateCustomNotification(title, text, iconId)
+    local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "CustomNotification"
-    
-    local frame = Instance.new("Frame", screenGui)
-    frame.Size = UDim2.new(0, 300, 0, 100)
-    frame.Position = UDim2.new(0.5, -150, 0, 60)
+    screenGui.ResetOnSpawn = false
+    screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    screenGui.Parent = player:WaitForChild("PlayerGui")
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 250, 0, 100)
+    frame.Position = UDim2.new(0.5, -125, 0, -120)
+    frame.AnchorPoint = Vector2.new(0.5, 0)
     frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    frame.BorderSizePixel = 0
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+    frame.BackgroundTransparency = 0.4
+    frame.ClipsDescendants = true
+    frame.Parent = screenGui
 
-    local iconImage = Instance.new("ImageLabel", frame)
-    iconImage.Size = UDim2.new(0, 50, 0, 50)
-    iconImage.Position = UDim2.new(0, 10, 0, 25)
-    iconImage.BackgroundTransparency = 1
-    iconImage.Image = "rbxassetid://" .. tostring(icon)
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
 
-    local titleLabel = Instance.new("TextLabel", frame)
+    local icon = Instance.new("ImageLabel")
+    icon.Size = UDim2.new(0, 50, 0, 50)
+    icon.Position = UDim2.new(0, 10, 0, 25)
+    icon.BackgroundTransparency = 1
+    icon.Image = "rbxassetid://" .. iconId
+    icon.Parent = frame
+
+    local titleLabel = Instance.new("TextLabel")
     titleLabel.Size = UDim2.new(1, -70, 0, 30)
     titleLabel.Position = UDim2.new(0, 70, 0, 10)
-    titleLabel.BackgroundTransparency = 1
     titleLabel.Text = title
-    titleLabel.Font = Enum.Font.GothamBold
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.Font = Enum.Font.GothamBold
     titleLabel.TextSize = 14
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Parent = frame
 
-    local textLabel = Instance.new("TextLabel", frame)
+    local textLabel = Instance.new("TextLabel")
     textLabel.Size = UDim2.new(1, -70, 0, 20)
     textLabel.Position = UDim2.new(0, 70, 0, 40)
-    textLabel.BackgroundTransparency = 1
     textLabel.Text = text
-    textLabel.Font = Enum.Font.Gotham
     textLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-    textLabel.TextSize = 12
+    textLabel.Font = Enum.Font.Gotham
+    textLabel.TextSize = 11
     textLabel.TextXAlignment = Enum.TextXAlignment.Left
+    textLabel.BackgroundTransparency = 1
+    textLabel.Parent = frame
 
-    task.delay(1, function()
+    local tweenIn = TweenService:Create(frame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0.5, -125, 0.2, 0)
+    })
+
+    local tweenOut = TweenService:Create(frame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Position = UDim2.new(0.5, -125, 0, -120)
+    })
+
+    tweenIn:Play()
+
+    task.delay(3, function()
+        tweenOut:Play()
+        tweenOut.Completed:Wait()
         screenGui:Destroy()
     end)
 end
