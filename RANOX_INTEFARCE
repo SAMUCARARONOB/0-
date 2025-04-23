@@ -998,9 +998,6 @@ function Window:CreateColorPicker(tabName, colorConfig)
         end)
     end
 
-    enableDragging(hueSlider, hueMarker, true)
-    enableDragging(brightnessSlider, brightness
-
 function Window:CreateSwitch(tabName, switchConfig)
     local tab = pages[tabName]
     if not tab then return end
