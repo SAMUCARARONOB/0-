@@ -1172,33 +1172,32 @@ function Window:CreateLine(tabName, color)
     line.BorderSizePixel = 0
 end
 
-local function CreateCustomNotification(title, text, iconId)
+function Window:NotifyCustom(title, text, iconId)
+    local player = game.Players.LocalPlayer
     local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "CustomNotification"
+    screenGui.Name = "NotifyCustom"
     screenGui.ResetOnSpawn = false
-    screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     screenGui.Parent = player:WaitForChild("PlayerGui")
 
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 250, 0, 100)
-    frame.Position = UDim2.new(0.5, -125, 0, -120)
+    frame.Size = UDim2.new(0, 260, 0, 90)
+    frame.Position = UDim2.new(0.5, -130, 0.15, 0)
     frame.AnchorPoint = Vector2.new(0.5, 0)
     frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     frame.BackgroundTransparency = 0.4
     frame.ClipsDescendants = true
     frame.Parent = screenGui
-
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
 
     local icon = Instance.new("ImageLabel")
     icon.Size = UDim2.new(0, 50, 0, 50)
-    icon.Position = UDim2.new(0, 10, 0, 25)
+    icon.Position = UDim2.new(0, 10, 0, 20)
     icon.BackgroundTransparency = 1
     icon.Image = "rbxassetid://" .. iconId
     icon.Parent = frame
 
     local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, -70, 0, 30)
+    titleLabel.Size = UDim2.new(1, -70, 0, 25)
     titleLabel.Position = UDim2.new(0, 70, 0, 10)
     titleLabel.Text = title
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1219,19 +1218,12 @@ local function CreateCustomNotification(title, text, iconId)
     textLabel.BackgroundTransparency = 1
     textLabel.Parent = frame
 
-    local tweenIn = TweenService:Create(frame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        Position = UDim2.new(0.5, -125, 0.2, 0)
-    })
-
-    local tweenOut = TweenService:Create(frame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-        Position = UDim2.new(0.5, -125, 0, -120)
-    })
-
-    tweenIn:Play()
+    frame.Position = UDim2.new(0.5, -130, 0.1, -100)
+    frame:TweenPosition(UDim2.new(0.5, -130, 0.1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.4, true)
 
     task.delay(3, function()
-        tweenOut:Play()
-        tweenOut.Completed:Wait()
+        frame:TweenPosition(UDim2.new(0.5, -130, 0.1, -100), Enum.EasingDirection.In, Enum.EasingStyle.Quint, 0.4, true)
+        task.wait(0.4)
         screenGui:Destroy()
     end)
 end
