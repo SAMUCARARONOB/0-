@@ -475,7 +475,6 @@ function Window:CreateSlider(tabName, sliderConfig)
 
     local bg = Instance.new("Frame", sliderHolder)
     bg.Size = UDim2.new(1, 0, 0, 70)
-    bg.Position = UDim2.new(0, 0, 0, 0)
     bg.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     bg.BorderSizePixel = 0
     bg.ZIndex = 2
@@ -568,16 +567,22 @@ function Window:CreateSlider(tabName, sliderConfig)
     local max = sliderConfig.Max or 100
     local value = sliderConfig.Default or min
 
+    local function roundToDecimals(num, decimals)
+        local mult = 10 ^ decimals
+        return math.floor(num * mult + 0.5) / mult
+    end
+
     local function updateSlider(inputX)
         local barAbsPos = bar.AbsolutePosition.X
         local barWidth = bar.AbsoluteSize.X
         local clamped = math.clamp((inputX - barAbsPos) / barWidth, 0, 1)
-        local newValue = math.floor((min + (max - min) * clamped) + 0.5)
+        local rawValue = min + (max - min) * clamped
+        local roundedValue = roundToDecimals(rawValue, 2)
         fill:TweenSize(UDim2.new(clamped, 0, 1, 0), "Out", "Quad", 0.1, true)
         knob:TweenPosition(UDim2.new(clamped, -8, 0.5, -8), "Out", "Quad", 0.1, true)
-        valueLabel.Text = tostring(newValue)
+        valueLabel.Text = tostring(roundedValue)
         if sliderConfig.Callback then
-            sliderConfig.Callback(newValue)
+            sliderConfig.Callback(roundedValue)
         end
     end
 
