@@ -1172,81 +1172,98 @@ function Window:CreateLine(tabName, color)
     line.BorderSizePixel = 0
 end
 
-local currentNotification
-
 function Window:NotifyCustom(title, text, iconId)
-    if currentNotification and currentNotification:IsDescendantOf(game.Players.LocalPlayer:WaitForChild("PlayerGui")) then
-        local oldFrame = currentNotification
-        currentNotification = nil
-
-        oldFrame:TweenPosition(UDim2.new(1, 300, 1, -180), Enum.EasingDirection.In, Enum.EasingStyle.Quint, 0.4, true)
-        task.wait(0.4)
-        if oldFrame and oldFrame.Parent then
-            oldFrame.Parent:Destroy()
-        end
-    end
-
     local player = game.Players.LocalPlayer
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "NotifyCustom"
     screenGui.ResetOnSpawn = false
+    screenGui.IgnoreGuiInset = true
     screenGui.Parent = player:WaitForChild("PlayerGui")
 
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 260, 0, 90)
-    frame.Position = UDim2.new(1, 300, 1, -180)
-    frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    frame.BackgroundTransparency = 0.4
-    frame.ZIndex = 999999
-    frame.ClipsDescendants = true
-    frame.Parent = screenGui
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
+    local blur = Instance.new("BlurEffect")
+    blur.Size = 0
+    blur.Parent = game.Lighting
+    game:GetService("TweenService"):Create(blur, TweenInfo.new(0.4, Enum.EasingStyle.Quint), { Size = 6 }):Play()
 
-    currentNotification = frame
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 280, 0, 100)
+    frame.Position = UDim2.new(1, 320, 1, -200)
+    frame.AnchorPoint = Vector2.new(1, 1)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    frame.BackgroundTransparency = 0.2
+    frame.BorderSizePixel = 0
+    frame.ZIndex = 999999
+    frame.Parent = screenGui
+
+    local corner = Instance.new("UICorner", frame)
+    corner.CornerRadius = UDim.new(0, 10)
+
+    local stroke = Instance.new("UIStroke", frame)
+    stroke.Color = Color3.fromRGB(255, 0, 100)
+    stroke.Thickness = 1.5
+    stroke.Transparency = 0.2
+
+    local gradient = Instance.new("UIGradient", frame)
+    gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 100)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 0))
+    })
+    gradient.Rotation = 45
+    gradient.Transparency = NumberSequence.new(0.93)
+
+    local shadow = Instance.new("ImageLabel")
+    shadow.Size = UDim2.new(1, 30, 1, 30)
+    shadow.Position = UDim2.new(0, -15, 0, -15)
+    shadow.Image = "rbxassetid://1316045217"
+    shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+    shadow.ImageTransparency = 0.7
+    shadow.BackgroundTransparency = 1
+    shadow.ZIndex = 999998
+    shadow.Parent = frame
 
     local icon = Instance.new("ImageLabel")
-    icon.Size = UDim2.new(0, 50, 0, 50)
-    icon.Position = UDim2.new(0, 10, 0, 20)
-    icon.BackgroundTransparency = 1
+    icon.Size = UDim2.new(0, 48, 0, 48)
+    icon.Position = UDim2.new(0, 12, 0, 26)
     icon.Image = "rbxassetid://" .. iconId
+    icon.BackgroundTransparency = 1
     icon.ZIndex = 999999
     icon.Parent = frame
 
     local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, -70, 0, 25)
-    titleLabel.Position = UDim2.new(0, 70, 0, 10)
+    titleLabel.Size = UDim2.new(1, -80, 0, 26)
+    titleLabel.Position = UDim2.new(0, 70, 0, 15)
     titleLabel.Text = title
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 14
+    titleLabel.TextSize = 15
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.BackgroundTransparency = 1
     titleLabel.ZIndex = 999999
     titleLabel.Parent = frame
 
     local textLabel = Instance.new("TextLabel")
-    textLabel.Size = UDim2.new(1, -70, 0, 20)
-    textLabel.Position = UDim2.new(0, 70, 0, 40)
+    textLabel.Size = UDim2.new(1, -80, 0, 32)
+    textLabel.Position = UDim2.new(0, 70, 0, 42)
     textLabel.Text = text
-    textLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
     textLabel.Font = Enum.Font.Gotham
-    textLabel.TextSize = 11
+    textLabel.TextSize = 12
+    textLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    textLabel.TextWrapped = true
     textLabel.TextXAlignment = Enum.TextXAlignment.Left
+    textLabel.TextYAlignment = Enum.TextYAlignment.Top
     textLabel.BackgroundTransparency = 1
     textLabel.ZIndex = 999999
     textLabel.Parent = frame
 
-    frame:TweenPosition(UDim2.new(1, -280, 1, -180), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.4, true)
+    frame:TweenPosition(UDim2.new(1, -20, 1, -20), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.4, true)
 
-    task.delay(3, function()
-        if frame == currentNotification then
-            frame:TweenPosition(UDim2.new(1, 300, 1, -180), Enum.EasingDirection.In, Enum.EasingStyle.Quint, 0.4, true)
-            task.wait(0.4)
-            if frame and frame.Parent then
-                frame.Parent:Destroy()
-            end
-            currentNotification = nil
-        end
+    task.delay(2, function()
+        frame:TweenPosition(UDim2.new(1, 320, 1, -200), Enum.EasingDirection.In, Enum.EasingStyle.Quint, 0.4, true)
+        task.wait(0.4)
+        screenGui:Destroy()
+        game:GetService("TweenService"):Create(blur, TweenInfo.new(0.4, Enum.EasingStyle.Quint), { Size = 0 }):Play()
+        task.delay(0.4, function() blur:Destroy() end)
     end)
 end
 
