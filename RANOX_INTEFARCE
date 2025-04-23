@@ -830,7 +830,7 @@ function Window:CreateColorPicker(tabName, colorConfig)
     if not tab then return end
 
     local pickerFrame = Instance.new("Frame", tab)
-    pickerFrame.Size = UDim2.new(1, -20, 0, 180)
+    pickerFrame.Size = UDim2.new(1, -20, 0, 220)
     pickerFrame.Position = UDim2.new(0, 10, 0, 0)
     pickerFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     pickerFrame.ClipsDescendants = true
@@ -868,7 +868,7 @@ function Window:CreateColorPicker(tabName, colorConfig)
     label.TextXAlignment = Enum.TextXAlignment.Left
 
     local container = Instance.new("Frame", pickerFrame)
-    container.Size = UDim2.new(1, 0, 0, 150)
+    container.Size = UDim2.new(1, 0, 0, 190)
     container.Position = UDim2.new(0, 0, 0, 30)
     container.BackgroundTransparency = 1
     container.Name = "Container"
@@ -905,7 +905,6 @@ function Window:CreateColorPicker(tabName, colorConfig)
                 ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))
             })
         end
-
         return bar
     end
 
@@ -965,10 +964,8 @@ function Window:CreateColorPicker(tabName, colorConfig)
     end
 
     local UserInputService = game:GetService("UserInputService")
-
     local function enableDragging(slider, marker, isHue)
         local dragging = false
-
         local function update(input)
             local relX = math.clamp(input.Position.X - slider.AbsolutePosition.X, 0, slider.AbsoluteSize.X)
             local percent = relX / slider.AbsoluteSize.X
@@ -982,22 +979,19 @@ function Window:CreateColorPicker(tabName, colorConfig)
             end
             applyColorFromBox()
         end
-
         slider.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
                 dragging = true
                 update(input)
             end
         end)
-
         UserInputService.InputChanged:Connect(function(input)
-            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
                 update(input)
             end
         end)
-
         UserInputService.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
                 dragging = false
             end
         end)
@@ -1005,21 +999,71 @@ function Window:CreateColorPicker(tabName, colorConfig)
 
     enableDragging(hueSlider, hueMarker, true)
     enableDragging(brightnessSlider, brightnessMarker, false)
+    rgbBox.FocusLost:Connect(applyColorFromBox)
+    brightnessBox.FocusLost:Connect(applyColorFromBox)
 
-    rgbBox.FocusLost:Connect(function()
-        applyColorFromBox()
+    -- RGB Animate Checkbox
+    local rgbTitle = Instance.new("TextLabel", container)
+    rgbTitle.Size = UDim2.new(1, -20, 0, 18)
+    rgbTitle.Position = UDim2.new(0, 10, 0, 100)
+    rgbTitle.BackgroundTransparency = 1
+    rgbTitle.Text = "Muda Suavemente em todas as cores"
+    rgbTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    rgbTitle.Font = Enum.Font.GothamSemibold
+    rgbTitle.TextSize = 13
+    rgbTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+    local rgbDesc = Instance.new("TextLabel", container)
+    rgbDesc.Size = UDim2.new(1, -20, 0, 30)
+    rgbDesc.Position = UDim2.new(0, 10, 0, 118)
+    rgbDesc.BackgroundTransparency = 1
+    rgbDesc.Text = colorConfig.Description or "O painel mudará suavemente por todas as cores enquanto ativo."
+    rgbDesc.TextColor3 = Color3.fromRGB(180, 180, 180)
+    rgbDesc.Font = Enum.Font.Gotham
+    rgbDesc.TextSize = 12
+    rgbDesc.TextWrapped = true
+    rgbDesc.TextXAlignment = Enum.TextXAlignment.Left
+
+    local toggleRGB = Instance.new("TextButton", container)
+    toggleRGB.Size = UDim2.new(0, 20, 0, 20)
+    toggleRGB.Position = UDim2.new(1, -30, 0, 104)
+    toggleRGB.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    toggleRGB.Text = ""
+    local active = false
+    Instance.new("UICorner", toggleRGB).CornerRadius = UDim.new(0, 6)
+
+    local tick = Instance.new("TextLabel", toggleRGB)
+    tick.Size = UDim2.new(1, 0, 1, 0)
+    tick.BackgroundTransparency = 1
+    tick.TextColor3 = Color3.fromRGB(255, 255, 255)
+    tick.Font = Enum.Font.Gotham
+    tick.TextSize = 14
+    tick.Text = ""
+
+    toggleRGB.MouseButton1Click:Connect(function()
+        active = not active
+        tick.Text = active and "✔" or ""
     end)
 
-    brightnessBox.FocusLost:Connect(function()
-        applyColorFromBox()
+    task.spawn(function()
+        local hue = 0
+        while true do
+            if active then
+                hue = (hue + 0.002) % 1
+                local col = Color3.fromHSV(hue, 1, 1)
+                colorDisplay.BackgroundColor3 = col
+                if colorConfig.Callback then colorConfig.Callback(col) end
+            end
+            task.wait(0.01)
+        end
     end)
 
     local opened = true
     toggleButton.MouseButton1Click:Connect(function()
         opened = not opened
         toggleButton.Text = opened and "▼" or "▲"
-        local goalSize = opened and 180 or 30
-        local goalContentSize = opened and 150 or 0
+        local goalSize = opened and 220 or 30
+        local goalContentSize = opened and 190 or 0
         game:GetService("TweenService"):Create(pickerFrame, TweenInfo.new(0.3), {Size = UDim2.new(1, -20, 0, goalSize)}):Play()
         game:GetService("TweenService"):Create(container, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 0, goalContentSize)}):Play()
     end)
