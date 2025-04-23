@@ -1172,7 +1172,20 @@ function Window:CreateLine(tabName, color)
     line.BorderSizePixel = 0
 end
 
+local currentNotification
+
 function Window:NotifyCustom(title, text, iconId)
+    if currentNotification and currentNotification:IsDescendantOf(game.Players.LocalPlayer:WaitForChild("PlayerGui")) then
+        local oldFrame = currentNotification
+        currentNotification = nil
+
+        oldFrame:TweenPosition(UDim2.new(1, 300, 1, -180), Enum.EasingDirection.In, Enum.EasingStyle.Quint, 0.4, true)
+        task.wait(0.4)
+        if oldFrame and oldFrame.Parent then
+            oldFrame.Parent:Destroy()
+        end
+    end
+
     local player = game.Players.LocalPlayer
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "NotifyCustom"
@@ -1181,19 +1194,22 @@ function Window:NotifyCustom(title, text, iconId)
 
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(0, 260, 0, 90)
-    frame.Position = UDim2.new(0.5, -130, 0.15, 0)
-    frame.AnchorPoint = Vector2.new(0.5, 0)
+    frame.Position = UDim2.new(1, 300, 1, -180)
     frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     frame.BackgroundTransparency = 0.4
+    frame.ZIndex = 999999
     frame.ClipsDescendants = true
     frame.Parent = screenGui
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
+
+    currentNotification = frame
 
     local icon = Instance.new("ImageLabel")
     icon.Size = UDim2.new(0, 50, 0, 50)
     icon.Position = UDim2.new(0, 10, 0, 20)
     icon.BackgroundTransparency = 1
     icon.Image = "rbxassetid://" .. iconId
+    icon.ZIndex = 999999
     icon.Parent = frame
 
     local titleLabel = Instance.new("TextLabel")
@@ -1205,6 +1221,7 @@ function Window:NotifyCustom(title, text, iconId)
     titleLabel.TextSize = 14
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.BackgroundTransparency = 1
+    titleLabel.ZIndex = 999999
     titleLabel.Parent = frame
 
     local textLabel = Instance.new("TextLabel")
@@ -1216,15 +1233,20 @@ function Window:NotifyCustom(title, text, iconId)
     textLabel.TextSize = 11
     textLabel.TextXAlignment = Enum.TextXAlignment.Left
     textLabel.BackgroundTransparency = 1
+    textLabel.ZIndex = 999999
     textLabel.Parent = frame
 
-    frame.Position = UDim2.new(0.5, -130, 0.1, -100)
-    frame:TweenPosition(UDim2.new(0.5, -130, 0.1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.4, true)
+    frame:TweenPosition(UDim2.new(1, -280, 1, -180), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.4, true)
 
     task.delay(3, function()
-        frame:TweenPosition(UDim2.new(0.5, -130, 0.1, -100), Enum.EasingDirection.In, Enum.EasingStyle.Quint, 0.4, true)
-        task.wait(0.4)
-        screenGui:Destroy()
+        if frame == currentNotification then
+            frame:TweenPosition(UDim2.new(1, 300, 1, -180), Enum.EasingDirection.In, Enum.EasingStyle.Quint, 0.4, true)
+            task.wait(0.4)
+            if frame and frame.Parent then
+                frame.Parent:Destroy()
+            end
+            currentNotification = nil
+        end
     end)
 end
 
