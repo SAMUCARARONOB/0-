@@ -1017,31 +1017,34 @@ function Window:CreateColorPicker(tabName, colorConfig)
     applyColorFromBox()
 
     local randomColorToggle = Instance.new("TextButton", container)
-randomColorToggle.Size = UDim2.new(1, -20, 0, 26)
-randomColorToggle.Position = UDim2.new(0, 10, 0, 100)
-randomColorToggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-randomColorToggle.Text = "COR RGB ALEATÓRIA [DESATIVADO]"
-randomColorToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-randomColorToggle.Font = Enum.Font.Gotham
-randomColorToggle.TextSize = 12
-Instance.new("UICorner", randomColorToggle).CornerRadius = UDim.new(0, 6)
+    randomColorToggle.Size = UDim2.new(1, -20, 0, 26)
+    randomColorToggle.Position = UDim2.new(0, 10, 0, 100)
+    randomColorToggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    randomColorToggle.Text = "COR RGB ALEATÓRIA [DESATIVADO]"
+    randomColorToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    randomColorToggle.Font = Enum.Font.Gotham
+    randomColorToggle.TextSize = 12
+    Instance.new("UICorner", randomColorToggle).CornerRadius = UDim.new(0, 6)
 
 local randomColorEnabled = false
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local t = 0
 
-RunService.RenderStepped:Connect(function(dt)
-	if randomColorEnabled then
-		t += dt * 2
-		local r = math.sin(t) * 127 + 128
-		local g = math.sin(t + 2) * 127 + 128
-		local b = math.sin(t + 4) * 127 + 128
-		local rgbColor = Color3.fromRGB(r, g, b)
-		TweenService:Create(colorDisplay, TweenInfo.new(0.2), {BackgroundColor3 = rgbColor}):Play()
-		if colorConfig.Callback then
-			colorConfig.Callback(rgbColor)
+task.spawn(function()
+	while true do
+		if randomColorEnabled then
+			t += 0.03
+			local r = math.sin(t) * 127 + 128
+			local g = math.sin(t + 2) * 127 + 128
+			local b = math.sin(t + 4) * 127 + 128
+			local smoothColor = Color3.fromRGB(r, g, b)
+			TweenService:Create(colorDisplay, TweenInfo.new(0.3), {BackgroundColor3 = smoothColor}):Play()
+			if colorConfig.Callback then
+				colorConfig.Callback(smoothColor)
+			end
 		end
+		task.wait(0.05)
 	end
 end)
 
