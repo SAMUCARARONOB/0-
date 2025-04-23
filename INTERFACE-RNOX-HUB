@@ -139,8 +139,8 @@ Window:CreateSlider("PRINCIPAL", {
     Text = "Velocidade",
     Description = "Altere a velocidade do personagem",
     Min = 16,
-    Max = 200,
-    Default = 16,
+    Max = 1000,
+    Default = 100,
     Callback = function(value)
         local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
         if humanoid then
@@ -152,9 +152,9 @@ Window:CreateSlider("PRINCIPAL", {
 Window:CreateSlider("PRINCIPAL", {
     Text = "Pulo",
     Description = "Altere a força do pulo do personagem",
-    Min = 50,
-    Max = 200,
-    Default = 50,
+    Min = 16,
+    Max = 1000,
+    Default = 100,
     Callback = function(value)
         local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
         if humanoid then
