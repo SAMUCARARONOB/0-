@@ -12,7 +12,7 @@ Window:CreateTab("CRÉDITOS", 4483362458)
 
 Window:CreateToggle("PRINCIPAL", {
     Text = "Ativar Modo Avançado",
-    Description = "Ativa recursos adicionais e avançados",
+    Description = "Ativa recursos adicionais e avançados.",
     Default = false,
     Callback = function(isOn)
         print("Modo Avançado ativado:", isOn)
@@ -21,7 +21,7 @@ Window:CreateToggle("PRINCIPAL", {
 
 Window:CreateToggle("PRINCIPAL", {
     Text = "Ativar Recurso X",
-    Description = "Liga a função especial X do jogo",
+    Description = "Liga a função especial X do jogo.",
     Default = true,
     Callback = function(isOn)
         print("Recurso X ativado:", isOn)
@@ -30,12 +30,14 @@ Window:CreateToggle("PRINCIPAL", {
 
 Window:CreateToggle("PRINCIPAL", {
     Text = "Habilitar Opção Y",
-    Description = "Ativa a opção extra Y no ambiente",
+    Description = "Ativa a opção extra Y no ambiente.",
     Default = false,
     Callback = function(isOn)
         print("Opção Y habilitada:", isOn)
     end
 })
+
+Window:CreateLine("PRINCIPAL", Color3.fromRGB(255, 0, 0))
 
 Window:CreateButton("SETTING", "Salvar Configurações", function()
     print("Configurações salvas!")
@@ -50,6 +52,7 @@ end)
 Window:CreateDropdown("SETTING", {
     Default = "Selecione uma opção",
     Options = {"Opção 1", "Opção 2", "Opção 3"},
+    Description = "Escolha uma das opções listadas abaixo.",
     Callback = function(selected)
         print("Selecionou:", selected)
     end
@@ -60,6 +63,7 @@ Window:CreateSlider("SETTING", {
     Min = 50,
     Max = 100,
     Default = 50,
+    Description = "Ajuste o volume do sistema.",
     Callback = function(value)
         print("Volume ajustado para:", value)
     end
@@ -86,7 +90,7 @@ end)
 
 Window:CreateToggle("CRÉDITOS", {
     Text = "Aceitar Termos de Uso",
-    Description = "Confirma que você leu e concorda com os termos",
+    Description = "Confirma que você leu e concorda com os termos.",
     Default = false,
     Callback = function(isOn)
         print("Termos de uso aceitos:", isOn)
@@ -95,7 +99,7 @@ Window:CreateToggle("CRÉDITOS", {
 
 Window:CreateToggle("CRÉDITOS", {
     Text = "Receber Notificações",
-    Description = "Ativa ou desativa notificações do sistema",
+    Description = "Ativa ou desativa notificações do sistema.",
     Default = true,
     Callback = function(isOn)
         print("Notificações ativadas:", isOn)
@@ -104,7 +108,7 @@ Window:CreateToggle("CRÉDITOS", {
 
 Window:CreateCheckbox("PRINCIPAL", {
     Text = "Aceitar Termos de Uso",
-    Description = "Confirma sua aceitação aos termos de uso",
+    Description = "Confirma sua aceitação aos termos de uso.",
     Callback = function(isChecked)
         print("Checkbox ativado:", isChecked)
     end
@@ -112,7 +116,7 @@ Window:CreateCheckbox("PRINCIPAL", {
 
 Window:CreateCheckbox("PRINCIPAL", {
     Text = "Ativar Sombras Dinâmicas",
-    Description = "Habilita o efeito visual de sombras dinâmicas",
+    Description = "Habilita o efeito visual de sombras dinâmicas.",
     Callback = function(isChecked)
         print("Checkbox ativado:", isChecked)
     end
@@ -120,7 +124,7 @@ Window:CreateCheckbox("PRINCIPAL", {
 
 Window:CreateCheckbox("PRINCIPAL", {
     Text = "Mostrar FPS",
-    Description = "Exibe a taxa de quadros por segundo na tela",
+    Description = "Exibe a taxa de quadros por segundo na tela.",
     Callback = function(isChecked)
         print("Checkbox ativado:", isChecked)
     end
@@ -128,13 +132,14 @@ Window:CreateCheckbox("PRINCIPAL", {
 
 Window:CreateColorPicker("PRINCIPAL", {
     Text = "Escolha uma cor",
+    Description = "Selecione uma cor para personalizar o ambiente.",
     Callback = function(color)
     end
 })
 
 Window:CreateSwitch("PRINCIPAL", {
     Text = "Modo Turbo",
-    Description = "Ativa a velocidade máxima de execução",
+    Description = "Ativa a velocidade máxima de execução.",
     State = false,
     Callback = function(state)
         print("Modo Turbo:", state)
