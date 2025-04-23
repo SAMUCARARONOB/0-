@@ -999,54 +999,7 @@ function Window:CreateColorPicker(tabName, colorConfig)
     end
 
     enableDragging(hueSlider, hueMarker, true)
-    enableDragging(brightnessSlider, brightnessMarker, false)
-
-    rgbBox.FocusLost:Connect(applyColorFromBox)
-    brightnessBox.FocusLost:Connect(applyColorFromBox)
-
-    local opened = true
-    toggleButton.MouseButton1Click:Connect(function()
-        opened = not opened
-        toggleButton.Text = opened and "▼" or "▲"
-        local goalSize = opened and 180 or 30
-        local goalContentSize = opened and 150 or 0
-        game:GetService("TweenService"):Create(pickerFrame, TweenInfo.new(0.3), {Size = UDim2.new(1, -20, 0, goalSize)}):Play()
-        game:GetService("TweenService"):Create(container, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 0, goalContentSize)}):Play()
-    end)
-
-    applyColorFromBox()
-
-    local randomColorToggle = Instance.new("TextButton", container)
-    randomColorToggle.Size = UDim2.new(1, -20, 0, 26)
-    randomColorToggle.Position = UDim2.new(0, 10, 0, 100)
-    randomColorToggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    randomColorToggle.Text = "COR RGB ALEATÓRIA [DESATIVADO]"
-    randomColorToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    randomColorToggle.Font = Enum.Font.Gotham
-    randomColorToggle.TextSize = 12
-    Instance.new("UICorner", randomColorToggle).CornerRadius = UDim.new(0, 6)
-
-    local randomColorEnabled = false
-    local TweenService = game:GetService("TweenService")
-
-    task.spawn(function()
-        while true do
-            if randomColorEnabled then
-                local randomColor = Color3.fromRGB(math.random(0,255), math.random(0,255), math.random(0,255))
-                TweenService:Create(colorDisplay, TweenInfo.new(0.5), {BackgroundColor3 = randomColor}):Play()
-                if colorConfig.Callback then
-                    colorConfig.Callback(randomColor)
-                end
-            end
-            task.wait(0.6)
-        end
-    end)
-
-    randomColorToggle.MouseButton1Click:Connect(function()
-        randomColorEnabled = not randomColorEnabled
-        randomColorToggle.Text = randomColorEnabled and "COR RGB ALEATÓRIA [ATIVADO]" or "COR RGB ALEATÓRIA [DESATIVADO]"
-    end)
-end
+    enableDragging(brightnessSlider, brightness
 
 function Window:CreateSwitch(tabName, switchConfig)
     local tab = pages[tabName]
