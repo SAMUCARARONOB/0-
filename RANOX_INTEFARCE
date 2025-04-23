@@ -1016,37 +1016,63 @@ function Window:CreateColorPicker(tabName, colorConfig)
 
     applyColorFromBox()
 
-    local randomColorToggle = Instance.new("TextButton", container)
-    randomColorToggle.Size = UDim2.new(1, -20, 0, 26)
-    randomColorToggle.Position = UDim2.new(0, 10, 0, 100)
-    randomColorToggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    randomColorToggle.Text = "COR RGB ALEATÓRIA [DESATIVADO]"
-    randomColorToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    randomColorToggle.Font = Enum.Font.Gotham
-    randomColorToggle.TextSize = 12
-    Instance.new("UICorner", randomColorToggle).CornerRadius = UDim.new(0, 6)
+    local toggleFrame = Instance.new("Frame", container)
+toggleFrame.Size = UDim2.new(0, 60, 0, 26)
+toggleFrame.Position = UDim2.new(0, 10, 0, 100)
+toggleFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+toggleFrame.BorderSizePixel = 0
+Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 13)
 
-    local randomColorEnabled = false
-    local TweenService = game:GetService("TweenService")
+local toggleBall = Instance.new("Frame", toggleFrame)
+toggleBall.Size = UDim2.new(0, 22, 0, 22)
+toggleBall.Position = UDim2.new(0, 2, 0, 2)
+toggleBall.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+toggleBall.BorderSizePixel = 0
+Instance.new("UICorner", toggleBall).CornerRadius = UDim.new(1, 0)
 
-    task.spawn(function()
-        while true do
-            if randomColorEnabled then
-                local randomColor = Color3.fromRGB(math.random(0,255), math.random(0,255), math.random(0,255))
-                TweenService:Create(colorDisplay, TweenInfo.new(0.5), {BackgroundColor3 = randomColor}):Play()
-                if colorConfig.Callback then
-                    colorConfig.Callback(randomColor)
-                end
-            end
-            task.wait(0.6)
-        end
-    end)
+local toggleText = Instance.new("TextLabel", toggleFrame)
+toggleText.Size = UDim2.new(0, 160, 1, 0)
+toggleText.Position = UDim2.new(1.1, 0, 0, 0)
+toggleText.BackgroundTransparency = 1
+toggleText.Text = "COR RGB ALEATÓRIA [DESATIVADO]"
+toggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleText.Font = Enum.Font.Gotham
+toggleText.TextSize = 12
+toggleText.TextXAlignment = Enum.TextXAlignment.Left
 
-    randomColorToggle.MouseButton1Click:Connect(function()
-        randomColorEnabled = not randomColorEnabled
-        randomColorToggle.Text = randomColorEnabled and "COR RGB ALEATÓRIA [ATIVADO]" or "COR RGB ALEATÓRIA [DESATIVADO]"
-    end)
+local randomColorEnabled = false
+local t = 0
+
+local function getRGBColor(t)
+	local r = math.sin(t) * 127 + 128
+	local g = math.sin(t + 2) * 127 + 128
+	local b = math.sin(t + 4) * 127 + 128
+	return Color3.fromRGB(r, g, b)
 end
+
+game:GetService("RunService").RenderStepped:Connect(function(dt)
+	if randomColorEnabled then
+		t += dt * 2
+		local color = getRGBColor(t)
+		game:GetService("TweenService"):Create(colorDisplay, TweenInfo.new(0.2), {BackgroundColor3 = color}):Play()
+		if colorConfig.Callback then
+			colorConfig.Callback(color)
+		end
+	end
+end)
+
+toggleFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		randomColorEnabled = not randomColorEnabled
+		game:GetService("TweenService"):Create(toggleBall, TweenInfo.new(0.2), {
+			Position = randomColorEnabled and UDim2.new(1, -24, 0, 2) or UDim2.new(0, 2, 0, 2)
+		}):Play()
+		game:GetService("TweenService"):Create(toggleFrame, TweenInfo.new(0.2), {
+			BackgroundColor3 = randomColorEnabled and Color3.fromRGB(0, 170, 255) or Color3.fromRGB(40, 40, 40)
+		}):Play()
+		toggleText.Text = randomColorEnabled and "COR RGB ALEATÓRIA [ATIVADO]" or "COR RGB ALEATÓRIA [DESATIVADO]"
+	end
+end)
 
 function Window:CreateSwitch(tabName, switchConfig)
     local tab = pages[tabName]
