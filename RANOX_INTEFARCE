@@ -1254,7 +1254,7 @@ function Window:NotifyCustom(title, text, iconId)
 
     frame:TweenPosition(UDim2.new(1, -20, 1, -20), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.4, true)
 
-    task.delay(2, function()
+    task.delay(1.5, function()
         frame:TweenPosition(UDim2.new(1, 320, 1, -200), Enum.EasingDirection.In, Enum.EasingStyle.Quint, 0.4, true)
         task.wait(0.4)
         screenGui:Destroy()
