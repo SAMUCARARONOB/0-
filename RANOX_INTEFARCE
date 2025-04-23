@@ -464,10 +464,14 @@ function Window:CreateSlider(tabName, sliderConfig)
     if not tab then return end
 
     local sliderHolder = Instance.new("Frame", tab)
-    sliderHolder.Size = UDim2.new(1, -20, 0, 90)
-    sliderHolder.BackgroundTransparency = 1
+    sliderHolder.Size = UDim2.new(1, -20, 0, 0)
     sliderHolder.Position = UDim2.new(0, 10, 0, 0)
+    sliderHolder.BackgroundTransparency = 1
     sliderHolder.ZIndex = 2
+    sliderHolder.AutomaticSize = Enum.AutomaticSize.Y
+
+    local layout = Instance.new("UIListLayout", sliderHolder)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
 
     local bg = Instance.new("Frame", sliderHolder)
     bg.Size = UDim2.new(1, 0, 0, 70)
