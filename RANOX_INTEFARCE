@@ -1182,10 +1182,10 @@ function ShowNotification(config)
 
     local notification = Instance.new("Frame")
     notification.Size = UDim2.new(0, 300, 0, 100)
-    notification.Position = UDim2.new(1, -310, 1, -110)
+    notification.Position = UDim2.new(1, 10, 1, -110)
     notification.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     notification.BackgroundTransparency = 0
-    notification.AnchorPoint = Vector2.new(0, 1)
+    notification.AnchorPoint = Vector2.new(1, 1)
     notification.Parent = CoreGui
 
     local corner = Instance.new("UICorner", notification)
@@ -1244,7 +1244,6 @@ function ShowNotification(config)
         end)
     end
 
-    notification.Position = UDim2.new(1, 10, 1, -110)
     local tweenIn = TweenService:Create(notification, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(1, -310, 1, -110)})
     tweenIn:Play()
 
