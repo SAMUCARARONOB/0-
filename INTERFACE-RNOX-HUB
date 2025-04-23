@@ -1,327 +1,164 @@
-local RNOX = {}
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
-function RNOX:CreateWindow(config)
-    local tweenService = game:GetService("TweenService")
-    local gui = Instance.new("ScreenGui")
-    gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-    gui.ResetOnSpawn = false
+local HttpService = game:GetService("HttpService")
+local RANOX = loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/RANOX_INTEFARCE"))()
 
-    local interfaceFrame = Instance.new("Frame")
-    interfaceFrame.Size = UDim2.new(0, 450, 0, 350)
-    interfaceFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    interfaceFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    interfaceFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    interfaceFrame.BorderSizePixel = 1
-    interfaceFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
-    interfaceFrame.Active = true
-    interfaceFrame.Draggable = true
-    interfaceFrame.Visible = true
-    interfaceFrame.Parent = gui
+local Window = RANOX:CreateWindow({
+    Title = "Ranox Hub:     PONTE DE VIDRO PRO",
+    Subtitle = "v1.0"
+})
 
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.05, 0)
-    corner.Parent = interfaceFrame
+Window:CreateTab("PRINCIPAL", 4483362458)
 
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(0, 200, 0, 30)
-    titleLabel.Position = UDim2.new(0, 10, 0, 10)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = config.Name or "RNOX Interface"
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 20
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    titleLabel.Parent = interfaceFrame
+Window:CreateLabel("PRINCIPAL", "FUNÇÕES AQUI")
 
-    local hideButton = Instance.new("ImageButton")
-    hideButton.Size = UDim2.new(0, 40, 0, 40)
-    hideButton.Position = UDim2.new(1, -30, 0, 22)
-    hideButton.AnchorPoint = Vector2.new(0.5, 0.5)
-    hideButton.BackgroundTransparency = 1
-    hideButton.Image = "rbxassetid://6035047409"
-    hideButton.Parent = interfaceFrame
+local tocarVidros = nil
+Window:CreateToggle("PRINCIPAL", {
+    Text = "ATIVAR TOQUE NOS VIDROS",
+    Description = "Aplica toque nos vidros verdadeiros e falsos",
+    Callback = function(state)
+        if state then
+            tocarVidros = RunService.Heartbeat:Connect(function()
+                local char = LocalPlayer.Character
+                if not char then return end
+                local root = char:FindFirstChild("HumanoidRootPart")
+                if not root then return end
 
-    local ballButton = Instance.new("ImageButton")
-    ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
-    ballButton.Position = UDim2.new(0.1, 0, 0.9, 0)
-    ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
-    ballButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    ballButton.Image = "rbxassetid://6337069410"
-    ballButton.BackgroundTransparency = 0
-    ballButton.Visible = false
-    ballButton.Active = true
-    ballButton.Draggable = true
-    ballButton.Parent = gui
-
-    local ballCorner = Instance.new("UICorner")
-    ballCorner.CornerRadius = UDim.new(0.5, 0)
-    ballCorner.Parent = ballButton
-
-    local tabContainer = Instance.new("ScrollingFrame")
-    tabContainer.Size = UDim2.new(1, -20, 1, -70)
-    tabContainer.Position = UDim2.new(0, 10, 0, 50)
-    tabContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
-    tabContainer.ScrollBarThickness = 6
-    tabContainer.ScrollingDirection = Enum.ScrollingDirection.Y
-    tabContainer.BackgroundTransparency = 1
-    tabContainer.Parent = interfaceFrame
-
-    local listLayout = Instance.new("UIListLayout")
-    listLayout.FillDirection = Enum.FillDirection.Vertical
-    listLayout.Padding = UDim.new(0.01, 0)
-    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    listLayout.Parent = tabContainer
-
-    listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        tabContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 20)
-    end)
-
-    local function animateFrameIn()
-        interfaceFrame.Visible = true
-        local tweenIn = tweenService:Create(
-            interfaceFrame,
-            TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-            {Size = UDim2.new(0, 450, 0, 350)}
-        )
-        tweenIn:Play()
-    end
-
-    local function animateFrameOut()
-        local tweenOut = tweenService:Create(
-            interfaceFrame,
-            TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
-            {Size = UDim2.new(0, 0, 0, 0)}
-        )
-        tweenOut:Play()
-        tweenOut.Completed:Connect(function()
-            interfaceFrame.Visible = false
-            ballButton.Visible = true
-        end)
-    end
-
-    hideButton.MouseButton1Click:Connect(function()
-        animateFrameOut()
-    end)
-
-    ballButton.MouseButton1Click:Connect(function()
-        ballButton.Visible = false
-        animateFrameIn()
-    end)
-
-    local window = {}
-
-    function window:CreateButton(buttonConfig)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, 0, 0, 30)
-    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.Font = Enum.Font.GothamBold
-    button.TextSize = 18
-    button.Text = buttonConfig.Name or "Button"
-    button.Parent = tabContainer
-
-    local buttonCorner = Instance.new("UICorner")
-    buttonCorner.CornerRadius = UDim.new(0.2, 0)
-    buttonCorner.Parent = button
-
-    button.MouseButton1Click:Connect(function()
-        if buttonConfig.Callback then
-            buttonConfig.Callback()
-        end
-    end)
-end
-
-    function window:CreateToggle(toggleConfig)
-    local toggleFrame = Instance.new("Frame")
-    toggleFrame.Size = UDim2.new(1, 0, 0, 40)
-    toggleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    toggleFrame.BorderColor3 = Color3.fromRGB(0, 150, 255)
-    toggleFrame.BorderSizePixel = 2
-    toggleFrame.Parent = tabContainer
-
-    local toggleCorner = Instance.new("UICorner")
-    toggleCorner.CornerRadius = UDim.new(0.05, 0)
-    toggleCorner.Parent = toggleFrame
-
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0.7, 0, 1, 0)
-    label.Position = UDim2.new(0, 10, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = toggleConfig.Name or "Toggle"
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.Font = Enum.Font.GothamBold
-    label.TextSize = 16
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = toggleFrame
-
-    local toggleButton = Instance.new("ImageButton")
-    toggleButton.Size = UDim2.new(0, 30, 0, 30)
-    toggleButton.Position = UDim2.new(1, -40, 0.5, -15)
-    toggleButton.BackgroundTransparency = 1
-    toggleButton.Image = "rbxassetid://110013051256067"
-    toggleButton.ImageColor3 = Color3.fromRGB(255, 0, 0)
-    toggleButton.Parent = toggleFrame
-
-    local isActive = false
-
-    toggleButton.MouseButton1Click:Connect(function()
-        isActive = not isActive
-        toggleButton.ImageColor3 = isActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-
-        if toggleConfig.Callback then
-            toggleConfig.Callback(isActive)
-        end
-    end)
-end
-
-    function window:CreateLabel(labelConfig)
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, 0, 0, 28)
-        label.BackgroundTransparency = 1
-        label.Text = labelConfig.Name or "Label"
-        label.TextColor3 = Color3.fromRGB(200, 200, 200)
-        label.Font = Enum.Font.Gotham
-        label.TextSize = 14
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.Parent = tabContainer
-    end
-
-    function window:CreateSlider(sliderConfig)
-    local minValue = sliderConfig.Min or 0
-    local maxValue = sliderConfig.Max or 100
-    local defaultValue = math.clamp(sliderConfig.Default or minValue, minValue, maxValue)
-    local sliderColor = sliderConfig.Color or Color3.fromRGB(100, 200, 255)
-
-    local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(1, 0, 0, 40)
-    sliderFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    sliderFrame.BorderSizePixel = 0
-    sliderFrame.Parent = tabContainer
-
-    local sliderCorner = Instance.new("UICorner")
-    sliderCorner.CornerRadius = UDim.new(0.05, 0)
-    sliderCorner.Parent = sliderFrame
-
-    local sliderBar = Instance.new("Frame")
-    sliderBar.Size = UDim2.new((defaultValue - minValue) / (maxValue - minValue), 0, 0.3, 0)
-    sliderBar.Position = UDim2.new(0, 0, 0.5, 0)
-    sliderBar.AnchorPoint = Vector2.new(0, 0.5)
-    sliderBar.BackgroundColor3 = sliderColor
-    sliderBar.BorderSizePixel = 0
-    sliderBar.Parent = sliderFrame
-
-    local sliderHandle = Instance.new("Frame")
-    sliderHandle.Size = UDim2.new(0, 8, 0.6, 0)
-    sliderHandle.Position = UDim2.new((defaultValue - minValue) / (maxValue - minValue), 0, 0.5, 0)
-    sliderHandle.AnchorPoint = Vector2.new(0.5, 0.5)
-    sliderHandle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    sliderHandle.BorderSizePixel = 0
-    sliderHandle.Parent = sliderFrame
-
-    local sliderHandleCorner = Instance.new("UICorner")
-    sliderHandleCorner.CornerRadius = UDim.new(1, 0)
-    sliderHandleCorner.Parent = sliderHandle
-
-    local valueInput = Instance.new("TextBox")
-    valueInput.Size = UDim2.new(0.2, 0, 0.4, 0)
-    valueInput.Position = UDim2.new(0.5, 0, 0.5, 0)
-    valueInput.AnchorPoint = Vector2.new(0.5, 0.5)
-    valueInput.BackgroundTransparency = 1
-    valueInput.Text = tostring(defaultValue)
-    valueInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-    valueInput.Font = Enum.Font.GothamBold
-    valueInput.TextSize = 14
-    valueInput.TextXAlignment = Enum.TextXAlignment.Center
-    valueInput.Parent = sliderFrame
-
-    local dragging = false
-
-    sliderHandle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-        end
-    end)
-
-    sliderHandle.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-
-    game:GetService("UserInputService").InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local relativePosition = math.clamp(
-                (input.Position.X - sliderFrame.AbsolutePosition.X) / sliderFrame.AbsoluteSize.X, 
-                0, 
-                1
-            )
-            sliderBar.Size = UDim2.new(relativePosition, 0, 0.3, 0)
-            sliderHandle.Position = UDim2.new(relativePosition, 0, 0.5, 0)
-
-            local sliderValue = math.floor((maxValue - minValue) * relativePosition + minValue)
-            valueInput.Text = tostring(sliderValue)
-
-            if sliderConfig.Callback then
-                sliderConfig.Callback(sliderValue)
-            end
-        end
-    end)
-
-    valueInput.FocusLost:Connect(function(enterPressed)
-        if enterPressed then
-            local inputValue = tonumber(valueInput.Text)
-            if inputValue then
-                inputValue = math.clamp(inputValue, minValue, maxValue)
-                valueInput.Text = tostring(inputValue)
-                local relativePosition = (inputValue - minValue) / (maxValue - minValue)
-                sliderBar.Size = UDim2.new(relativePosition, 0, 0.3, 0)
-                sliderHandle.Position = UDim2.new(relativePosition, 0, 0.5, 0)
-
-                if sliderConfig.Callback then
-                    sliderConfig.Callback(inputValue)
+                local bridge = workspace:FindFirstChild("MainBridge")
+                if bridge and bridge:FindFirstChild("Sections") then
+                    for _, section in pairs(bridge.Sections:GetChildren()) do
+                        for _, segment in pairs(section:GetChildren()) do
+                            local center = segment:FindFirstChild("Center")
+                            if center then
+                                for _, vidro in pairs(center:GetChildren()) do
+                                    if vidro:IsA("BasePart") and (vidro.Name == "1" or vidro.Name == "2") then
+                                        firetouchinterest(root, vidro, 0)
+                                        firetouchinterest(root, vidro, 1)
+                                    end
+                                end
+                            end
+                        end
+                    end
                 end
-            else
-                valueInput.Text = tostring(defaultValue)
-            end
+            end)
+        elseif tocarVidros then
+            tocarVidros:Disconnect()
         end
-    end)
-end
-
-    function window:CreateTextBox(textBoxConfig)
-        local placeholderText = textBoxConfig.Placeholder or "Digite aqui"
-
-        local textBox = Instance.new("TextBox")
-        textBox.Size = UDim2.new(0, 100, 0, 28)
-        textBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-        textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-        textBox.Font = Enum.Font.Gotham
-        textBox.TextSize = 14
-        textBox.PlaceholderText = textBoxConfig.Placeholder or "Digite aqui"
-        textBox.Text = ""
-        textBox.TextXAlignment = Enum.TextXAlignment.Left
-        textBox.ClearTextOnFocus = false
-        textBox.BorderColor3 = Color3.fromRGB(255, 255, 255)
-        textBox.BorderSizePixel = 1
-        textBox.Parent = tabContainer
-        textBox.ClipsDescendants = true
-
-        local textBoxCorner = Instance.new("UICorner")
-        textBoxCorner.CornerRadius = UDim.new(0.2, 0)
-        textBoxCorner.Parent = textBox
-
-        textBox:GetPropertyChangedSignal("Text"):Connect(function()
-            if textBox.Text ~= "" and textBoxConfig.Callback then
-                textBoxConfig.Callback(textBox.Text)
-            end
-            if textBox.Text ~= "" then
-                local textLength = string.len(textBox.Text)
-                local newSize = UDim2.new(0, math.min(100 + textLength * 8, 400), 0, 28)
-                textBox:TweenSize(newSize, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.25, true)
-            end
-        end)
     end
+})
 
-    return window
-end
+Window:CreateLabel("PRINCIPAL", "AUTO FARM MONEY")
 
-return RNOX
+local autoFarm = nil
+Window:CreateToggle("PRINCIPAL", {
+    Text = "AUTO FARM",
+    Description = "FARM DE DINHEIRO AUTOMÁTICO",
+    Callback = function(state)
+        if state then
+            autoFarm = RunService.Heartbeat:Connect(function()
+                local char = LocalPlayer.Character
+                if char then
+                    local root = char:FindFirstChild("HumanoidRootPart")
+                    if root then
+                        local finish1 = workspace.MainBridge.Finish:FindFirstChild("FinishPart")
+                        if finish1 and finish1:IsA("BasePart") then
+                            firetouchinterest(root, finish1, 0)
+                            firetouchinterest(root, finish1, 1)
+                        end
+                        local finish2 = workspace.MainBridge.Finish.Main:FindFirstChild("Hit")
+                        if finish2 and finish2:IsA("BasePart") then
+                            firetouchinterest(root, finish2, 0)
+                            firetouchinterest(root, finish2, 1)
+                        end
+                    end
+                end
+            end)
+        elseif autoFarm then
+            autoFarm:Disconnect()
+        end
+    end
+})
+
+Window:CreateLabel("PRINCIPAL", "COLETA DE COLISÃO COM CHECKPOINTS")
+
+local colisaoCheckpoints = nil
+Window:CreateToggle("PRINCIPAL", {
+    Text = "CHECKPOINTS AUTO FARM",
+    Description = "BÔNUS DE CHECKPOINTS FARM MONEY",
+    Callback = function(state)
+        if state then
+            colisaoCheckpoints = RunService.Heartbeat:Connect(function()
+                local char = LocalPlayer.Character
+                if not char then return end
+                local root = char:FindFirstChild("HumanoidRootPart")
+                if not root then return end
+
+                local bridge = workspace:FindFirstChild("MainBridge")
+                if bridge and bridge:FindFirstChild("Sections") then
+                    for i = 1, 20 do
+                        local section = bridge.Sections:FindFirstChild("Section " .. i)
+                        if section then
+                            local safeZone = section:FindFirstChild("SafeZone")
+                            if safeZone then
+                                local checkpointChest = safeZone:FindFirstChild("CheckpointChest")
+                                if checkpointChest then
+                                    local touchPart = checkpointChest:FindFirstChild("TouchPart")
+                                    if touchPart then
+                                        firetouchinterest(root, touchPart, 0)
+                                        firetouchinterest(root, touchPart, 1)
+                                    end
+                                    local respawnPoint = checkpointChest:FindFirstChild("RespawnPoint")
+                                    if respawnPoint then
+                                        firetouchinterest(root, respawnPoint, 0)
+                                        firetouchinterest(root, respawnPoint, 1)
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end)
+        elseif colisaoCheckpoints then
+            colisaoCheckpoints:Disconnect()
+        end
+    end
+})
+
+Window:CreateCheckbox("PRINCIPAL", {
+    Text = "GRAVIDADE DA LUA",
+    Description = "SUA GRAVIDADE SERA DIMINUÍDA",
+    Callback = function(state)
+        workspace.Gravity = state and 10 or 196.2
+    end
+})
+
+Window:CreateSlider("PRINCIPAL", {
+    Text = "Velocidade",
+    Description = "Altere a velocidade do personagem",
+    Min = 16,
+    Max = 200,
+    Default = 16,
+    Callback = function(value)
+        local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = value
+        end
+    end
+})
+
+Window:CreateSlider("PRINCIPAL", {
+    Text = "Pulo",
+    Description = "Altere a força do pulo do personagem",
+    Min = 50,
+    Max = 200,
+    Default = 50,
+    Callback = function(value)
+        local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.JumpPower = value
+        end
+    end
+})
