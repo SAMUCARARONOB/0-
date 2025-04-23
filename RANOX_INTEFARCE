@@ -830,7 +830,7 @@ function Window:CreateColorPicker(tabName, colorConfig)
     if not tab then return end
 
     local pickerFrame = Instance.new("Frame", tab)
-    pickerFrame.Size = UDim2.new(1, -20, 0, 220)
+    pickerFrame.Size = UDim2.new(1, -20, 0, 180)
     pickerFrame.Position = UDim2.new(0, 10, 0, 0)
     pickerFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     pickerFrame.ClipsDescendants = true
@@ -842,7 +842,11 @@ function Window:CreateColorPicker(tabName, colorConfig)
     topLine.BorderSizePixel = 0
 
     local uiGradient = Instance.new("UIGradient", topLine)
-    uiGradient.Color = ColorSequence.new({ColorSequenceKeypoint.new(0.0, Color3.fromRGB(0, 0, 0)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 0, 0)), ColorSequenceKeypoint.new(1.0, Color3.fromRGB(0, 0, 0))})
+    uiGradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0.0, Color3.fromRGB(0, 0, 0)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 0, 0)),
+        ColorSequenceKeypoint.new(1.0, Color3.fromRGB(0, 0, 0))
+    })
 
     local toggleButton = Instance.new("TextButton", pickerFrame)
     toggleButton.Size = UDim2.new(0, 20, 0, 20)
@@ -850,8 +854,8 @@ function Window:CreateColorPicker(tabName, colorConfig)
     toggleButton.BackgroundTransparency = 1
     toggleButton.Text = "▼"
     toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggleButton.Font = Enum.Font.Gotham
-    toggleButton.TextSize = 14
+    toggleButton.Font = Enum.Font.GothamBold
+    toggleButton.TextSize = 16
 
     local label = Instance.new("TextLabel", pickerFrame)
     label.Size = UDim2.new(1, -60, 0, 26)
@@ -859,12 +863,12 @@ function Window:CreateColorPicker(tabName, colorConfig)
     label.BackgroundTransparency = 1
     label.Text = colorConfig.Text or "Escolha uma cor"
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.Font = Enum.Font.Gotham
+    label.Font = Enum.Font.GothamBold
     label.TextSize = 14
     label.TextXAlignment = Enum.TextXAlignment.Left
 
     local container = Instance.new("Frame", pickerFrame)
-    container.Size = UDim2.new(1, 0, 0, 190)
+    container.Size = UDim2.new(1, 0, 0, 150)
     container.Position = UDim2.new(0, 0, 0, 30)
     container.BackgroundTransparency = 1
     container.Name = "Container"
@@ -901,6 +905,7 @@ function Window:CreateColorPicker(tabName, colorConfig)
                 ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))
             })
         end
+
         return bar
     end
 
@@ -960,13 +965,13 @@ function Window:CreateColorPicker(tabName, colorConfig)
     end
 
     local UserInputService = game:GetService("UserInputService")
+
     local function enableDragging(slider, marker, isHue)
         local dragging = false
         local function update(input)
             local relX = math.clamp(input.Position.X - slider.AbsolutePosition.X, 0, slider.AbsoluteSize.X)
             local percent = relX / slider.AbsoluteSize.X
             marker.Position = UDim2.new(percent, 0, 0.5, 0)
-
             if isHue then
                 local color = Color3.fromHSV(percent, 1, 1)
                 rgbBox.Text = math.floor(color.R * 255) .. "." .. math.floor(color.G * 255) .. "." .. math.floor(color.B * 255)
@@ -976,18 +981,18 @@ function Window:CreateColorPicker(tabName, colorConfig)
             applyColorFromBox()
         end
         slider.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = true
                 update(input)
             end
         end)
         UserInputService.InputChanged:Connect(function(input)
-            if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
                 update(input)
             end
         end)
         UserInputService.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = false
             end
         end)
@@ -996,12 +1001,51 @@ function Window:CreateColorPicker(tabName, colorConfig)
     enableDragging(hueSlider, hueMarker, true)
     enableDragging(brightnessSlider, brightnessMarker, false)
 
+    rgbBox.FocusLost:Connect(applyColorFromBox)
+    brightnessBox.FocusLost:Connect(applyColorFromBox)
+
+    local opened = true
     toggleButton.MouseButton1Click:Connect(function()
-        container.Visible = not container.Visible
-        toggleButton.Text = container.Visible and "▼" or "▲"
+        opened = not opened
+        toggleButton.Text = opened and "▼" or "▲"
+        local goalSize = opened and 180 or 30
+        local goalContentSize = opened and 150 or 0
+        game:GetService("TweenService"):Create(pickerFrame, TweenInfo.new(0.3), {Size = UDim2.new(1, -20, 0, goalSize)}):Play()
+        game:GetService("TweenService"):Create(container, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 0, goalContentSize)}):Play()
     end)
 
     applyColorFromBox()
+
+    local randomColorToggle = Instance.new("TextButton", container)
+    randomColorToggle.Size = UDim2.new(1, -20, 0, 26)
+    randomColorToggle.Position = UDim2.new(0, 10, 0, 100)
+    randomColorToggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    randomColorToggle.Text = "COR RGB ALEATÓRIA [DESATIVADO]"
+    randomColorToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    randomColorToggle.Font = Enum.Font.Gotham
+    randomColorToggle.TextSize = 12
+    Instance.new("UICorner", randomColorToggle).CornerRadius = UDim.new(0, 6)
+
+    local randomColorEnabled = false
+    local TweenService = game:GetService("TweenService")
+
+    task.spawn(function()
+        while true do
+            if randomColorEnabled then
+                local randomColor = Color3.fromRGB(math.random(0,255), math.random(0,255), math.random(0,255))
+                TweenService:Create(colorDisplay, TweenInfo.new(0.5), {BackgroundColor3 = randomColor}):Play()
+                if colorConfig.Callback then
+                    colorConfig.Callback(randomColor)
+                end
+            end
+            task.wait(0.6)
+        end
+    end)
+
+    randomColorToggle.MouseButton1Click:Connect(function()
+        randomColorEnabled = not randomColorEnabled
+        randomColorToggle.Text = randomColorEnabled and "COR RGB ALEATÓRIA [ATIVADO]" or "COR RGB ALEATÓRIA [DESATIVADO]"
+    end)
 end
 
 function Window:CreateSwitch(tabName, switchConfig)
