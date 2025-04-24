@@ -101,7 +101,7 @@ local selectedTab = nil
 
 local scrollHolder = Instance.new("ScrollingFrame", mainFrame)
 scrollHolder.Position = UDim2.new(0, 143, 0, 30)
-scrollHolder.Size = UDim2.new(0, 429, 1, -35)
+scrollHolder.Size = UDim2.new(0, 431, 1, -35)
 scrollHolder.BackgroundTransparency = 1
 scrollHolder.BorderSizePixel = 0
 scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
