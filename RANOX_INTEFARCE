@@ -15,7 +15,7 @@ function RANOX:CreateWindow(config)
     screenGui.Parent = player:WaitForChild("PlayerGui")
 
     local mainFrame = Instance.new("TextButton")
-mainFrame.Size = UDim2.new(0, 550, 0, 375)
+mainFrame.Size = UDim2.new(0, 605, 0, 375)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -100,7 +100,7 @@ local pages = {}
 local selectedTab = nil
 
 local scrollHolder = Instance.new("ScrollingFrame", mainFrame)
-scrollHolder.Size = UDim2.new(1, -111, 1, -35)
+scrollHolder.Size = UDim2.new(0, 439, 1, -35)
 scrollHolder.Position = UDim2.new(0, 161, 0, 30)
 scrollHolder.BackgroundTransparency = 1
 scrollHolder.BorderSizePixel = 0
