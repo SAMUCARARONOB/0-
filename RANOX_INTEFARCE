@@ -15,7 +15,7 @@ function RANOX:CreateWindow(config)
     screenGui.Parent = player:WaitForChild("PlayerGui")
 
     local mainFrame = Instance.new("TextButton")
-mainFrame.Size = UDim2.new(0, 550, 0, 350)
+mainFrame.Size = UDim2.new(0, 585, 0, 385)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -1277,7 +1277,7 @@ end
 
     ballButton.MouseButton1Click:Connect(function()
         local tween = TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            Size = UDim2.new(0, 550, 0, 350)
+            Size = UDim2.new(0, 585, 0, 385)
         })
         tween:Play()
         isHidden = false
