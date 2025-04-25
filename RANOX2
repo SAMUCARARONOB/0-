@@ -1,0 +1,132 @@
+local Ranox = {}
+
+function Ranox:CreateWindow(config)
+    local Library = {}
+    local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
+    ScreenGui.Name = config.Name or "RanoxHub"
+    ScreenGui.ResetOnSpawn = false
+
+    local MainFrame = Instance.new("Frame", ScreenGui)
+    MainFrame.Size = UDim2.new(0, 600, 0, 400)
+    MainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
+    MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
+    Instance.new("UIStroke", MainFrame).Color = Color3.fromRGB(0, 195, 255)
+
+    local Title = Instance.new("TextLabel", MainFrame)
+    Title.Size = UDim2.new(1, 0, 0, 36)
+    Title.Text = config.Name or "RANOX HUB"
+    Title.TextColor3 = Color3.fromRGB(0, 200, 255)
+    Title.Font = Enum.Font.GothamBold
+    Title.TextSize = 18
+    Title.BackgroundTransparency = 1
+    Title.TextXAlignment = Enum.TextXAlignment.Left
+
+    local TabsHolder = Instance.new("Frame", MainFrame)
+    TabsHolder.Size = UDim2.new(0, 120, 1, -36)
+    TabsHolder.Position = UDim2.new(0, 0, 0, 36)
+    TabsHolder.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
+    Instance.new("UICorner", TabsHolder).CornerRadius = UDim.new(0, 10)
+
+    local TabsLayout = Instance.new("UIListLayout", TabsHolder)
+    TabsLayout.Padding = UDim.new(0, 6)
+    TabsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+    local ContentHolder = Instance.new("Frame", MainFrame)
+    ContentHolder.Size = UDim2.new(1, -130, 1, -46)
+    ContentHolder.Position = UDim2.new(0, 130, 0, 46)
+    ContentHolder.BackgroundTransparency = 1
+    ContentHolder.ClipsDescendants = true
+
+    function Library:CreateTab(name)
+        local TabButton = Instance.new("TextButton", TabsHolder)
+        TabButton.Size = UDim2.new(1, -10, 0, 32)
+        TabButton.Text = name
+        TabButton.TextColor3 = Color3.fromRGB(0, 200, 255)
+        TabButton.Font = Enum.Font.Gotham
+        TabButton.TextSize = 14
+        TabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+        Instance.new("UICorner", TabButton).CornerRadius = UDim.new(0, 8)
+
+        local TabFrame = Instance.new("ScrollingFrame", ContentHolder)
+        TabFrame.Size = UDim2.new(1, 0, 1, 0)
+        TabFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+        TabFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+        TabFrame.ScrollBarThickness = 4
+        TabFrame.Visible = false
+        TabFrame.BackgroundTransparency = 1
+
+        local List = Instance.new("UIListLayout", TabFrame)
+        List.SortOrder = Enum.SortOrder.LayoutOrder
+        List.Padding = UDim.new(0, 6)
+
+        TabButton.MouseButton1Click:Connect(function()
+            for _, v in ipairs(ContentHolder:GetChildren()) do
+                if v:IsA("ScrollingFrame") then
+                    v.Visible = false
+                end
+            end
+            TabFrame.Visible = true
+        end)
+
+        local Tab = {}
+
+        function Tab:CreateButton(btn)
+            local Button = Instance.new("TextButton", TabFrame)
+            Button.Size = UDim2.new(1, -20, 0, 32)
+            Button.Text = btn.Name or "Button"
+            Button.Font = Enum.Font.Gotham
+            Button.TextSize = 14
+            Button.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+            Button.TextColor3 = Color3.new(1, 1, 1)
+            Instance.new("UICorner", Button).CornerRadius = UDim.new(0, 6)
+
+            Button.MouseButton1Click:Connect(function()
+                if btn.Callback then btn.Callback() end
+            end)
+        end
+
+        function Tab:CreateToggle(tg)
+            local Frame = Instance.new("Frame", TabFrame)
+            Frame.Size = UDim2.new(1, -20, 0, 32)
+            Frame.BackgroundTransparency = 1
+
+            local Toggle = Instance.new("TextButton", Frame)
+            Toggle.Size = UDim2.new(0, 32, 0, 32)
+            Toggle.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+            Toggle.Text = ""
+
+            local Dot = Instance.new("Frame", Toggle)
+            Dot.Size = UDim2.new(0, 20, 0, 20)
+            Dot.Position = UDim2.new(0.5, -10, 0.5, -10)
+            Dot.BackgroundColor3 = Color3.fromRGB(200, 0, 255)
+            Dot.Visible = false
+            Instance.new("UICorner", Dot).CornerRadius = UDim.new(1, 0)
+            Instance.new("UICorner", Toggle).CornerRadius = UDim.new(1, 0)
+
+            local Label = Instance.new("TextLabel", Frame)
+            Label.Size = UDim2.new(1, -40, 1, 0)
+            Label.Position = UDim2.new(0, 40, 0, 0)
+            Label.Text = tg.Name or "Toggle"
+            Label.Font = Enum.Font.Gotham
+            Label.TextSize = 14
+            Label.TextColor3 = Color3.new(1, 1, 1)
+            Label.BackgroundTransparency = 1
+            Label.TextXAlignment = Enum.TextXAlignment.Left
+
+            local state = false
+            Toggle.MouseButton1Click:Connect(function()
+                state = not state
+                Dot.Visible = state
+                if tg.Callback then tg.Callback(state) end
+            end)
+        end
+
+        return Tab
+    end
+
+    return Library
+end
+
+return Ranox
