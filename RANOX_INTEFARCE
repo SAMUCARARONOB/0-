@@ -8,11 +8,12 @@ function RANOX:CreateWindow(config)
     local Window = {}
 
     local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "RANOX_UI"
-    screenGui.ResetOnSpawn = false
-    screenGui.IgnoreGuiInset = true
-    screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    screenGui.Parent = player:WaitForChild("PlayerGui")
+screenGui.Name = "RANOX_UI"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+screenGui.DisplayOrder = 9999
+screenGui.Parent = player:WaitForChild("PlayerGui")
 
     local mainFrame = Instance.new("TextButton")
 mainFrame.Size = UDim2.new(0, 585, 0, 385)
