@@ -12,8 +12,8 @@ screenGui.Name = "RANOX_UI"
 screenGui.ResetOnSpawn = false
 screenGui.IgnoreGuiInset = true
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-screenGui.DisplayOrder = 9999
-screenGui.Parent = player:WaitForChild("PlayerGui")
+screenGui.DisplayOrder = 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
+screenGui.Parent = game:GetService("CoreGui")
 
     local mainFrame = Instance.new("TextButton")
 mainFrame.Size = UDim2.new(0, 585, 0, 385)
