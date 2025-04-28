@@ -2021,3 +2021,45 @@ function library:AddWindow(title, options)
 
 	return window_data, Window
 end
+
+do -- Example UI
+	local Window = library:AddWindow("Furk - 3008", {
+		main_color = Color3.fromRGB(0, 0, 0),
+		min_size = Vector2.new(240, 260),
+		toggle_key = Enum.KeyCode.RightShift,
+		can_resize = true,
+	})
+	local Tab = Window:AddTab("Main")
+
+	do -- Elements
+		Tab:AddLabel("Thanks For Using Furk Ultra!")
+		
+		Tab:AddLabel("~ Press Right Shift To Hide GUI ~")
+		
+
+		Tab:AddToggle("Hub (#1)", function()
+			loadstring(game:HttpGet'https://raw.githubusercontent.com/RunDTM/scripts/main/3008.lua')()
+		end)
+		Tab:AddDropdown("CheatX Hub", function()
+			loadstring(game:HttpGet("https://gist.githubusercontent.com/TonyX03/9a829e8b63e7988244ece256f9e609b7/raw/803ec6e727686ce4494b66748531308c2eca6d45/gistfile1.txt"))()
+		end)
+		Tab:AddSwitch("Item ESP", function()
+			loadstring(game:HttpGet("https://gist.githubusercontent.com/TonyX03/bb7ecedf3b1f15ff13b2f8dbe97c3e9c/raw/72621237b461df75f27e113d47bf2bee4f88d322/gistfile1.txt"))()
+		end)
+		
+		Tab:AddTextBox("Infinite Stamina", function()
+			loadstring(game:HttpGet("https://gist.githubusercontent.com/TonyX03/09ff817235ec4a4ac1b24cd9195159d9/raw/28b6e2a2d6df8814b0c5bad676c7c4deb8c5dd23/gistfile1.txt"))()
+		end)
+		Tab:AddColorPicker("Infinite Pick Up Items", function()
+			loadstring(game:HttpGet("https://gist.githubusercontent.com/TonyX03/bd34f1c19f3f4012531e6a4b3180fa27/raw/af32c7c6b22f67d60ac713b80f4316ece0678688/gistfile1.txt"))()
+		end)
+		
+		
+
+		
+
+	end
+
+	Tab:Show()
+	library:FormatWindows()
+end
