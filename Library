@@ -1,159 +1,185 @@
 local Library = {}
 
--- Services
-local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
-
--- Movimentação
-local function MakeDraggable(Frame)
-    local dragging
-    local dragInput
-    local dragStart
-    local startPos
-
-    Frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            dragStart = input.Position
-            startPos = Frame.Position
-
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-
-    Frame.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput = input
-        end
-    end)
-
-    UserInputService.InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
-            local delta = input.Position - dragStart
-            Frame.Position = UDim2.new(
-                startPos.X.Scale,
-                startPos.X.Offset + delta.X,
-                startPos.Y.Scale,
-                startPos.Y.Offset + delta.Y
-            )
-        end
-    end)
-end
+local UIS = game:GetService("UserInputService")
 
 function Library:CreateWindow(title)
     local ScreenGui = Instance.new("ScreenGui")
-    local MainFrame = Instance.new("Frame")
-    local TitleLabel = Instance.new("TextLabel")
-    local TabsFrame = Instance.new("Frame")
-    local ContentFrame = Instance.new("Frame")
-    local UIListLayout = Instance.new("UIListLayout")
-
     ScreenGui.Parent = game:GetService("CoreGui")
-    ScreenGui.Name = "CustomHub_" .. math.random(1000,9999)
+    ScreenGui.Name = "ModernHub"
 
-    MainFrame.Name = "MainFrame"
-    MainFrame.Parent = ScreenGui
-    MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    MainFrame.Size = UDim2.new(0, 500, 0, 300)
-    MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    local MainFrame = Instance.new("Frame")
+    MainFrame.Size = UDim2.new(0, 400, 0, 300)
+    MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
     MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     MainFrame.BorderSizePixel = 0
-    MainFrame.Active = true
-    MainFrame.Draggable = false
+    MainFrame.Parent = ScreenGui
 
-    MakeDraggable(MainFrame)
+    local UICorner = Instance.new("UICorner", MainFrame)
+    UICorner.CornerRadius = UDim.new(0, 12)
 
-    TitleLabel.Name = "TitleLabel"
-    TitleLabel.Parent = MainFrame
-    TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Size = UDim2.new(1, 0, 0, 50)
-    TitleLabel.Font = Enum.Font.GothamBold
-    TitleLabel.Text = title
-    TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    TitleLabel.TextSize = 22
-    TitleLabel.TextStrokeTransparency = 0.8
+    local Title = Instance.new("TextLabel")
+    Title.Size = UDim2.new(1, 0, 0, 40)
+    Title.BackgroundTransparency = 1
+    Title.Text = title
+    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Title.Font = Enum.Font.GothamBold
+    Title.TextSize = 22
+    Title.Parent = MainFrame
 
-    TabsFrame.Name = "TabsFrame"
+    local TabButtonsFrame = Instance.new("Frame")
+    TabButtonsFrame.Size = UDim2.new(0, 130, 1, -40)
+    TabButtonsFrame.Position = UDim2.new(0, 0, 0, 40)
+    TabButtonsFrame.BackgroundTransparency = 1
+    TabButtonsFrame.Parent = MainFrame
+
+    local TabsFrame = Instance.new("Frame")
+    TabsFrame.Size = UDim2.new(1, -130, 1, -40)
+    TabsFrame.Position = UDim2.new(0, 130, 0, 40)
+    TabsFrame.BackgroundTransparency = 1
     TabsFrame.Parent = MainFrame
-    TabsFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    TabsFrame.Size = UDim2.new(0, 120, 1, -50)
-    TabsFrame.Position = UDim2.new(0, 0, 0, 50)
-    TabsFrame.BorderSizePixel = 0
 
-    ContentFrame.Name = "ContentFrame"
-    ContentFrame.Parent = MainFrame
-    ContentFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    ContentFrame.Size = UDim2.new(1, -120, 1, -50)
-    ContentFrame.Position = UDim2.new(0, 120, 0, 50)
-    ContentFrame.BorderSizePixel = 0
-    ContentFrame.ClipsDescendants = true
+    local TabsFolder = Instance.new("Folder", TabsFrame)
 
-    UIListLayout.Parent = ContentFrame
-    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    UIListLayout.Padding = UDim.new(0, 5)
+    local function Draggable(obj)
+        local dragging
+        local dragInput
+        local dragStart
+        local startPos
 
-    local WindowFunctions = {}
+        obj.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragging = true
+                dragStart = input.Position
+                startPos = obj.Position
 
-    function WindowFunctions:CreateTab(tabname)
-        local TabButton = Instance.new("TextButton")
-        local TabContent = Instance.new("Frame")
-        local ContentLayout = Instance.new("UIListLayout")
-
-        TabButton.Parent = TabsFrame
-        TabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-        TabButton.Size = UDim2.new(1, 0, 0, 40)
-        TabButton.Text = tabname
-        TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        TabButton.Font = Enum.Font.Gotham
-        TabButton.TextSize = 16
-        TabButton.BorderSizePixel = 0
-
-        TabContent.Name = tabname .. "_Content"
-        TabContent.Parent = ContentFrame
-        TabContent.BackgroundTransparency = 1
-        TabContent.Size = UDim2.new(1, 0, 1, 0)
-        TabContent.Visible = false
-
-        ContentLayout.Parent = TabContent
-        ContentLayout.SortOrder = Enum.SortOrder.LayoutOrder
-        ContentLayout.Padding = UDim.new(0, 6)
-
-        TabButton.MouseButton1Click:Connect(function()
-            for _, tab in pairs(ContentFrame:GetChildren()) do
-                if tab:IsA("Frame") then
-                    tab.Visible = false
-                end
+                input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragging = false
+                    end
+                end)
             end
-            TabContent.Visible = true
         end)
 
-        local TabFunctions = {}
+        obj.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                dragInput = input
+            end
+        end)
 
-        function TabFunctions:CreateButton(buttontext, callback)
+        UIS.InputChanged:Connect(function(input)
+            if input == dragInput and dragging then
+                local delta = input.Position - dragStart
+                obj.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+            end
+        end)
+    end
+
+    Draggable(MainFrame)
+
+    local Tabs = {}
+
+    function Tabs:CreateTab(name)
+        local TabButton = Instance.new("TextButton")
+        TabButton.Size = UDim2.new(1, -10, 0, 40)
+        TabButton.Position = UDim2.new(0, 5, 0, #TabButtonsFrame:GetChildren() * 45 - 45)
+        TabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TabButton.Font = Enum.Font.Gotham
+        TabButton.TextSize = 18
+        TabButton.Text = name
+        TabButton.BorderSizePixel = 0
+        TabButton.Parent = TabButtonsFrame
+
+        local UICornerButton = Instance.new("UICorner", TabButton)
+        UICornerButton.CornerRadius = UDim.new(0, 6)
+
+        local Page = Instance.new("Frame")
+        Page.Size = UDim2.new(1, 0, 1, 0)
+        Page.Position = UDim2.new(0, 0, 0, 0)
+        Page.BackgroundTransparency = 1
+        Page.Visible = false
+        Page.Parent = TabsFolder
+
+        TabButton.MouseButton1Click:Connect(function()
+            for _, v in pairs(TabsFolder:GetChildren()) do
+                v.Visible = false
+            end
+            for _, v in pairs(TabButtonsFrame:GetChildren()) do
+                if v:IsA("TextButton") then
+                    v.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+                end
+            end
+            Page.Visible = true
+            TabButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+        end)
+
+        local Elements = {}
+
+        function Elements:CreateButton(text, callback)
             local Button = Instance.new("TextButton")
-            Button.Parent = TabContent
-            Button.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
             Button.Size = UDim2.new(1, -10, 0, 40)
-            Button.Position = UDim2.new(0, 5, 0, 0)
-            Button.Text = buttontext
+            Button.Position = UDim2.new(0, 5, 0, #Page:GetChildren() * 45)
+            Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-            Button.Font = Enum.Font.GothamBold
-            Button.TextSize = 16
+            Button.Font = Enum.Font.Gotham
+            Button.TextSize = 18
+            Button.Text = text
+            Button.Parent = Page
             Button.BorderSizePixel = 0
 
-            Button.MouseButton1Click:Connect(function()
-                callback()
+            local UICornerButton2 = Instance.new("UICorner", Button)
+            UICornerButton2.CornerRadius = UDim.new(0, 6)
+
+            Button.MouseButton1Click:Connect(callback)
+        end
+
+        function Elements:CreateToggle(text, callback)
+            local ToggleFrame = Instance.new("Frame")
+            ToggleFrame.Size = UDim2.new(1, -10, 0, 40)
+            ToggleFrame.Position = UDim2.new(0, 5, 0, #Page:GetChildren() * 45)
+            ToggleFrame.BackgroundTransparency = 1
+            ToggleFrame.Parent = Page
+
+            local ToggleButton = Instance.new("TextButton")
+            ToggleButton.Size = UDim2.new(0, 40, 0, 20)
+            ToggleButton.Position = UDim2.new(1, -50, 0.5, -10)
+            ToggleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            ToggleButton.BorderSizePixel = 0
+            ToggleButton.Parent = ToggleFrame
+            ToggleButton.Text = ""
+
+            local UICornerToggle = Instance.new("UICorner", ToggleButton)
+            UICornerToggle.CornerRadius = UDim.new(1, 0)
+
+            local ToggleState = false
+
+            local Label = Instance.new("TextLabel")
+            Label.Size = UDim2.new(1, -60, 1, 0)
+            Label.Position = UDim2.new(0, 5, 0, 0)
+            Label.BackgroundTransparency = 1
+            Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Label.Font = Enum.Font.Gotham
+            Label.TextSize = 18
+            Label.TextXAlignment = Enum.TextXAlignment.Left
+            Label.Text = text
+            Label.Parent = ToggleFrame
+
+            ToggleButton.MouseButton1Click:Connect(function()
+                ToggleState = not ToggleState
+                if ToggleState then
+                    ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+                else
+                    ToggleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+                end
+                callback(ToggleState)
             end)
         end
 
-        return TabFunctions
+        return Elements
     end
 
-    return WindowFunctions
+    return Tabs
 end
 
 return Library
