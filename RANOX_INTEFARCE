@@ -1264,14 +1264,14 @@ function Window:NotifyCustom(title, text, iconId)
     end)
 end
 
-function Window:CreatePromoBox(tabName, title, description, imageId, link)
+function Window:CreatePromoBox(tabName, title, description, imageId, link, channelName)
     local tab = pages[tabName]
     if not tab then return end
 
     local box = Instance.new("Frame", tab)
     box.Size = UDim2.new(1, -20, 0, 0)
     box.Position = UDim2.new(0, 10, 0, 0)
-    box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    box.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     box.BorderColor3 = Color3.fromRGB(50, 50, 50)
     box.BorderSizePixel = 1
     box.AutomaticSize = Enum.AutomaticSize.Y
@@ -1288,17 +1288,24 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link)
     icon.ScaleType = Enum.ScaleType.Fit
     Instance.new("UICorner", icon).CornerRadius = UDim.new(0, 6)
 
-    local nameBox = Instance.new("TextBox", box)
-    nameBox.Position = UDim2.new(0, 10, 0, 110)
-    nameBox.Size = UDim2.new(0, 90, 0, 28)
-    nameBox.PlaceholderText = "Seu Canal"
-    nameBox.Text = ""
-    nameBox.Font = Enum.Font.Gotham
-    nameBox.TextSize = 14
-    nameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    nameBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    nameBox.BorderSizePixel = 0
-    Instance.new("UICorner", nameBox).CornerRadius = UDim.new(0, 6)
+    local channelBox = Instance.new("TextBox", box)
+    channelBox.Text = channelName or "SEU CANAL AQUI"
+    channelBox.Size = UDim2.new(0, 90, 0, 0)
+    channelBox.Position = UDim2.new(0, 10, 0, 105)
+    channelBox.Font = Enum.Font.GothamBold
+    channelBox.TextSize = 12
+    channelBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    channelBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    channelBox.BorderColor3 = Color3.fromRGB(255, 80, 80)
+    channelBox.BorderSizePixel = 1
+    channelBox.ClearTextOnFocus = false
+    channelBox.AutomaticSize = Enum.AutomaticSize.Y
+    channelBox.TextWrapped = true
+    channelBox.TextXAlignment = Enum.TextXAlignment.Center
+    channelBox.TextYAlignment = Enum.TextYAlignment.Center
+    channelBox.ClipsDescendants = true
+    channelBox.TextEditable = false
+    Instance.new("UICorner", channelBox).CornerRadius = UDim.new(0, 6)
 
     local content = Instance.new("Frame", box)
     content.BackgroundTransparency = 1
@@ -1309,7 +1316,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link)
     local layout = Instance.new("UIListLayout", content)
     layout.FillDirection = Enum.FillDirection.Vertical
     layout.SortOrder = Enum.SortOrder.LayoutOrder
-    layout.Padding = UDim.new(0, 6)
+    layout.Padding = UDim.new(0, 2)
 
     local titleLabel = Instance.new("TextLabel", content)
     titleLabel.Text = "  " .. title:upper()
@@ -1320,13 +1327,23 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link)
     titleLabel.Size = UDim2.new(1, 0, 0, 28)
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.TextYAlignment = Enum.TextYAlignment.Center
-    titleLabel.LayoutOrder = 1
 
     local underline = Instance.new("Frame", titleLabel)
     underline.Size = UDim2.new(1, -20, 0, 1)
     underline.Position = UDim2.new(0, 10, 1, -3)
     underline.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
     underline.BorderSizePixel = 0
+
+    local copyButton = Instance.new("TextButton", content)
+    copyButton.Text = "COPIAR LINK"
+    copyButton.Font = Enum.Font.GothamBold
+    copyButton.TextSize = 14
+    copyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    copyButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+    copyButton.BorderColor3 = Color3.fromRGB(255, 80, 80)
+    copyButton.BorderSizePixel = 1
+    copyButton.Size = UDim2.new(1, 0, 0, 30)
+    Instance.new("UICorner", copyButton).CornerRadius = UDim.new(0, 6)
 
     local descLabel = Instance.new("TextLabel", content)
     descLabel.Text = description
@@ -1338,23 +1355,17 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link)
     descLabel.AutomaticSize = Enum.AutomaticSize.Y
     descLabel.TextXAlignment = Enum.TextXAlignment.Left
     descLabel.TextWrapped = true
-    descLabel.LayoutOrder = 2
-
-    local copyButton = Instance.new("TextButton", content)
-    copyButton.Text = "COPIAR LINK"
-    copyButton.Font = Enum.Font.GothamBold
-    copyButton.TextSize = 14
-    copyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    copyButton.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
-    copyButton.BorderColor3 = Color3.fromRGB(255, 80, 80)
-    copyButton.BorderSizePixel = 1
-    copyButton.Size = UDim2.new(1, 0, 0, 30)
-    copyButton.LayoutOrder = 3
-    Instance.new("UICorner", copyButton).CornerRadius = UDim.new(0, 6)
 
     copyButton.MouseButton1Click:Connect(function()
         setclipboard(link)
     end)
+
+    return {
+        MainFrame = box,
+        ChannelBox = channelBox,
+        DescriptionLabel = descLabel,
+        CopyButton = copyButton
+    }
 end
 
     local isHidden = false
