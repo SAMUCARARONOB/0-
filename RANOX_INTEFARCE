@@ -1271,28 +1271,23 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link)
     local box = Instance.new("Frame", tab)
     box.Size = UDim2.new(1, -20, 0, 0)
     box.Position = UDim2.new(0, 10, 0, 0)
-    box.BackgroundColor3 = Color3.fromRGB(45, 0, 0)
-    box.BorderColor3 = Color3.fromRGB(255, 80, 80)
+    box.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    box.BorderColor3 = Color3.fromRGB(40, 40, 40)
     box.BorderSizePixel = 1
     box.AutomaticSize = Enum.AutomaticSize.Y
-    box.BackgroundTransparency = 0
     box.ClipsDescendants = true
 
-    local uicornerBox = Instance.new("UICorner", box)
-    uicornerBox.CornerRadius = UDim.new(0, 10)
+    Instance.new("UICorner", box).CornerRadius = UDim.new(0, 10)
 
     local icon = Instance.new("ImageLabel", box)
     icon.Size = UDim2.new(0, 90, 0, 90)
     icon.Position = UDim2.new(0, 12, 0, 12)
     icon.Image = "rbxassetid://" .. tostring(imageId)
-    icon.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    icon.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    icon.BorderColor3 = Color3.fromRGB(50, 50, 50)
     icon.BorderSizePixel = 1
     icon.ScaleType = Enum.ScaleType.Fit
-    icon.ClipsDescendants = true
-
-    local uicornerIcon = Instance.new("UICorner", icon)
-    uicornerIcon.CornerRadius = UDim.new(0, 8)
+    Instance.new("UICorner", icon).CornerRadius = UDim.new(0, 8)
 
     local titleLabel = Instance.new("TextLabel", box)
     titleLabel.Position = UDim2.new(0, 115, 0, 15)
@@ -1301,10 +1296,22 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link)
     titleLabel.Text = title
     titleLabel.Font = Enum.Font.GothamBold
     titleLabel.TextSize = 20
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextColor3 = Color3.fromRGB(255, 85, 85)
     titleLabel.BackgroundTransparency = 1
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.TextWrapped = true
+
+    local actionButton = Instance.new("TextButton", box)
+    actionButton.Size = UDim2.new(0, 100, 0, 30)
+    actionButton.Position = UDim2.new(0, 115, 0, 0) -- vai ser ajustado depois
+    actionButton.Text = "COPIAR"
+    actionButton.Font = Enum.Font.GothamBold
+    actionButton.TextSize = 14
+    actionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    actionButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+    actionButton.BorderColor3 = Color3.fromRGB(255, 80, 80)
+    actionButton.BorderSizePixel = 1
+    Instance.new("UICorner", actionButton).CornerRadius = UDim.new(0, 6)
 
     local descLabel = Instance.new("TextLabel", box)
     descLabel.Position = UDim2.new(0, 115, 0, 0)
@@ -1313,31 +1320,18 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link)
     descLabel.Text = description
     descLabel.Font = Enum.Font.Gotham
     descLabel.TextSize = 14
-    descLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+    descLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
     descLabel.BackgroundTransparency = 1
     descLabel.TextXAlignment = Enum.TextXAlignment.Left
     descLabel.TextWrapped = true
 
-    local actionButton = Instance.new("TextButton", box)
-    actionButton.Size = UDim2.new(0, 100, 0, 32)
-    actionButton.Text = "COPIAR"
-    actionButton.Font = Enum.Font.GothamBold
-    actionButton.TextSize = 14
-    actionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    actionButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
-    actionButton.BorderColor3 = Color3.fromRGB(255, 80, 80)
-    actionButton.BorderSizePixel = 1
-
-    local uicornerButton = Instance.new("UICorner", actionButton)
-    uicornerButton.CornerRadius = UDim.new(0, 6)
+    task.defer(function()
+        actionButton.Position = UDim2.new(0, 115, 0, titleLabel.Position.Y.Offset + titleLabel.AbsoluteSize.Y + 8)
+        descLabel.Position = UDim2.new(0, 115, 0, actionButton.Position.Y.Offset + actionButton.AbsoluteSize.Y + 10)
+    end)
 
     actionButton.MouseButton1Click:Connect(function()
         setclipboard(link)
-    end)
-
-    task.defer(function()
-        descLabel.Position = UDim2.new(0, 115, 0, titleLabel.Position.Y.Offset + titleLabel.AbsoluteSize.Y + 5)
-        actionButton.Position = UDim2.new(0, 115, 0, descLabel.Position.Y.Offset + descLabel.AbsoluteSize.Y + 10)
     end)
 end
 
