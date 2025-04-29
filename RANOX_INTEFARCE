@@ -1269,6 +1269,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     local tab = pages[tabName]
     if not tab then return end
 
+    -- Caixa principal
     local box = Instance.new("Frame", tab)
     box.Size = UDim2.new(1, -20, 0, 0)
     box.Position = UDim2.new(0, 10, 0, 0)
@@ -1279,6 +1280,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
     Instance.new("UIStroke", box).Color = Color3.fromRGB(40, 40, 40)
 
+    -- Ícone
     local icon = Instance.new("ImageLabel", box)
     icon.Size = UDim2.new(0, 90, 0, 90)
     icon.Position = UDim2.new(0, 10, 0, 10)
@@ -1288,6 +1290,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     icon.ScaleType = Enum.ScaleType.Fit
     Instance.new("UICorner", icon).CornerRadius = UDim.new(0, 8)
 
+    -- Caixa do canal
     local channelBox = Instance.new("TextBox", box)
     channelBox.Text = channelName or "SEU CANAL AQUI"
     channelBox.Size = UDim2.new(0, 90, 0, 0)
@@ -1305,8 +1308,9 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     channelBox.ClipsDescendants = true
     channelBox.TextEditable = false
     Instance.new("UICorner", channelBox).CornerRadius = UDim.new(0, 6)
-    Instance.new("UIStroke", channelBox).Color = Color3.fromRGB(20, 0, 175)
+    Instance.new("UIStroke", channelBox).Color = Color3.fromRGB(255, 0, 0) -- Borda vermelha
 
+    -- Conteúdo
     local content = Instance.new("Frame", box)
     content.BackgroundTransparency = 1
     content.Position = UDim2.new(0, 110, 0, 10)
@@ -1318,6 +1322,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Padding = UDim.new(0, 6)
 
+    -- Título
     local titleLabel = Instance.new("TextLabel", content)
     titleLabel.Text = "  " .. title:upper()
     titleLabel.Font = Enum.Font.GothamBold
@@ -1334,6 +1339,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     underline.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
     underline.BorderSizePixel = 0
 
+    -- Caixa do botão
     local buttonHolder = Instance.new("Frame", content)
     buttonHolder.Size = UDim2.new(1, 0, 0, 30)
     buttonHolder.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
@@ -1342,6 +1348,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     Instance.new("UICorner", buttonHolder).CornerRadius = UDim.new(0, 6)
     Instance.new("UIStroke", buttonHolder).Color = Color3.fromRGB(70, 70, 70)
 
+    -- Botão de copiar
     local copyButton = Instance.new("TextButton", buttonHolder)
     copyButton.Text = "COPIAR LINK"
     copyButton.Font = Enum.Font.GothamBold
@@ -1351,13 +1358,15 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     copyButton.Size = UDim2.new(1, 0, 1, 0)
     copyButton.ZIndex = 2
 
+    -- Barra de preenchimento
     local fillBar = Instance.new("Frame", buttonHolder)
     fillBar.Size = UDim2.new(0, 0, 1, 0)
     fillBar.Position = UDim2.new(0, 0, 0, 0)
-    fillBar.BackgroundColor3 = Color3.fromRGB(20, 0, 175)
+    fillBar.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Barra vermelha
     fillBar.BorderSizePixel = 0
     fillBar.ZIndex = 1
 
+    -- Descrição
     local descLabel = Instance.new("TextLabel", content)
     descLabel.Text = description
     descLabel.Font = Enum.Font.Gotham
@@ -1369,6 +1378,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     descLabel.TextWrapped = true
     descLabel.TextXAlignment = Enum.TextXAlignment.Left
 
+    -- Ação do botão de copiar
     copyButton.MouseButton1Click:Connect(function()
         setclipboard(link)
         fillBar.Size = UDim2.new(0, 0, 1, 0)
