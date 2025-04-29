@@ -1271,7 +1271,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link)
     local box = Instance.new("Frame", tab)
     box.Size = UDim2.new(1, -20, 0, 0)
     box.Position = UDim2.new(0, 10, 0, 0)
-    box.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    box.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
     box.BorderColor3 = Color3.fromRGB(40, 40, 40)
     box.BorderSizePixel = 1
     box.AutomaticSize = Enum.AutomaticSize.Y
@@ -1283,8 +1283,8 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link)
     icon.Size = UDim2.new(0, 90, 0, 90)
     icon.Position = UDim2.new(0, 12, 0, 12)
     icon.Image = "rbxassetid://" .. tostring(imageId)
-    icon.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    icon.BorderColor3 = Color3.fromRGB(50, 50, 50)
+    icon.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    icon.BorderColor3 = Color3.fromRGB(60, 60, 60)
     icon.BorderSizePixel = 1
     icon.ScaleType = Enum.ScaleType.Fit
     Instance.new("UICorner", icon).CornerRadius = UDim.new(0, 8)
@@ -1296,20 +1296,20 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link)
     titleLabel.Text = title
     titleLabel.Font = Enum.Font.GothamBold
     titleLabel.TextSize = 20
-    titleLabel.TextColor3 = Color3.fromRGB(255, 85, 85)
+    titleLabel.TextColor3 = Color3.fromRGB(255, 90, 90)
     titleLabel.BackgroundTransparency = 1
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.TextWrapped = true
 
     local actionButton = Instance.new("TextButton", box)
-    actionButton.Size = UDim2.new(0, 100, 0, 30)
-    actionButton.Position = UDim2.new(0, 115, 0, 0) -- vai ser ajustado depois
-    actionButton.Text = "COPIAR"
+    actionButton.Size = UDim2.new(1, -133, 0, 30)
+    actionButton.Position = UDim2.new(0, 115, 0, 0)
+    actionButton.Text = "COPIAR LINK"
     actionButton.Font = Enum.Font.GothamBold
     actionButton.TextSize = 14
     actionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     actionButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
-    actionButton.BorderColor3 = Color3.fromRGB(255, 80, 80)
+    actionButton.BorderColor3 = Color3.fromRGB(255, 70, 70)
     actionButton.BorderSizePixel = 1
     Instance.new("UICorner", actionButton).CornerRadius = UDim.new(0, 6)
 
@@ -1326,8 +1326,11 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link)
     descLabel.TextWrapped = true
 
     task.defer(function()
-        actionButton.Position = UDim2.new(0, 115, 0, titleLabel.Position.Y.Offset + titleLabel.AbsoluteSize.Y + 8)
-        descLabel.Position = UDim2.new(0, 115, 0, actionButton.Position.Y.Offset + actionButton.AbsoluteSize.Y + 10)
+        local titleBottom = titleLabel.Position.Y.Offset + titleLabel.AbsoluteSize.Y
+        actionButton.Position = UDim2.new(0, 115, 0, titleBottom + 8)
+
+        local buttonBottom = actionButton.Position.Y.Offset + actionButton.AbsoluteSize.Y
+        descLabel.Position = UDim2.new(0, 115, 0, buttonBottom + 10)
     end)
 
     actionButton.MouseButton1Click:Connect(function()
