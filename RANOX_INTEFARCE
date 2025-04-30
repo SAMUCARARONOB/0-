@@ -141,8 +141,7 @@ end
 
 function Window:CreateTab(tabName, iconId)
 	local tabBtn = Instance.new("TextButton", sidebar)
-	tabBtn.Size = UDim2.new(1, -4, 0, 30)
-	tabBtn.Position = UDim2.new(0, 2, 0, 0)
+	tabBtn.Size = UDim2.new(1, 0, 0, 33)
 	tabBtn.Text = ""
 	tabBtn.Font = Enum.Font.Gotham
 	tabBtn.TextSize = 12
@@ -151,21 +150,17 @@ function Window:CreateTab(tabName, iconId)
 	tabBtn.AutoButtonColor = false
 	tabBtn.ClipsDescendants = true
 	tabBtn.TextXAlignment = Enum.TextXAlignment.Left
-	Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 6)
+
+	local corner = Instance.new("UICorner", tabBtn)
+	corner.CornerRadius = UDim.new(0, 6)
 
 	local border = Instance.new("Frame", tabBtn)
 	border.Size = UDim2.new(1, 0, 1, 0)
 	border.Position = UDim2.new(0, 0, 0, 0)
-	border.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-	border.BorderSizePixel = 0
-	border.ZIndex = 0
-
-	local inset = Instance.new("Frame", border)
-	inset.Size = UDim2.new(1, -2, 1, -2)
-	inset.Position = UDim2.new(0, 1, 0, 1)
-	inset.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-	inset.BorderSizePixel = 0
-	inset.ZIndex = 1
+	border.BackgroundTransparency = 1
+	border.BorderSizePixel = 1
+	border.BorderColor3 = Color3.fromRGB(40, 40, 40)
+	border.ZIndex = tabBtn.ZIndex + 1
 
 	local marker = Instance.new("Frame", tabBtn)
 	marker.Name = "TabMarker"
@@ -174,7 +169,9 @@ function Window:CreateTab(tabName, iconId)
 	marker.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
 	marker.BorderSizePixel = 0
 	marker.Visible = false
-	Instance.new("UICorner", marker).CornerRadius = UDim.new(0, 4)
+
+	local markerCorner = Instance.new("UICorner", marker)
+	markerCorner.CornerRadius = UDim.new(0, 4)
 
 	local label = Instance.new("TextLabel", tabBtn)
 	label.BackgroundTransparency = 1
@@ -202,13 +199,13 @@ function Window:CreateTab(tabName, iconId)
 
 	tabBtn.MouseEnter:Connect(function()
 		if selectedTab ~= tabName then
-			tabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+			TweenService:Create(tabBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 25, 25)}):Play()
 		end
 	end)
 
 	tabBtn.MouseLeave:Connect(function()
 		if selectedTab ~= tabName then
-			tabBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+			TweenService:Create(tabBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(20, 20, 20)}):Play()
 		end
 	end)
 
@@ -231,6 +228,22 @@ function Window:CreateTab(tabName, iconId)
 	if not selectedTab then
 		switchTab(tabName)
 	end
+end
+
+local function switchTab(tabName)
+	for name, page in pairs(pages) do
+		page.Visible = false
+	end
+	for name, button in pairs(tabButtons) do
+		local targetColor = name == tabName and Color3.fromRGB(35, 35, 35) or Color3.fromRGB(20, 20, 20)
+		TweenService:Create(button, TweenInfo.new(0.25), {BackgroundColor3 = targetColor}):Play()
+		local marker = button:FindFirstChild("TabMarker")
+		if marker then
+			marker.Visible = name == tabName
+		end
+	end
+	pages[tabName].Visible = true
+	selectedTab = tabName
 end
 
 function Window:CreateButton(tabName, text, callback)
