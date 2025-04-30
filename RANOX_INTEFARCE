@@ -1614,6 +1614,7 @@ function Window:CreateConfigBox(tabName, title)
         return section
     end
 
+    -- Somente os quadrados que mudam a interface
     createColorRow("Quadrados de Cores (Interface)", function(c1, c2)
         local stroke = mainFrame:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", mainFrame)
         stroke.Color = c1
