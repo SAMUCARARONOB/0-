@@ -1504,21 +1504,57 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-function Window:CreateThemeBoxes(tabName, mainFrame, config)
+function Window:CreateThemeBox(tabName)
     local tab = pages[tabName]
     if not tab then return end
 
-    local container = Instance.new("Frame", tab)
-    container.Size = UDim2.new(1, -20, 0, 0)
-    container.Position = UDim2.new(0, 10, 0, 0)
-    container.BackgroundTransparency = 1
-    container.AutomaticSize = Enum.AutomaticSize.Y
+    local box1 = Instance.new("Frame", tab)
+    box1.Size = UDim2.new(0.3, -20, 0, 0)
+    box1.Position = UDim2.new(0, 10, 0, 0)
+    box1.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    box1.BorderSizePixel = 0
+    box1.AutomaticSize = Enum.AutomaticSize.Y
+    box1.ClipsDescendants = true
 
-    local layout = Instance.new("UIListLayout", container)
-    layout.FillDirection = Enum.FillDirection.Horizontal
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
-    layout.Padding = UDim.new(0, 10)
-    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    local corner1 = Instance.new("UICorner", box1)
+    corner1.CornerRadius = UDim.new(0, 12)
+
+    local stroke1 = Instance.new("UIStroke", box1)
+    stroke1.Color = Color3.fromRGB(120, 0, 0)
+    stroke1.Thickness = 1.5
+
+    local title1 = Instance.new("TextLabel", box1)
+    title1.Text = "MUDA COR DA INTERFACE"
+    title1.Font = Enum.Font.GothamBold
+    title1.TextSize = 17
+    title1.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title1.BackgroundTransparency = 1
+    title1.Size = UDim2.new(1, -20, 0, 30)
+    title1.Position = UDim2.new(0, 10, 0, 10)
+    title1.TextXAlignment = Enum.TextXAlignment.Left
+
+    local colorLabel1 = Instance.new("TextLabel", box1)
+    colorLabel1.Text = "QUADRADOS DE CORES"
+    colorLabel1.Font = Enum.Font.Gotham
+    colorLabel1.TextSize = 14
+    colorLabel1.TextColor3 = Color3.fromRGB(180, 180, 180)
+    colorLabel1.BackgroundTransparency = 1
+    colorLabel1.Size = UDim2.new(1, -20, 0, 20)
+    colorLabel1.Position = UDim2.new(0, 10, 0, 40)
+    colorLabel1.TextXAlignment = Enum.TextXAlignment.Left
+
+    local content1 = Instance.new("Frame", box1)
+    content1.BackgroundTransparency = 1
+    content1.Position = UDim2.new(0, 10, 0, 70)
+    content1.Size = UDim2.new(1, -20, 0, 0)
+    content1.AutomaticSize = Enum.AutomaticSize.Y
+
+    local layout1 = Instance.new("UIGridLayout", content1)
+    layout1.CellSize = UDim2.new(0.3, 0, 0, 40)
+    layout1.CellPadding = UDim2.new(0, 10, 0, 10)
+    layout1.FillDirectionMaxCells = 3
+    layout1.FillDirection = Enum.FillDirection.Horizontal
+    layout1.SortOrder = Enum.SortOrder.LayoutOrder
 
     local colors = {
         {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
@@ -1533,122 +1569,220 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}
     }
 
-    local function createColorBox(titleText, labelText, callback)
-        local box = Instance.new("Frame")
-        box.Size = UDim2.new(0.33, -7, 0, 0)
-        box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-        box.BorderSizePixel = 0
-        box.AutomaticSize = Enum.AutomaticSize.Y
-        box.ClipsDescendants = true
-        box.Parent = container
+    for _, pair in ipairs(colors) do
+        local square = Instance.new("TextButton", content1)
+        square.BackgroundColor3 = pair[1]
+        square.BorderSizePixel = 0
+        square.AutoButtonColor = false
+        square.Text = ""
+        square.Size = UDim2.new(0, 40, 0, 40)
 
-        Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
-        local stroke = Instance.new("UIStroke", box)
-        stroke.Color = Color3.fromRGB(120, 0, 0)
+        local corner = Instance.new("UICorner", square)
+        corner.CornerRadius = UDim.new(0, 6)
+
+        local stroke = Instance.new("UIStroke", square)
+        stroke.Color = Color3.fromRGB(60, 0, 0)
         stroke.Thickness = 1.5
+        stroke.Transparency = 0.3
 
-        local title = Instance.new("TextLabel", box)
-        title.Text = titleText
-        title.Font = Enum.Font.GothamBold
-        title.TextSize = 17
-        title.TextColor3 = Color3.fromRGB(255, 255, 255)
-        title.BackgroundTransparency = 1
-        title.Size = UDim2.new(1, -20, 0, 30)
-        title.Position = UDim2.new(0, 10, 0, 10)
-        title.TextXAlignment = Enum.TextXAlignment.Left
+        local gradient = Instance.new("UIGradient", square)
+        gradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, pair[1]),
+            ColorSequenceKeypoint.new(1, pair[2])
+        }
 
-        local label = Instance.new("TextLabel", box)
-        label.Text = labelText
-        label.Font = Enum.Font.Gotham
-        label.TextSize = 14
-        label.TextColor3 = Color3.fromRGB(180, 180, 180)
-        label.BackgroundTransparency = 1
-        label.Size = UDim2.new(1, -20, 0, 20)
-        label.Position = UDim2.new(0, 10, 0, 40)
-        label.TextXAlignment = Enum.TextXAlignment.Left
-
-        local content = Instance.new("Frame", box)
-        content.BackgroundTransparency = 1
-        content.Position = UDim2.new(0, 10, 0, 70)
-        content.Size = UDim2.new(1, -20, 0, 0)
-        content.AutomaticSize = Enum.AutomaticSize.Y
-
-        local grid = Instance.new("UIGridLayout", content)
-        grid.CellSize = UDim2.new(0, 40, 0, 40)
-        grid.CellPadding = UDim2.new(0, 10, 0, 10)
-        grid.FillDirectionMaxCells = 3
-        grid.FillDirection = Enum.FillDirection.Horizontal
-        grid.SortOrder = Enum.SortOrder.LayoutOrder
-
-        for _, pair in ipairs(colors) do
-            local square = Instance.new("TextButton", content)
-            square.BackgroundColor3 = pair[1]
-            square.BorderSizePixel = 0
-            square.AutoButtonColor = false
-            square.Text = ""
-            square.Size = UDim2.new(0, 40, 0, 40)
-
-            Instance.new("UICorner", square).CornerRadius = UDim.new(0, 6)
-
-            local s = Instance.new("UIStroke", square)
-            s.Color = Color3.fromRGB(60, 0, 0)
-            s.Thickness = 1.5
-            s.Transparency = 0.3
-
-            local g = Instance.new("UIGradient", square)
-            g.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, pair[1]),
-                ColorSequenceKeypoint.new(1, pair[2])
-            }
-
-            square.MouseButton1Click:Connect(function()
-                callback(pair[1], pair[2])
-            end)
-        end
-
-        return box
+        square.MouseButton1Click:Connect(function()
+            if mainFrame then
+                local uiStroke = mainFrame:FindFirstChildWhichIsA("UIStroke")
+                if uiStroke then
+                    uiStroke.Color = pair[1]
+                end
+                local uiGradient = mainFrame:FindFirstChildWhichIsA("UIGradient")
+                if uiGradient then
+                    uiGradient.Color = ColorSequence.new{
+                        ColorSequenceKeypoint.new(0, pair[1]),
+                        ColorSequenceKeypoint.new(1, pair[2])
+                    }
+                end
+            end
+        end)
     end
 
-    createColorBox("COR DA INTERFACE", "Quadrados principais", function(color1, color2)
-        if mainFrame then
-            local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke")
-            if stroke then stroke.Color = color1 end
+    local box2 = Instance.new("Frame", tab)
+    box2.Size = UDim2.new(0.3, -20, 0, 0)
+    box2.Position = UDim2.new(0.35, 10, 0, 0)
+    box2.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    box2.BorderSizePixel = 0
+    box2.AutomaticSize = Enum.AutomaticSize.Y
+    box2.ClipsDescendants = true
 
-            local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient")
-            if gradient then
-                gradient.Color = ColorSequence.new{
-                    ColorSequenceKeypoint.new(0, color1),
-                    ColorSequenceKeypoint.new(1, color2)
-                }
+    local corner2 = Instance.new("UICorner", box2)
+    corner2.CornerRadius = UDim.new(0, 12)
+
+    local stroke2 = Instance.new("UIStroke", box2)
+    stroke2.Color = Color3.fromRGB(120, 0, 0)
+    stroke2.Thickness = 1.5
+
+    local title2 = Instance.new("TextLabel", box2)
+    title2.Text = "MUDA COR DO TÍTULO"
+    title2.Font = Enum.Font.GothamBold
+    title2.TextSize = 17
+    title2.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title2.BackgroundTransparency = 1
+    title2.Size = UDim2.new(1, -20, 0, 30)
+    title2.Position = UDim2.new(0, 10, 0, 10)
+    title2.TextXAlignment = Enum.TextXAlignment.Left
+
+    local colorLabel2 = Instance.new("TextLabel", box2)
+    colorLabel2.Text = "TÍTULO E SUBTÍTULO"
+    colorLabel2.Font = Enum.Font.Gotham
+    colorLabel2.TextSize = 14
+    colorLabel2.TextColor3 = Color3.fromRGB(180, 180, 180)
+    colorLabel2.BackgroundTransparency = 1
+    colorLabel2.Size = UDim2.new(1, -20, 0, 20)
+    colorLabel2.Position = UDim2.new(0, 10, 0, 40)
+    colorLabel2.TextXAlignment = Enum.TextXAlignment.Left
+
+    local content2 = Instance.new("Frame", box2)
+    content2.BackgroundTransparency = 1
+    content2.Position = UDim2.new(0, 10, 0, 70)
+    content2.Size = UDim2.new(1, -20, 0, 0)
+    content2.AutomaticSize = Enum.AutomaticSize.Y
+
+    local layout2 = Instance.new("UIGridLayout", content2)
+    layout2.CellSize = UDim2.new(0.3, 0, 0, 40)
+    layout2.CellPadding = UDim2.new(0, 10, 0, 10)
+    layout2.FillDirectionMaxCells = 3
+    layout2.FillDirection = Enum.FillDirection.Horizontal
+    layout2.SortOrder = Enum.SortOrder.LayoutOrder
+
+    local colors2 = {
+        {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
+        {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},
+        {Color3.fromRGB(0,255,0), Color3.fromRGB(0,255,255)},
+        {Color3.fromRGB(255,0,0), Color3.fromRGB(255,255,0)},
+        {Color3.fromRGB(212,175,55), Color3.fromRGB(192,192,192)},
+        {Color3.fromRGB(128,0,255), Color3.fromRGB(255,128,0)},
+        {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},
+        {Color3.fromRGB(255,105,180), Color3.fromRGB(255,215,0)},
+        {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},
+        {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}
+    }
+
+    for _, pair in ipairs(colors2) do
+        local square = Instance.new("TextButton", content2)
+        square.BackgroundColor3 = pair[1]
+        square.BorderSizePixel = 0
+        square.AutoButtonColor = false
+        square.Text = ""
+        square.Size = UDim2.new(0, 40, 0, 40)
+
+        local corner = Instance.new("UICorner", square)
+        corner.CornerRadius = UDim.new(0, 6)
+
+        local stroke = Instance.new("UIStroke", square)
+        stroke.Color = Color3.fromRGB(60, 0, 0)
+        stroke.Thickness = 1.5
+        stroke.Transparency = 0.3
+
+        local gradient = Instance.new("UIGradient", square)
+        gradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, pair[1]),
+            ColorSequenceKeypoint.new(1, pair[2])
+        }
+
+        square.MouseButton1Click:Connect(function()
+            local title = mainFrame:FindFirstChild("Title")
+            if title then
+                title.TextColor3 = pair[1]
             end
-        end
-    end)
+            local subtitle = mainFrame:FindFirstChild("Subtitle")
+            if subtitle then
+                subtitle.TextColor3 = pair[2]
+            end
+        end)
+    end
 
-    createColorBox("COR DO TÍTULO", "Título e versão", function(color1)
-        local title = mainFrame:FindFirstChild("TitleLabel")
-        local subtitle = mainFrame:FindFirstChild("SubtitleLabel")
-        if title then title.TextColor3 = color1 end
-        if subtitle then subtitle.TextColor3 = color1 end
-    end)
+    local box3 = Instance.new("Frame", tab)
+    box3.Size = UDim2.new(0.3, -20, 0, 0)
+    box3.Position = UDim2.new(0.7, 10, 0, 0)
+    box3.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    box3.BorderSizePixel = 0
+    box3.AutomaticSize = Enum.AutomaticSize.Y
+    box3.ClipsDescendants = true
 
-    createColorBox("COR GLOBAL", "Todos com vermelho", function(color1)
-        for _, v in ipairs(mainFrame:GetDescendants()) do
-            if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextButton") then
-                local col = v.BackgroundColor3
-                if col and col.r >= 1.0 then
-                    v.BackgroundColor3 = color1
-                end
-                if v:IsA("TextLabel") or v:IsA("TextButton") then
-                    local txt = v.TextColor3
-                    if txt and txt.r >= 1.0 then
-                        v.TextColor3 = color1
-                    end
+    local corner3 = Instance.new("UICorner", box3)
+    corner3.CornerRadius = UDim.new(0, 12)
+
+    local stroke3 = Instance.new("UIStroke", box3)
+    stroke3.Color = Color3.fromRGB(120, 0, 0)
+    stroke3.Thickness = 1.5
+
+    local title3 = Instance.new("TextLabel", box3)
+    title3.Text = "MUDA COR DE TODOS OS ELEMENTOS"
+    title3.Font = Enum.Font.GothamBold
+    title3.TextSize = 17
+    title3.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title3.BackgroundTransparency = 1
+    title3.Size = UDim2.new(1, -20, 0, 30)
+    title3.Position = UDim2.new(0, 10, 0, 10)
+    title3.TextXAlignment = Enum.TextXAlignment.Left
+
+    local colorLabel3 = Instance.new("TextLabel", box3)
+    colorLabel3.Text = "ALTERAR COR DOS ELEMENTOS"
+    colorLabel3.Font = Enum.Font.Gotham
+    colorLabel3.TextSize = 14
+    colorLabel3.TextColor3 = Color3.fromRGB(180, 180, 180)
+    colorLabel3.BackgroundTransparency = 1
+    colorLabel3.Size = UDim2.new(1, -20, 0, 20)
+    colorLabel3.Position = UDim2.new(0, 10, 0, 40)
+    colorLabel3.TextXAlignment = Enum.TextXAlignment.Left
+
+    local content3 = Instance.new("Frame", box3)
+    content3.BackgroundTransparency = 1
+    content3.Position = UDim2.new(0, 10, 0, 70)
+    content3.Size = UDim2.new(1, -20, 0, 0)
+    content3.AutomaticSize = Enum.AutomaticSize.Y
+
+    local layout3 = Instance.new("UIGridLayout", content3)
+    layout3.CellSize = UDim2.new(0.3, 0, 0, 40)
+    layout3.CellPadding = UDim2.new(0, 10, 0, 10)
+    layout3.FillDirectionMaxCells = 3
+    layout3.FillDirection = Enum.FillDirection.Horizontal
+    layout3.SortOrder = Enum.SortOrder.LayoutOrder
+
+    for _, pair in ipairs(colors2) do
+        local square = Instance.new("TextButton", content3)
+        square.BackgroundColor3 = pair[1]
+        square.BorderSizePixel = 0
+        square.AutoButtonColor = false
+        square.Text = ""
+        square.Size = UDim2.new(0, 40, 0, 40)
+
+        local corner = Instance.new("UICorner", square)
+        corner.CornerRadius = UDim.new(0, 6)
+
+        local stroke = Instance.new("UIStroke", square)
+        stroke.Color = Color3.fromRGB(60, 0, 0)
+        stroke.Thickness = 1.5
+        stroke.Transparency = 0.3
+
+        local gradient = Instance.new("UIGradient", square)
+        gradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, pair[1]),
+            ColorSequenceKeypoint.new(1, pair[2])
+        }
+
+        square.MouseButton1Click:Connect(function()
+            for _, element in ipairs(mainFrame:GetChildren()) do
+                if element:IsA("TextLabel") and element.TextColor3 == Color3.fromRGB(255, 0, 0) then
+                    element.TextColor3 = pair[1]
                 end
             end
-        end
-    end)
+        end)
+    end
 
-    return container
+    return tab
 end
 
 local isHidden = false
