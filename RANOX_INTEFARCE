@@ -36,8 +36,8 @@ Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
 
     local gradient = Instance.new("UIGradient", mainFrame)
     gradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(35,35,35)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(20,20,20))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(10,10,10)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(40,0,0))
     }
 
 local title = Instance.new("TextLabel", mainFrame)
