@@ -1504,6 +1504,21 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
+local function updateColors(mainFrame, color1, color2)
+    local stroke = mainFrame:FindFirstChildOfClass("UIStroke")
+    if stroke then
+        stroke.Color = color1
+    end
+
+    local gradient = mainFrame:FindFirstChildOfClass("UIGradient")
+    if gradient then
+        gradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, color1),
+            ColorSequenceKeypoint.new(1, color2)
+        }
+    end
+end
+
 function Window:CreateThemeBoxes(tabName, mainFrame, config)
     local tab = pages[tabName]
     if not tab then return end
@@ -1610,20 +1625,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
     end
 
     createColorBox("COR DA INTERFACE", "Quadrados principais", function(color1, color2)
-        if mainFrame then
-            local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke")
-            if stroke then
-                stroke.Color = color1
-            end
-
-            local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient")
-            if gradient then
-                gradient.Color = ColorSequence.new{
-                    ColorSequenceKeypoint.new(0, color1),
-                    ColorSequenceKeypoint.new(1, color2)
-                }
-            end
-        end
+        updateColors(mainFrame, color1, color2)
     end)
 
     createColorBox("COR DO TÍTULO", "Título e versão", function(color1)
