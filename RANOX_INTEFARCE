@@ -1508,40 +1508,29 @@ function Window:CreateConfigBox(tabName, title)
     local tab = pages[tabName]
     if not tab then return end
 
-    -- Criar o quadro de configuração
     local box = Instance.new("Frame", tab)
     box.Size = UDim2.new(1, -20, 0, 0)
     box.Position = UDim2.new(0, 10, 0, 0)
-    box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     box.BorderSizePixel = 0
     box.AutomaticSize = Enum.AutomaticSize.Y
     box.ClipsDescendants = true
     Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
     local stroke = Instance.new("UIStroke", box)
-    stroke.Color = Color3.fromRGB(255, 100, 0)  -- Cor da borda com um tom mais chamativo
-    stroke.Thickness = 2
+    stroke.Color = Color3.fromRGB(120, 0, 0)
+    stroke.Thickness = 1.5
 
-    -- Criar o título do Box
     local titleLabel = Instance.new("TextLabel", box)
-    titleLabel.Text = title or "Configuração"
+    titleLabel.Text = "  MUDA COR DA INTERFACE"
     titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 18
+    titleLabel.TextSize = 17
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     titleLabel.BackgroundTransparency = 1
-    titleLabel.Size = UDim2.new(1, -20, 0, 40)
+    titleLabel.Size = UDim2.new(1, -20, 0, 30)
     titleLabel.Position = UDim2.new(0, 10, 0, 10)
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    Instance.new("UIStroke", titleLabel).Color = Color3.fromRGB(200, 0, 0)
 
-    -- Adicionar animação de destaque no título ao passar o mouse
-    titleLabel.MouseEnter:Connect(function()
-        titleLabel.TextColor3 = Color3.fromRGB(255, 165, 0) -- Alaranjado, destaca o título
-    end)
-
-    titleLabel.MouseLeave:Connect(function()
-        titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- Retorna à cor original
-    end)
-
-    -- Criar o conteúdo da caixa
     local content = Instance.new("Frame", box)
     content.BackgroundTransparency = 1
     content.Position = UDim2.new(0, 10, 0, 50)
@@ -1549,7 +1538,6 @@ function Window:CreateConfigBox(tabName, title)
     content.AutomaticSize = Enum.AutomaticSize.Y
     Instance.new("UIListLayout", content).Padding = UDim.new(0, 10)
 
-    -- Função para criar uma linha de cores
     local function createColorRow(titleText, onClick)
         local section = Instance.new("Frame", content)
         section.BackgroundTransparency = 1
@@ -1564,6 +1552,7 @@ function Window:CreateConfigBox(tabName, title)
         title.Size = UDim2.new(1, 0, 0, 20)
         title.Position = UDim2.new(0, 0, 0, 0)
         title.TextXAlignment = Enum.TextXAlignment.Left
+        title.TextStrokeTransparency = 0.7
 
         local grid = Instance.new("Frame", section)
         grid.Position = UDim2.new(0, 0, 0, 25)
@@ -1574,18 +1563,17 @@ function Window:CreateConfigBox(tabName, title)
         layout.CellPadding = UDim2.new(0, 6, 0, 6)
         layout.FillDirectionMaxCells = 5
 
-        -- Definindo paleta de cores
         local colorPresets = {
-            {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},       -- Amarelo/Preto
-            {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},     -- Azul/Roxo
-            {Color3.fromRGB(0,255,100), Color3.fromRGB(0,200,255)},   -- Verde/Azul
-            {Color3.fromRGB(255,0,0), Color3.fromRGB(255,20,147)},    -- Neon/Vermelho
-            {Color3.fromRGB(255,215,0), Color3.fromRGB(192,192,192)}, -- Dourado/Prata
-            {Color3.fromRGB(138,43,226), Color3.fromRGB(255,165,0)},  -- Roxo/Laranja
-            {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},       -- Azul/Vermelho
-            {Color3.fromRGB(255,20,147), Color3.fromRGB(255,215,0)},  -- Rosa/Dourado
-            {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},     -- Branco/Preto
-            {Color3.fromRGB(0,0,0), Color3.fromRGB(0,0,0)},           -- Preto/Preto
+            {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
+            {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},
+            {Color3.fromRGB(0,255,100), Color3.fromRGB(0,200,255)},
+            {Color3.fromRGB(255,0,0), Color3.fromRGB(255,20,147)},
+            {Color3.fromRGB(255,215,0), Color3.fromRGB(192,192,192)},
+            {Color3.fromRGB(138,43,226), Color3.fromRGB(255,165,0)},
+            {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},
+            {Color3.fromRGB(255,20,147), Color3.fromRGB(255,215,0)},
+            {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},
+            {Color3.fromRGB(0,0,0), Color3.fromRGB(0,0,0)},
         }
 
         for _, pair in ipairs(colorPresets) do
@@ -1604,15 +1592,6 @@ function Window:CreateConfigBox(tabName, title)
                 ColorSequenceKeypoint.new(1, pair[2])
             }
 
-            -- Adicionando animação de destaque ao passar o mouse
-            btn.MouseEnter:Connect(function()
-                btn.BackgroundColor3 = pair[2] -- Destaca a cor secundária ao passar o mouse
-            end)
-
-            btn.MouseLeave:Connect(function()
-                btn.BackgroundColor3 = pair[1] -- Retorna à cor original
-            end)
-
             btn.MouseButton1Click:Connect(function()
                 onClick(pair[1], pair[2])
             end)
@@ -1621,11 +1600,10 @@ function Window:CreateConfigBox(tabName, title)
         return section
     end
 
-    -- Criar as linhas de cores
     createColorRow("Quadrados de Cores (Interface)", function(c1, c2)
         local stroke = mainFrame:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", mainFrame)
         stroke.Color = c1
-        stroke.Thickness = 2
+        stroke.Thickness = 1.5
         stroke.Transparency = 0.3
 
         local grad = mainFrame:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", mainFrame)
@@ -1636,7 +1614,7 @@ function Window:CreateConfigBox(tabName, title)
     end)
 
     createColorRow("Quadrados de Cores (Título/Subtítulo)", function(c1, c2)
-        local grad = titleLabel:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", titleLabel)
+        local grad = title:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", title)
         grad.Color = ColorSequence.new{
             ColorSequenceKeypoint.new(0, c1),
             ColorSequenceKeypoint.new(1, c2)
