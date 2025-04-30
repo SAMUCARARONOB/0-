@@ -1511,59 +1511,71 @@ function Window:CreateConfigBox(tabName, title)
     local box = Instance.new("Frame", tab)
     box.Size = UDim2.new(1, -20, 0, 0)
     box.Position = UDim2.new(0, 10, 0, 0)
-    box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     box.BorderSizePixel = 0
     box.AutomaticSize = Enum.AutomaticSize.Y
     box.ClipsDescendants = true
     Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
     local stroke = Instance.new("UIStroke", box)
-    stroke.Color = Color3.fromRGB(120, 0, 0)
-    stroke.Thickness = 1.5
+    stroke.Color = Color3.fromRGB(255, 100, 0)
+    stroke.Thickness = 2
 
     local titleLabel = Instance.new("TextLabel", box)
-    titleLabel.Text = "  MUDA COR DA INTERFACE"
+    titleLabel.Text = title or "Configuração"
     titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 17
+    titleLabel.TextSize = 18
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     titleLabel.BackgroundTransparency = 1
-    titleLabel.Size = UDim2.new(1, -20, 0, 30)
-    titleLabel.Position = UDim2.new(0, 10, 0, 8)
+    titleLabel.Size = UDim2.new(1, -20, 0, 40)
+    titleLabel.Position = UDim2.new(0, 10, 0, 10)
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    Instance.new("UIStroke", titleLabel).Color = Color3.fromRGB(200, 0, 0)
+
+    titleLabel.MouseEnter:Connect(function()
+        titleLabel.TextColor3 = Color3.fromRGB(255, 165, 0)
+    end)
+    titleLabel.MouseLeave:Connect(function()
+        titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    end)
 
     local content = Instance.new("Frame", box)
     content.BackgroundTransparency = 1
-    content.Position = UDim2.new(0, 10, 0, 45)
-    content.Size = UDim2.new(1, -20, 0, 0)
+    content.Position = UDim2.new(0, 0, 0, 50)
+    content.Size = UDim2.new(1, 0, 0, 0)
     content.AutomaticSize = Enum.AutomaticSize.Y
-    Instance.new("UIListLayout", content).Padding = UDim.new(0, 10)
+    local list = Instance.new("UIListLayout", content)
+    list.Padding = UDim.new(0, 10)
+    list.SortOrder = Enum.SortOrder.LayoutOrder
 
-    local function createColorRow(titleText, onClick)
+    -- Função dos quadrados
+    local function createColorRow(labelText, callback)
         local section = Instance.new("Frame", content)
         section.BackgroundTransparency = 1
-        section.Size = UDim2.new(1, 0, 0, 100)
+        section.Size = UDim2.new(1, 0, 0, 130)
+        section.LayoutOrder = 1
 
-        local title = Instance.new("TextLabel", section)
-        title.Text = titleText
-        title.Font = Enum.Font.GothamBold
-        title.TextSize = 14
-        title.TextColor3 = Color3.fromRGB(255, 255, 255)
-        title.BackgroundTransparency = 1
-        title.Size = UDim2.new(1, 0, 0, 20)
-        title.Position = UDim2.new(0, 0, 0, 0)
-        title.TextXAlignment = Enum.TextXAlignment.Left
-        title.TextStrokeTransparency = 0.7
+        local label = Instance.new("TextLabel", section)
+        label.Text = labelText
+        label.Font = Enum.Font.GothamBold
+        label.TextSize = 14
+        label.TextColor3 = Color3.fromRGB(255, 255, 255)
+        label.BackgroundTransparency = 1
+        label.Size = UDim2.new(1, -20, 0, 20)
+        label.Position = UDim2.new(0, 10, 0, 0)
+        label.TextXAlignment = Enum.TextXAlignment.Left
 
         local grid = Instance.new("Frame", section)
-        grid.Position = UDim2.new(0, 0, 0, 25)
-        grid.Size = UDim2.new(1, 0, 0, 65)
+        grid.Position = UDim2.new(0, 10, 0, 25)
+        grid.Size = UDim2.new(1, -20, 0, 100)
         grid.BackgroundTransparency = 1
+
         local layout = Instance.new("UIGridLayout", grid)
         layout.CellSize = UDim2.new(0, 60, 0, 30)
         layout.CellPadding = UDim.new(0, 6, 0, 6)
         layout.FillDirectionMaxCells = 5
+        layout.FillDirection = Enum.FillDirection.Horizontal
+        layout.SortOrder = Enum.SortOrder.LayoutOrder
 
-        local colorPresets = {
+        local colors = {
             {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
             {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},
             {Color3.fromRGB(0,255,100), Color3.fromRGB(0,200,255)},
@@ -1576,13 +1588,12 @@ function Window:CreateConfigBox(tabName, title)
             {Color3.fromRGB(0,0,0), Color3.fromRGB(0,0,0)},
         }
 
-        for _, pair in ipairs(colorPresets) do
+        for _, pair in ipairs(colors) do
             local btn = Instance.new("TextButton", grid)
             btn.Text = ""
             btn.BackgroundColor3 = pair[1]
             btn.BorderSizePixel = 0
             btn.AutoButtonColor = false
-            btn.Size = UDim2.new(0, 60, 0, 30)
             local corner = Instance.new("UICorner", btn)
             corner.CornerRadius = UDim.new(0, 6)
 
@@ -1592,18 +1603,25 @@ function Window:CreateConfigBox(tabName, title)
                 ColorSequenceKeypoint.new(1, pair[2])
             }
 
+            btn.MouseEnter:Connect(function()
+                btn.BackgroundColor3 = pair[2]
+            end)
+            btn.MouseLeave:Connect(function()
+                btn.BackgroundColor3 = pair[1]
+            end)
             btn.MouseButton1Click:Connect(function()
-                onClick(pair[1], pair[2])
+                callback(pair[1], pair[2])
             end)
         end
 
+        grid.Parent = section
         return section
     end
 
     createColorRow("Quadrados de Cores (Interface)", function(c1, c2)
         local stroke = mainFrame:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", mainFrame)
         stroke.Color = c1
-        stroke.Thickness = 1.5
+        stroke.Thickness = 2
         stroke.Transparency = 0.3
 
         local grad = mainFrame:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", mainFrame)
@@ -1614,14 +1632,14 @@ function Window:CreateConfigBox(tabName, title)
     end)
 
     createColorRow("Quadrados de Cores (Título/Subtítulo)", function(c1, c2)
-        local grad = title:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", title)
+        local grad = titleLabel:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", titleLabel)
         grad.Color = ColorSequence.new{
             ColorSequenceKeypoint.new(0, c1),
             ColorSequenceKeypoint.new(1, c2)
         }
 
-        local grad2 = subtitle and (subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle))
-        if grad2 then
+        if subtitle then
+            local grad2 = subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle)
             grad2.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, c1),
                 ColorSequenceKeypoint.new(1, c2)
