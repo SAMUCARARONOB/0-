@@ -277,7 +277,7 @@ function Window:CreateToggle(tabName, toggleConfig)
     description.Size = UDim2.new(1, -60, 0, 18)
     description.Position = UDim2.new(0, 12, 0, 26)
     description.BackgroundTransparency = 1
-    description.Text = toggleConfig.Description or "Descrição"
+    description.Text = toggleConfig.Description or ""
     description.TextColor3 = Color3.fromRGB(170, 170, 170)
     description.Font = Enum.Font.Gotham
     description.TextSize = 12
@@ -319,6 +319,113 @@ function Window:CreateToggle(tabName, toggleConfig)
 
         if toggleConfig.Callback then
             toggleConfig.Callback(isOn)
+        end
+    end)
+end
+
+function Window:CreateCheckbox(tabName, checkboxConfig)
+    local tab = pages[tabName]
+    if not tab then return end
+
+    local originalHeight = 54
+    local newHeight = originalHeight * 0.7
+    local checkboxFrame = Instance.new("Frame", tab)
+    checkboxFrame.Size = UDim2.new(1, -20, 0, newHeight)
+    checkboxFrame.Position = UDim2.new(0, 10, 0, 0)
+    checkboxFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    checkboxFrame.BorderSizePixel = 0
+    checkboxFrame.ClipsDescendants = true
+    Instance.new("UICorner", checkboxFrame).CornerRadius = UDim.new(0, 8)
+
+    local title = Instance.new("TextLabel", checkboxFrame)
+    title.Size = UDim2.new(1, -50, 0, 20)
+    title.Position = UDim2.new(0, 10, 0, 4)
+    title.BackgroundTransparency = 1
+    title.Text = checkboxConfig.Text or "Checkbox"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.Font = Enum.Font.Gotham
+    title.TextSize = 15
+    title.TextXAlignment = Enum.TextXAlignment.Left
+
+    local description = Instance.new("TextLabel", checkboxFrame)
+    description.Size = UDim2.new(1, -50, 0, 18)
+    description.Position = UDim2.new(0, 10, 0, 26)
+    description.BackgroundTransparency = 1
+    description.Text = checkboxConfig.Description or ""
+    description.TextColor3 = Color3.fromRGB(160, 160, 160)
+    description.Font = Enum.Font.Gotham
+    description.TextSize = 13
+    description.TextXAlignment = Enum.TextXAlignment.Left
+    description.TextWrapped = true
+
+    local box = Instance.new("Frame", checkboxFrame)
+    box.Size = UDim2.new(0, 24, 0, 24)
+    box.Position = UDim2.new(1, -34, 0.5, -12)
+    box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    box.BorderSizePixel = 0
+    Instance.new("UICorner", box).CornerRadius = UDim.new(0, 6)
+    local stroke = Instance.new("UIStroke", box)
+    stroke.Color = Color3.fromRGB(90, 90, 90)
+    stroke.Thickness = 1.3
+
+    local checkmark = Instance.new("TextLabel", box)
+    checkmark.Size = UDim2.new(1, -6, 1, -6)
+    checkmark.Position = UDim2.new(0, 3, 0, 3)
+    checkmark.Text = "✔"
+    checkmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+    checkmark.TextScaled = true
+    checkmark.BackgroundTransparency = 1
+    checkmark.Visible = false
+
+    local button = Instance.new("TextButton", checkboxFrame)
+    button.Size = UDim2.new(1, 0, 1, 0)
+    button.Position = UDim2.new(0, 0, 0, 0)
+    button.BackgroundTransparency = 1
+    button.Text = ""
+    button.AutoButtonColor = false
+
+    local toggled = false
+    local running = false
+    local tweenService = game:GetService("TweenService")
+
+    local function tweenBoxColor(toColor)
+        local tween = tweenService:Create(box, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            BackgroundColor3 = toColor
+        })
+        tween:Play()
+    end
+
+    button.MouseButton1Click:Connect(function()
+        toggled = not toggled
+        checkmark.Visible = toggled
+
+        local grow = tweenService:Create(box, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0, 28, 0, 28)
+        })
+        local shrink = tweenService:Create(box, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0, 24, 0, 24)
+        })
+
+        if toggled then
+            tweenBoxColor(Color3.fromRGB(170, 20, 20))
+            grow:Play()
+            grow.Completed:Connect(function()
+                shrink:Play()
+            end)
+            running = true
+            task.spawn(function()
+                while running and toggled do
+                    pcall(checkboxConfig.Callback)
+                    task.wait()
+                end
+            end)
+        else
+            tweenBoxColor(Color3.fromRGB(30, 30, 30))
+            running = false
+        end
+
+        if checkboxConfig.Callback then
+            checkboxConfig.Callback(toggled)
         end
     end)
 end
@@ -711,113 +818,6 @@ function Window:CreateTextBox(tabName, placeholderText, callback)
         end
         if enterPressed and callback then
             callback(textBox.Text)
-        end
-    end)
-end
-
-function Window:CreateCheckbox(tabName, checkboxConfig)
-    local tab = pages[tabName]
-    if not tab then return end
-
-    local originalHeight = 54
-    local newHeight = originalHeight * 0.7
-    local checkboxFrame = Instance.new("Frame", tab)
-    checkboxFrame.Size = UDim2.new(1, -20, 0, newHeight)
-    checkboxFrame.Position = UDim2.new(0, 10, 0, 0)
-    checkboxFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    checkboxFrame.BorderSizePixel = 0
-    checkboxFrame.ClipsDescendants = true
-    Instance.new("UICorner", checkboxFrame).CornerRadius = UDim.new(0, 8)
-
-    local title = Instance.new("TextLabel", checkboxFrame)
-    title.Size = UDim2.new(1, -50, 0, 20)
-    title.Position = UDim2.new(0, 10, 0, 4)
-    title.BackgroundTransparency = 1
-    title.Text = checkboxConfig.Text or "Checkbox"
-    title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.Font = Enum.Font.Gotham
-    title.TextSize = 15
-    title.TextXAlignment = Enum.TextXAlignment.Left
-
-    local description = Instance.new("TextLabel", checkboxFrame)
-    description.Size = UDim2.new(1, -50, 0, 18)
-    description.Position = UDim2.new(0, 10, 0, 26)
-    description.BackgroundTransparency = 1
-    description.Text = checkboxConfig.Description or ""
-    description.TextColor3 = Color3.fromRGB(160, 160, 160)
-    description.Font = Enum.Font.Gotham
-    description.TextSize = 13
-    description.TextXAlignment = Enum.TextXAlignment.Left
-    description.TextWrapped = true
-
-    local box = Instance.new("Frame", checkboxFrame)
-    box.Size = UDim2.new(0, 24, 0, 24)
-    box.Position = UDim2.new(1, -34, 0.5, -12)
-    box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    box.BorderSizePixel = 0
-    Instance.new("UICorner", box).CornerRadius = UDim.new(0, 6)
-    local stroke = Instance.new("UIStroke", box)
-    stroke.Color = Color3.fromRGB(90, 90, 90)
-    stroke.Thickness = 1.3
-
-    local checkmark = Instance.new("TextLabel", box)
-    checkmark.Size = UDim2.new(1, -6, 1, -6)
-    checkmark.Position = UDim2.new(0, 3, 0, 3)
-    checkmark.Text = "✔"
-    checkmark.TextColor3 = Color3.fromRGB(255, 255, 255)
-    checkmark.TextScaled = true
-    checkmark.BackgroundTransparency = 1
-    checkmark.Visible = false
-
-    local button = Instance.new("TextButton", checkboxFrame)
-    button.Size = UDim2.new(1, 0, 1, 0)
-    button.Position = UDim2.new(0, 0, 0, 0)
-    button.BackgroundTransparency = 1
-    button.Text = ""
-    button.AutoButtonColor = false
-
-    local toggled = false
-    local running = false
-    local tweenService = game:GetService("TweenService")
-
-    local function tweenBoxColor(toColor)
-        local tween = tweenService:Create(box, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            BackgroundColor3 = toColor
-        })
-        tween:Play()
-    end
-
-    button.MouseButton1Click:Connect(function()
-        toggled = not toggled
-        checkmark.Visible = toggled
-
-        local grow = tweenService:Create(box, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            Size = UDim2.new(0, 28, 0, 28)
-        })
-        local shrink = tweenService:Create(box, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            Size = UDim2.new(0, 24, 0, 24)
-        })
-
-        if toggled then
-            tweenBoxColor(Color3.fromRGB(170, 20, 20))
-            grow:Play()
-            grow.Completed:Connect(function()
-                shrink:Play()
-            end)
-            running = true
-            task.spawn(function()
-                while running and toggled do
-                    pcall(checkboxConfig.Callback)
-                    task.wait()
-                end
-            end)
-        else
-            tweenBoxColor(Color3.fromRGB(30, 30, 30))
-            running = false
-        end
-
-        if checkboxConfig.Callback then
-            checkboxConfig.Callback(toggled)
         end
     end)
 end
