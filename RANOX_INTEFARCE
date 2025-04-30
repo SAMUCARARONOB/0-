@@ -1527,38 +1527,40 @@ function Window:CreateConfigBox(tabName, title)
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     titleLabel.BackgroundTransparency = 1
     titleLabel.Size = UDim2.new(1, -20, 0, 30)
-    titleLabel.Position = UDim2.new(0, 10, 0, 10)
+    titleLabel.Position = UDim2.new(0, 10, 0, 8)
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    Instance.new("UIStroke", titleLabel).Color = Color3.fromRGB(200, 0, 0)
 
     local content = Instance.new("Frame", box)
     content.BackgroundTransparency = 1
-    content.Position = UDim2.new(0, 10, 0, 50)
+    content.Position = UDim2.new(0, 10, 0, 45)
     content.Size = UDim2.new(1, -20, 0, 0)
     content.AutomaticSize = Enum.AutomaticSize.Y
-    Instance.new("UIListLayout", content).Padding = UDim.new(0, 18)
+    Instance.new("UIListLayout", content).Padding = UDim.new(0, 10)
 
     local function createColorRow(titleText, onClick)
         local section = Instance.new("Frame", content)
         section.BackgroundTransparency = 1
-        section.Size = UDim2.new(1, 0, 0, 140)
+        section.Size = UDim2.new(1, 0, 0, 100)
 
         local title = Instance.new("TextLabel", section)
         title.Text = titleText
         title.Font = Enum.Font.GothamBold
-        title.TextSize = 15
+        title.TextSize = 14
         title.TextColor3 = Color3.fromRGB(255, 255, 255)
         title.BackgroundTransparency = 1
         title.Size = UDim2.new(1, 0, 0, 20)
         title.Position = UDim2.new(0, 0, 0, 0)
         title.TextXAlignment = Enum.TextXAlignment.Left
+        title.TextStrokeTransparency = 0.7
 
         local grid = Instance.new("Frame", section)
-        grid.Position = UDim2.new(0, 0, 0, 30)
-        grid.Size = UDim2.new(1, 0, 0, 100)
+        grid.Position = UDim2.new(0, 0, 0, 25)
+        grid.Size = UDim2.new(1, 0, 0, 65)
         grid.BackgroundTransparency = 1
         local layout = Instance.new("UIGridLayout", grid)
-        layout.CellSize = UDim2.new(0, 80, 0, 40)
-        layout.CellPadding = UDim.new(0, 8, 0, 8)
+        layout.CellSize = UDim2.new(0, 60, 0, 30)
+        layout.CellPadding = UDim.new(0, 6, 0, 6)
         layout.FillDirectionMaxCells = 5
 
         local colorPresets = {
@@ -1580,9 +1582,9 @@ function Window:CreateConfigBox(tabName, title)
             btn.BackgroundColor3 = pair[1]
             btn.BorderSizePixel = 0
             btn.AutoButtonColor = false
-            btn.Size = UDim2.new(0, 80, 0, 40)
+            btn.Size = UDim2.new(0, 60, 0, 30)
             local corner = Instance.new("UICorner", btn)
-            corner.CornerRadius = UDim.new(0, 8)
+            corner.CornerRadius = UDim.new(0, 6)
 
             local grad = Instance.new("UIGradient", btn)
             grad.Color = ColorSequence.new{
@@ -1612,15 +1614,15 @@ function Window:CreateConfigBox(tabName, title)
     end)
 
     createColorRow("Quadrados de Cores (Título/Subtítulo)", function(c1, c2)
-        local titleGrad = title:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", title)
-        titleGrad.Color = ColorSequence.new{
+        local grad = title:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", title)
+        grad.Color = ColorSequence.new{
             ColorSequenceKeypoint.new(0, c1),
             ColorSequenceKeypoint.new(1, c2)
         }
 
-        if subtitle then
-            local subGrad = subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle)
-            subGrad.Color = ColorSequence.new{
+        local grad2 = subtitle and (subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle))
+        if grad2 then
+            grad2.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, c1),
                 ColorSequenceKeypoint.new(1, c2)
             }
