@@ -1511,58 +1511,71 @@ function Window:CreateInterfaceColorBox(tabName)
     local box = Instance.new("Frame", tab)
     box.Size = UDim2.new(1, -20, 0, 0)
     box.Position = UDim2.new(0, 10, 0, 0)
-    box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    box.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     box.BorderSizePixel = 0
     box.AutomaticSize = Enum.AutomaticSize.Y
     box.ClipsDescendants = true
     Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
+
     local stroke = Instance.new("UIStroke", box)
-    stroke.Color = Color3.fromRGB(120, 0, 0)
+    stroke.Color = Color3.fromRGB(255, 0, 85)
     stroke.Thickness = 1.5
+    stroke.Transparency = 0
 
     local titleLabel = Instance.new("TextLabel", box)
-    titleLabel.Text = "  MUDA COR DA INTERFACE"
+    titleLabel.Text = "  PERSONALIZAÇÃO DA INTERFACE"
     titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 17
+    titleLabel.TextSize = 18
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     titleLabel.BackgroundTransparency = 1
     titleLabel.Size = UDim2.new(1, -20, 0, 35)
     titleLabel.Position = UDim2.new(0, 10, 0, 10)
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
+    local line = Instance.new("Frame", box)
+    line.Size = UDim2.new(1, -20, 0, 1)
+    line.Position = UDim2.new(0, 10, 0, 50)
+    line.BackgroundColor3 = Color3.fromRGB(255, 0, 85)
+    local gradLine = Instance.new("UIGradient", line)
+    gradLine.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 200, 255))
+    }
+
     local content = Instance.new("Frame", box)
     content.BackgroundTransparency = 1
-    content.Position = UDim2.new(0, 10, 0, 55)
+    content.Position = UDim2.new(0, 10, 0, 60)
     content.Size = UDim2.new(1, -20, 0, 0)
     content.AutomaticSize = Enum.AutomaticSize.Y
+
     local layout = Instance.new("UIListLayout", content)
-    layout.Padding = UDim.new(0, 12)
+    layout.Padding = UDim.new(0, 10)
     layout.SortOrder = Enum.SortOrder.LayoutOrder
 
     local function createColorRow(titleText, onClick)
         local section = Instance.new("Frame", content)
         section.BackgroundTransparency = 1
-        section.Size = UDim2.new(1, 0, 0, 130)
+        section.Size = UDim2.new(1, 0, 0, 120)
 
         local title = Instance.new("TextLabel", section)
         title.Text = titleText
         title.Font = Enum.Font.GothamBold
-        title.TextSize = 14
+        title.TextSize = 15
         title.TextColor3 = Color3.fromRGB(255, 255, 255)
         title.BackgroundTransparency = 1
-        title.Size = UDim2.new(1, 0, 0, 20)
-        title.Position = UDim2.new(0, 0, 0, 0)
+        title.Size = UDim2.new(1, 0, 0, 25)
         title.TextXAlignment = Enum.TextXAlignment.Left
 
         local grid = Instance.new("Frame", section)
         grid.Position = UDim2.new(0, 0, 0, 30)
         grid.Size = UDim2.new(1, 0, 0, 90)
         grid.BackgroundTransparency = 1
+
         local gridLayout = Instance.new("UIGridLayout", grid)
-        gridLayout.CellSize = UDim2.new(0, 80, 0, 40)
-        gridLayout.CellPadding = UDim.new(0, 8)
+        gridLayout.CellSize = UDim2.new(0, 85, 0, 40)
+        gridLayout.CellPadding = UDim.new(0, 8, 0, 8)
         gridLayout.FillDirectionMaxCells = 4
-        gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
         local colorPresets = {
             {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
@@ -1583,9 +1596,9 @@ function Window:CreateInterfaceColorBox(tabName)
             btn.BackgroundColor3 = pair[1]
             btn.BorderSizePixel = 0
             btn.AutoButtonColor = false
-            btn.Size = UDim2.new(0, 80, 0, 40)
+
             local corner = Instance.new("UICorner", btn)
-            corner.CornerRadius = UDim.new(0, 6)
+            corner.CornerRadius = UDim.new(0, 8)
 
             local grad = Instance.new("UIGradient", btn)
             grad.Color = ColorSequence.new{
@@ -1601,7 +1614,7 @@ function Window:CreateInterfaceColorBox(tabName)
         return section
     end
 
-    createColorRow("Quadrados de Cores (Interface)", function(c1, c2)
+    createColorRow("Cor da Janela Principal", function(c1, c2)
         local stroke = mainFrame:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", mainFrame)
         stroke.Color = c1
         stroke.Thickness = 1.5
@@ -1614,15 +1627,15 @@ function Window:CreateInterfaceColorBox(tabName)
         }
     end)
 
-    createColorRow("Quadrados de Cores (Título/Subtítulo)", function(c1, c2)
-        local grad = title:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", title)
-        grad.Color = ColorSequence.new{
+    createColorRow("Cor do Título/Subtítulo", function(c1, c2)
+        local grad1 = title:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", title)
+        grad1.Color = ColorSequence.new{
             ColorSequenceKeypoint.new(0, c1),
             ColorSequenceKeypoint.new(1, c2)
         }
 
-        local grad2 = subtitle and (subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle))
-        if grad2 then
+        if subtitle then
+            local grad2 = subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle)
             grad2.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, c1),
                 ColorSequenceKeypoint.new(1, c2)
