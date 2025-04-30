@@ -1611,40 +1611,34 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
 
     createColorBox("COR DA INTERFACE", "Quadrados principais", function(color1, color2)
         if mainFrame then
-            local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke", true)
-            if stroke then
-                stroke.Color = color1
-            else
-                warn("UIStroke não encontrado em mainFrame.")
+            local stroke = mainFrame:FindFirstChild("CustomStroke")
+            if not stroke then
+                stroke = Instance.new("UIStroke")
+                stroke.Name = "CustomStroke"
+                stroke.Thickness = 1.5
+                stroke.Transparency = 0.3
+                stroke.Parent = mainFrame
             end
+            stroke.Color = color1
 
-            local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient", true)
-            if gradient then
-                gradient.Color = ColorSequence.new{
-                    ColorSequenceKeypoint.new(0, color1),
-                    ColorSequenceKeypoint.new(1, color2)
-                }
-            else
-                warn("UIGradient não encontrado em mainFrame.")
+            local gradient = mainFrame:FindFirstChild("CustomGradient")
+            if not gradient then
+                gradient = Instance.new("UIGradient")
+                gradient.Name = "CustomGradient"
+                gradient.Parent = mainFrame
             end
+            gradient.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, color1),
+                ColorSequenceKeypoint.new(1, color2)
+            }
         end
     end)
 
     createColorBox("COR DO TÍTULO", "Título e versão", function(color1)
-        if mainFrame then
-            local title = mainFrame:FindFirstChild("TitleLabel", true)
-            local subtitle = mainFrame:FindFirstChild("SubtitleLabel", true)
-            if title then
-                title.TextColor3 = color1
-            else
-                warn("TitleLabel não encontrado em mainFrame.")
-            end
-            if subtitle then
-                subtitle.TextColor3 = color1
-            else
-                warn("SubtitleLabel não encontrado em mainFrame.")
-            end
-        end
+        local title = mainFrame:FindFirstChild("TitleLabel")
+        local subtitle = mainFrame:FindFirstChild("SubtitleLabel")
+        if title then title.TextColor3 = color1 end
+        if subtitle then subtitle.TextColor3 = color1 end
     end)
 
     return container
