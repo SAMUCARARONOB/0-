@@ -1508,35 +1508,45 @@ function Window:CreateConfigBox(tabName, title)
     local tab = pages[tabName]
     if not tab then return end
 
+    -- Criando o container principal (ConfigBox)
     local box = Instance.new("Frame", tab)
     box.Size = UDim2.new(1, -20, 0, 0)
     box.Position = UDim2.new(0, 10, 0, 0)
-    box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  -- Fundo mais escuro
     box.BorderSizePixel = 0
-    box.AutomaticSize = Enum.AutomaticSize.Y
     box.ClipsDescendants = true
     Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
     local stroke = Instance.new("UIStroke", box)
-    stroke.Color = Color3.fromRGB(120, 0, 0)
-    stroke.Thickness = 1.5
+    stroke.Color = Color3.fromRGB(255, 50, 50)  -- Cor do stroke mais chamativa
+    stroke.Thickness = 2
+    local grad = Instance.new("UIGradient", box)
+    grad.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(20, 20, 20)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 40, 40))
+    }
 
+    -- Título da caixa de configuração
     local titleLabel = Instance.new("TextLabel", box)
-    titleLabel.Text = "  MUDA COR DA INTERFACE"
+    titleLabel.Text = title or "Configurações"
     titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 17
+    titleLabel.TextSize = 18
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     titleLabel.BackgroundTransparency = 1
-    titleLabel.Size = UDim2.new(1, -20, 0, 30)
+    titleLabel.Size = UDim2.new(1, -20, 0, 40)
     titleLabel.Position = UDim2.new(0, 10, 0, 10)
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.TextStrokeTransparency = 0.5
+    titleLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
 
+    -- Container para os itens de configuração
     local content = Instance.new("Frame", box)
     content.BackgroundTransparency = 1
     content.Position = UDim2.new(0, 10, 0, 50)
     content.Size = UDim2.new(1, -20, 0, 0)
     content.AutomaticSize = Enum.AutomaticSize.Y
-    Instance.new("UIListLayout", content).Padding = UDim.new(0, 10)
+    Instance.new("UIListLayout", content).Padding = UDim.new(0, 12)
 
+    -- Função para criar linhas de cores com título
     local function createColorRow(titleText, onClick)
         local section = Instance.new("Frame", content)
         section.BackgroundTransparency = 1
@@ -1545,15 +1555,15 @@ function Window:CreateConfigBox(tabName, title)
         local title = Instance.new("TextLabel", section)
         title.Text = titleText
         title.Font = Enum.Font.GothamBold
-        title.TextSize = 14
+        title.TextSize = 15
         title.TextColor3 = Color3.fromRGB(255, 255, 255)
         title.BackgroundTransparency = 1
-        title.Size = UDim2.new(1, 0, 0, 20)
+        title.Size = UDim2.new(1, 0, 0, 25)
         title.Position = UDim2.new(0, 0, 0, 0)
         title.TextXAlignment = Enum.TextXAlignment.Left
 
         local grid = Instance.new("Frame", section)
-        grid.Position = UDim2.new(0, 0, 0, 25)
+        grid.Position = UDim2.new(0, 0, 0, 30)
         grid.Size = UDim2.new(1, 0, 0, 90)
         grid.BackgroundTransparency = 1
         local layout = Instance.new("UIGridLayout", grid)
@@ -1561,6 +1571,7 @@ function Window:CreateConfigBox(tabName, title)
         layout.CellPadding = UDim2.new(0, 6, 0, 6)
         layout.FillDirectionMaxCells = 5
 
+        -- Definindo presets de cores
         local colorPresets = {
             {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},       -- Amarelo/Preto
             {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},     -- Azul/Roxo
@@ -1574,6 +1585,7 @@ function Window:CreateConfigBox(tabName, title)
             {Color3.fromRGB(0,0,0), Color3.fromRGB(0,0,0)},           -- Preto/Preto
         }
 
+        -- Criando botões de cores
         for _, pair in ipairs(colorPresets) do
             local btn = Instance.new("TextButton", grid)
             btn.Text = ""
@@ -1590,6 +1602,7 @@ function Window:CreateConfigBox(tabName, title)
                 ColorSequenceKeypoint.new(1, pair[2])
             }
 
+            -- Efeito de clique com animação
             btn.MouseButton1Click:Connect(function()
                 onClick(pair[1], pair[2])
             end)
@@ -1598,12 +1611,12 @@ function Window:CreateConfigBox(tabName, title)
         return section
     end
 
-    -- Primeiro: muda mainFrame
-    createColorRow("Quadrados de Cores (Interface)", function(c1, c2)
+    -- Exemplo: Mudando a cor do mainFrame
+    createColorRow("Alterar Cor da Interface", function(c1, c2)
         local stroke = mainFrame:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", mainFrame)
         stroke.Color = c1
-        stroke.Thickness = 1.5
-        stroke.Transparency = 0.3
+        stroke.Thickness = 2
+        stroke.Transparency = 0.2
 
         local grad = mainFrame:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", mainFrame)
         grad.Color = ColorSequence.new{
@@ -1612,16 +1625,17 @@ function Window:CreateConfigBox(tabName, title)
         }
     end)
 
-    -- Segundo: muda título/subtítulo
-    createColorRow("Quadrados de Cores (Título/Subtítulo)", function(c1, c2)
-        local grad = title:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", title)
+    -- Mudança de cores no título
+    createColorRow("Alterar Cor do Título/Subtítulo", function(c1, c2)
+        local grad = titleLabel:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", titleLabel)
         grad.Color = ColorSequence.new{
             ColorSequenceKeypoint.new(0, c1),
             ColorSequenceKeypoint.new(1, c2)
         }
 
-        local grad2 = subtitle and (subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle))
-        if grad2 then
+        -- Gradiente no subtítulo, se existir
+        if subtitle then
+            local grad2 = subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle)
             grad2.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, c1),
                 ColorSequenceKeypoint.new(1, c2)
