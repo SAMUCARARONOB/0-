@@ -1549,7 +1549,75 @@ function Window:CreateConfigBox(tabName, title)
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Padding = UDim.new(0, 6)
 
-    local function createColorSection(title, colorProperty)
+    local colorConfig = {
+        red = Color3.fromRGB(255, 0, 0),
+        interface = Color3.fromRGB(0, 0, 0),
+        text = Color3.fromRGB(255, 255, 255)
+    }
+
+    -- Função para alterar as cores
+    local function changeColor(element, newColor)
+        if element then
+            element.BackgroundColor3 = newColor
+        end
+    end
+
+    -- Função para mudar a cor de texto
+    local function changeTextColor(element, newColor)
+        if element then
+            element.TextColor3 = newColor
+        end
+    end
+
+    -- Função para ativar ou desativar a mudança de cores
+    local function toggleColorChange(isEnabled, colorType)
+        if isEnabled then
+            if colorType == "red" then
+                -- Definir cor de elementos vermelhos para o valor desejado
+                for _, element in pairs(tab:GetChildren()) do
+                    if element:IsA("TextLabel") or element:IsA("TextButton") then
+                        changeTextColor(element, colorConfig.red)
+                    elseif element:IsA("Frame") then
+                        changeColor(element, colorConfig.red)
+                    end
+                end
+            elseif colorType == "interface" then
+                -- Mudar cor da interface
+                changeColor(box, colorConfig.interface)
+            elseif colorType == "text" then
+                -- Mudar cor de todos os textos
+                for _, element in pairs(tab:GetChildren()) do
+                    if element:IsA("TextLabel") or element:IsA("TextButton") then
+                        changeTextColor(element, colorConfig.text)
+                    end
+                end
+            end
+        else
+            -- Resetar para a cor original
+            changeColor(box, Color3.fromRGB(25, 25, 25))  -- Resetando a interface para a cor original
+            for _, element in pairs(tab:GetChildren()) do
+                if element:IsA("TextLabel") or element:IsA("TextButton") then
+                    changeTextColor(element, Color3.fromRGB(255, 255, 255))  -- Resetando os textos
+                elseif element:IsA("Frame") then
+                    changeColor(element, Color3.fromRGB(40, 40, 40))  -- Resetando as caixas
+                end
+            end
+        end
+    end
+
+    -- Função de animação de transição suave para a cor arco-íris
+    local function rainbowTransition(element)
+        local colors = {Color3.fromRGB(255, 0, 0), Color3.fromRGB(255, 165, 0), Color3.fromRGB(255, 255, 0), Color3.fromRGB(0, 255, 0), Color3.fromRGB(0, 0, 255), Color3.fromRGB(75, 0, 130), Color3.fromRGB(238, 130, 238)}
+        local step = 0
+        while true do
+            element.BackgroundColor3 = colors[step + 1]
+            step = (step + 1) % #colors
+            wait(0.5)
+        end
+    end
+
+    -- Criando a seção de cor vermelha
+    local function createColorSection(title, colorType)
         local colorBox = Instance.new("Frame", content)
         colorBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         colorBox.BorderSizePixel = 0
@@ -1576,7 +1644,7 @@ function Window:CreateConfigBox(tabName, title)
         colorTextbox.BackgroundTransparency = 1
         colorTextbox.Position = UDim2.new(0, 10, 0, 40)
         colorTextbox.Size = UDim2.new(1, -20, 0, 30)
-        colorTextbox.Text = colorProperty
+        colorTextbox.Text = colorType
         colorTextbox.ClearTextOnFocus = false
 
         local toggleFrame = Instance.new("Frame", colorBox)
@@ -1605,17 +1673,20 @@ function Window:CreateConfigBox(tabName, title)
             if toggleSwitch.Text == "Desativado" then
                 toggleSwitch.Text = "Ativado"
                 toggleSwitch.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-                -- Adicione o código para ativar a mudança de cores aqui
+                toggleColorChange(true, colorType)
+                -- Mudar para transição de arco-íris, se necessário
+                rainbowTransition(colorBox)
             else
                 toggleSwitch.Text = "Desativado"
                 toggleSwitch.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-                -- Adicione o código para desativar a mudança de cores aqui
+                toggleColorChange(false, colorType)
             end
         end)
 
         return colorBox
     end
 
+    -- Criando seções de cor
     local colorBox1 = createColorSection("Cor Elementos Vermelhos", "255,0,0")
     local colorBox2 = createColorSection("Cor Interface", "0,0,0")
     local colorBox3 = createColorSection("Cor Textos", "255,255,255")
