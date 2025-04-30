@@ -252,8 +252,10 @@ function Window:CreateToggle(tabName, toggleConfig)
     local tab = pages[tabName]
     if not tab then return end
 
+    local originalHeight = 50
+    local newHeight = originalHeight * 0.7
     local toggleFrame = Instance.new("Frame", tab)
-    toggleFrame.Size = UDim2.new(1, -20, 0, 50)
+    toggleFrame.Size = UDim2.new(1, -20, 0, newHeight)
     toggleFrame.Position = UDim2.new(0, 10, 0, 0)
     toggleFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     toggleFrame.BackgroundTransparency = 0
@@ -632,10 +634,8 @@ function Window:CreateTextBox(tabName, placeholderText, callback)
 
     local background = Instance.new("Frame", container)
     background.Size = UDim2.new(1, 0, 1, 0)
-    background.Position = UDim2.new(0, 0, 0, 0)
     background.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     background.BorderSizePixel = 0
-    background.ZIndex = 1
     Instance.new("UICorner", background).CornerRadius = UDim.new(0, 6)
 
     local highlight = Instance.new("Frame", background)
@@ -645,17 +645,12 @@ function Window:CreateTextBox(tabName, placeholderText, callback)
     highlight.BackgroundTransparency = 0.5
     highlight.BorderSizePixel = 0
     highlight.Visible = false
-    highlight.ZIndex = 2
 
     task.spawn(function()
         local increasing = true
         while true do
             for i = 1, 100 do
-                if increasing then
-                    highlight.BackgroundTransparency = 0.1 + (0.8 * (i / 100))
-                else
-                    highlight.BackgroundTransparency = 0.9 - (0.8 * (i / 100))
-                end
+                highlight.BackgroundTransparency = increasing and 0.1 + (0.8 * (i / 100)) or 0.9 - (0.8 * (i / 100))
                 task.wait(0.02)
             end
             increasing = not increasing
@@ -677,7 +672,6 @@ function Window:CreateTextBox(tabName, placeholderText, callback)
     textBox.Size = UDim2.new(1, -20, 1, 0)
     textBox.Position = UDim2.new(0, 10, 0, 0)
     textBox.BackgroundTransparency = 1
-    textBox.Text = ""
     textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
     textBox.Font = Enum.Font.Gotham
     textBox.TextSize = 14
@@ -725,8 +719,10 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     local tab = pages[tabName]
     if not tab then return end
 
+    local originalHeight = 54
+    local newHeight = originalHeight * 0.7
     local checkboxFrame = Instance.new("Frame", tab)
-    checkboxFrame.Size = UDim2.new(1, -20, 0, 54)
+    checkboxFrame.Size = UDim2.new(1, -20, 0, newHeight)
     checkboxFrame.Position = UDim2.new(0, 10, 0, 0)
     checkboxFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     checkboxFrame.BorderSizePixel = 0
