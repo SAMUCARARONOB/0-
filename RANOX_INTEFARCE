@@ -1611,24 +1611,40 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
 
     createColorBox("COR DA INTERFACE", "Quadrados principais", function(color1, color2)
         if mainFrame then
-            local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke")
-            if stroke then stroke.Color = color1 end
+            local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke", true)
+            if stroke then
+                stroke.Color = color1
+            else
+                warn("UIStroke não encontrado em mainFrame.")
+            end
 
-            local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient")
+            local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient", true)
             if gradient then
                 gradient.Color = ColorSequence.new{
                     ColorSequenceKeypoint.new(0, color1),
                     ColorSequenceKeypoint.new(1, color2)
                 }
+            else
+                warn("UIGradient não encontrado em mainFrame.")
             end
         end
     end)
 
     createColorBox("COR DO TÍTULO", "Título e versão", function(color1)
-        local title = mainFrame:FindFirstChild("TitleLabel")
-        local subtitle = mainFrame:FindFirstChild("SubtitleLabel")
-        if title then title.TextColor3 = color1 end
-        if subtitle then subtitle.TextColor3 = color1 end
+        if mainFrame then
+            local title = mainFrame:FindFirstChild("TitleLabel", true)
+            local subtitle = mainFrame:FindFirstChild("SubtitleLabel", true)
+            if title then
+                title.TextColor3 = color1
+            else
+                warn("TitleLabel não encontrado em mainFrame.")
+            end
+            if subtitle then
+                subtitle.TextColor3 = color1
+            else
+                warn("SubtitleLabel não encontrado em mainFrame.")
+            end
+        end
     end)
 
     return container
