@@ -1504,39 +1504,31 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-function Window:CreateConfigBox(tabName, title)
+function Window:CreateConfigBox(tabName, titleText)
     local tab = pages[tabName]
     if not tab then return end
 
     local box = Instance.new("Frame", tab)
     box.Size = UDim2.new(1, -20, 0, 0)
     box.Position = UDim2.new(0, 10, 0, 0)
-    box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     box.BorderSizePixel = 0
     box.AutomaticSize = Enum.AutomaticSize.Y
     box.ClipsDescendants = true
     Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
     local stroke = Instance.new("UIStroke", box)
-    stroke.Color = Color3.fromRGB(255, 100, 0)
-    stroke.Thickness = 2
+    stroke.Color = Color3.fromRGB(120, 0, 0)
+    stroke.Thickness = 1.5
 
     local titleLabel = Instance.new("TextLabel", box)
-    titleLabel.Text = title or "Configuração"
+    titleLabel.Text = titleText or "MUDA COR DA INTERFACE"
     titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 18
+    titleLabel.TextSize = 17
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     titleLabel.BackgroundTransparency = 1
-    titleLabel.Size = UDim2.new(1, -20, 0, 40)
+    titleLabel.Size = UDim2.new(1, -20, 0, 30)
     titleLabel.Position = UDim2.new(0, 10, 0, 10)
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-    titleLabel.MouseEnter:Connect(function()
-        titleLabel.TextColor3 = Color3.fromRGB(255, 165, 0)
-    end)
-
-    titleLabel.MouseLeave:Connect(function()
-        titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    end)
 
     local content = Instance.new("Frame", box)
     content.BackgroundTransparency = 1
@@ -1545,20 +1537,28 @@ function Window:CreateConfigBox(tabName, title)
     content.AutomaticSize = Enum.AutomaticSize.Y
     Instance.new("UIListLayout", content).Padding = UDim.new(0, 10)
 
-    local function createColorRow(titleText, onClick)
+    local function clearChildrenOfClass(obj, className)
+        for _, v in ipairs(obj:GetChildren()) do
+            if v:IsA(className) then
+                v:Destroy()
+            end
+        end
+    end
+
+    local function createColorRow(labelText, applyFunc)
         local section = Instance.new("Frame", content)
         section.BackgroundTransparency = 1
         section.Size = UDim2.new(1, 0, 0, 120)
 
-        local title = Instance.new("TextLabel", section)
-        title.Text = titleText
-        title.Font = Enum.Font.GothamBold
-        title.TextSize = 14
-        title.TextColor3 = Color3.fromRGB(255, 255, 255)
-        title.BackgroundTransparency = 1
-        title.Size = UDim2.new(1, 0, 0, 20)
-        title.Position = UDim2.new(0, 0, 0, 0)
-        title.TextXAlignment = Enum.TextXAlignment.Left
+        local label = Instance.new("TextLabel", section)
+        label.Text = labelText
+        label.Font = Enum.Font.GothamBold
+        label.TextSize = 14
+        label.TextColor3 = Color3.fromRGB(255, 255, 255)
+        label.BackgroundTransparency = 1
+        label.Size = UDim2.new(1, 0, 0, 20)
+        label.Position = UDim2.new(0, 0, 0, 0)
+        label.TextXAlignment = Enum.TextXAlignment.Left
 
         local grid = Instance.new("Frame", section)
         grid.Position = UDim2.new(0, 0, 0, 25)
@@ -1589,43 +1589,57 @@ function Window:CreateConfigBox(tabName, title)
             btn.BorderSizePixel = 0
             btn.AutoButtonColor = false
             btn.Size = UDim2.new(0, 80, 0, 40)
-            local corner = Instance.new("UICorner", btn)
-            corner.CornerRadius = UDim.new(0, 6)
-
+            Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
             local grad = Instance.new("UIGradient", btn)
             grad.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, pair[1]),
                 ColorSequenceKeypoint.new(1, pair[2])
             }
 
-            btn.MouseEnter:Connect(function()
-                btn.BackgroundColor3 = pair[2]
-            end)
-
-            btn.MouseLeave:Connect(function()
-                btn.BackgroundColor3 = pair[1]
-            end)
-
             btn.MouseButton1Click:Connect(function()
-                onClick(pair[1], pair[2])
+                applyFunc(pair[1], pair[2])
             end)
         end
 
         return section
     end
 
-    -- Somente os quadrados que mudam a interface
     createColorRow("Quadrados de Cores (Interface)", function(c1, c2)
-        local stroke = mainFrame:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", mainFrame)
-        stroke.Color = c1
-        stroke.Thickness = 2
-        stroke.Transparency = 0.3
+        if mainFrame then
+            clearChildrenOfClass(mainFrame, "UIStroke")
+            clearChildrenOfClass(mainFrame, "UIGradient")
 
-        local grad = mainFrame:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", mainFrame)
-        grad.Color = ColorSequence.new{
-            ColorSequenceKeypoint.new(0, c1),
-            ColorSequenceKeypoint.new(1, c2)
-        }
+            local stroke = Instance.new("UIStroke", mainFrame)
+            stroke.Color = c1
+            stroke.Thickness = 1.5
+            stroke.Transparency = 0.3
+
+            local grad = Instance.new("UIGradient", mainFrame)
+            grad.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, c1),
+                ColorSequenceKeypoint.new(1, c2)
+            }
+        end
+    end)
+
+    createColorRow("Quadrados de Cores (Título/Subtítulo)", function(c1, c2)
+        if title then
+            clearChildrenOfClass(title, "UIGradient")
+            local grad = Instance.new("UIGradient", title)
+            grad.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, c1),
+                ColorSequenceKeypoint.new(1, c2)
+            }
+        end
+
+        if subtitle then
+            clearChildrenOfClass(subtitle, "UIGradient")
+            local grad2 = Instance.new("UIGradient", subtitle)
+            grad2.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, c1),
+                ColorSequenceKeypoint.new(1, c2)
+            }
+        end
     end)
 
     return {
