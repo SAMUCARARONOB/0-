@@ -1504,7 +1504,7 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-function Window:CreateConfigBox(tabName, titleText)
+function Window:CreateConfigBox(tabName, title)
     local tab = pages[tabName]
     if not tab then return end
 
@@ -1521,7 +1521,7 @@ function Window:CreateConfigBox(tabName, titleText)
     stroke.Thickness = 1.5
 
     local titleLabel = Instance.new("TextLabel", box)
-    titleLabel.Text = titleText or "MUDA COR DA INTERFACE"
+    titleLabel.Text = "  MUDA COR DA INTERFACE"
     titleLabel.Font = Enum.Font.GothamBold
     titleLabel.TextSize = 17
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1537,28 +1537,20 @@ function Window:CreateConfigBox(tabName, titleText)
     content.AutomaticSize = Enum.AutomaticSize.Y
     Instance.new("UIListLayout", content).Padding = UDim.new(0, 10)
 
-    local function clearChildrenOfClass(obj, className)
-        for _, v in ipairs(obj:GetChildren()) do
-            if v:IsA(className) then
-                v:Destroy()
-            end
-        end
-    end
-
-    local function createColorRow(labelText, applyFunc)
-        local section = Instance.new("Frame", content)
+    local function createColorRow(titleText, onClick)
+        local section = Instance.new("Frame")
         section.BackgroundTransparency = 1
         section.Size = UDim2.new(1, 0, 0, 120)
 
-        local label = Instance.new("TextLabel", section)
-        label.Text = labelText
-        label.Font = Enum.Font.GothamBold
-        label.TextSize = 14
-        label.TextColor3 = Color3.fromRGB(255, 255, 255)
-        label.BackgroundTransparency = 1
-        label.Size = UDim2.new(1, 0, 0, 20)
-        label.Position = UDim2.new(0, 0, 0, 0)
-        label.TextXAlignment = Enum.TextXAlignment.Left
+        local title = Instance.new("TextLabel", section)
+        title.Text = titleText
+        title.Font = Enum.Font.GothamBold
+        title.TextSize = 14
+        title.TextColor3 = Color3.fromRGB(255, 255, 255)
+        title.BackgroundTransparency = 1
+        title.Size = UDim2.new(1, 0, 0, 20)
+        title.Position = UDim2.new(0, 0, 0, 0)
+        title.TextXAlignment = Enum.TextXAlignment.Left
 
         local grid = Instance.new("Frame", section)
         grid.Position = UDim2.new(0, 0, 0, 25)
@@ -1589,7 +1581,9 @@ function Window:CreateConfigBox(tabName, titleText)
             btn.BorderSizePixel = 0
             btn.AutoButtonColor = false
             btn.Size = UDim2.new(0, 80, 0, 40)
-            Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+            local corner = Instance.new("UICorner", btn)
+            corner.CornerRadius = UDim.new(0, 6)
+
             local grad = Instance.new("UIGradient", btn)
             grad.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, pair[1]),
@@ -1597,50 +1591,44 @@ function Window:CreateConfigBox(tabName, titleText)
             }
 
             btn.MouseButton1Click:Connect(function()
-                applyFunc(pair[1], pair[2])
+                onClick(pair[1], pair[2])
             end)
         end
 
+        grid.Parent = section
         return section
     end
 
-    createColorRow("Quadrados de Cores (Interface)", function(c1, c2)
-        if mainFrame then
-            clearChildrenOfClass(mainFrame, "UIStroke")
-            clearChildrenOfClass(mainFrame, "UIGradient")
+    local row1 = createColorRow("Quadrados de Cores (Interface)", function(c1, c2)
+        local stroke = mainFrame:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", mainFrame)
+        stroke.Color = c1
+        stroke.Thickness = 1.5
+        stroke.Transparency = 0.3
 
-            local stroke = Instance.new("UIStroke", mainFrame)
-            stroke.Color = c1
-            stroke.Thickness = 1.5
-            stroke.Transparency = 0.3
-
-            local grad = Instance.new("UIGradient", mainFrame)
-            grad.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, c1),
-                ColorSequenceKeypoint.new(1, c2)
-            }
-        end
+        local grad = mainFrame:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", mainFrame)
+        grad.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, c1),
+            ColorSequenceKeypoint.new(1, c2)
+        }
     end)
+    row1.Parent = content
 
-    createColorRow("Quadrados de Cores (Título/Subtítulo)", function(c1, c2)
-        if title then
-            clearChildrenOfClass(title, "UIGradient")
-            local grad = Instance.new("UIGradient", title)
-            grad.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, c1),
-                ColorSequenceKeypoint.new(1, c2)
-            }
-        end
+    local row2 = createColorRow("Quadrados de Cores (Título/Subtítulo)", function(c1, c2)
+        local grad = title:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", title)
+        grad.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, c1),
+            ColorSequenceKeypoint.new(1, c2)
+        }
 
-        if subtitle then
-            clearChildrenOfClass(subtitle, "UIGradient")
-            local grad2 = Instance.new("UIGradient", subtitle)
+        local grad2 = subtitle and (subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle))
+        if grad2 then
             grad2.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, c1),
                 ColorSequenceKeypoint.new(1, c2)
             }
         end
     end)
+    row2.Parent = content
 
     return {
         MainFrame = box,
