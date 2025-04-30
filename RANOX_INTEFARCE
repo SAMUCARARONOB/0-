@@ -1400,7 +1400,7 @@ function Window:CreateInfoBox(tabName, title, infoList)
     local box = Instance.new("Frame", tab)
     box.Size = UDim2.new(1, -20, 0, 0)
     box.Position = UDim2.new(0, 10, 0, 0)
-    box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    box.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     box.BorderSizePixel = 0
     box.AutomaticSize = Enum.AutomaticSize.Y
     box.ClipsDescendants = true
@@ -1440,7 +1440,7 @@ function Window:CreateInfoBox(tabName, title, infoList)
 
     for i, text in ipairs(infoList) do
         local itemFrame = Instance.new("Frame", content)
-        itemFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+        itemFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
         itemFrame.BorderSizePixel = 0
         itemFrame.AutomaticSize = Enum.AutomaticSize.Y
         itemFrame.Size = UDim2.new(1, 0, 0, 0)
