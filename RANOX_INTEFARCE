@@ -1504,7 +1504,7 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-function Window:CreateInterfaceColorBox(tabName, title)
+function Window:CreateInterfaceColorBox(tabName)
     local tab = pages[tabName]
     if not tab then return end
 
@@ -1535,12 +1535,13 @@ function Window:CreateInterfaceColorBox(tabName, title)
     content.Position = UDim2.new(0, 10, 0, 50)
     content.Size = UDim2.new(1, -20, 0, 0)
     content.AutomaticSize = Enum.AutomaticSize.Y
-    Instance.new("UIListLayout", content).Padding = UDim.new(0, 10)
+    local layout = Instance.new("UIListLayout", content)
+    layout.Padding = UDim.new(0, 15)
 
     local function createColorRow(titleText, onClick)
         local section = Instance.new("Frame", content)
         section.BackgroundTransparency = 1
-        section.Size = UDim2.new(1, 0, 0, 120)
+        section.Size = UDim2.new(1, 0, 0, 135)
 
         local title = Instance.new("TextLabel", section)
         title.Text = titleText
@@ -1553,25 +1554,25 @@ function Window:CreateInterfaceColorBox(tabName, title)
         title.TextXAlignment = Enum.TextXAlignment.Left
 
         local grid = Instance.new("Frame", section)
-        grid.Position = UDim2.new(0, 0, 0, 25)
-        grid.Size = UDim2.new(1, 0, 0, 90)
+        grid.Position = UDim2.new(0, 0, 0, 30)
+        grid.Size = UDim2.new(1, 0, 0, 100)
         grid.BackgroundTransparency = 1
         local layout = Instance.new("UIGridLayout", grid)
         layout.CellSize = UDim2.new(0, 80, 0, 40)
-        layout.CellPadding = UDim2.new(0, 6, 0, 6)
+        layout.CellPadding = UDim.new(0, 6, 0, 6)
         layout.FillDirectionMaxCells = 5
 
         local colorPresets = {
-            {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},       -- Amarelo/Preto
-            {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},     -- Azul/Roxo
-            {Color3.fromRGB(0,255,100), Color3.fromRGB(0,200,255)},   -- Verde/Azul
-            {Color3.fromRGB(255,0,0), Color3.fromRGB(255,20,147)},    -- Neon/Vermelho
-            {Color3.fromRGB(255,215,0), Color3.fromRGB(192,192,192)}, -- Dourado/Prata
-            {Color3.fromRGB(138,43,226), Color3.fromRGB(255,165,0)},  -- Roxo/Laranja
-            {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},       -- Azul/Vermelho
-            {Color3.fromRGB(255,20,147), Color3.fromRGB(255,215,0)},  -- Rosa/Dourado
-            {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},     -- Branco/Preto
-            {Color3.fromRGB(0,0,0), Color3.fromRGB(0,0,0)},           -- Preto/Preto
+            {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
+            {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},
+            {Color3.fromRGB(0,255,100), Color3.fromRGB(0,200,255)},
+            {Color3.fromRGB(255,0,0), Color3.fromRGB(255,20,147)},
+            {Color3.fromRGB(255,215,0), Color3.fromRGB(192,192,192)},
+            {Color3.fromRGB(138,43,226), Color3.fromRGB(255,165,0)},
+            {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},
+            {Color3.fromRGB(255,20,147), Color3.fromRGB(255,215,0)},
+            {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},
+            {Color3.fromRGB(0,0,0), Color3.fromRGB(0,0,0)},
         }
 
         for _, pair in ipairs(colorPresets) do
@@ -1595,10 +1596,10 @@ function Window:CreateInterfaceColorBox(tabName, title)
             end)
         end
 
+        grid.Parent = section
         return section
     end
 
-    -- Primeiro: muda mainFrame
     createColorRow("Quadrados de Cores (Interface)", function(c1, c2)
         local stroke = mainFrame:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", mainFrame)
         stroke.Color = c1
@@ -1612,7 +1613,6 @@ function Window:CreateInterfaceColorBox(tabName, title)
         }
     end)
 
-    -- Segundo: muda título/subtítulo
     createColorRow("Quadrados de Cores (Título/Subtítulo)", function(c1, c2)
         local grad = title:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", title)
         grad.Color = ColorSequence.new{
@@ -1620,8 +1620,8 @@ function Window:CreateInterfaceColorBox(tabName, title)
             ColorSequenceKeypoint.new(1, c2)
         }
 
-        local grad2 = subtitle and (subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle))
-        if grad2 then
+        if subtitle then
+            local grad2 = subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle)
             grad2.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, c1),
                 ColorSequenceKeypoint.new(1, c2)
