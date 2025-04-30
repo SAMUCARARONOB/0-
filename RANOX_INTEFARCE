@@ -1504,7 +1504,7 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-function Window:CreateColorChanger(tabName)
+function Window:CreateConfigBox(tabName, title)
     local tab = pages[tabName]
     if not tab then return end
 
@@ -1535,43 +1535,37 @@ function Window:CreateColorChanger(tabName)
     content.Position = UDim2.new(0, 10, 0, 50)
     content.Size = UDim2.new(1, -20, 0, 0)
     content.AutomaticSize = Enum.AutomaticSize.Y
-    Instance.new("UIListLayout", content).Padding = UDim.new(0, 10)
+    local listLayout = Instance.new("UIListLayout", content)
+    listLayout.Padding = UDim.new(0, 12)
 
-    local colorPresets = {
-        {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
-        {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},
-        {Color3.fromRGB(0,255,100), Color3.fromRGB(0,200,255)},
-        {Color3.fromRGB(255,0,0), Color3.fromRGB(255,20,147)},
-        {Color3.fromRGB(255,215,0), Color3.fromRGB(192,192,192)},
-        {Color3.fromRGB(138,43,226), Color3.fromRGB(255,165,0)},
-        {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},
-        {Color3.fromRGB(255,20,147), Color3.fromRGB(255,215,0)},
-        {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},
-        {Color3.fromRGB(0,0,0), Color3.fromRGB(0,0,0)},
-    }
-
-    local function CreateGrid(titleText, onPick)
+    local function createColorRow(onClick)
         local section = Instance.new("Frame", content)
         section.BackgroundTransparency = 1
-        section.Size = UDim2.new(1, 0, 0, 120)
-
-        local label = Instance.new("TextLabel", section)
-        label.Text = titleText
-        label.Font = Enum.Font.GothamBold
-        label.TextSize = 14
-        label.TextColor3 = Color3.fromRGB(255, 255, 255)
-        label.BackgroundTransparency = 1
-        label.Size = UDim2.new(1, 0, 0, 20)
-        label.TextXAlignment = Enum.TextXAlignment.Left
+        section.Size = UDim2.new(1, 0, 0, 0)
+        section.AutomaticSize = Enum.AutomaticSize.Y
 
         local grid = Instance.new("Frame", section)
-        grid.Position = UDim2.new(0, 0, 0, 25)
-        grid.Size = UDim2.new(1, 0, 0, 90)
+        grid.Size = UDim2.new(1, 0, 0, 0)
+        grid.AutomaticSize = Enum.AutomaticSize.Y
         grid.BackgroundTransparency = 1
         local layout = Instance.new("UIGridLayout", grid)
         layout.CellSize = UDim2.new(0, 80, 0, 40)
         layout.CellPadding = UDim.new(0, 6, 0, 6)
-        layout.FillDirectionMaxCells = 5
+        layout.FillDirectionMaxCells = 4
+        layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+        local colorPresets = {
+            {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
+            {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},
+            {Color3.fromRGB(0,255,100), Color3.fromRGB(0,200,255)},
+            {Color3.fromRGB(255,0,0), Color3.fromRGB(255,20,147)},
+            {Color3.fromRGB(255,215,0), Color3.fromRGB(192,192,192)},
+            {Color3.fromRGB(138,43,226), Color3.fromRGB(255,165,0)},
+            {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},
+            {Color3.fromRGB(255,20,147), Color3.fromRGB(255,215,0)},
+            {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},
+            {Color3.fromRGB(0,0,0), Color3.fromRGB(0,0,0)},
+        }
 
         for _, pair in ipairs(colorPresets) do
             local btn = Instance.new("TextButton", grid)
@@ -1580,20 +1574,25 @@ function Window:CreateColorChanger(tabName)
             btn.BorderSizePixel = 0
             btn.AutoButtonColor = false
             btn.Size = UDim2.new(0, 80, 0, 40)
-            Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+            local corner = Instance.new("UICorner", btn)
+            corner.CornerRadius = UDim.new(0, 6)
+
             local grad = Instance.new("UIGradient", btn)
             grad.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, pair[1]),
                 ColorSequenceKeypoint.new(1, pair[2])
             }
+
             btn.MouseButton1Click:Connect(function()
-                onPick(pair[1], pair[2])
+                onClick(pair[1], pair[2])
             end)
         end
+
+        grid.Parent = section
+        return section
     end
 
-    -- Gradiente do mainFrame (borda e fundo)
-    CreateGrid("Interface Principal", function(c1, c2)
+    content:AddChild(createColorRow(function(c1, c2)
         local stroke = mainFrame:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", mainFrame)
         stroke.Color = c1
         stroke.Thickness = 1.5
@@ -1604,27 +1603,29 @@ function Window:CreateColorChanger(tabName)
             ColorSequenceKeypoint.new(0, c1),
             ColorSequenceKeypoint.new(1, c2)
         }
-    end)
+    end))
 
-    -- Gradiente do título e subtítulo
-    CreateGrid("Título/Subtítulo", function(c1, c2)
-        if title then
-            local grad = title:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", title)
-            grad.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, c1),
-                ColorSequenceKeypoint.new(1, c2)
-            }
-        end
+    content:AddChild(createColorRow(function(c1, c2)
+        local grad = title:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", title)
+        grad.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, c1),
+            ColorSequenceKeypoint.new(1, c2)
+        }
+
         if subtitle then
-            local grad = subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle)
-            grad.Color = ColorSequence.new{
+            local grad2 = subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle)
+            grad2.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, c1),
                 ColorSequenceKeypoint.new(1, c2)
             }
         end
-    end)
+    end))
 
-    return box
+    return {
+        MainFrame = box,
+        TitleLabel = titleLabel,
+        ContentFrame = content
+    }
 end
 
 local isHidden = false
