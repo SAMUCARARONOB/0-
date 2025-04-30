@@ -1504,7 +1504,136 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-    local isHidden = false
+function Window:CreateConfigBox(tabName, title)
+    local tab = pages[tabName]
+    if not tab then return end
+
+    local box = Instance.new("Frame", tab)
+    box.Size = UDim2.new(1, -20, 0, 0)
+    box.Position = UDim2.new(0, 10, 0, 0)
+    box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    box.BorderSizePixel = 0
+    box.AutomaticSize = Enum.AutomaticSize.Y
+    box.ClipsDescendants = true
+    local boxCorner = Instance.new("UICorner", box)
+    boxCorner.CornerRadius = UDim.new(0, 12)
+    local boxStroke = Instance.new("UIStroke", box)
+    boxStroke.Color = Color3.fromRGB(120, 0, 0)
+    boxStroke.Thickness = 1.5
+
+    local titleLabel = Instance.new("TextLabel", box)
+    titleLabel.Text = "  " .. (title or "CONFIGURAÇÃO"):upper()
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.TextSize = 17
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Size = UDim2.new(1, -20, 0, 30)
+    titleLabel.Position = UDim2.new(0, 10, 0, 10)
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.TextYAlignment = Enum.TextYAlignment.Center
+
+    local underline = Instance.new("Frame", titleLabel)
+    underline.Size = UDim2.new(1, -20, 0, 1)
+    underline.Position = UDim2.new(0, 10, 1, -3)
+    underline.BackgroundColor3 = Color3.fromRGB(90, 0, 0)
+    underline.BorderSizePixel = 0
+
+    local content = Instance.new("Frame", box)
+    content.BackgroundTransparency = 1
+    content.Position = UDim2.new(0, 10, 0, 50)
+    content.Size = UDim2.new(1, -20, 0, 0)
+    content.AutomaticSize = Enum.AutomaticSize.Y
+
+    local layout = Instance.new("UIListLayout", content)
+    layout.FillDirection = Enum.FillDirection.Vertical
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 6)
+
+    local function createColorSection(title, colorProperty)
+        local colorBox = Instance.new("Frame", content)
+        colorBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        colorBox.BorderSizePixel = 0
+        colorBox.Size = UDim2.new(1, 0, 0, 100)
+        local colorCorner = Instance.new("UICorner", colorBox)
+        colorCorner.CornerRadius = UDim.new(0, 6)
+        local colorStroke = Instance.new("UIStroke", colorBox)
+        colorStroke.Color = Color3.fromRGB(120, 0, 0)
+        colorStroke.Thickness = 1
+
+        local colorLabel = Instance.new("TextLabel", colorBox)
+        colorLabel.Text = title
+        colorLabel.Font = Enum.Font.GothamBold
+        colorLabel.TextSize = 14
+        colorLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        colorLabel.BackgroundTransparency = 1
+        colorLabel.Size = UDim2.new(1, -20, 0, 30)
+        colorLabel.Position = UDim2.new(0, 10, 0, 10)
+
+        local colorTextbox = Instance.new("TextBox", colorBox)
+        colorTextbox.Font = Enum.Font.Gotham
+        colorTextbox.TextSize = 14
+        colorTextbox.TextColor3 = Color3.fromRGB(210, 210, 210)
+        colorTextbox.BackgroundTransparency = 1
+        colorTextbox.Position = UDim2.new(0, 10, 0, 40)
+        colorTextbox.Size = UDim2.new(1, -20, 0, 30)
+        colorTextbox.Text = colorProperty
+        colorTextbox.ClearTextOnFocus = false
+
+        local toggleFrame = Instance.new("Frame", colorBox)
+        toggleFrame.BackgroundTransparency = 1
+        toggleFrame.Position = UDim2.new(0, 10, 0, 75)
+        toggleFrame.Size = UDim2.new(1, -20, 0, 20)
+
+        local toggleLabel = Instance.new("TextLabel", toggleFrame)
+        toggleLabel.Text = "Ativar Mudar Cores"
+        toggleLabel.Font = Enum.Font.Gotham
+        toggleLabel.TextSize = 14
+        toggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        toggleLabel.BackgroundTransparency = 1
+        toggleLabel.Size = UDim2.new(0, 150, 1, 0)
+
+        local toggleSwitch = Instance.new("TextButton", toggleFrame)
+        toggleSwitch.Text = "Desativado"
+        toggleSwitch.Font = Enum.Font.Gotham
+        toggleSwitch.TextSize = 14
+        toggleSwitch.TextColor3 = Color3.fromRGB(255, 255, 255)
+        toggleSwitch.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+        toggleSwitch.Size = UDim2.new(0, 80, 1, 0)
+        toggleSwitch.Position = UDim2.new(1, -90, 0, 0)
+
+        toggleSwitch.MouseButton1Click:Connect(function()
+            if toggleSwitch.Text == "Desativado" then
+                toggleSwitch.Text = "Ativado"
+                toggleSwitch.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+                -- Adicione o código para ativar a mudança de cores aqui
+            else
+                toggleSwitch.Text = "Desativado"
+                toggleSwitch.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+                -- Adicione o código para desativar a mudança de cores aqui
+            end
+        end)
+
+        return colorBox
+    end
+
+    local colorBox1 = createColorSection("Cor Elementos Vermelhos", "255,0,0")
+    local colorBox2 = createColorSection("Cor Interface", "0,0,0")
+    local colorBox3 = createColorSection("Cor Textos", "255,255,255")
+
+    local separator = Instance.new("Frame", content)
+    separator.Size = UDim2.new(1, 0, 0, 2)
+    separator.Position = UDim2.new(0, 0, 0, 6)
+    separator.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    separator.BorderSizePixel = 0
+
+    return {
+        MainFrame = box,
+        TitleLabel = titleLabel,
+        ContentFrame = content
+    }
+end
+
+local isHidden = false
     hideButton.MouseButton1Click:Connect(function()
         local targetSize = isHidden and UDim2.new(0, 550, 0, 375) or UDim2.new(0, 0, 0, 0)
         local tween = TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
