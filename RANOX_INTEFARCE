@@ -151,16 +151,12 @@ function Window:CreateTab(tabName, iconId)
 	tabBtn.ClipsDescendants = true
 	tabBtn.TextXAlignment = Enum.TextXAlignment.Left
 
-	local corner = Instance.new("UICorner", tabBtn)
-	corner.CornerRadius = UDim.new(0, 6)
+	local uiCorner = Instance.new("UICorner", tabBtn)
+	uiCorner.CornerRadius = UDim.new(0, 6)
 
-	local border = Instance.new("Frame", tabBtn)
-	border.Size = UDim2.new(1, 0, 1, 0)
-	border.Position = UDim2.new(0, 0, 0, 0)
-	border.BackgroundTransparency = 1
-	border.BorderSizePixel = 1
-	border.BorderColor3 = Color3.fromRGB(40, 40, 40)
-	border.ZIndex = tabBtn.ZIndex + 1
+	local uiStroke = Instance.new("UIStroke", tabBtn)
+	uiStroke.Thickness = 1
+	uiStroke.Color = Color3.fromRGB(40, 40, 40)
 
 	local marker = Instance.new("Frame", tabBtn)
 	marker.Name = "TabMarker"
@@ -199,7 +195,7 @@ function Window:CreateTab(tabName, iconId)
 
 	tabBtn.MouseEnter:Connect(function()
 		if selectedTab ~= tabName then
-			TweenService:Create(tabBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 25, 25)}):Play()
+			TweenService:Create(tabBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)}):Play()
 		end
 	end)
 
@@ -222,28 +218,21 @@ function Window:CreateTab(tabName, iconId)
 	pages[tabName] = tabPage
 
 	tabBtn.MouseButton1Click:Connect(function()
+		for name, button in pairs(tabButtons) do
+			if name == tabName then
+				TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}):Play()
+				button.TabMarker.Visible = true
+			else
+				TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(20, 20, 20)}):Play()
+				button.TabMarker.Visible = false
+			end
+		end
 		switchTab(tabName)
 	end)
 
 	if not selectedTab then
 		switchTab(tabName)
 	end
-end
-
-local function switchTab(tabName)
-	for name, page in pairs(pages) do
-		page.Visible = false
-	end
-	for name, button in pairs(tabButtons) do
-		local targetColor = name == tabName and Color3.fromRGB(35, 35, 35) or Color3.fromRGB(20, 20, 20)
-		TweenService:Create(button, TweenInfo.new(0.25), {BackgroundColor3 = targetColor}):Play()
-		local marker = button:FindFirstChild("TabMarker")
-		if marker then
-			marker.Visible = name == tabName
-		end
-	end
-	pages[tabName].Visible = true
-	selectedTab = tabName
 end
 
 function Window:CreateButton(tabName, text, callback)
