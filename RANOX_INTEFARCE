@@ -19,8 +19,8 @@ screenGui.Parent = game:GetService("CoreGui")
 mainFrame.Size = UDim2.new(0, 585, 0, 385)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-mainFrame.BackgroundTransparency = 0
+mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+mainFrame.BackgroundTransparency = 0.05
 mainFrame.Text = ""
 mainFrame.AutoButtonColor = false
 mainFrame.ClipsDescendants = true
@@ -83,7 +83,7 @@ end)
 local sidebar = Instance.new("ScrollingFrame", mainFrame)
 sidebar.Size = UDim2.new(0, 139, 1, -25)
 sidebar.Position = UDim2.new(0, 0, 0, 25)
-sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 sidebar.BackgroundTransparency = 0.35
 sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
 sidebar.ScrollBarThickness = 5
@@ -147,7 +147,7 @@ function Window:CreateTab(tabName, iconId)
 	tabBtn.Font = Enum.Font.Gotham
 	tabBtn.TextSize = 12
 	tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	tabBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	tabBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 	tabBtn.AutoButtonColor = false
 	tabBtn.ClipsDescendants = true
 	tabBtn.TextXAlignment = Enum.TextXAlignment.Left
@@ -186,13 +186,13 @@ function Window:CreateTab(tabName, iconId)
 
 	tabBtn.MouseEnter:Connect(function()
 		if selectedTab ~= tabName then
-			tabBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+			tabBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 		end
 	end)
 
 	tabBtn.MouseLeave:Connect(function()
 		if selectedTab ~= tabName then
-			tabBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+			tabBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 		end
 	end)
 
