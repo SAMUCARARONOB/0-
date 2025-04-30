@@ -19,8 +19,8 @@ screenGui.Parent = game:GetService("CoreGui")
 mainFrame.Size = UDim2.new(0, 585, 0, 385)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-mainFrame.BackgroundTransparency = 0.07
+mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+mainFrame.BackgroundTransparency = 0.05
 mainFrame.Text = ""
 mainFrame.AutoButtonColor = false
 mainFrame.ClipsDescendants = true
@@ -83,8 +83,8 @@ end)
 local sidebar = Instance.new("ScrollingFrame", mainFrame)
 sidebar.Size = UDim2.new(0, 139, 1, -25)
 sidebar.Position = UDim2.new(0, 0, 0, 25)
-sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-sidebar.BackgroundTransparency = 0.27
+sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+sidebar.BackgroundTransparency = 0.35
 sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
 sidebar.ScrollBarThickness = 5
 sidebar.BorderSizePixel = 0
@@ -248,89 +248,12 @@ function Window:CreateButton(tabName, text, callback)
         end)
     end
 
-function Window:CreateToggle(tabName, toggleConfig)
-    local tab = pages[tabName]
-    if not tab then return end
-
-    local originalHeight = 50
-    local newHeight = originalHeight * 0.7
-    local toggleFrame = Instance.new("Frame", tab)
-    toggleFrame.Size = UDim2.new(1, -20, 0, newHeight)
-    toggleFrame.Position = UDim2.new(0, 10, 0, 0)
-    toggleFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    toggleFrame.BackgroundTransparency = 0
-    toggleFrame.ClipsDescendants = true
-    toggleFrame.BorderSizePixel = 0
-    Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 8)
-
-    local title = Instance.new("TextLabel", toggleFrame)
-    title.Size = UDim2.new(1, -60, 0, 20)
-    title.Position = UDim2.new(0, 12, 0, 6)
-    title.BackgroundTransparency = 1
-    title.Text = toggleConfig.Text or "Toggle"
-    title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.Font = Enum.Font.GothamMedium
-    title.TextSize = 14
-    title.TextXAlignment = Enum.TextXAlignment.Left
-
-    local description = Instance.new("TextLabel", toggleFrame)
-    description.Size = UDim2.new(1, -60, 0, 18)
-    description.Position = UDim2.new(0, 12, 0, 26)
-    description.BackgroundTransparency = 1
-    description.Text = toggleConfig.Description or ""
-    description.TextColor3 = Color3.fromRGB(170, 170, 170)
-    description.Font = Enum.Font.Gotham
-    description.TextSize = 12
-    description.TextXAlignment = Enum.TextXAlignment.Left
-
-    local switch = Instance.new("Frame", toggleFrame)
-    switch.Size = UDim2.new(0, 40, 0, 22)
-    switch.Position = UDim2.new(1, -50, 0.5, -11)
-    switch.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    switch.BorderSizePixel = 0
-    Instance.new("UICorner", switch).CornerRadius = UDim.new(1, 0)
-
-    local ball = Instance.new("Frame", switch)
-    ball.Size = UDim2.new(0, 16, 0, 16)
-    ball.Position = UDim2.new(0, 3, 0.5, -8)
-    ball.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
-    ball.BorderSizePixel = 0
-    Instance.new("UICorner", ball).CornerRadius = UDim.new(1, 0)
-
-    local toggleButton = Instance.new("TextButton", switch)
-    toggleButton.Size = UDim2.new(1, 0, 1, 0)
-    toggleButton.Position = UDim2.new(0, 0, 0, 0)
-    toggleButton.BackgroundTransparency = 1
-    toggleButton.Text = ""
-    toggleButton.AutoButtonColor = false
-
-    local isOn = false
-    local tweenService = game:GetService("TweenService")
-
-    toggleButton.MouseButton1Click:Connect(function()
-        isOn = not isOn
-
-        local bgColor = isOn and Color3.fromRGB(170, 0, 0) or Color3.fromRGB(40, 40, 40)
-        local ballPosition = isOn and UDim2.new(1, -19, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)
-        local ballColor = isOn and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 200)
-
-        tweenService:Create(switch, TweenInfo.new(0.25), {BackgroundColor3 = bgColor}):Play()
-        tweenService:Create(ball, TweenInfo.new(0.25), {Position = ballPosition, BackgroundColor3 = ballColor}):Play()
-
-        if toggleConfig.Callback then
-            toggleConfig.Callback(isOn)
-        end
-    end)
-end
-
 function Window:CreateCheckbox(tabName, checkboxConfig)
     local tab = pages[tabName]
     if not tab then return end
 
-    local originalHeight = 54
-    local newHeight = originalHeight * 0.7
     local checkboxFrame = Instance.new("Frame", tab)
-    checkboxFrame.Size = UDim2.new(1, -20, 0, newHeight)
+    checkboxFrame.Size = UDim2.new(1, -20, 0, 54)
     checkboxFrame.Position = UDim2.new(0, 10, 0, 0)
     checkboxFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     checkboxFrame.BorderSizePixel = 0
@@ -426,6 +349,79 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
 
         if checkboxConfig.Callback then
             checkboxConfig.Callback(toggled)
+        end
+    end)
+end
+
+function Window:CreateToggle(tabName, toggleConfig)
+    local tab = pages[tabName]
+    if not tab then return end
+
+    local toggleFrame = Instance.new("Frame", tab)
+    toggleFrame.Size = UDim2.new(1, -20, 0, 50)
+    toggleFrame.Position = UDim2.new(0, 10, 0, 0)
+    toggleFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    toggleFrame.BackgroundTransparency = 0
+    toggleFrame.ClipsDescendants = true
+    toggleFrame.BorderSizePixel = 0
+    Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 8)
+
+    local title = Instance.new("TextLabel", toggleFrame)
+    title.Size = UDim2.new(1, -60, 0, 20)
+    title.Position = UDim2.new(0, 12, 0, 6)
+    title.BackgroundTransparency = 1
+    title.Text = toggleConfig.Text or "Toggle"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.Font = Enum.Font.GothamMedium
+    title.TextSize = 14
+    title.TextXAlignment = Enum.TextXAlignment.Left
+
+    local description = Instance.new("TextLabel", toggleFrame)
+    description.Size = UDim2.new(1, -60, 0, 18)
+    description.Position = UDim2.new(0, 12, 0, 26)
+    description.BackgroundTransparency = 1
+    description.Text = toggleConfig.Description or "Descrição"
+    description.TextColor3 = Color3.fromRGB(170, 170, 170)
+    description.Font = Enum.Font.Gotham
+    description.TextSize = 12
+    description.TextXAlignment = Enum.TextXAlignment.Left
+
+    local switch = Instance.new("Frame", toggleFrame)
+    switch.Size = UDim2.new(0, 40, 0, 22)
+    switch.Position = UDim2.new(1, -50, 0.5, -11)
+    switch.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    switch.BorderSizePixel = 0
+    Instance.new("UICorner", switch).CornerRadius = UDim.new(1, 0)
+
+    local ball = Instance.new("Frame", switch)
+    ball.Size = UDim2.new(0, 16, 0, 16)
+    ball.Position = UDim2.new(0, 3, 0.5, -8)
+    ball.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+    ball.BorderSizePixel = 0
+    Instance.new("UICorner", ball).CornerRadius = UDim.new(1, 0)
+
+    local toggleButton = Instance.new("TextButton", switch)
+    toggleButton.Size = UDim2.new(1, 0, 1, 0)
+    toggleButton.Position = UDim2.new(0, 0, 0, 0)
+    toggleButton.BackgroundTransparency = 1
+    toggleButton.Text = ""
+    toggleButton.AutoButtonColor = false
+
+    local isOn = false
+    local tweenService = game:GetService("TweenService")
+
+    toggleButton.MouseButton1Click:Connect(function()
+        isOn = not isOn
+
+        local bgColor = isOn and Color3.fromRGB(170, 0, 0) or Color3.fromRGB(40, 40, 40)
+        local ballPosition = isOn and UDim2.new(1, -19, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)
+        local ballColor = isOn and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 200)
+
+        tweenService:Create(switch, TweenInfo.new(0.25), {BackgroundColor3 = bgColor}):Play()
+        tweenService:Create(ball, TweenInfo.new(0.25), {Position = ballPosition, BackgroundColor3 = ballColor}):Play()
+
+        if toggleConfig.Callback then
+            toggleConfig.Callback(isOn)
         end
     end)
 end
@@ -741,8 +737,10 @@ function Window:CreateTextBox(tabName, placeholderText, callback)
 
     local background = Instance.new("Frame", container)
     background.Size = UDim2.new(1, 0, 1, 0)
+    background.Position = UDim2.new(0, 0, 0, 0)
     background.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     background.BorderSizePixel = 0
+    background.ZIndex = 1
     Instance.new("UICorner", background).CornerRadius = UDim.new(0, 6)
 
     local highlight = Instance.new("Frame", background)
@@ -752,12 +750,17 @@ function Window:CreateTextBox(tabName, placeholderText, callback)
     highlight.BackgroundTransparency = 0.5
     highlight.BorderSizePixel = 0
     highlight.Visible = false
+    highlight.ZIndex = 2
 
     task.spawn(function()
         local increasing = true
         while true do
             for i = 1, 100 do
-                highlight.BackgroundTransparency = increasing and 0.1 + (0.8 * (i / 100)) or 0.9 - (0.8 * (i / 100))
+                if increasing then
+                    highlight.BackgroundTransparency = 0.1 + (0.8 * (i / 100))
+                else
+                    highlight.BackgroundTransparency = 0.9 - (0.8 * (i / 100))
+                end
                 task.wait(0.02)
             end
             increasing = not increasing
@@ -779,6 +782,7 @@ function Window:CreateTextBox(tabName, placeholderText, callback)
     textBox.Size = UDim2.new(1, -20, 1, 0)
     textBox.Position = UDim2.new(0, 10, 0, 0)
     textBox.BackgroundTransparency = 1
+    textBox.Text = ""
     textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
     textBox.Font = Enum.Font.Gotham
     textBox.TextSize = 14
