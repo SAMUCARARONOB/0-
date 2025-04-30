@@ -1504,7 +1504,7 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-function Window:CreateInterfaceColorBox(tabName)
+function Window:CreateConfigBox(tabName, title)
     local tab = pages[tabName]
     if not tab then return end
 
@@ -1516,7 +1516,9 @@ function Window:CreateInterfaceColorBox(tabName)
     box.AutomaticSize = Enum.AutomaticSize.Y
     box.ClipsDescendants = true
     Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
-    Instance.new("UIStroke", box).Color = Color3.fromRGB(120, 0, 0)
+    local stroke = Instance.new("UIStroke", box)
+    stroke.Color = Color3.fromRGB(120, 0, 0)
+    stroke.Thickness = 1.5
 
     local titleLabel = Instance.new("TextLabel", box)
     titleLabel.Text = "  MUDA COR DA INTERFACE"
@@ -1535,13 +1537,13 @@ function Window:CreateInterfaceColorBox(tabName)
     content.AutomaticSize = Enum.AutomaticSize.Y
     Instance.new("UIListLayout", content).Padding = UDim.new(0, 10)
 
-    local function createColorRow(label, callback)
+    local function createColorRow(titleText, onClick)
         local section = Instance.new("Frame", content)
         section.BackgroundTransparency = 1
         section.Size = UDim2.new(1, 0, 0, 120)
 
         local title = Instance.new("TextLabel", section)
-        title.Text = label
+        title.Text = titleText
         title.Font = Enum.Font.GothamBold
         title.TextSize = 14
         title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1556,30 +1558,31 @@ function Window:CreateInterfaceColorBox(tabName)
         grid.BackgroundTransparency = 1
         local layout = Instance.new("UIGridLayout", grid)
         layout.CellSize = UDim2.new(0, 80, 0, 40)
-        layout.CellPadding = UDim.new(0, 6, 0, 6)
+        layout.CellPadding = UDim2.new(0, 6, 0, 6)
         layout.FillDirectionMaxCells = 5
 
-        local presets = {
-            {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
-            {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},
-            {Color3.fromRGB(0,255,100), Color3.fromRGB(0,200,255)},
-            {Color3.fromRGB(255,0,0), Color3.fromRGB(255,20,147)},
-            {Color3.fromRGB(255,215,0), Color3.fromRGB(192,192,192)},
-            {Color3.fromRGB(138,43,226), Color3.fromRGB(255,165,0)},
-            {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},
-            {Color3.fromRGB(255,20,147), Color3.fromRGB(255,215,0)},
-            {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},
-            {Color3.fromRGB(0,0,0), Color3.fromRGB(0,0,0)},
+        local colorPresets = {
+            {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},       -- Amarelo/Preto
+            {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},     -- Azul/Roxo
+            {Color3.fromRGB(0,255,100), Color3.fromRGB(0,200,255)},   -- Verde/Azul
+            {Color3.fromRGB(255,0,0), Color3.fromRGB(255,20,147)},    -- Neon/Vermelho
+            {Color3.fromRGB(255,215,0), Color3.fromRGB(192,192,192)}, -- Dourado/Prata
+            {Color3.fromRGB(138,43,226), Color3.fromRGB(255,165,0)},  -- Roxo/Laranja
+            {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},       -- Azul/Vermelho
+            {Color3.fromRGB(255,20,147), Color3.fromRGB(255,215,0)},  -- Rosa/Dourado
+            {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},     -- Branco/Preto
+            {Color3.fromRGB(0,0,0), Color3.fromRGB(0,0,0)},           -- Preto/Preto
         }
 
-        for _, pair in ipairs(presets) do
+        for _, pair in ipairs(colorPresets) do
             local btn = Instance.new("TextButton", grid)
             btn.Text = ""
             btn.BackgroundColor3 = pair[1]
             btn.BorderSizePixel = 0
             btn.AutoButtonColor = false
             btn.Size = UDim2.new(0, 80, 0, 40)
-            Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+            local corner = Instance.new("UICorner", btn)
+            corner.CornerRadius = UDim.new(0, 6)
 
             local grad = Instance.new("UIGradient", btn)
             grad.Color = ColorSequence.new{
@@ -1588,12 +1591,14 @@ function Window:CreateInterfaceColorBox(tabName)
             }
 
             btn.MouseButton1Click:Connect(function()
-                callback(pair[1], pair[2])
+                onClick(pair[1], pair[2])
             end)
         end
+
+        return section
     end
 
-    -- Aplicação visual nos elementos
+    -- Primeiro: muda mainFrame
     createColorRow("Quadrados de Cores (Interface)", function(c1, c2)
         local stroke = mainFrame:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", mainFrame)
         stroke.Color = c1
@@ -1607,16 +1612,17 @@ function Window:CreateInterfaceColorBox(tabName)
         }
     end)
 
+    -- Segundo: muda título/subtítulo
     createColorRow("Quadrados de Cores (Título/Subtítulo)", function(c1, c2)
-        local gradTitle = title:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", title)
-        gradTitle.Color = ColorSequence.new{
+        local grad = title:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", title)
+        grad.Color = ColorSequence.new{
             ColorSequenceKeypoint.new(0, c1),
             ColorSequenceKeypoint.new(1, c2)
         }
 
-        if subtitle then
-            local gradSub = subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle)
-            gradSub.Color = ColorSequence.new{
+        local grad2 = subtitle and (subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle))
+        if grad2 then
+            grad2.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, c1),
                 ColorSequenceKeypoint.new(1, c2)
             }
