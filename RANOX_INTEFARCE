@@ -1515,9 +1515,10 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
     container.AutomaticSize = Enum.AutomaticSize.Y
 
     local layout = Instance.new("UIListLayout", container)
-    layout.FillDirection = Enum.FillDirection.Vertical
+    layout.FillDirection = Enum.FillDirection.Horizontal
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Padding = UDim.new(0, 10)
+    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
     local colors = {
         {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
@@ -1534,7 +1535,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
 
     local function createColorBox(titleText, labelText, callback)
         local box = Instance.new("Frame")
-        box.Size = UDim2.new(1, -10, 0, 80)
+        box.Size = UDim2.new(0.48, -7, 0, 0)
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         box.BorderSizePixel = 0
         box.AutomaticSize = Enum.AutomaticSize.Y
@@ -1611,7 +1612,9 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
     createColorBox("COR DA INTERFACE", "Quadrados principais", function(color1, color2)
         if mainFrame then
             local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke")
-            if stroke then stroke.Color = color1 end
+            if stroke then
+                stroke.Color = color1
+            end
 
             local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient")
             if gradient then
