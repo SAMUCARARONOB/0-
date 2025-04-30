@@ -1504,17 +1504,15 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-function Window:CreateThemeBoxes(tabName, mainFrame)
+function Window:CreateThemeBoxes(tabName, mainFrame, config)
     local tab = pages[tabName]
     if not tab then return end
 
-    local container = Instance.new("Frame")
-    container.Name = "ThemeBoxesContainer"
+    local container = Instance.new("Frame", tab)
     container.Size = UDim2.new(1, -20, 0, 0)
     container.Position = UDim2.new(0, 10, 0, 0)
     container.BackgroundTransparency = 1
     container.AutomaticSize = Enum.AutomaticSize.Y
-    container.Parent = tab
 
     local layout = Instance.new("UIListLayout", container)
     layout.FillDirection = Enum.FillDirection.Horizontal
@@ -1537,7 +1535,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
 
     local function createColorBox(titleText, labelText, callback)
         local box = Instance.new("Frame")
-        box.Size = UDim2.new(0.33, -7, 0, 0)
+        box.Size = UDim2.new(0.5, -15, 0, 0)
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         box.BorderSizePixel = 0
         box.AutomaticSize = Enum.AutomaticSize.Y
@@ -1577,7 +1575,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
 
         local grid = Instance.new("UIGridLayout", content)
         grid.CellSize = UDim2.new(0, 40, 0, 40)
-        grid.CellPadding = UDim.new(0, 10, 0, 10)
+        grid.CellPadding = UDim2.new(0, 10, 0, 10)
         grid.FillDirectionMaxCells = 3
         grid.FillDirection = Enum.FillDirection.Horizontal
         grid.SortOrder = Enum.SortOrder.LayoutOrder
@@ -1589,7 +1587,6 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             square.AutoButtonColor = false
             square.Text = ""
             square.Size = UDim2.new(0, 40, 0, 40)
-            square.Parent = content
 
             Instance.new("UICorner", square).CornerRadius = UDim.new(0, 6)
 
@@ -1632,19 +1629,6 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         local subtitle = mainFrame:FindFirstChild("SubtitleLabel")
         if title then title.TextColor3 = color1 end
         if subtitle then subtitle.TextColor3 = color1 end
-    end)
-
-    createColorBox("COR GLOBAL", "Todos com vermelho", function(color1)
-        for _, v in ipairs(mainFrame:GetDescendants()) do
-            if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextButton") then
-                if v.BackgroundColor3.r >= 1.0 then
-                    v.BackgroundColor3 = color1
-                end
-                if (v:IsA("TextLabel") or v:IsA("TextButton")) and v.TextColor3.r >= 1.0 then
-                    v.TextColor3 = color1
-                end
-            end
-        end
     end)
 
     return container
