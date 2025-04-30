@@ -1504,21 +1504,6 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-local function updateColors(mainFrame, color1, color2)
-    local stroke = mainFrame:FindFirstChildOfClass("UIStroke")
-    if stroke then
-        stroke.Color = color1
-    end
-
-    local gradient = mainFrame:FindFirstChildOfClass("UIGradient")
-    if gradient then
-        gradient.Color = ColorSequence.new{
-            ColorSequenceKeypoint.new(0, color1),
-            ColorSequenceKeypoint.new(1, color2)
-        }
-    end
-end
-
 function Window:CreateThemeBoxes(tabName, mainFrame, config)
     local tab = pages[tabName]
     if not tab then return end
@@ -1548,15 +1533,21 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}
     }
 
-    local function createColorRow(titleText, callback)
-        local row = Instance.new("Frame")
-        row.Size = UDim2.new(1, -20, 0, 40)
-        row.BackgroundTransparency = 1
-        row.AutomaticSize = Enum.AutomaticSize.Y
-        row.ClipsDescendants = true
-        row.Parent = container
+    local function createColorBox(titleText, labelText, callback)
+        local box = Instance.new("Frame")
+        box.Size = UDim2.new(0.5, -15, 0, 0)
+        box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        box.BorderSizePixel = 0
+        box.AutomaticSize = Enum.AutomaticSize.Y
+        box.ClipsDescendants = true
+        box.Parent = container
 
-        local title = Instance.new("TextLabel", row)
+        Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
+        local stroke = Instance.new("UIStroke", box)
+        stroke.Color = Color3.fromRGB(120, 0, 0)
+        stroke.Thickness = 1.5
+
+        local title = Instance.new("TextLabel", box)
         title.Text = titleText
         title.Font = Enum.Font.GothamBold
         title.TextSize = 17
@@ -1566,9 +1557,19 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         title.Position = UDim2.new(0, 10, 0, 10)
         title.TextXAlignment = Enum.TextXAlignment.Left
 
-        local content = Instance.new("Frame", row)
+        local label = Instance.new("TextLabel", box)
+        label.Text = labelText
+        label.Font = Enum.Font.Gotham
+        label.TextSize = 14
+        label.TextColor3 = Color3.fromRGB(180, 180, 180)
+        label.BackgroundTransparency = 1
+        label.Size = UDim2.new(1, -20, 0, 20)
+        label.Position = UDim2.new(0, 10, 0, 40)
+        label.TextXAlignment = Enum.TextXAlignment.Left
+
+        local content = Instance.new("Frame", box)
         content.BackgroundTransparency = 1
-        content.Position = UDim2.new(0, 10, 0, 40)
+        content.Position = UDim2.new(0, 10, 0, 70)
         content.Size = UDim2.new(1, -20, 0, 0)
         content.AutomaticSize = Enum.AutomaticSize.Y
 
@@ -1605,20 +1606,33 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
             end)
         end
 
-        return row
+        return box
     end
 
-    createColorRow("Quadrados de Cores (Interface)", function(c1, c2)
-        local stroke = mainFrame:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", mainFrame)
-        stroke.Color = c1
-        stroke.Thickness = 1.5
-        stroke.Transparency = 0.3
+    -- Adicionar a mudança de cor da interface principal
+    createColorBox("COR DA INTERFACE", "Quadrados principais", function(color1, color2)
+        if mainFrame then
+            local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke")
+            if stroke then
+                stroke.Color = color1
+            end
 
-        local grad = mainFrame:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", mainFrame)
-        grad.Color = ColorSequence.new{
-            ColorSequenceKeypoint.new(0, c1),
-            ColorSequenceKeypoint.new(1, c2)
-        }
+            local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient")
+            if gradient then
+                gradient.Color = ColorSequence.new{
+                    ColorSequenceKeypoint.new(0, color1),
+                    ColorSequenceKeypoint.new(1, color2)
+                }
+            end
+        end
+    end)
+
+    -- Adicionar a mudança de cor do título
+    createColorBox("COR DO TÍTULO", "Título e versão", function(color1)
+        local title = mainFrame:FindFirstChild("TitleLabel")
+        local subtitle = mainFrame:FindFirstChild("SubtitleLabel")
+        if title then title.TextColor3 = color1 end
+        if subtitle then subtitle.TextColor3 = color1 end
     end)
 
     return container
