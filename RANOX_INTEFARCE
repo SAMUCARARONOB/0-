@@ -1535,14 +1535,14 @@ function Window:CreateInterfaceColorBox(tabName)
     content.Position = UDim2.new(0, 10, 0, 50)
     content.Size = UDim2.new(1, -20, 0, 0)
     content.AutomaticSize = Enum.AutomaticSize.Y
+
     local layout = Instance.new("UIListLayout", content)
-    layout.Padding = UDim.new(0, 12)
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 15)
 
     local function createColorRow(titleText, onClick)
         local section = Instance.new("Frame", content)
         section.BackgroundTransparency = 1
-        section.Size = UDim2.new(1, 0, 0, 140)
+        section.Size = UDim2.new(1, 0, 0, 120)
         section.AutomaticSize = Enum.AutomaticSize.Y
 
         local title = Instance.new("TextLabel", section)
@@ -1559,11 +1559,12 @@ function Window:CreateInterfaceColorBox(tabName)
         grid.Position = UDim2.new(0, 0, 0, 25)
         grid.Size = UDim2.new(1, 0, 0, 90)
         grid.BackgroundTransparency = 1
-        local layout = Instance.new("UIGridLayout", grid)
-        layout.CellSize = UDim2.new(0, 80, 0, 40)
-        layout.CellPadding = UDim.new(0, 6, 0, 6)
-        layout.FillDirectionMaxCells = 4
-        layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+        local gridLayout = Instance.new("UIGridLayout", grid)
+        gridLayout.CellSize = UDim2.new(0, 80, 0, 40)
+        gridLayout.CellPadding = UDim.new(0, 6, 0, 6)
+        gridLayout.FillDirectionMaxCells = 4
+        gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
         local colorPresets = {
             {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
@@ -1599,10 +1600,11 @@ function Window:CreateInterfaceColorBox(tabName)
             end)
         end
 
+        grid.Parent = section
         return section
     end
 
-    createColorRow("Quadrados de Cores (Interface)", function(c1, c2)
+    local row1 = createColorRow("Quadrados de Cores (Interface)", function(c1, c2)
         local stroke = mainFrame:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", mainFrame)
         stroke.Color = c1
         stroke.Thickness = 1.5
@@ -1615,15 +1617,15 @@ function Window:CreateInterfaceColorBox(tabName)
         }
     end)
 
-    createColorRow("Quadrados de Cores (Título/Subtítulo)", function(c1, c2)
+    local row2 = createColorRow("Quadrados de Cores (Título/Subtítulo)", function(c1, c2)
         local grad = title:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", title)
         grad.Color = ColorSequence.new{
             ColorSequenceKeypoint.new(0, c1),
             ColorSequenceKeypoint.new(1, c2)
         }
 
-        if subtitle then
-            local grad2 = subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle)
+        local grad2 = subtitle and (subtitle:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", subtitle))
+        if grad2 then
             grad2.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, c1),
                 ColorSequenceKeypoint.new(1, c2)
@@ -1631,11 +1633,9 @@ function Window:CreateInterfaceColorBox(tabName)
         end
     end)
 
-    return {
-        MainFrame = box,
-        TitleLabel = titleLabel,
-        ContentFrame = content
-    }
+    row1.Parent = content
+    row2.Parent = content
+    content.Parent = box
 end
 
 local isHidden = false
