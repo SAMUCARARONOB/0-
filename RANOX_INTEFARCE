@@ -1504,134 +1504,126 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-local function CreateThemeBoxes(mainFrame, parent)
-    local title = Instance.new("TextLabel", mainFrame)
-    title.Name = "TitleLabel"
-    title.Size = UDim2.new(1, -50, 0, 25)
-    title.Position = UDim2.new(0, 10, 0, 0)
-    title.BackgroundTransparency = 1
-    title.Text = "RANOX Hub"
-    title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.Font = Enum.Font.GothamSemibold
-    title.TextSize = 16
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.TextYAlignment = Enum.TextYAlignment.Center
-    title.ClipsDescendants = true
+function Window:CreateThemeBoxes(tabName, mainFrame)
+    local tab = pages[tabName]
+    if not tab then return end
 
-    local subtitle = Instance.new("TextLabel", mainFrame)
-    subtitle.Name = "SubtitleLabel"
-    subtitle.BackgroundTransparency = 1
-    subtitle.Text = "v1.0"
-    subtitle.TextColor3 = Color3.fromRGB(140, 140, 140)
-    subtitle.Font = Enum.Font.Gotham
-    subtitle.TextSize = 8
-    subtitle.TextXAlignment = Enum.TextXAlignment.Left
-    subtitle.TextYAlignment = Enum.TextYAlignment.Center
-    subtitle.Size = UDim2.new(0, 100, 0, 25)
+    local container = Instance.new("Frame")
+    container.Name = "ThemeBoxesContainer"
+    container.Size = UDim2.new(1, -20, 0, 0)
+    container.Position = UDim2.new(0, 10, 0, 0)
+    container.BackgroundTransparency = 1
+    container.AutomaticSize = Enum.AutomaticSize.Y
+    container.Parent = tab
 
-    task.defer(function()
-        local textWidth = title.TextBounds.X
-        subtitle.Position = UDim2.new(0, 10 + textWidth + 6, 0, 0)
-    end)
+    local layout = Instance.new("UIListLayout", container)
+    layout.FillDirection = Enum.FillDirection.Horizontal
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 10)
+    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
-    local stroke = Instance.new("UIStroke", mainFrame)
-    stroke.Name = "MainStroke"
-    stroke.Color = Color3.fromRGB(60, 0, 0)
-    stroke.Thickness = 1.5
-    stroke.Transparency = 0.3
-
-    local gradient = Instance.new("UIGradient", mainFrame)
-    gradient.Name = "MainGradient"
-    gradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(10, 10, 10)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(5, 5, 5))
+    local colors = {
+        {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
+        {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},
+        {Color3.fromRGB(0,255,0), Color3.fromRGB(0,255,255)},
+        {Color3.fromRGB(255,0,0), Color3.fromRGB(255,255,0)},
+        {Color3.fromRGB(212,175,55), Color3.fromRGB(192,192,192)},
+        {Color3.fromRGB(128,0,255), Color3.fromRGB(255,128,0)},
+        {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},
+        {Color3.fromRGB(255,105,180), Color3.fromRGB(255,215,0)},
+        {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},
+        {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}
     }
 
-    local colorBoxHolder = Instance.new("Frame", parent)
-    colorBoxHolder.Name = "ColorBoxHolder"
-    colorBoxHolder.BackgroundTransparency = 1
-    colorBoxHolder.Size = UDim2.new(1, 0, 0, 60)
-    colorBoxHolder.LayoutOrder = 9999
+    local function createColorBox(titleText, labelText, callback)
+        local box = Instance.new("Frame")
+        box.Size = UDim2.new(0.33, -7, 0, 0)
+        box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        box.BorderSizePixel = 0
+        box.AutomaticSize = Enum.AutomaticSize.Y
+        box.ClipsDescendants = true
+        box.Parent = container
 
-    local layout = Instance.new("UIListLayout", colorBoxHolder)
-    layout.FillDirection = Enum.FillDirection.Horizontal
-    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    layout.VerticalAlignment = Enum.VerticalAlignment.Top
-    layout.Padding = UDim.new(0, 10)
-
-    local function createColorBox(titleText, subtitleText, callback)
-        local box = Instance.new("Frame", colorBoxHolder)
-        box.Name = "ColorBox"
-        box.Size = UDim2.new(0.5, -15, 1, 0)
-        box.BackgroundTransparency = 1
+        Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
+        local stroke = Instance.new("UIStroke", box)
+        stroke.Color = Color3.fromRGB(120, 0, 0)
+        stroke.Thickness = 1.5
 
         local title = Instance.new("TextLabel", box)
         title.Text = titleText
-        title.TextColor3 = Color3.new(1, 1, 1)
-        title.TextTransparency = 0.35
+        title.Font = Enum.Font.GothamBold
+        title.TextSize = 17
+        title.TextColor3 = Color3.fromRGB(255, 255, 255)
         title.BackgroundTransparency = 1
-        title.Size = UDim2.new(1, 0, 0, 18)
-        title.Font = Enum.Font.Gotham
-        title.TextSize = 12
+        title.Size = UDim2.new(1, -20, 0, 30)
+        title.Position = UDim2.new(0, 10, 0, 10)
         title.TextXAlignment = Enum.TextXAlignment.Left
 
-        local subtitle = Instance.new("TextLabel", box)
-        subtitle.Text = subtitleText
-        subtitle.TextColor3 = Color3.new(1, 1, 1)
-        subtitle.TextTransparency = 0.65
-        subtitle.BackgroundTransparency = 1
-        subtitle.Position = UDim2.new(0, 0, 0, 18)
-        subtitle.Size = UDim2.new(1, 0, 0, 12)
-        subtitle.Font = Enum.Font.Gotham
-        subtitle.TextSize = 10
-        subtitle.TextXAlignment = Enum.TextXAlignment.Left
+        local label = Instance.new("TextLabel", box)
+        label.Text = labelText
+        label.Font = Enum.Font.Gotham
+        label.TextSize = 14
+        label.TextColor3 = Color3.fromRGB(180, 180, 180)
+        label.BackgroundTransparency = 1
+        label.Size = UDim2.new(1, -20, 0, 20)
+        label.Position = UDim2.new(0, 10, 0, 40)
+        label.TextXAlignment = Enum.TextXAlignment.Left
 
-        local colorFrame = Instance.new("Frame", box)
-        colorFrame.Position = UDim2.new(0, 0, 0, 32)
-        colorFrame.Size = UDim2.new(1, 0, 1, -32)
-        colorFrame.BackgroundTransparency = 1
+        local content = Instance.new("Frame", box)
+        content.BackgroundTransparency = 1
+        content.Position = UDim2.new(0, 10, 0, 70)
+        content.Size = UDim2.new(1, -20, 0, 0)
+        content.AutomaticSize = Enum.AutomaticSize.Y
 
-        local grid = Instance.new("UIGridLayout", colorFrame)
-        grid.CellSize = UDim2.new(0, 15, 0, 15)
-        grid.CellPadding = UDim2.new(0, 4, 0, 4)
-        grid.FillDirectionMaxCells = 5
+        local grid = Instance.new("UIGridLayout", content)
+        grid.CellSize = UDim2.new(0, 40, 0, 40)
+        grid.CellPadding = UDim.new(0, 10, 0, 10)
+        grid.FillDirectionMaxCells = 3
+        grid.FillDirection = Enum.FillDirection.Horizontal
         grid.SortOrder = Enum.SortOrder.LayoutOrder
 
-        local colors = {
-            {Color3.fromRGB(255, 0, 0), Color3.fromRGB(60, 0, 0)},
-            {Color3.fromRGB(0, 255, 0), Color3.fromRGB(0, 60, 0)},
-            {Color3.fromRGB(0, 0, 255), Color3.fromRGB(0, 0, 60)},
-            {Color3.fromRGB(255, 255, 0), Color3.fromRGB(60, 60, 0)},
-            {Color3.fromRGB(255, 0, 255), Color3.fromRGB(60, 0, 60)},
-            {Color3.fromRGB(0, 255, 255), Color3.fromRGB(0, 60, 60)},
-            {Color3.fromRGB(255, 255, 255), Color3.fromRGB(100, 100, 100)},
-            {Color3.fromRGB(128, 128, 128), Color3.fromRGB(50, 50, 50)},
-        }
-
         for _, pair in ipairs(colors) do
-            local button = Instance.new("TextButton", colorFrame)
-            button.BackgroundColor3 = pair[1]
-            button.BorderSizePixel = 0
-            button.Text = ""
-            button.AutoButtonColor = false
-            button.MouseButton1Click:Connect(function()
+            local square = Instance.new("TextButton", content)
+            square.BackgroundColor3 = pair[1]
+            square.BorderSizePixel = 0
+            square.AutoButtonColor = false
+            square.Text = ""
+            square.Size = UDim2.new(0, 40, 0, 40)
+            square.Parent = content
+
+            Instance.new("UICorner", square).CornerRadius = UDim.new(0, 6)
+
+            local s = Instance.new("UIStroke", square)
+            s.Color = Color3.fromRGB(60, 0, 0)
+            s.Thickness = 1.5
+            s.Transparency = 0.3
+
+            local g = Instance.new("UIGradient", square)
+            g.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, pair[1]),
+                ColorSequenceKeypoint.new(1, pair[2])
+            }
+
+            square.MouseButton1Click:Connect(function()
                 callback(pair[1], pair[2])
             end)
         end
+
+        return box
     end
 
     createColorBox("COR DA INTERFACE", "Quadrados principais", function(color1, color2)
-        local stroke = mainFrame:FindFirstChild("MainStroke")
-        if stroke then
-            stroke.Color = color1
-        end
+        if mainFrame then
+            local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke")
+            if stroke then stroke.Color = color1 end
 
-        local gradient = mainFrame:FindFirstChild("MainGradient")
-        if gradient then
-            gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, color1),
-                ColorSequenceKeypoint.new(1, color2)
-            }
+            local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient")
+            if gradient then
+                gradient.Color = ColorSequence.new{
+                    ColorSequenceKeypoint.new(0, color1),
+                    ColorSequenceKeypoint.new(1, color2)
+                }
+            end
         end
     end)
 
@@ -1641,6 +1633,21 @@ local function CreateThemeBoxes(mainFrame, parent)
         if title then title.TextColor3 = color1 end
         if subtitle then subtitle.TextColor3 = color1 end
     end)
+
+    createColorBox("COR GLOBAL", "Todos com vermelho", function(color1)
+        for _, v in ipairs(mainFrame:GetDescendants()) do
+            if v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextButton") then
+                if v.BackgroundColor3.r >= 1.0 then
+                    v.BackgroundColor3 = color1
+                end
+                if (v:IsA("TextLabel") or v:IsA("TextButton")) and v.TextColor3.r >= 1.0 then
+                    v.TextColor3 = color1
+                end
+            end
+        end
+    end)
+
+    return container
 end
 
 local isHidden = false
