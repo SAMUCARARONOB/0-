@@ -1611,26 +1611,18 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
 
     createColorBox("COR DA INTERFACE", "Quadrados principais", function(color1, color2)
         if mainFrame then
-            local stroke = mainFrame:FindFirstChild("CustomStroke")
-            if not stroke then
-                stroke = Instance.new("UIStroke")
-                stroke.Name = "CustomStroke"
-                stroke.Thickness = 1.5
-                stroke.Transparency = 0.3
-                stroke.Parent = mainFrame
+            local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke")
+            if stroke then
+                stroke.Color = color1
             end
-            stroke.Color = color1
 
-            local gradient = mainFrame:FindFirstChild("CustomGradient")
-            if not gradient then
-                gradient = Instance.new("UIGradient")
-                gradient.Name = "CustomGradient"
-                gradient.Parent = mainFrame
+            local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient")
+            if gradient then
+                gradient.Color = ColorSequence.new{
+                    ColorSequenceKeypoint.new(0, color1),
+                    ColorSequenceKeypoint.new(1, color2)
+                }
             end
-            gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, color1),
-                ColorSequenceKeypoint.new(1, color2)
-            }
         end
     end)
 
