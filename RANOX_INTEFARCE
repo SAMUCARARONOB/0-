@@ -1548,21 +1548,15 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}
     }
 
-    local function createColorBox(titleText, labelText, callback)
-        local box = Instance.new("Frame")
-        box.Size = UDim2.new(0.5, -15, 0, 0)
-        box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-        box.BorderSizePixel = 0
-        box.AutomaticSize = Enum.AutomaticSize.Y
-        box.ClipsDescendants = true
-        box.Parent = container
+    local function createColorRow(titleText, callback)
+        local row = Instance.new("Frame")
+        row.Size = UDim2.new(1, -20, 0, 40)
+        row.BackgroundTransparency = 1
+        row.AutomaticSize = Enum.AutomaticSize.Y
+        row.ClipsDescendants = true
+        row.Parent = container
 
-        Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
-        local stroke = Instance.new("UIStroke", box)
-        stroke.Color = Color3.fromRGB(120, 0, 0)
-        stroke.Thickness = 1.5
-
-        local title = Instance.new("TextLabel", box)
+        local title = Instance.new("TextLabel", row)
         title.Text = titleText
         title.Font = Enum.Font.GothamBold
         title.TextSize = 17
@@ -1572,19 +1566,9 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         title.Position = UDim2.new(0, 10, 0, 10)
         title.TextXAlignment = Enum.TextXAlignment.Left
 
-        local label = Instance.new("TextLabel", box)
-        label.Text = labelText
-        label.Font = Enum.Font.Gotham
-        label.TextSize = 14
-        label.TextColor3 = Color3.fromRGB(180, 180, 180)
-        label.BackgroundTransparency = 1
-        label.Size = UDim2.new(1, -20, 0, 20)
-        label.Position = UDim2.new(0, 10, 0, 40)
-        label.TextXAlignment = Enum.TextXAlignment.Left
-
-        local content = Instance.new("Frame", box)
+        local content = Instance.new("Frame", row)
         content.BackgroundTransparency = 1
-        content.Position = UDim2.new(0, 10, 0, 70)
+        content.Position = UDim2.new(0, 10, 0, 40)
         content.Size = UDim2.new(1, -20, 0, 0)
         content.AutomaticSize = Enum.AutomaticSize.Y
 
@@ -1621,18 +1605,20 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
             end)
         end
 
-        return box
+        return row
     end
 
-    createColorBox("COR DA INTERFACE", "Quadrados principais", function(color1, color2)
-        updateColors(mainFrame, color1, color2)
-    end)
+    createColorRow("Quadrados de Cores (Interface)", function(c1, c2)
+        local stroke = mainFrame:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", mainFrame)
+        stroke.Color = c1
+        stroke.Thickness = 1.5
+        stroke.Transparency = 0.3
 
-    createColorBox("COR DO TÍTULO", "Título e versão", function(color1)
-        local title = mainFrame:FindFirstChild("TitleLabel")
-        local subtitle = mainFrame:FindFirstChild("SubtitleLabel")
-        if title then title.TextColor3 = color1 end
-        if subtitle then subtitle.TextColor3 = color1 end
+        local grad = mainFrame:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", mainFrame)
+        grad.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, c1),
+            ColorSequenceKeypoint.new(1, c2)
+        }
     end)
 
     return container
