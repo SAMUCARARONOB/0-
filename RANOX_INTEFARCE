@@ -41,14 +41,14 @@ Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
     }
 
 local shadow = Instance.new("Frame")
-shadow.Size = UDim2.new(0, 587, 0, 387)
-shadow.Position = UDim2.new(0.5, -1, 0.5, -1)
-shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+shadow.Size = mainFrame.Size + UDim2.new(0, 2, 0, 2)
+shadow.Position = mainFrame.Position
+shadow.AnchorPoint = mainFrame.AnchorPoint
 shadow.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 shadow.BackgroundTransparency = 0.9
 shadow.BorderSizePixel = 0
 shadow.ZIndex = 0
-shadow.Parent = screenGui
+shadow.Parent = mainFrame
 
 local shadowCorner = Instance.new("UICorner")
 shadowCorner.CornerRadius = UDim.new(0, 4)
@@ -56,6 +56,14 @@ shadowCorner.Parent = shadow
 
 mainFrame:GetPropertyChangedSignal("Position"):Connect(function()
     shadow.Position = mainFrame.Position
+end)
+
+mainFrame:GetPropertyChangedSignal("Visible"):Connect(function()
+    shadow.Visible = mainFrame.Visible
+end)
+
+mainFrame:GetPropertyChangedSignal("Size"):Connect(function()
+    shadow.Size = mainFrame.Size + UDim2.new(0, 2, 0, 2)
 end)
 
 local title = Instance.new("TextLabel", mainFrame)
