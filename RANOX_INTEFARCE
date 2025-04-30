@@ -1417,7 +1417,7 @@ function Window:CreateInfoBox(tabName, title, infoList)
     local box = Instance.new("Frame", tab)
     box.Size = UDim2.new(1, -20, 0, 0)
     box.Position = UDim2.new(0, 10, 0, 0)
-    box.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     box.BorderSizePixel = 0
     box.AutomaticSize = Enum.AutomaticSize.Y
     box.ClipsDescendants = true
@@ -1457,7 +1457,7 @@ function Window:CreateInfoBox(tabName, title, infoList)
 
     for i, text in ipairs(infoList) do
         local itemFrame = Instance.new("Frame", content)
-        itemFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        itemFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         itemFrame.BorderSizePixel = 0
         itemFrame.AutomaticSize = Enum.AutomaticSize.Y
         itemFrame.Size = UDim2.new(1, 0, 0, 0)
@@ -1499,141 +1499,6 @@ function Window:CreateInfoBox(tabName, title, infoList)
         ContentFrame = content
     }
 end
-
-local player = game.Players.LocalPlayer
-local screenGui = player:WaitForChild("PlayerGui"):FindFirstChild("YourExistingScreenGui")
-
-local frame = screenGui:FindFirstChild("ExistingFrame")
-
-local box1 = Instance.new("Frame")
-box1.Size = UDim2.new(0.5, -10, 0, 180)
-box1.Position = UDim2.new(0, 10, 0, 50)
-box1.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-box1.BorderSizePixel = 1
-box1.BorderColor3 = Color3.fromRGB(150, 20, 20)
-box1.ZIndex = 999999
-box1.Parent = frame
-
-local corner1 = Instance.new("UICorner", box1)
-corner1.CornerRadius = UDim.new(0, 10)
-
-local titleBox1 = Instance.new("TextLabel")
-titleBox1.Size = UDim2.new(1, 0, 0, 30)
-titleBox1.Position = UDim2.new(0, 0, 0, -30)
-titleBox1.Text = "CONFIGURAÇÃO CORES"
-titleBox1.Font = Enum.Font.GothamBold
-titleBox1.TextSize = 18
-titleBox1.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleBox1.BackgroundTransparency = 1
-titleBox1.ZIndex = 999999
-titleBox1.Parent = box1
-
-local labelColor = Instance.new("TextLabel")
-labelColor.Size = UDim2.new(1, -80, 0, 26)
-labelColor.Position = UDim2.new(0, 10, 0, 50)
-labelColor.Text = "COR DA INTERFACE"
-labelColor.Font = Enum.Font.Gotham
-labelColor.TextSize = 14
-labelColor.TextColor3 = Color3.fromRGB(255, 255, 255)
-labelColor.BackgroundTransparency = 1
-labelColor.ZIndex = 999999
-labelColor.Parent = box1
-
-local colorBox = Instance.new("Frame")
-colorBox.Size = UDim2.new(0, 50, 0, 20)
-colorBox.Position = UDim2.new(1, -60, 0, 50)
-colorBox.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-colorBox.ZIndex = 999999
-colorBox.Parent = box1
-
-local slider1 = Instance.new("Frame")
-slider1.Size = UDim2.new(1, -80, 0, 20)
-slider1.Position = UDim2.new(0, 10, 0, 80)
-slider1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-slider1.ZIndex = 999999
-slider1.Parent = box1
-
-local colorSlider = Instance.new("Slider")
-colorSlider.Size = UDim2.new(1, -80, 0, 10)
-colorSlider.Position = UDim2.new(0, 10, 0, 100)
-colorSlider.MinValue = 0
-colorSlider.MaxValue = 100
-colorSlider.BackgroundTransparency = 0.6
-colorSlider.ZIndex = 999999
-colorSlider.Parent = box1
-
-local slider2 = Instance.new("Frame")
-slider2.Size = UDim2.new(1, -80, 0, 20)
-slider2.Position = UDim2.new(0, 10, 0, 150)
-slider2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-slider2.ZIndex = 999999
-slider2.Parent = box1
-
-local colorSlider2 = Instance.new("Slider")
-colorSlider2.Size = UDim2.new(1, -80, 0, 10)
-colorSlider2.Position = UDim2.new(0, 10, 0, 170)
-colorSlider2.MinValue = 0
-colorSlider2.MaxValue = 100
-colorSlider2.BackgroundTransparency = 0.6
-colorSlider2.ZIndex = 999999
-colorSlider2.Parent = box1
-
-local box2 = Instance.new("Frame")
-box2.Size = UDim2.new(0.5, -10, 0, 180)
-box2.Position = UDim2.new(0.5, 10, 0, 50)
-box2.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-box2.BorderSizePixel = 1
-box2.BorderColor3 = Color3.fromRGB(150, 20, 20)
-box2.ZIndex = 999999
-box2.Parent = frame
-
-local corner2 = Instance.new("UICorner", box2)
-corner2.CornerRadius = UDim.new(0, 10)
-
-local titleBox2 = Instance.new("TextLabel")
-titleBox2.Size = UDim2.new(1, 0, 0, 30)
-titleBox2.Position = UDim2.new(0, 0, 0, -30)
-titleBox2.Text = "MODIFICAR COR DE TEXTOS"
-titleBox2.Font = Enum.Font.GothamBold
-titleBox2.TextSize = 18
-titleBox2.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleBox2.BackgroundTransparency = 1
-titleBox2.ZIndex = 999999
-titleBox2.Parent = box2
-
-local labelText1 = Instance.new("TextLabel")
-labelText1.Size = UDim2.new(1, -80, 0, 26)
-labelText1.Position = UDim2.new(0, 10, 0, 50)
-labelText1.Text = "COR DOS TEXTOS (ABAS)"
-labelText1.Font = Enum.Font.Gotham
-labelText1.TextSize = 14
-labelText1.TextColor3 = Color3.fromRGB(255, 255, 255)
-labelText1.BackgroundTransparency = 1
-labelText1.ZIndex = 999999
-labelText1.Parent = box2
-
-local textBoxColor = Instance.new("Frame")
-textBoxColor.Size = UDim2.new(0, 50, 0, 20)
-textBoxColor.Position = UDim2.new(1, -60, 0, 50)
-textBoxColor.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-textBoxColor.ZIndex = 999999
-textBoxColor.Parent = box2
-
-local toggleButton = Instance.new("TextButton")
-toggleButton.Size = UDim2.new(1, -80, 0, 30)
-toggleButton.Position = UDim2.new(0, 10, 0, 230)
-toggleButton.Text = "Ativar/Desativar Muda de Cores"
-toggleButton.Font = Enum.Font.GothamBold
-toggleButton.TextSize = 14
-toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-toggleButton.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
-toggleButton.BorderSizePixel = 0
-toggleButton.ZIndex = 999999
-toggleButton.Parent = box1
-
-toggleButton.MouseButton1Click:Connect(function()
-
-end)
 
     local isHidden = false
     hideButton.MouseButton1Click:Connect(function()
