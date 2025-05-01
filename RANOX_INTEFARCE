@@ -1425,65 +1425,6 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     }
 end
 
-function Window:CreateSlider(titleText, minValue, maxValue, callback)
-    local sliderBox = Instance.new("Frame")
-    sliderBox.Size = UDim2.new(1, 0, 0, 50)
-    sliderBox.BackgroundTransparency = 1
-    sliderBox.Parent = container
-
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, 0, 0, 20)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = titleText
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.Font = Enum.Font.Gotham
-    titleLabel.TextSize = 14
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    titleLabel.Parent = sliderBox
-
-    local sliderBar = Instance.new("Frame")
-    sliderBar.Size = UDim2.new(1, 0, 0, 6)
-    sliderBar.Position = UDim2.new(0, 0, 0, 25)
-    sliderBar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    sliderBar.Parent = sliderBox
-
-    local sliderFill = Instance.new("Frame")
-    sliderFill.Size = UDim2.new(0, 0, 1, 0)
-    sliderFill.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-    sliderFill.Parent = sliderBar
-
-    local draggable = Instance.new("Frame")
-    draggable.Size = UDim2.new(0, 20, 1, 0)
-    draggable.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    draggable.Position = UDim2.new(0, 0, 0, 0)
-    draggable.Parent = sliderBar
-
-    local dragging = false
-    draggable.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-        end
-    end)
-
-    draggable.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-
-    sliderBar.InputChanged:Connect(function(input)
-        if dragging then
-            local mouseX = input.Position.X
-            local newSize = math.clamp(mouseX / sliderBar.AbsoluteSize.X, 0, 1)
-            sliderFill.Size = UDim2.new(newSize, 0, 1, 0)
-            draggable.Position = UDim2.new(newSize, 0, 0, 0)
-
-            local value = math.floor(minValue + (newSize * (maxValue - minValue)))
-            callback(value)
-        end
-    end)
-end
-
 function Window:CreateThemeBoxes(tabName, mainFrame)
     local tab = pages[tabName]
     if not tab then return end
@@ -1495,10 +1436,10 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
     container.AutomaticSize = Enum.AutomaticSize.Y
 
     local layout = Instance.new("UIListLayout", container)
-    layout.FillDirection = Enum.FillDirection.Horizontal
+    layout.FillDirection = Enum.FillDirection.Vertical
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Padding = UDim.new(0, 10)
-    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    layout.VerticalAlignment = Enum.VerticalAlignment.Top
 
     local colors = {
         {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
@@ -1608,17 +1549,156 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             end)
         end
 
-        return box
+        local function createRainbowSlider(labelText, minValue, maxValue)
+            local sliderFrame = Instance.new("Frame", content)
+            sliderFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+            sliderFrame.Size = UDim2.new(1, -20, 0, 50)
+            Instance.new("UICorner", sliderFrame).CornerRadius = UDim.new(0, 12)
+
+            local label = Instance.new("TextLabel", sliderFrame)
+            label.Text = labelText
+            label.Font = Enum.Font.Gotham
+            label.TextSize = 14
+            label.TextColor3 = Color3.fromRGB(180, 180, 180)
+            label.BackgroundTransparency = 1
+            label.Size = UDim2.new(1, 0, 0, 20)
+            label.Position = UDim2.new(0, 0, 0, 0)
+            label.TextXAlignment = Enum.TextXAlignment.Left
+
+            local rainbowSlider = Instance.new("Frame", sliderFrame)
+            rainbowSlider.Size = UDim2.new(1, 0, 0, 10)
+            rainbowSlider.Position = UDim2.new(0, 0, 0, 20)
+            rainbowSlider.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+
+            local rainbowHandle = Instance.new("Frame", rainbowSlider)
+            rainbowHandle.Size = UDim2.new(0, 20, 1, 0)
+            rainbowHandle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            rainbowHandle.Position = UDim2.new(0, 0, 0, 0)
+
+            local rainbowMarker = Instance.new("Frame", rainbowSlider)
+            rainbowMarker.Size = UDim2.new(0, 5, 1, 0)
+            rainbowMarker.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+            rainbowMarker.Position = UDim2.new(0, 0, 0, 0)
+
+            local dragging = false
+            rainbowHandle.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    dragging = true
+                end
+            end)
+
+            rainbowHandle.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    dragging = false
+                end
+            end)
+
+            game:GetService("UserInputService").InputChanged:Connect(function(input)
+                if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                    local xPosition = math.clamp(input.Position.X - rainbowSlider.AbsolutePosition.X, 0, rainbowSlider.AbsoluteSize.X)
+                    local value = math.floor((xPosition / rainbowSlider.AbsoluteSize.X) * (maxValue - minValue) + minValue)
+                    rainbowHandle.Position = UDim2.new((value - minValue) / (maxValue - minValue), 0, 0, 0)
+local color = Color3.fromHSV((value / maxValue), 1, 1)
+rainbowMarker.BackgroundColor3 = color
+if mode == "interface" then
+    AtualizarCorInterface(color, color, color)
+elseif mode == "titulo" then
+    title.TextColor3 = color
+    subtitle.TextColor3 = color
+end
+end)
+
+rainbowSlider.MouseButton1Click:Connect(function()
+    local value = math.floor((rainbowHandle.Position.X.Scale * (maxValue - minValue)) + minValue)
+    local color = Color3.fromHSV(value / maxValue, 1, 1)
+    rainbowMarker.BackgroundColor3 = color
+    if mode == "interface" then
+        AtualizarCorInterface(color, color, color)
+    elseif mode == "titulo" then
+        title.TextColor3 = color
+        subtitle.TextColor3 = color
     end
+end)
 
-    createColorBox("COR DA INTERFACE", "Quadrados principais", "interface")
-    createColorBox("COR DO TÍTULO", "Título e versão", "titulo")
+local function createBrightnessSlider(labelText, minValue, maxValue)
+    local sliderFrame = Instance.new("Frame", content)
+    sliderFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    sliderFrame.Size = UDim2.new(1, -20, 0, 50)
+    Instance.new("UICorner", sliderFrame).CornerRadius = UDim.new(0, 12)
 
-    Window:CreateSlider("Slider de Exemplo", 0, 100, function(value)
-        print("Valor do slider: " .. value)
+    local label = Instance.new("TextLabel", sliderFrame)
+    label.Text = labelText
+    label.Font = Enum.Font.Gotham
+    label.TextSize = 14
+    label.TextColor3 = Color3.fromRGB(180, 180, 180)
+    label.BackgroundTransparency = 1
+    label.Size = UDim2.new(1, 0, 0, 20)
+    label.Position = UDim2.new(0, 0, 0, 0)
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local brightnessSlider = Instance.new("Frame", sliderFrame)
+    brightnessSlider.Size = UDim2.new(1, 0, 0, 10)
+    brightnessSlider.Position = UDim2.new(0, 0, 0, 20)
+    brightnessSlider.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+
+    local brightnessHandle = Instance.new("Frame", brightnessSlider)
+    brightnessHandle.Size = UDim2.new(0, 20, 1, 0)
+    brightnessHandle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    brightnessHandle.Position = UDim2.new(0, 0, 0, 0)
+
+    local brightnessMarker = Instance.new("Frame", brightnessSlider)
+    brightnessMarker.Size = UDim2.new(0, 5, 1, 0)
+    brightnessMarker.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    brightnessMarker.Position = UDim2.new(0, 0, 0, 0)
+
+    local dragging = false
+    brightnessHandle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+        end
     end)
 
-    return container
+    brightnessHandle.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local xPosition = math.clamp(input.Position.X - brightnessSlider.AbsolutePosition.X, 0, brightnessSlider.AbsoluteSize.X)
+            local value = math.floor((xPosition / brightnessSlider.AbsoluteSize.X) * (maxValue - minValue) + minValue)
+            brightnessHandle.Position = UDim2.new((value - minValue) / (maxValue - minValue), 0, 0, 0)
+            local brightness = value / 100
+            local currentColor = rainbowMarker.BackgroundColor3
+            local newColor = currentColor:Lerp(Color3.fromRGB(0, 0, 0), brightness)
+            brightnessMarker.BackgroundColor3 = newColor
+            if mode == "interface" then
+                AtualizarCorInterface(newColor, newColor, newColor)
+            elseif mode == "titulo" then
+                title.TextColor3 = newColor
+                subtitle.TextColor3 = newColor
+            end
+        end
+    end)
+
+    brightnessSlider.MouseButton1Click:Connect(function()
+        local value = math.floor((brightnessHandle.Position.X.Scale * (maxValue - minValue)) + minValue)
+        local brightness = value / 100
+        local currentColor = rainbowMarker.BackgroundColor3
+        local newColor = currentColor:Lerp(Color3.fromRGB(0, 0, 0), brightness)
+        brightnessMarker.BackgroundColor3 = newColor
+        if mode == "interface" then
+            AtualizarCorInterface(newColor, newColor, newColor)
+        elseif mode == "titulo" then
+            title.TextColor3 = newColor
+            subtitle.TextColor3 = newColor
+        end
+    end)
+end
+
+createRainbowSlider("Adjust Gradient Color 1", 0, 360)
+createBrightnessSlider("Adjust Brightness", 0, 100)
 end
 
 function Window:CreateInfoBox(tabName, title, infoList)
