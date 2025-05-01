@@ -1425,27 +1425,26 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
     container.AutomaticSize = Enum.AutomaticSize.Y
 
     local layout = Instance.new("UIListLayout", container)
-    layout.FillDirection = Enum.FillDirection.Horizontal
+    layout.FillDirection = Enum.FillDirection.Vertical
     layout.SortOrder = Enum.SortOrder.LayoutOrder
-    layout.Padding = UDim.new(0, 10)
-    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    layout.Padding = UDim.new(0, 12)
 
     local colors = {
-        {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
-        {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},
-        {Color3.fromRGB(0,255,0), Color3.fromRGB(0,255,255)},
-        {Color3.fromRGB(255,0,0), Color3.fromRGB(255,255,0)},
-        {Color3.fromRGB(212,175,55), Color3.fromRGB(192,192,192)},
-        {Color3.fromRGB(128,0,255), Color3.fromRGB(255,128,0)},
-        {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},
-        {Color3.fromRGB(255,105,180), Color3.fromRGB(255,215,0)},
-        {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},
-        {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}
+        {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},         -- amarelo/preto
+        {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},       -- azul/roxo
+        {Color3.fromRGB(0,255,0), Color3.fromRGB(0,255,255)},       -- verde/azul
+        {Color3.fromRGB(255,0,0), Color3.fromRGB(255,255,0)},       -- vermelho/amarelo
+        {Color3.fromRGB(212,175,55), Color3.fromRGB(192,192,192)},  -- dourado/prata
+        {Color3.fromRGB(128,0,255), Color3.fromRGB(255,128,0)},     -- roxo/laranja
+        {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},         -- azul/vermelho
+        {Color3.fromRGB(255,105,180), Color3.fromRGB(255,215,0)},   -- rosa/dourado
+        {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},       -- branco/preto
+        {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}              -- preto/preto
     }
 
     local function createColorBox(titleText, labelText, callback)
         local box = Instance.new("Frame")
-        box.Size = UDim2.new(0.5, -15, 0, 0)
+        box.Size = UDim2.new(1, 0, 0, 0)
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         box.BorderSizePixel = 0
         box.AutomaticSize = Enum.AutomaticSize.Y
@@ -1460,7 +1459,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         local title = Instance.new("TextLabel", box)
         title.Text = titleText
         title.Font = Enum.Font.GothamBold
-        title.TextSize = 17
+        title.TextSize = 18
         title.TextColor3 = Color3.fromRGB(255, 255, 255)
         title.BackgroundTransparency = 1
         title.Size = UDim2.new(1, -20, 0, 30)
@@ -1485,8 +1484,8 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
 
         local grid = Instance.new("UIGridLayout", content)
         grid.CellSize = UDim2.new(0, 40, 0, 40)
-        grid.CellPadding = UDim2.new(0, 10, 0, 10)
-        grid.FillDirectionMaxCells = 3
+        grid.CellPadding = UDim.new(0, 10)
+        grid.FillDirectionMaxCells = 5
         grid.FillDirection = Enum.FillDirection.Horizontal
         grid.SortOrder = Enum.SortOrder.LayoutOrder
 
@@ -1518,32 +1517,17 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         return box
     end
 
-    createColorBox("COR DA INTERFACE", "Quadrados principais", function(color1, color2)
-        local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke")
-        if stroke then
-            stroke.Color = color1
-            stroke.Thickness = 1.5
-            stroke.Transparency = 0.3
-        else
-            stroke = Instance.new("UIStroke", mainFrame)
-            stroke.Color = color1
-            stroke.Thickness = 1.5
-            stroke.Transparency = 0.3
-        end
+    createColorBox("MUDA COR DA INTERFACE", "Quadrados de cores", function(color1, color2)
+        local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke") or Instance.new("UIStroke", mainFrame)
+        stroke.Color = color1
+        stroke.Thickness = 1.5
+        stroke.Transparency = 0.3
 
-        local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient")
-        if gradient then
-            gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, color1),
-                ColorSequenceKeypoint.new(1, color2)
-            }
-        else
-            gradient = Instance.new("UIGradient", mainFrame)
-            gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, color1),
-                ColorSequenceKeypoint.new(1, color2)
-            }
-        end
+        local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient") or Instance.new("UIGradient", mainFrame)
+        gradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, color1),
+            ColorSequenceKeypoint.new(1, color2)
+        }
     end)
 
     createColorBox("COR DO TÍTULO", "Título e versão", function(color1)
