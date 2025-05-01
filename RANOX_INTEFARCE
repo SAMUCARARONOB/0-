@@ -19,7 +19,7 @@ screenGui.Parent = game:GetService("CoreGui")
 mainFrame.Size = UDim2.new(0, 585, 0, 385)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 mainFrame.BackgroundTransparency = 0.05
 mainFrame.Text = ""
 mainFrame.AutoButtonColor = false
@@ -46,6 +46,28 @@ local function AtualizarCorInterface(corStroke, corGradiente1, corGradiente2)
         ColorSequenceKeypoint.new(1, corGradiente2)
     }
 end
+
+local mainFrame = Instance.new("Frame")
+mainFrame.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
+mainFrame.Size = UDim2.new(1, 0, 1, 0)
+mainFrame.Position = UDim2.new(0, 0, 0, 0)
+
+local function AtualizarCorInterface(cor1, cor2)
+    mainFrame.BackgroundColor3 = cor1
+    for _, square in pairs(mainFrame:GetChildren()) do
+        if square:IsA("Frame") then
+            local grad = square:FindFirstChildOfClass("UIGradient")
+            if grad then
+                grad.Color = ColorSequence.new{
+                    ColorSequenceKeypoint.new(0, cor1),
+                    ColorSequenceKeypoint.new(1, cor2)
+                }
+            end
+        end
+    end
+end
+
+AtualizarCorInterface(Color3.fromRGB(5, 5, 5), Color3.fromRGB(5, 5, 5))
 
 local title = Instance.new("TextLabel", mainFrame)
 title.Size = UDim2.new(1, -50, 0, 25)
