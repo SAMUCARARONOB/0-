@@ -1515,18 +1515,34 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             button.AutoButtonColor = false
 
             button.MouseButton1Click:Connect(function()
-                local stroke = mainFrame:FindFirstChildOfClass("UIStroke")
-                if stroke then
-                    stroke.Color = pair[1]
+                -- Verifica se o stroke e o gradient já existem no mainFrame
+                local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke")
+                local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient")
+
+                -- Caso não exista, criamos
+                if not stroke then
+                    stroke = Instance.new("UIStroke", mainFrame)
+                    stroke.Color = Color3.fromRGB(60, 0, 0)
+                    stroke.Thickness = 1.5
+                    stroke.Transparency = 0.3
                 end
 
-                local gradient = mainFrame:FindFirstChildOfClass("UIGradient")
-                if gradient then
+                if not gradient then
+                    gradient = Instance.new("UIGradient", mainFrame)
                     gradient.Color = ColorSequence.new{
-                        ColorSequenceKeypoint.new(0, pair[1]),
-                        ColorSequenceKeypoint.new(1, pair[2])
+                        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
+                        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
                     }
                 end
+
+                -- Atualiza as cores do stroke e do gradient
+                stroke.Color = pair[1]
+                gradient.Color = ColorSequence.new{
+                    ColorSequenceKeypoint.new(0, pair[1]),
+                    ColorSequenceKeypoint.new(1, pair[2])
+                }
+
+                print("Cor atualizada para:", pair[1], "e", pair[2])
             end)
         end
 
