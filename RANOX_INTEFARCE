@@ -1495,7 +1495,6 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             square.BackgroundColor3 = pair[1]
             square.BorderSizePixel = 0
             square.Size = UDim2.new(0, 40, 0, 40)
-
             Instance.new("UICorner", square).CornerRadius = UDim.new(0, 6)
 
             local s = Instance.new("UIStroke", square)
@@ -1509,19 +1508,20 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
                 ColorSequenceKeypoint.new(1, pair[2])
             }
 
-            square.InputBegan:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    for _, v in ipairs(mainFrame:GetChildren()) do
-                        if v:IsA("UIStroke") or v:IsA("UIGradient") then
-                            v:Destroy()
-                        end
-                    end
-                    local stroke = Instance.new("UIStroke", mainFrame)
-                    stroke.Color = pair[1]
-                    stroke.Thickness = 1.5
-                    stroke.Transparency = 0.3
+            local button = Instance.new("TextButton", square)
+            button.BackgroundTransparency = 1
+            button.Size = UDim2.new(1, 0, 1, 0)
+            button.Text = ""
+            button.AutoButtonColor = false
 
-                    local gradient = Instance.new("UIGradient", mainFrame)
+            button.MouseButton1Click:Connect(function()
+                local stroke = mainFrame:FindFirstChildOfClass("UIStroke")
+                if stroke then
+                    stroke.Color = pair[1]
+                end
+
+                local gradient = mainFrame:FindFirstChildOfClass("UIGradient")
+                if gradient then
                     gradient.Color = ColorSequence.new{
                         ColorSequenceKeypoint.new(0, pair[1]),
                         ColorSequenceKeypoint.new(1, pair[2])
