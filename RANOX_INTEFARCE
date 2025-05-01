@@ -1396,7 +1396,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     local fillBar = Instance.new("Frame", buttonHolder)
     fillBar.Size = UDim2.new(0, 0, 1, 0)
     fillBar.Position = UDim2.new(0, 0, 0, 0)
-    fillBar.BackgroundColor3 = Color3.fromRGB(0, 255, 155)
+    fillBar.BackgroundColor3 = Color3.fromRGB(0, 175, 0)
     fillBar.BorderSizePixel = 0
     fillBar.ZIndex = 1
 
