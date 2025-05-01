@@ -111,7 +111,7 @@ scrollHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
 
 local ballButton = Instance.new("ImageButton")
 ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
-ballButton.Position = UDim2.new(0.1, 0, 0.9, -100)
+ballButton.Position = UDim2.new(0.1, 0, 0.9, -150)
 ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
 ballButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 ballButton.Image = "rbxassetid://6337069410"
@@ -156,7 +156,7 @@ function Window:CreateTab(tabName, iconId)
 
 	local uiStroke = Instance.new("UIStroke", tabBtn)
 	uiStroke.Thickness = 1
-	uiStroke.Color = Color3.fromRGB(40, 40, 40)
+	uiStroke.Color = Color3.fromRGB(20, 20, 20)
 
 	local marker = Instance.new("Frame", tabBtn)
 	marker.Name = "TabMarker"
