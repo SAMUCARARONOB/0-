@@ -29,7 +29,7 @@ mainFrame.Active = true
 mainFrame.Parent = screenGui
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
 
-    local stroke = Instance.new("UIStroke")
+local stroke = Instance.new("UIStroke")
 stroke.Thickness = 1.5
 stroke.Transparency = 0.3
 stroke.Name = "MainStroke"
@@ -46,8 +46,6 @@ local function AtualizarCorInterface(corStroke, corGradiente1, corGradiente2)
         ColorSequenceKeypoint.new(1, corGradiente2)
     }
 end
-
-AtualizarCorInterface(Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 255, 0), Color3.fromRGB(0, 0, 255))
 
 local title = Instance.new("TextLabel", mainFrame)
 title.Size = UDim2.new(1, -50, 0, 25)
@@ -1525,25 +1523,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             button.AutoButtonColor = false
 
             button.MouseButton1Click:Connect(function()
-                local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke")
-                local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient")
-
-                if stroke then
-                    stroke.Color = pair[1]
-                    print("UIStroke atualizado:", pair[1])
-                else
-                    print("UIStroke não encontrado no mainFrame")
-                end
-
-                if gradient then
-                    gradient.Color = ColorSequence.new{
-                        ColorSequenceKeypoint.new(0, pair[1]),
-                        ColorSequenceKeypoint.new(1, pair[2])
-                    }
-                    print("UIGradient atualizado.")
-                else
-                    print("UIGradient não encontrado no mainFrame")
-                end
+                AtualizarCorInterface(pair[1], pair[1], pair[2])
             end)
         end
 
