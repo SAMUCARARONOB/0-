@@ -1549,119 +1549,72 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             end)
         end
 
-        return box
+        local rainbowSlider1 = Instance.new("Frame", box)
+        rainbowSlider1.Size = UDim2.new(1, -20, 0, 20)
+        rainbowSlider1.Position = UDim2.new(0, 10, 0, 110)
+        rainbowSlider1.BackgroundTransparency = 1
+        rainbowSlider1.AutomaticSize = Enum.AutomaticSize.Y
+
+        local rainbowBar = Instance.new("Frame", rainbowSlider1)
+        rainbowBar.Size = UDim2.new(1, 0, 0, 10)
+        rainbowBar.Position = UDim2.new(0, 0, 0, 0)
+        rainbowBar.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        rainbowBar.BackgroundTransparency = 0.5
+
+        local sliderHandle1 = Instance.new("Frame", rainbowBar)
+        sliderHandle1.Size = UDim2.new(0, 10, 0, 10)
+        sliderHandle1.Position = UDim2.new(0, 0, 0, 0)
+        sliderHandle1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+        local rainbowSlider2 = Instance.new("Frame", box)
+        rainbowSlider2.Size = UDim2.new(1, -20, 0, 20)
+        rainbowSlider2.Position = UDim2.new(0, 10, 0, 140)
+        rainbowSlider2.BackgroundTransparency = 1
+        rainbowSlider2.AutomaticSize = Enum.AutomaticSize.Y
+
+        local rainbowBar2 = Instance.new("Frame", rainbowSlider2)
+        rainbowBar2.Size = UDim2.new(1, 0, 0, 10)
+        rainbowBar2.Position = UDim2.new(0, 0, 0, 0)
+        rainbowBar2.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
+        rainbowBar2.BackgroundTransparency = 0.5
+
+        local sliderHandle2 = Instance.new("Frame", rainbowBar2)
+        sliderHandle2.Size = UDim2.new(0, 10, 0, 10)
+        sliderHandle2.Position = UDim2.new(0, 0, 0, 0)
+        sliderHandle2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+        local brightnessSlider1 = Instance.new("Frame", box)
+        brightnessSlider1.Size = UDim2.new(1, -20, 0, 20)
+        brightnessSlider1.Position = UDim2.new(0, 10, 0, 170)
+        brightnessSlider1.BackgroundTransparency = 1
+        brightnessSlider1.AutomaticSize = Enum.AutomaticSize.Y
+
+        local brightnessBar1 = Instance.new("Frame", brightnessSlider1)
+        brightnessBar1.Size = UDim2.new(1, 0, 0, 10)
+        brightnessBar1.Position = UDim2.new(0, 0, 0, 0)
+        brightnessBar1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+        local sliderHandle3 = Instance.new("Frame", brightnessBar1)
+        sliderHandle3.Size = UDim2.new(0, 10, 0, 10)
+        sliderHandle3.Position = UDim2.new(0, 0, 0, 0)
+        sliderHandle3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+        local brightnessSlider2 = Instance.new("Frame", box)
+        brightnessSlider2.Size = UDim2.new(1, -20, 0, 20)
+        brightnessSlider2.Position = UDim2.new(0, 10, 0, 190)
+        brightnessSlider2.BackgroundTransparency = 1
+        brightnessSlider2.AutomaticSize = Enum.AutomaticSize.Y
+
+        local brightnessBar2 = Instance.new("Frame", brightnessSlider2)
+        brightnessBar2.Size = UDim2.new(1, 0, 0, 10)
+        brightnessBar2.Position = UDim2.new(0, 0, 0, 0)
+        brightnessBar2.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
+        local sliderHandle4 = Instance.new("Frame", brightnessBar2)
+        sliderHandle4.Size = UDim2.new(0, 10, 0, 10)
+        sliderHandle4.Position = UDim2.new(0, 0, 0, 0)
+        sliderHandle4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     end
-
-    local function CriarSliderCor(parent, callback)
-	local frame = Instance.new("Frame")
-	frame.Size = UDim2.new(1, 0, 0, 10)
-	frame.BackgroundTransparency = 1
-	frame.Parent = parent
-
-	local slider = Instance.new("Frame")
-	slider.Size = UDim2.new(1, 0, 0, 4)
-	slider.Position = UDim2.new(0, 0, 0.5, -2)
-	slider.BackgroundColor3 = Color3.new(1, 1, 1)
-	slider.BorderSizePixel = 0
-	slider.Parent = frame
-
-	local gradient = Instance.new("UIGradient")
-	gradient.Color = ColorSequence.new{
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 255))
-	}
-	gradient.Parent = slider
-
-	local marcador = Instance.new("Frame")
-	marcador.Size = UDim2.new(0, 6, 1, 6)
-	marcador.AnchorPoint = Vector2.new(0.5, 0.5)
-	marcador.Position = UDim2.new(0, 0, 0.5, 0)
-	marcador.BackgroundColor3 = Color3.new(1, 1, 1)
-	marcador.BorderSizePixel = 0
-	marcador.Parent = slider
-
-	local dragging = false
-
-	slider.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = true
-		end
-	end)
-
-	slider.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = false
-		end
-	end)
-
-	game:GetService("UserInputService").InputChanged:Connect(function(input)
-		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-			local pos = input.Position.X - slider.AbsolutePosition.X
-			local percent = math.clamp(pos / slider.AbsoluteSize.X, 0, 1)
-			marcador.Position = UDim2.new(percent, 0, 0.5, 0)
-			local cor = Color3.fromHSV(percent, 1, 1)
-			callback(cor)
-		end
-	end)
-
-	return frame
-end
-
-local function CriarSliderBrilho(parent, callback)
-	local frame = Instance.new("Frame")
-	frame.Size = UDim2.new(1, 0, 0, 10)
-	frame.BackgroundTransparency = 1
-	frame.Parent = parent
-
-	local slider = Instance.new("Frame")
-	slider.Size = UDim2.new(1, 0, 0, 4)
-	slider.Position = UDim2.new(0, 0, 0.5, -2)
-	slider.BackgroundColor3 = Color3.new(1, 1, 1)
-	slider.BorderSizePixel = 0
-	slider.Parent = frame
-
-	local gradient = Instance.new("UIGradient")
-	gradient.Color = ColorSequence.new{
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(127, 127, 127)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
-	}
-	gradient.Parent = slider
-
-	local marcador = Instance.new("Frame")
-	marcador.Size = UDim2.new(0, 6, 1, 6)
-	marcador.AnchorPoint = Vector2.new(0.5, 0.5)
-	marcador.Position = UDim2.new(0, 0, 0.5, 0)
-	marcador.BackgroundColor3 = Color3.new(1, 1, 1)
-	marcador.BorderSizePixel = 0
-	marcador.Parent = slider
-
-	local dragging = false
-
-	slider.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = true
-		end
-	end)
-
-	slider.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = false
-		end
-	end)
-
-	game:GetService("UserInputService").InputChanged:Connect(function(input)
-		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-			local pos = input.Position.X - slider.AbsolutePosition.X
-			local percent = math.clamp(pos / slider.AbsoluteSize.X, 0, 1)
-			marcador.Position = UDim2.new(percent, 0, 0.5, 0)
-			callback(percent)
-		end
-	end)
-
-	return frame
-end
 
     createColorBox("COR DA INTERFACE", "Quadrados principais", "interface")
     createColorBox("COR DO TÍTULO", "Título e versão", "titulo")
