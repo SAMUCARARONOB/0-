@@ -1443,7 +1443,18 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}
     }
 
-    local function createColorBox(titleText, labelText)
+    local mainStroke = Instance.new("UIStroke", mainFrame)
+    mainStroke.Color = Color3.fromRGB(60, 0, 0)
+    mainStroke.Thickness = 1.5
+    mainStroke.Transparency = 0.3
+
+    local mainGradient = Instance.new("UIGradient", mainFrame)
+    mainGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
+    }
+
+    local function createColorBox(titleText, labelText, onColorClick)
         local box = Instance.new("Frame")
         box.Size = UDim2.new(0.5, -15, 0, 0)
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
@@ -1511,29 +1522,22 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             }
 
             square.MouseButton1Click:Connect(function()
-                for _, child in ipairs(mainFrame:GetChildren()) do
-                    if child:IsA("UIGradient") or child:IsA("UIStroke") then
-                        child:Destroy()
-                    end
+                if onColorClick then
+                    onColorClick(pair[1], pair[2])
                 end
-
-                local newStroke = Instance.new("UIStroke", mainFrame)
-                newStroke.Color = Color3.fromRGB(60, 0, 0)
-                newStroke.Thickness = 1.5
-                newStroke.Transparency = 0.3
-
-                local newGradient = Instance.new("UIGradient", mainFrame)
-                newGradient.Color = ColorSequence.new{
-                    ColorSequenceKeypoint.new(0, pair[1]),
-                    ColorSequenceKeypoint.new(1, pair[2])
-                }
             end)
         end
 
         return box
     end
 
-    createColorBox("COR DA INTERFACE", "Quadrados principais")
+    createColorBox("COR DA INTERFACE", "Quadrados principais", function(color1, color2)
+        mainGradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, color1),
+            ColorSequenceKeypoint.new(1, color2)
+        }
+    end)
+
     createColorBox("COR DO TÍTULO", "Título e versão")
 
     return container
