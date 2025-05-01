@@ -1550,111 +1550,36 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             end)
         end
 
+        -- Adicionando o Color Picker abaixo da caixa
+        local colorPicker = game.ReplicatedStorage:WaitForChild("ColorPicker"):Clone()
+        colorPicker.Parent = box
+        colorPicker.Position = UDim2.new(0, 10, 0, 120)
+        colorPicker.Size = UDim2.new(1, -20, 0, 200)
+
+        local colorPickerFrame = colorPicker:WaitForChild("ColorPickerFrame")
+        local colorShower = colorPickerFrame:WaitForChild("ColorShower")
+
+        colorPickerFrame.Visible = false
+
+        colorShower.MouseButton1Click:Connect(function()
+            colorPickerFrame.Visible = true
+        end)
+
+        colorPickerFrame.MouseMoved:Connect(function(x, y)
+            local color = colorPickerFrame.ImageColor3
+            if mode == "interface" then
+                AtualizarCorInterface(color, color, color)
+            elseif mode == "titulo" then
+                title.TextColor3 = color
+                subtitle.TextColor3 = color
+            end
+        end)
+
         return box
     end
 
     createColorBox("COR DA INTERFACE", "Quadrados principais", "interface")
     createColorBox("COR DO TÍTULO", "Título e versão", "titulo")
-
-    -- CRIA OS DOIS COLOR PICKERS AVANÇADOS
-    local pickerRow = Instance.new("Frame", container)
-    pickerRow.Size = UDim2.new(1, 0, 0, 200)
-    pickerRow.BackgroundTransparency = 1
-    pickerRow.LayoutOrder = 100
-
-    local pickerLayout = Instance.new("UIListLayout", pickerRow)
-    pickerLayout.FillDirection = Enum.FillDirection.Horizontal
-    pickerLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    pickerLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    pickerLayout.Padding = UDim.new(0, 10)
-
-    local function createColorPicker(mode)
-        local picker = Instance.new("Frame")
-        picker.Size = UDim2.new(0.5, -15, 1, 0)
-        picker.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-        picker.BorderSizePixel = 0
-
-        Instance.new("UICorner", picker).CornerRadius = UDim.new(0, 12)
-        local stroke = Instance.new("UIStroke", picker)
-        stroke.Color = Color3.fromRGB(60, 0, 0)
-        stroke.Thickness = 1.5
-        stroke.Transparency = 0.3
-
-        -- Create SVBox for Saturation/Value selection
-        local svBox = Instance.new("ImageLabel", picker)
-        svBox.Size = UDim2.new(1, -20, 1, -30)
-        svBox.Position = UDim2.new(0, 10, 0, 10)
-        svBox.Image = "rbxassetid://4155801252"
-        svBox.ScaleType = Enum.ScaleType.Stretch
-        svBox.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-
-        -- Create Hue Slider
-        local hueSlider = Instance.new("ImageLabel", picker)
-        hueSlider.Size = UDim2.new(1, -20, 0, 15)
-        hueSlider.Position = UDim2.new(0, 10, 1, -20)
-        hueSlider.BackgroundTransparency = 1
-        hueSlider.Image = "rbxassetid://7013285124"
-        hueSlider.ScaleType = Enum.ScaleType.Stretch
-
-        local userInput = game:GetService("UserInputService")
-
-        local function updateColor(color)
-            if mode == "interface" then
-                AtualizarCorInterface(color, color, Color3.new(0, 0, 0))
-            elseif mode == "titulo" then
-                title.TextColor3 = color
-                subtitle.TextColor3 = Color3.new(1, 1, 1)
-            end
-        end
-
-        local function getColorFromSVBox(x, y)
-            local h = svBox.BackgroundColor3
-            local s = math.clamp(x / svBox.AbsoluteSize.X, 0, 1)
-            local v = 1 - math.clamp(y / svBox.AbsoluteSize.Y, 0, 1)
-            return Color3.fromHSV(select(1, h:ToHSV()), s, v)
-        end
-
-        svBox.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                local conn
-                conn = userInput.InputChanged:Connect(function(move)
-                    if move.UserInputType == Enum.UserInputType.MouseMovement then
-                        local pos = Vector2.new(move.Position.X - svBox.AbsolutePosition.X, move.Position.Y - svBox.AbsolutePosition.Y)
-                        updateColor(getColorFromSVBox(pos.X, pos.Y))
-                    end
-                end)
-                input.Changed:Connect(function()
-                    if input.UserInputState == Enum.UserInputState.End then
-                        conn:Disconnect()
-                    end
-                end)
-            end
-        end)
-
-        hueSlider.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                local conn
-                conn = userInput.InputChanged:Connect(function(move)
-                    if move.UserInputType == Enum.UserInputType.MouseMovement then
-                        local x = math.clamp(move.Position.X - hueSlider.AbsolutePosition.X, 0, hueSlider.AbsoluteSize.X)
-                        local h = x / hueSlider.AbsoluteSize.X
-                        local color = Color3.fromHSV(h, 1, 1)
-                        svBox.BackgroundColor3 = color
-                    end
-                end)
-                input.Changed:Connect(function()
-                    if input.UserInputState == Enum.UserInputState.End then
-                        conn:Disconnect()
-                    end
-                end)
-            end
-        end)
-
-        picker.Parent = pickerRow
-    end
-
-    createColorPicker("interface")
-    createColorPicker("titulo")
 
     return container
 end
