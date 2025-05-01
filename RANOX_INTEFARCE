@@ -19,7 +19,7 @@ screenGui.Parent = game:GetService("CoreGui")
 mainFrame.Size = UDim2.new(0, 585, 0, 385)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 mainFrame.BackgroundTransparency = 0.05
 mainFrame.Text = ""
 mainFrame.AutoButtonColor = false
@@ -1447,7 +1447,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},
         {Color3.fromRGB(255,105,180), Color3.fromRGB(255,215,0)},
         {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},
-        {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)},
+        {Color3.fromRGB(255,255,0), Color3.fromRGB(0,255,255)},
         {Color3.fromRGB(0, 255, 128), Color3.fromRGB(0, 64, 64)},
         {Color3.fromRGB(255, 0, 255), Color3.fromRGB(128, 0, 128)},
         {Color3.fromRGB(0, 255, 255), Color3.fromRGB(0, 128, 255)},
@@ -1457,7 +1457,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         {Color3.fromRGB(144, 238, 144), Color3.fromRGB(0, 100, 0)},
         {Color3.fromRGB(255, 248, 220), Color3.fromRGB(139, 69, 19)},
         {Color3.fromRGB(255, 255, 224), Color3.fromRGB(0, 0, 128)},
-        {Color3.fromRGB(135, 206, 235), Color3.fromRGB(0, 191, 255)}
+        {Color3.fromRGB(0, 0, 0), Color3.fromRGB(0, 0, 0)}
     }
 
     local inicial = colors[#colors]
