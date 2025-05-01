@@ -1677,7 +1677,10 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
     createColorBox("COR DA INTERFACE", Color3.fromRGB(255, 0, 0), function(color)
         for _, v in ipairs(mainFrame:GetDescendants()) do
             if v:IsA("UIGradient") then
-                v.Color = ColorSequence.new(color)
+                v.Color = ColorSequence.new{
+                    ColorSequenceKeypoint.new(0, color),
+                    ColorSequenceKeypoint.new(1, color)
+                }
             elseif v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextButton") then
                 if v.Name ~= "Title" and v.Name ~= "Subtitle" then
                     v.BackgroundColor3 = color
