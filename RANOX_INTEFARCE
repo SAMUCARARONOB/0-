@@ -117,8 +117,9 @@ scrollHolder.Size = UDim2.new(0, 440, 1, -35)
 scrollHolder.BackgroundTransparency = 1
 scrollHolder.BorderSizePixel = 0
 scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
-scrollHolder.ScrollBarThickness = 0
+scrollHolder.ScrollBarThickness = 5
 scrollHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
+scrollHolder.ScrollingDirection = Enum.ScrollingDirection.Y
 
 local contentLayout = Instance.new("UIListLayout", scrollHolder)
 contentLayout.SortOrder = Enum.SortOrder.LayoutOrder
