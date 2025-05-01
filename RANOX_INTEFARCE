@@ -1425,6 +1425,65 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     }
 end
 
+function Window:CreateSlider(titleText, minValue, maxValue, callback)
+    local sliderBox = Instance.new("Frame")
+    sliderBox.Size = UDim2.new(1, 0, 0, 50)
+    sliderBox.BackgroundTransparency = 1
+    sliderBox.Parent = container
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, 0, 0, 20)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Text = titleText
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.Font = Enum.Font.Gotham
+    titleLabel.TextSize = 14
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.Parent = sliderBox
+
+    local sliderBar = Instance.new("Frame")
+    sliderBar.Size = UDim2.new(1, 0, 0, 6)
+    sliderBar.Position = UDim2.new(0, 0, 0, 25)
+    sliderBar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    sliderBar.Parent = sliderBox
+
+    local sliderFill = Instance.new("Frame")
+    sliderFill.Size = UDim2.new(0, 0, 1, 0)
+    sliderFill.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    sliderFill.Parent = sliderBar
+
+    local draggable = Instance.new("Frame")
+    draggable.Size = UDim2.new(0, 20, 1, 0)
+    draggable.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    draggable.Position = UDim2.new(0, 0, 0, 0)
+    draggable.Parent = sliderBar
+
+    local dragging = false
+    draggable.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+        end
+    end)
+
+    draggable.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    sliderBar.InputChanged:Connect(function(input)
+        if dragging then
+            local mouseX = input.Position.X
+            local newSize = math.clamp(mouseX / sliderBar.AbsoluteSize.X, 0, 1)
+            sliderFill.Size = UDim2.new(newSize, 0, 1, 0)
+            draggable.Position = UDim2.new(newSize, 0, 0, 0)
+
+            local value = math.floor(minValue + (newSize * (maxValue - minValue)))
+            callback(value)
+        end
+    end)
+end
+
 function Window:CreateThemeBoxes(tabName, mainFrame)
     local tab = pages[tabName]
     if not tab then return end
@@ -1549,75 +1608,15 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             end)
         end
 
-        local rainbowSlider1 = Instance.new("Frame", box)
-        rainbowSlider1.Size = UDim2.new(1, -20, 0, 20)
-        rainbowSlider1.Position = UDim2.new(0, 10, 0, 110)
-        rainbowSlider1.BackgroundTransparency = 1
-        rainbowSlider1.AutomaticSize = Enum.AutomaticSize.Y
-
-        local rainbowBar = Instance.new("Frame", rainbowSlider1)
-        rainbowBar.Size = UDim2.new(1, 0, 0, 10)
-        rainbowBar.Position = UDim2.new(0, 0, 0, 0)
-        rainbowBar.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-        rainbowBar.BackgroundTransparency = 0.5
-
-        local sliderHandle1 = Instance.new("Frame", rainbowBar)
-        sliderHandle1.Size = UDim2.new(0, 10, 0, 10)
-        sliderHandle1.Position = UDim2.new(0, 0, 0, 0)
-        sliderHandle1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-
-        local rainbowSlider2 = Instance.new("Frame", box)
-        rainbowSlider2.Size = UDim2.new(1, -20, 0, 20)
-        rainbowSlider2.Position = UDim2.new(0, 10, 0, 140)
-        rainbowSlider2.BackgroundTransparency = 1
-        rainbowSlider2.AutomaticSize = Enum.AutomaticSize.Y
-
-        local rainbowBar2 = Instance.new("Frame", rainbowSlider2)
-        rainbowBar2.Size = UDim2.new(1, 0, 0, 10)
-        rainbowBar2.Position = UDim2.new(0, 0, 0, 0)
-        rainbowBar2.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
-        rainbowBar2.BackgroundTransparency = 0.5
-
-        local sliderHandle2 = Instance.new("Frame", rainbowBar2)
-        sliderHandle2.Size = UDim2.new(0, 10, 0, 10)
-        sliderHandle2.Position = UDim2.new(0, 0, 0, 0)
-        sliderHandle2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-
-        local brightnessSlider1 = Instance.new("Frame", box)
-        brightnessSlider1.Size = UDim2.new(1, -20, 0, 20)
-        brightnessSlider1.Position = UDim2.new(0, 10, 0, 170)
-        brightnessSlider1.BackgroundTransparency = 1
-        brightnessSlider1.AutomaticSize = Enum.AutomaticSize.Y
-
-        local brightnessBar1 = Instance.new("Frame", brightnessSlider1)
-        brightnessBar1.Size = UDim2.new(1, 0, 0, 10)
-        brightnessBar1.Position = UDim2.new(0, 0, 0, 0)
-        brightnessBar1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-
-        local sliderHandle3 = Instance.new("Frame", brightnessBar1)
-        sliderHandle3.Size = UDim2.new(0, 10, 0, 10)
-        sliderHandle3.Position = UDim2.new(0, 0, 0, 0)
-        sliderHandle3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-
-        local brightnessSlider2 = Instance.new("Frame", box)
-        brightnessSlider2.Size = UDim2.new(1, -20, 0, 20)
-        brightnessSlider2.Position = UDim2.new(0, 10, 0, 190)
-        brightnessSlider2.BackgroundTransparency = 1
-        brightnessSlider2.AutomaticSize = Enum.AutomaticSize.Y
-
-        local brightnessBar2 = Instance.new("Frame", brightnessSlider2)
-        brightnessBar2.Size = UDim2.new(1, 0, 0, 10)
-        brightnessBar2.Position = UDim2.new(0, 0, 0, 0)
-        brightnessBar2.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-
-        local sliderHandle4 = Instance.new("Frame", brightnessBar2)
-        sliderHandle4.Size = UDim2.new(0, 10, 0, 10)
-        sliderHandle4.Position = UDim2.new(0, 0, 0, 0)
-        sliderHandle4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        return box
     end
 
     createColorBox("COR DA INTERFACE", "Quadrados principais", "interface")
     createColorBox("COR DO TÍTULO", "Título e versão", "titulo")
+
+    Window:CreateSlider("Slider de Exemplo", 0, 100, function(value)
+        print("Valor do slider: " .. value)
+    end)
 
     return container
 end
