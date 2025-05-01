@@ -1443,26 +1443,6 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}
     }
 
-    local function applyTheme(color1, color2)
-        if mainFrame:FindFirstChild("UIStroke") then
-            mainFrame.UIStroke:Destroy()
-        end
-        if mainFrame:FindFirstChild("UIGradient") then
-            mainFrame.UIGradient:Destroy()
-        end
-
-        local stroke = Instance.new("UIStroke", mainFrame)
-        stroke.Color = Color3.fromRGB(60, 0, 0)
-        stroke.Thickness = 1.5
-        stroke.Transparency = 0.3
-
-        local gradient = Instance.new("UIGradient", mainFrame)
-        gradient.Color = ColorSequence.new{
-            ColorSequenceKeypoint.new(0, color1),
-            ColorSequenceKeypoint.new(1, color2)
-        }
-    end
-
     local function createColorBox(titleText, labelText)
         local box = Instance.new("Frame")
         box.Size = UDim2.new(0.5, -15, 0, 0)
@@ -1531,7 +1511,22 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             }
 
             square.MouseButton1Click:Connect(function()
-                applyTheme(pair[1], pair[2])
+                for _, child in ipairs(mainFrame:GetChildren()) do
+                    if child:IsA("UIGradient") or child:IsA("UIStroke") then
+                        child:Destroy()
+                    end
+                end
+
+                local newStroke = Instance.new("UIStroke", mainFrame)
+                newStroke.Color = Color3.fromRGB(60, 0, 0)
+                newStroke.Thickness = 1.5
+                newStroke.Transparency = 0.3
+
+                local newGradient = Instance.new("UIGradient", mainFrame)
+                newGradient.Color = ColorSequence.new{
+                    ColorSequenceKeypoint.new(0, pair[1]),
+                    ColorSequenceKeypoint.new(1, pair[2])
+                }
             end)
         end
 
