@@ -1450,6 +1450,27 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}
     }
 
+local function CreateSecondBoxQuadrado(cor1, cor2)
+	local quadro = Instance.new("TextButton")
+	quadro.Size = UDim2.new(0, 22, 0, 22)
+	quadro.BackgroundColor3 = cor1
+	quadro.AutoButtonColor = false
+	quadro.BorderSizePixel = 0
+
+	local grad = Instance.new("UIGradient", quadro)
+	grad.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, cor1),
+		ColorSequenceKeypoint.new(1, cor2)
+	}
+
+	quadro.MouseButton1Click:Connect(function()
+		title.TextColor3 = cor1
+		subtitle.TextColor3 = cor2
+	end)
+
+	return quadro
+end
+
     local function createColorBox(titleText, labelText)
         local box = Instance.new("Frame")
         box.Size = UDim2.new(0.5, -15, 0, 0)
