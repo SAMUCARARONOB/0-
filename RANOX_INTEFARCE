@@ -1436,10 +1436,10 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
     container.AutomaticSize = Enum.AutomaticSize.Y
 
     local layout = Instance.new("UIListLayout", container)
-    layout.FillDirection = Enum.FillDirection.Vertical
+    layout.FillDirection = Enum.FillDirection.Horizontal
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Padding = UDim.new(0, 10)
-    layout.VerticalAlignment = Enum.VerticalAlignment.Top
+    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
     local colors = {
         {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
@@ -1549,158 +1549,13 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             end)
         end
 
-        local function createRainbowSlider(labelText, minValue, maxValue)
-            local sliderFrame = Instance.new("Frame", content)
-            sliderFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-            sliderFrame.Size = UDim2.new(1, -20, 0, 50)
-            Instance.new("UICorner", sliderFrame).CornerRadius = UDim.new(0, 12)
-
-            local label = Instance.new("TextLabel", sliderFrame)
-            label.Text = labelText
-            label.Font = Enum.Font.Gotham
-            label.TextSize = 14
-            label.TextColor3 = Color3.fromRGB(180, 180, 180)
-            label.BackgroundTransparency = 1
-            label.Size = UDim2.new(1, 0, 0, 20)
-            label.Position = UDim2.new(0, 0, 0, 0)
-            label.TextXAlignment = Enum.TextXAlignment.Left
-
-            local rainbowSlider = Instance.new("Frame", sliderFrame)
-            rainbowSlider.Size = UDim2.new(1, 0, 0, 10)
-            rainbowSlider.Position = UDim2.new(0, 0, 0, 20)
-            rainbowSlider.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-
-            local rainbowHandle = Instance.new("Frame", rainbowSlider)
-            rainbowHandle.Size = UDim2.new(0, 20, 1, 0)
-            rainbowHandle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            rainbowHandle.Position = UDim2.new(0, 0, 0, 0)
-
-            local rainbowMarker = Instance.new("Frame", rainbowSlider)
-            rainbowMarker.Size = UDim2.new(0, 5, 1, 0)
-            rainbowMarker.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-            rainbowMarker.Position = UDim2.new(0, 0, 0, 0)
-
-            local dragging = false
-            rainbowHandle.InputBegan:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    dragging = true
-                end
-            end)
-
-            rainbowHandle.InputEnded:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    dragging = false
-                end
-            end)
-
-            game:GetService("UserInputService").InputChanged:Connect(function(input)
-                if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-                    local xPosition = math.clamp(input.Position.X - rainbowSlider.AbsolutePosition.X, 0, rainbowSlider.AbsoluteSize.X)
-                    local value = math.floor((xPosition / rainbowSlider.AbsoluteSize.X) * (maxValue - minValue) + minValue)
-                    rainbowHandle.Position = UDim2.new((value - minValue) / (maxValue - minValue), 0, 0, 0)
-local color = Color3.fromHSV((value / maxValue), 1, 1)
-rainbowMarker.BackgroundColor3 = color
-if mode == "interface" then
-    AtualizarCorInterface(color, color, color)
-elseif mode == "titulo" then
-    title.TextColor3 = color
-    subtitle.TextColor3 = color
-end
-end)
-
-rainbowSlider.MouseButton1Click:Connect(function()
-    local value = math.floor((rainbowHandle.Position.X.Scale * (maxValue - minValue)) + minValue)
-    local color = Color3.fromHSV(value / maxValue, 1, 1)
-    rainbowMarker.BackgroundColor3 = color
-    if mode == "interface" then
-        AtualizarCorInterface(color, color, color)
-    elseif mode == "titulo" then
-        title.TextColor3 = color
-        subtitle.TextColor3 = color
+        return box
     end
-end)
 
-local function createBrightnessSlider(labelText, minValue, maxValue)
-    local sliderFrame = Instance.new("Frame", content)
-    sliderFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    sliderFrame.Size = UDim2.new(1, -20, 0, 50)
-    Instance.new("UICorner", sliderFrame).CornerRadius = UDim.new(0, 12)
+    createColorBox("COR DA INTERFACE", "Quadrados principais", "interface")
+    createColorBox("COR DO TÍTULO", "Título e versão", "titulo")
 
-    local label = Instance.new("TextLabel", sliderFrame)
-    label.Text = labelText
-    label.Font = Enum.Font.Gotham
-    label.TextSize = 14
-    label.TextColor3 = Color3.fromRGB(180, 180, 180)
-    label.BackgroundTransparency = 1
-    label.Size = UDim2.new(1, 0, 0, 20)
-    label.Position = UDim2.new(0, 0, 0, 0)
-    label.TextXAlignment = Enum.TextXAlignment.Left
-
-    local brightnessSlider = Instance.new("Frame", sliderFrame)
-    brightnessSlider.Size = UDim2.new(1, 0, 0, 10)
-    brightnessSlider.Position = UDim2.new(0, 0, 0, 20)
-    brightnessSlider.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-
-    local brightnessHandle = Instance.new("Frame", brightnessSlider)
-    brightnessHandle.Size = UDim2.new(0, 20, 1, 0)
-    brightnessHandle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    brightnessHandle.Position = UDim2.new(0, 0, 0, 0)
-
-    local brightnessMarker = Instance.new("Frame", brightnessSlider)
-    brightnessMarker.Size = UDim2.new(0, 5, 1, 0)
-    brightnessMarker.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    brightnessMarker.Position = UDim2.new(0, 0, 0, 0)
-
-    local dragging = false
-    brightnessHandle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-        end
-    end)
-
-    brightnessHandle.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-
-    game:GetService("UserInputService").InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local xPosition = math.clamp(input.Position.X - brightnessSlider.AbsolutePosition.X, 0, brightnessSlider.AbsoluteSize.X)
-            local value = math.floor((xPosition / brightnessSlider.AbsoluteSize.X) * (maxValue - minValue) + minValue)
-            brightnessHandle.Position = UDim2.new((value - minValue) / (maxValue - minValue), 0, 0, 0)
-            local brightness = value / 100
-            local currentColor = rainbowMarker.BackgroundColor3
-            local newColor = currentColor:Lerp(Color3.fromRGB(0, 0, 0), brightness)
-            brightnessMarker.BackgroundColor3 = newColor
-            if mode == "interface" then
-                AtualizarCorInterface(newColor, newColor, newColor)
-            elseif mode == "titulo" then
-                title.TextColor3 = newColor
-                subtitle.TextColor3 = newColor
-            end
-        end
-    end)
-
-    brightnessSlider.MouseButton1Click:Connect(function()
-        local value = math.floor((brightnessHandle.Position.X.Scale * (maxValue - minValue)) + minValue)
-        local brightness = value / 100
-        local currentColor = rainbowMarker.BackgroundColor3
-        local newColor = currentColor:Lerp(Color3.fromRGB(0, 0, 0), brightness)
-        brightnessMarker.BackgroundColor3 = newColor
-        if mode == "interface" then
-            AtualizarCorInterface(newColor, newColor, newColor)
-        elseif mode == "titulo" then
-            title.TextColor3 = newColor
-            subtitle.TextColor3 = newColor
-        end
-    end)
-end
-
-createColorBox("COR DA INTERFACE", "Quadrados principais", "interface")
-createColorBox("COR DO TÍTULO", "Título e versão", "titulo")
-createRainbowSlider("Adjust Gradient Color 1", 0, 360)
-createBrightnessSlider("Adjust Brightness", 0, 100)
+    return container
 end
 
 function Window:CreateInfoBox(tabName, title, infoList)
