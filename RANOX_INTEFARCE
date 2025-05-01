@@ -1396,7 +1396,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     local fillBar = Instance.new("Frame", buttonHolder)
     fillBar.Size = UDim2.new(0, 0, 1, 0)
     fillBar.Position = UDim2.new(0, 0, 0, 0)
-    fillBar.BackgroundColor3 = Color3.fromRGB(0, 175, 90)
+    fillBar.BackgroundColor3 = Color3.fromRGB(0, 255, 155)
     fillBar.BorderSizePixel = 0
     fillBar.ZIndex = 1
 
@@ -1461,6 +1461,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         {Color3.fromRGB(144, 238, 144), Color3.fromRGB(0, 100, 0)},
         {Color3.fromRGB(255, 248, 220), Color3.fromRGB(139, 69, 19)},
         {Color3.fromRGB(255, 255, 224), Color3.fromRGB(0, 0, 128)},
+        {Color3.fromRGB(255, 255, 255), Color3.fromRGB(140, 140, 140)},
         {Color3.fromRGB(0, 0, 0), Color3.fromRGB(0, 0, 0)}
     }
 
