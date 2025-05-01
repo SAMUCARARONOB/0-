@@ -1556,6 +1556,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
     createColorBox("COR DA INTERFACE", "Quadrados principais", "interface")
     createColorBox("COR DO TÍTULO", "Título e versão", "titulo")
 
+    -- CRIA OS DOIS COLOR PICKERS AVANÇADOS
     local pickerRow = Instance.new("Frame", container)
     pickerRow.Size = UDim2.new(1, 0, 0, 200)
     pickerRow.BackgroundTransparency = 1
@@ -1579,6 +1580,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         stroke.Thickness = 1.5
         stroke.Transparency = 0.3
 
+        -- Create SVBox for Saturation/Value selection
         local svBox = Instance.new("ImageLabel", picker)
         svBox.Size = UDim2.new(1, -20, 1, -30)
         svBox.Position = UDim2.new(0, 10, 0, 10)
@@ -1586,6 +1588,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         svBox.ScaleType = Enum.ScaleType.Stretch
         svBox.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 
+        -- Create Hue Slider
         local hueSlider = Instance.new("ImageLabel", picker)
         hueSlider.Size = UDim2.new(1, -20, 0, 15)
         hueSlider.Position = UDim2.new(0, 10, 1, -20)
@@ -1594,6 +1597,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         hueSlider.ScaleType = Enum.ScaleType.Stretch
 
         local userInput = game:GetService("UserInputService")
+
         local function updateColor(color)
             if mode == "interface" then
                 AtualizarCorInterface(color, color, Color3.new(0, 0, 0))
