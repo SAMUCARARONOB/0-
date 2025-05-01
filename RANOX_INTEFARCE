@@ -1447,10 +1447,19 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},
         {Color3.fromRGB(255,105,180), Color3.fromRGB(255,215,0)},
         {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},
-        {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}
+        {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)},
+        {Color3.fromRGB(0, 255, 128), Color3.fromRGB(0, 64, 64)},
+        {Color3.fromRGB(255, 0, 255), Color3.fromRGB(128, 0, 128)},
+        {Color3.fromRGB(0, 255, 255), Color3.fromRGB(0, 128, 255)},
+        {Color3.fromRGB(255, 69, 0), Color3.fromRGB(255, 140, 0)},
+        {Color3.fromRGB(255, 20, 147), Color3.fromRGB(148, 0, 211)},
+        {Color3.fromRGB(173, 216, 230), Color3.fromRGB(25, 25, 112)},
+        {Color3.fromRGB(144, 238, 144), Color3.fromRGB(0, 100, 0)},
+        {Color3.fromRGB(255, 248, 220), Color3.fromRGB(139, 69, 19)},
+        {Color3.fromRGB(255, 255, 224), Color3.fromRGB(0, 0, 128)},
+        {Color3.fromRGB(135, 206, 235), Color3.fromRGB(0, 191, 255)}
     }
 
-    -- COR INICIAL DA INTERFACE (último par de cores)
     local inicial = colors[#colors]
     AtualizarCorInterface(inicial[1], inicial[1], inicial[2])
 
