@@ -11,137 +11,81 @@ Window:CreateTab("SETTING", 4483362458)
 Window:CreateTab("CRÉDITOS", 4483362458)
 
 Window:CreateToggle("PRINCIPAL", {
-    Text = "Ativar Modo Avançado",
-    Description = "Ativa recursos adicionais e avançados.",
-    Default = false,
-    Callback = function(isOn)
-        print("Modo Avançado ativado:", isOn)
-    end
-})
-
-Window:CreateToggle("PRINCIPAL", {
-    Text = "Ativar Recurso X",
-    Description = "Liga a função especial X do jogo.",
+    Text = "ATIVAR MODO TURBO ULTRA RÁPIDO",
+    Description = "Libera toda a performance e funções ocultas do sistema.",
     Default = true,
     Callback = function(isOn)
-        print("Recurso X ativado:", isOn)
+        Window:NotifyCustom("MODO TURBO", isOn and "ATIVADO COM SUCESSO" or "DESATIVADO", "4483362458")
     end
 })
 
-Window:CreateToggle("PRINCIPAL", {
-    Text = "Habilitar Opção Y",
-    Description = "Ativa a opção extra Y no ambiente.",
-    Default = false,
-    Callback = function(isOn)
-        print("Opção Y habilitada:", isOn)
-    end
-})
-
-Window:CreateLine("PRINCIPAL", Color3.fromRGB(255, 0, 0))
-
-Window:CreateButton("SETTING", "Salvar Configurações", function()
-    print("Configurações salvas!")
+Window:CreateButton("SETTING", "ATUALIZAR CONFIGURAÇÕES GLOBAIS", function()
+    print("Atualização aplicada.")
 end)
 
-Window:CreateLabel("SETTING", "Altere as configurações abaixo:")
-
-Window:CreateTextBox("SETTING", "SPEED MODIFIER", function(input)
-    print("Nome digitado:", input)
+Window:CreateTextBox("SETTING", "DIGITE O SEU COMANDO ESPECIAL AQUI", function(input)
+    print("Comando:", input)
 end)
 
 Window:CreateDropdown("SETTING", {
-    Default = "Selecione uma opção",
-    Options = {"Opção 1", "Opção 2", "Opção 3"},
-    Description = "Escolha uma das opções listadas abaixo.",
+    Text = "ESCOLHA UM MODO DE VISUAL",
+    Options = {"Modo Claro", "Modo Escuro", "Modo RGB"},
+    Description = "Personalize a aparência do Hub.",
     Callback = function(selected)
-        print("Selecionou:", selected)
+        print("Modo selecionado:", selected)
     end
 })
 
 Window:CreateSlider("SETTING", {
-    Text = "Volume",
-    Min = 50,
-    Max = 100,
-    Default = 50,
-    Description = "Ajuste o volume do sistema.",
+    Text = "INTENSIDADE DAS CORES",
+    Min = 0,
+    Max = 255,
+    Default = 128,
+    Description = "Controle o brilho e saturação das cores.",
     Callback = function(value)
-        print("Volume ajustado para:", value)
+        print("Intensidade:", value)
     end
 })
 
-Window:CreateLabel("CRÉDITOS", "Feito por RANOX")
-Window:CreateLabel("CRÉDITOS", "Apoie nosso trabalho!")
+Window:CreateLabel("SETTING", "Altere as configurações abaixo:")
 
-Window:CreateButton("CRÉDITOS", "Agradecimento", function()
-    print("Obrigado pelo apoio!")
-end)
-
-Window:CreateButton("CRÉDITOS", "Visite nosso site", function()
-    print("Redirecionando para o site...")
-end)
-
-Window:CreateTextBox("CRÉDITOS", "JUMP MODIFIER", function(input)
-    print("Feedback recebido:", input)
-end)
-
-Window:CreateTextBox("CRÉDITOS", "MONEY MODIFIER", function(input)
-    print("Email recebido:", input)
-end)
-
-Window:CreateToggle("CRÉDITOS", {
-    Text = "Aceitar Termos de Uso",
-    Description = "Confirma que você leu e concorda com os termos.",
-    Default = false,
-    Callback = function(isOn)
-        print("Termos de uso aceitos:", isOn)
-    end
-})
-
-Window:CreateToggle("CRÉDITOS", {
-    Text = "Receber Notificações",
-    Description = "Ativa ou desativa notificações do sistema.",
-    Default = true,
-    Callback = function(isOn)
-        print("Notificações ativadas:", isOn)
-    end
-})
+Window:CreateLine("PRINCIPAL", Color3.fromRGB(255, 0, 0))
 
 Window:CreateCheckbox("PRINCIPAL", {
-    Text = "Aceitar Termos de Uso",
-    Description = "Confirma sua aceitação aos termos de uso.",
+    Text = "MOSTRAR MÉTRICAS DE DESEMPENHO",
+    Description = "Exibe informações como FPS, Ping e CPU.",
     Callback = function(isChecked)
-        print("Checkbox ativado:", isChecked)
-    end
-})
-
-Window:CreateCheckbox("PRINCIPAL", {
-    Text = "Ativar Sombras Dinâmicas",
-    Description = "Habilita o efeito visual de sombras dinâmicas.",
-    Callback = function(isChecked)
-        print("Checkbox ativado:", isChecked)
-    end
-})
-
-Window:CreateCheckbox("PRINCIPAL", {
-    Text = "Mostrar FPS",
-    Description = "Exibe a taxa de quadros por segundo na tela.",
-    Callback = function(isChecked)
-        print("Checkbox ativado:", isChecked)
+        print("Desempenho:", isChecked)
     end
 })
 
 Window:CreateColorPicker("PRINCIPAL", {
-    Text = "Escolha uma cor",
-    Description = "Selecione uma cor para personalizar o ambiente.",
+    Text = "SELECIONE UMA COR PERSONALIZADA",
+    Description = "Customize a interface com sua cor favorita.",
     Callback = function(color)
+        print("Cor escolhida:", color)
     end
 })
 
 Window:CreateSwitch("PRINCIPAL", {
-    Text = "Modo Turbo",
-    Description = "Ativa a velocidade máxima de execução.",
+    Text = "MODO FANTASMA",
+    Description = "Ative para ocultar elementos do HUD no jogo.",
     State = false,
     Callback = function(state)
-        print("Modo Turbo:", state)
+        print("Modo Fantasma:", state)
     end
 })
+local promo = Window:CreatePromoBox("PRINCIPAL", "MEU CANAL", "RANOX HUB SCRIPT", 4483362458, "https://youtube.com/@SeuCanalAqui", "Canal Top")
+promo.ChannelBox.Text = "RANOX_OFC"
+local infoItems = {
+    "BEM-VINDO À RANOX HUB — A MELHOR INTERFACE VISUAL DO ROBLOX EM 2025.",
+    "A INTERFACE POSSUI BOTÕES, TOGGLES, CHECKBOXES, SLIDERS, DROPDOWNS E COLOR PICKER COMPLETO.",
+    "O COLOR PICKER TEM GRADIENTE RGB NEON, CAMPOS DE BRILHO E RGB E SLIDERS ESTILIZADOS.",
+    "A RANOX HUB TAMBÉM CONTA COM SWITCHES, ÁREA DE PESQUISA, BOTÕES DE OCULTAR, E INFOBOXES DETALHADAS.",
+    "O ESTILO VISUAL É BASEADO EM REDZHUB E RAYFIELD, COM TOQUE EXCLUSIVO E MODERNO.",
+    "O CANAL RANOX_OFC POSTA TUTORIAIS, SCRIPTS EXCLUSIVOS E ATUALIZAÇÕES DA INTERFACE.",
+    "SE INSCREVA PARA NÃO PERDER NENHUMA FUNÇÃO NOVA E FIQUE SEMPRE ATUALIZADO!",
+    "MAIS DE 10 SISTEMAS AVANÇADOS JÁ ESTÃO IMPLEMENTADOS E MAIS ESTÃO A CAMINHO!"
+}
+
+Window:CreateInfoBox("PRINCIPAL", "INFORMAÇÃO", infoItems) Window:CreateThemeBoxes("PRINCIPAL")
