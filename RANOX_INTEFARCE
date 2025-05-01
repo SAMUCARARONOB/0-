@@ -12,14 +12,14 @@ screenGui.Name = "RANOX_UI"
 screenGui.ResetOnSpawn = false
 screenGui.IgnoreGuiInset = true
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-screenGui.DisplayOrder = 999999999999999999999999999999999999999999999999999999999999999999999999999999999999998
+screenGui.DisplayOrder = 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
 screenGui.Parent = game:GetService("CoreGui")
 
     local mainFrame = Instance.new("TextButton")
 mainFrame.Size = UDim2.new(0, 585, 0, 385)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 mainFrame.BackgroundTransparency = 0.05
 mainFrame.Text = ""
 mainFrame.AutoButtonColor = false
@@ -1450,28 +1450,11 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}
     }
 
-local function CreateSecondBoxQuadrado(cor1, cor2)
-	local quadro = Instance.new("TextButton")
-	quadro.Size = UDim2.new(0, 22, 0, 22)
-	quadro.BackgroundColor3 = cor1
-	quadro.AutoButtonColor = false
-	quadro.BorderSizePixel = 0
+    -- COR INICIAL DA INTERFACE (último par de cores)
+    local inicial = colors[#colors]
+    AtualizarCorInterface(inicial[1], inicial[1], inicial[2])
 
-	local grad = Instance.new("UIGradient", quadro)
-	grad.Color = ColorSequence.new{
-		ColorSequenceKeypoint.new(0, cor1),
-		ColorSequenceKeypoint.new(1, cor2)
-	}
-
-	quadro.MouseButton1Click:Connect(function()
-		title.TextColor3 = cor1
-		subtitle.TextColor3 = cor2
-	end)
-
-	return quadro
-end
-
-    local function createColorBox(titleText, labelText)
+    local function createColorBox(titleText, labelText, mode)
         local box = Instance.new("Frame")
         box.Size = UDim2.new(0.5, -15, 0, 0)
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
@@ -1486,15 +1469,15 @@ end
         stroke.Thickness = 1.5
         stroke.Transparency = 0.3
 
-        local title = Instance.new("TextLabel", box)
-        title.Text = titleText
-        title.Font = Enum.Font.GothamBold
-        title.TextSize = 17
-        title.TextColor3 = Color3.fromRGB(255, 255, 255)
-        title.BackgroundTransparency = 1
-        title.Size = UDim2.new(1, -20, 0, 30)
-        title.Position = UDim2.new(0, 10, 0, 10)
-        title.TextXAlignment = Enum.TextXAlignment.Left
+        local titleLabel = Instance.new("TextLabel", box)
+        titleLabel.Text = titleText
+        titleLabel.Font = Enum.Font.GothamBold
+        titleLabel.TextSize = 17
+        titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        titleLabel.BackgroundTransparency = 1
+        titleLabel.Size = UDim2.new(1, -20, 0, 30)
+        titleLabel.Position = UDim2.new(0, 10, 0, 10)
+        titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
         local label = Instance.new("TextLabel", box)
         label.Text = labelText
@@ -1544,15 +1527,20 @@ end
             button.AutoButtonColor = false
 
             button.MouseButton1Click:Connect(function()
-                AtualizarCorInterface(pair[1], pair[1], pair[2])
+                if mode == "interface" then
+                    AtualizarCorInterface(pair[1], pair[1], pair[2])
+                elseif mode == "titulo" then
+                    title.TextColor3 = pair[1]
+                    subtitle.TextColor3 = pair[2]
+                end
             end)
         end
 
         return box
     end
 
-    createColorBox("COR DA INTERFACE", "Quadrados principais")
-    createColorBox("COR DO TÍTULO", "Título e versão")
+    createColorBox("COR DA INTERFACE", "Quadrados principais", "interface")
+    createColorBox("COR DO TÍTULO", "Título e versão", "titulo")
 
     return container
 end
