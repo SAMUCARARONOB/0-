@@ -1443,6 +1443,26 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}
     }
 
+    local function applyTheme(color1, color2)
+        if mainFrame:FindFirstChild("UIStroke") then
+            mainFrame.UIStroke:Destroy()
+        end
+        if mainFrame:FindFirstChild("UIGradient") then
+            mainFrame.UIGradient:Destroy()
+        end
+
+        local stroke = Instance.new("UIStroke", mainFrame)
+        stroke.Color = Color3.fromRGB(60, 0, 0)
+        stroke.Thickness = 1.5
+        stroke.Transparency = 0.3
+
+        local gradient = Instance.new("UIGradient", mainFrame)
+        gradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, color1),
+            ColorSequenceKeypoint.new(1, color2)
+        }
+    end
+
     local function createColorBox(titleText, labelText)
         local box = Instance.new("Frame")
         box.Size = UDim2.new(0.5, -15, 0, 0)
@@ -1491,10 +1511,11 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         grid.SortOrder = Enum.SortOrder.LayoutOrder
 
         for _, pair in ipairs(colors) do
-            local square = Instance.new("Frame", content)
+            local square = Instance.new("TextButton", content)
             square.BackgroundColor3 = pair[1]
             square.BorderSizePixel = 0
             square.Size = UDim2.new(0, 40, 0, 40)
+            square.Text = ""
 
             Instance.new("UICorner", square).CornerRadius = UDim.new(0, 6)
 
@@ -1508,6 +1529,10 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
                 ColorSequenceKeypoint.new(0, pair[1]),
                 ColorSequenceKeypoint.new(1, pair[2])
             }
+
+            square.MouseButton1Click:Connect(function()
+                applyTheme(pair[1], pair[2])
+            end)
         end
 
         return box
