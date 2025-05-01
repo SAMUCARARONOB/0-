@@ -1454,6 +1454,14 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
     }
 
+    local function AtualizarCores(cor1, cor2)
+        stroke.Color = cor1
+        gradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, cor1),
+            ColorSequenceKeypoint.new(1, cor2)
+        }
+    end
+
     local function createBox(titleText, onClickColorChange)
         local box = Instance.new("Frame", container)
         box.Size = UDim2.new(0.5, -15, 0, 0)
@@ -1510,11 +1518,11 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
     end
 
     createBox("COR DA INTERFACE", function(color1, color2)
-        gradient.Color = ColorSequence.new{
-            ColorSequenceKeypoint.new(0, color1),
-            ColorSequenceKeypoint.new(1, color2)
-        }
-        stroke.Color = color1
+        AtualizarCores(color1, color2)
+    end)
+
+    createBox("COR DO DETALHE", function(color1, color2)
+        AtualizarCores(color1, color2)
     end)
 
     return container
