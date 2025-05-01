@@ -1697,6 +1697,8 @@ local function createBrightnessSlider(labelText, minValue, maxValue)
     end)
 end
 
+createColorBox("COR DA INTERFACE", "Quadrados principais", "interface")
+createColorBox("COR DO TÍTULO", "Título e versão", "titulo")
 createRainbowSlider("Adjust Gradient Color 1", 0, 360)
 createBrightnessSlider("Adjust Brightness", 0, 100)
 end
