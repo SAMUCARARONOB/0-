@@ -1564,10 +1564,9 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
     if not tab then return end
 
     local container = Instance.new("Frame", tab)
-    container.Size = UDim2.new(1, -20, 0, 0)
+    container.Size = UDim2.new(1, -20, 0, 320)
     container.Position = UDim2.new(0, 10, 0, 0)
     container.BackgroundTransparency = 1
-    container.AutomaticSize = Enum.AutomaticSize.Y
 
     local layout = Instance.new("UIListLayout", container)
     layout.FillDirection = Enum.FillDirection.Horizontal
@@ -1575,9 +1574,9 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
     layout.Padding = UDim.new(0, 10)
     layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
-    local function createColorPicker(titleText, callback)
+    local function createColorBox(titleText, defaultColor, onColorChanged)
         local box = Instance.new("Frame", container)
-        box.Size = UDim2.new(0.5, -15, 0, 120)
+        box.Size = UDim2.new(0.5, -15, 0, 300)
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         box.BorderSizePixel = 0
         Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
@@ -1587,112 +1586,113 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
         stroke.Thickness = 1.5
         stroke.Transparency = 0.3
 
-        local titleLabel = Instance.new("TextLabel", box)
-        titleLabel.Text = titleText
-        titleLabel.Font = Enum.Font.GothamBold
-        titleLabel.TextSize = 17
-        titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-        titleLabel.BackgroundTransparency = 1
-        titleLabel.Size = UDim2.new(1, -20, 0, 30)
-        titleLabel.Position = UDim2.new(0, 10, 0, 10)
-        titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+        local title = Instance.new("TextLabel", box)
+        title.Text = titleText
+        title.Font = Enum.Font.GothamBold
+        title.TextSize = 17
+        title.TextColor3 = Color3.fromRGB(255, 255, 255)
+        title.BackgroundTransparency = 1
+        title.Size = UDim2.new(1, -20, 0, 30)
+        title.Position = UDim2.new(0, 10, 0, 10)
+        title.TextXAlignment = Enum.TextXAlignment.Left
 
-        local colorPreview = Instance.new("Frame", box)
-        colorPreview.Position = UDim2.new(0, 10, 0, 50)
-        colorPreview.Size = UDim2.new(0, 30, 0, 30)
-        colorPreview.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-        Instance.new("UICorner", colorPreview).CornerRadius = UDim.new(0, 6)
+        local preview = Instance.new("Frame", box)
+        preview.Position = UDim2.new(0, 10, 0, 50)
+        preview.Size = UDim2.new(0, 30, 0, 30)
+        preview.BackgroundColor3 = defaultColor
+        Instance.new("UICorner", preview).CornerRadius = UDim.new(0, 6)
 
-        local hexInput = Instance.new("TextBox", box)
-        hexInput.PlaceholderText = "#FF0000"
-        hexInput.Text = ""
-        hexInput.Size = UDim2.new(1, -60, 0, 30)
-        hexInput.Position = UDim2.new(0, 50, 0, 50)
-        hexInput.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-        hexInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-        hexInput.Font = Enum.Font.Gotham
-        hexInput.TextSize = 14
-        hexInput.ClearTextOnFocus = false
-        Instance.new("UICorner", hexInput).CornerRadius = UDim.new(0, 6)
+        local hexBox = Instance.new("TextBox", box)
+        hexBox.PlaceholderText = "#FF0000"
+        hexBox.Text = ""
+        hexBox.Size = UDim2.new(1, -60, 0, 30)
+        hexBox.Position = UDim2.new(0, 50, 0, 50)
+        hexBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        hexBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+        hexBox.Font = Enum.Font.Gotham
+        hexBox.TextSize = 14
+        hexBox.ClearTextOnFocus = false
+        Instance.new("UICorner", hexBox).CornerRadius = UDim.new(0, 6)
 
-        local function hexToColor(hex)
-            hex = hex:gsub("#", "")
+        local r, g, b = defaultColor.R * 255, defaultColor.G * 255, defaultColor.B * 255
+
+        local function updateAll(color)
+            preview.BackgroundColor3 = color
+            onColorChanged(color)
+        end
+
+        local function applyHex()
+            local hex = hexBox.Text:gsub("#", "")
             if #hex == 6 then
-                local r = tonumber(hex:sub(1, 2), 16)
-                local g = tonumber(hex:sub(3, 4), 16)
-                local b = tonumber(hex:sub(5, 6), 16)
-                return Color3.fromRGB(r, g, b)
+                local rVal = tonumber(hex:sub(1, 2), 16)
+                local gVal = tonumber(hex:sub(3, 4), 16)
+                local bVal = tonumber(hex:sub(5, 6), 16)
+                if rVal and gVal and bVal then
+                    r, g, b = rVal, gVal, bVal
+                    updateAll(Color3.fromRGB(r, g, b))
+                end
             end
-            return nil
         end
 
-        local function updateColor(color)
-            colorPreview.BackgroundColor3 = color
-            callback(color)
-        end
+        hexBox.FocusLost:Connect(applyHex)
 
-        hexInput.FocusLost:Connect(function()
-            local color = hexToColor(hexInput.Text)
-            if color then
-                updateColor(color)
-            end
-        end)
+        local function makeRGBSlider(label, yPos, get, set)
+            local lbl = Instance.new("TextLabel", box)
+            lbl.Position = UDim2.new(0, 10, 0, yPos)
+            lbl.Size = UDim2.new(0, 20, 0, 20)
+            lbl.Text = label
+            lbl.Font = Enum.Font.Gotham
+            lbl.TextSize = 13
+            lbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+            lbl.BackgroundTransparency = 1
+            lbl.TextXAlignment = Enum.TextXAlignment.Left
 
-        -- RGB sliders (opcional)
-        local function createRGBSlider(yPos, label, getRGB, setRGB)
-            local labelText = Instance.new("TextLabel", box)
-            labelText.Position = UDim2.new(0, 10, 0, yPos)
-            labelText.Size = UDim2.new(0, 30, 0, 20)
-            labelText.Text = label
-            labelText.Font = Enum.Font.Gotham
-            labelText.TextSize = 13
-            labelText.TextColor3 = Color3.fromRGB(255, 255, 255)
-            labelText.BackgroundTransparency = 1
-            labelText.TextXAlignment = Enum.TextXAlignment.Left
+            local input = Instance.new("TextBox", box)
+            input.Position = UDim2.new(0, 50, 0, yPos)
+            input.Size = UDim2.new(1, -60, 0, 20)
+            input.Text = tostring(get())
+            input.Font = Enum.Font.Gotham
+            input.TextSize = 13
+            input.TextColor3 = Color3.fromRGB(255, 255, 255)
+            input.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+            input.ClearTextOnFocus = false
+            Instance.new("UICorner", input).CornerRadius = UDim.new(0, 6)
 
-            local slider = Instance.new("TextBox", box)
-            slider.Position = UDim2.new(0, 50, 0, yPos)
-            slider.Size = UDim2.new(0.5, -60, 0, 20)
-            slider.Text = tostring(getRGB())
-            slider.Font = Enum.Font.Gotham
-            slider.TextSize = 13
-            slider.TextColor3 = Color3.fromRGB(255, 255, 255)
-            slider.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-            slider.ClearTextOnFocus = false
-            Instance.new("UICorner", slider).CornerRadius = UDim.new(0, 6)
-
-            slider.FocusLost:Connect(function()
-                local value = tonumber(slider.Text)
+            input.FocusLost:Connect(function()
+                local value = tonumber(input.Text)
                 if value and value >= 0 and value <= 255 then
-                    setRGB(value)
-                    local newColor = Color3.fromRGB(getR(), getG(), getB())
-                    updateColor(newColor)
+                    set(value)
+                    updateAll(Color3.fromRGB(r, g, b))
                 end
             end)
         end
 
-        local r, g, b = 255, 0, 0
-        local function getR() return r end
-        local function getG() return g end
-        local function getB() return b end
-        local function setR(val) r = val end
-        local function setG(val) g = val end
-        local function setB(val) b = val end
+        makeRGBSlider("R", 100, function() return r end, function(v) r = v end)
+        makeRGBSlider("G", 130, function() return g end, function(v) g = v end)
+        makeRGBSlider("B", 160, function() return b end, function(v) b = v end)
 
-        createRGBSlider(90, "R", getR, setR)
-        createRGBSlider(115, "G", getG, setG)
-        createRGBSlider(140, "B", getB, setB)
-
-        updateColor(Color3.fromRGB(r, g, b))
+        updateAll(Color3.fromRGB(r, g, b))
     end
 
-    createColorPicker("COR DA INTERFACE", function(color)
-        AtualizarCorInterface(color, color, color)
+    createColorBox("COR DA INTERFACE", Color3.fromRGB(255, 0, 0), function(color)
+        for _, v in ipairs(mainFrame:GetDescendants()) do
+            if v:IsA("UIGradient") then
+                v.Color = ColorSequence.new(color)
+            elseif v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextButton") then
+                if v.Name ~= "Title" and v.Name ~= "Subtitle" then
+                    v.BackgroundColor3 = color
+                end
+            end
+        end
     end)
 
-    createColorPicker("COR DO TÍTULO", function(color)
-        title.TextColor3 = color
-        subtitle.TextColor3 = color
+    createColorBox("COR DO TÍTULO", Color3.fromRGB(255, 0, 0), function(color)
+        if mainFrame:FindFirstChild("Title") then
+            mainFrame.Title.TextColor3 = color
+        end
+        if mainFrame:FindFirstChild("Subtitle") then
+            mainFrame.Subtitle.TextColor3 = color
+        end
     end)
 
     return container
