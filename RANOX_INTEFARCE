@@ -1552,6 +1552,117 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         return box
     end
 
+    local function CriarSliderCor(parent, callback)
+	local frame = Instance.new("Frame")
+	frame.Size = UDim2.new(1, 0, 0, 10)
+	frame.BackgroundTransparency = 1
+	frame.Parent = parent
+
+	local slider = Instance.new("Frame")
+	slider.Size = UDim2.new(1, 0, 0, 4)
+	slider.Position = UDim2.new(0, 0, 0.5, -2)
+	slider.BackgroundColor3 = Color3.new(1, 1, 1)
+	slider.BorderSizePixel = 0
+	slider.Parent = frame
+
+	local gradient = Instance.new("UIGradient")
+	gradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 255))
+	}
+	gradient.Parent = slider
+
+	local marcador = Instance.new("Frame")
+	marcador.Size = UDim2.new(0, 6, 1, 6)
+	marcador.AnchorPoint = Vector2.new(0.5, 0.5)
+	marcador.Position = UDim2.new(0, 0, 0.5, 0)
+	marcador.BackgroundColor3 = Color3.new(1, 1, 1)
+	marcador.BorderSizePixel = 0
+	marcador.Parent = slider
+
+	local dragging = false
+
+	slider.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+		end
+	end)
+
+	slider.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = false
+		end
+	end)
+
+	game:GetService("UserInputService").InputChanged:Connect(function(input)
+		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+			local pos = input.Position.X - slider.AbsolutePosition.X
+			local percent = math.clamp(pos / slider.AbsoluteSize.X, 0, 1)
+			marcador.Position = UDim2.new(percent, 0, 0.5, 0)
+			local cor = Color3.fromHSV(percent, 1, 1)
+			callback(cor)
+		end
+	end)
+
+	return frame
+end
+
+local function CriarSliderBrilho(parent, callback)
+	local frame = Instance.new("Frame")
+	frame.Size = UDim2.new(1, 0, 0, 10)
+	frame.BackgroundTransparency = 1
+	frame.Parent = parent
+
+	local slider = Instance.new("Frame")
+	slider.Size = UDim2.new(1, 0, 0, 4)
+	slider.Position = UDim2.new(0, 0, 0.5, -2)
+	slider.BackgroundColor3 = Color3.new(1, 1, 1)
+	slider.BorderSizePixel = 0
+	slider.Parent = frame
+
+	local gradient = Instance.new("UIGradient")
+	gradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(127, 127, 127)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
+	}
+	gradient.Parent = slider
+
+	local marcador = Instance.new("Frame")
+	marcador.Size = UDim2.new(0, 6, 1, 6)
+	marcador.AnchorPoint = Vector2.new(0.5, 0.5)
+	marcador.Position = UDim2.new(0, 0, 0.5, 0)
+	marcador.BackgroundColor3 = Color3.new(1, 1, 1)
+	marcador.BorderSizePixel = 0
+	marcador.Parent = slider
+
+	local dragging = false
+
+	slider.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+		end
+	end)
+
+	slider.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = false
+		end
+	end)
+
+	game:GetService("UserInputService").InputChanged:Connect(function(input)
+		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+			local pos = input.Position.X - slider.AbsolutePosition.X
+			local percent = math.clamp(pos / slider.AbsoluteSize.X, 0, 1)
+			marcador.Position = UDim2.new(percent, 0, 0.5, 0)
+			callback(percent)
+		end
+	end)
+
+	return frame
+end
+
     createColorBox("COR DA INTERFACE", "Quadrados principais", "interface")
     createColorBox("COR DO TÍTULO", "Título e versão", "titulo")
 
