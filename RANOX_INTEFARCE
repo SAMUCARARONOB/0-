@@ -1425,26 +1425,27 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
     container.AutomaticSize = Enum.AutomaticSize.Y
 
     local layout = Instance.new("UIListLayout", container)
-    layout.FillDirection = Enum.FillDirection.Vertical
+    layout.FillDirection = Enum.FillDirection.Horizontal
     layout.SortOrder = Enum.SortOrder.LayoutOrder
-    layout.Padding = UDim.new(0, 12)
+    layout.Padding = UDim.new(0, 10)
+    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
     local colors = {
-        {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},         -- amarelo/preto
-        {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},       -- azul/roxo
-        {Color3.fromRGB(0,255,0), Color3.fromRGB(0,255,255)},       -- verde/azul
-        {Color3.fromRGB(255,0,0), Color3.fromRGB(255,255,0)},       -- vermelho/amarelo
-        {Color3.fromRGB(212,175,55), Color3.fromRGB(192,192,192)},  -- dourado/prata
-        {Color3.fromRGB(128,0,255), Color3.fromRGB(255,128,0)},     -- roxo/laranja
-        {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},         -- azul/vermelho
-        {Color3.fromRGB(255,105,180), Color3.fromRGB(255,215,0)},   -- rosa/dourado
-        {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},       -- branco/preto
-        {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}              -- preto/preto
+        {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
+        {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},
+        {Color3.fromRGB(0,255,0), Color3.fromRGB(0,255,255)},
+        {Color3.fromRGB(255,0,0), Color3.fromRGB(255,255,0)},
+        {Color3.fromRGB(212,175,55), Color3.fromRGB(192,192,192)},
+        {Color3.fromRGB(128,0,255), Color3.fromRGB(255,128,0)},
+        {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},
+        {Color3.fromRGB(255,105,180), Color3.fromRGB(255,215,0)},
+        {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},
+        {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}
     }
 
     local function createColorBox(titleText, labelText, callback)
         local box = Instance.new("Frame")
-        box.Size = UDim2.new(1, 0, 0, 0)
+        box.Size = UDim2.new(0.5, -15, 0, 0)
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         box.BorderSizePixel = 0
         box.AutomaticSize = Enum.AutomaticSize.Y
@@ -1459,7 +1460,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         local title = Instance.new("TextLabel", box)
         title.Text = titleText
         title.Font = Enum.Font.GothamBold
-        title.TextSize = 18
+        title.TextSize = 17
         title.TextColor3 = Color3.fromRGB(255, 255, 255)
         title.BackgroundTransparency = 1
         title.Size = UDim2.new(1, -20, 0, 30)
@@ -1484,8 +1485,8 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
 
         local grid = Instance.new("UIGridLayout", content)
         grid.CellSize = UDim2.new(0, 40, 0, 40)
-        grid.CellPadding = UDim.new(0, 10)
-        grid.FillDirectionMaxCells = 5
+        grid.CellPadding = UDim2.new(0, 10, 0, 10)
+        grid.FillDirectionMaxCells = 3
         grid.FillDirection = Enum.FillDirection.Horizontal
         grid.SortOrder = Enum.SortOrder.LayoutOrder
 
@@ -1498,6 +1499,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
             square.Size = UDim2.new(0, 40, 0, 40)
 
             Instance.new("UICorner", square).CornerRadius = UDim.new(0, 6)
+
             local s = Instance.new("UIStroke", square)
             s.Color = Color3.fromRGB(60, 0, 0)
             s.Thickness = 1.5
@@ -1517,17 +1519,21 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         return box
     end
 
-    createColorBox("MUDA COR DA INTERFACE", "Quadrados de cores", function(color1, color2)
-        local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke") or Instance.new("UIStroke", mainFrame)
-        stroke.Color = color1
-        stroke.Thickness = 1.5
-        stroke.Transparency = 0.3
+    createColorBox("COR DA INTERFACE", "Quadrados principais", function(color1, color2)
+        if mainFrame then
+            local stroke = mainFrame:FindFirstChildOfClass("UIStroke")
+            if stroke then
+                stroke.Color = color1
+            end
 
-        local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient") or Instance.new("UIGradient", mainFrame)
-        gradient.Color = ColorSequence.new{
-            ColorSequenceKeypoint.new(0, color1),
-            ColorSequenceKeypoint.new(1, color2)
-        }
+            local gradient = mainFrame:FindFirstChildOfClass("UIGradient")
+            if gradient then
+                gradient.Color = ColorSequence.new{
+                    ColorSequenceKeypoint.new(0, color1),
+                    ColorSequenceKeypoint.new(1, color2)
+                }
+            end
+        end
     end)
 
     createColorBox("COR DO TÍTULO", "Título e versão", function(color1)
@@ -1628,6 +1634,55 @@ function Window:CreateInfoBox(tabName, title, infoList)
         TitleLabel = titleLabel,
         ContentFrame = content
     }
+end
+
+function Window:CreateGradientEditor(tabName, data)
+    local section = self:GetSection(tabName)
+
+    local box = createColorBox(data.Text, data.Description or "", function() end)
+
+    local input1 = Instance.new("TextBox", box)
+    input1.Size = UDim2.new(1, -20, 0, 25)
+    input1.Position = UDim2.new(0, 10, 0, 70)
+    input1.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    input1.TextColor3 = Color3.new(1, 1, 1)
+    input1.PlaceholderText = "255.0.0"
+    input1.ClearTextOnFocus = false
+    input1.Font = Enum.Font.Gotham
+    input1.TextSize = 14
+    Instance.new("UICorner", input1)
+
+    local input2 = Instance.new("TextBox", box)
+    input2.Size = UDim2.new(1, -20, 0, 25)
+    input2.Position = UDim2.new(0, 10, 0, 105)
+    input2.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    input2.TextColor3 = Color3.new(1, 1, 1)
+    input2.PlaceholderText = "0.255.0"
+    input2.ClearTextOnFocus = false
+    input2.Font = Enum.Font.Gotham
+    input2.TextSize = 14
+    Instance.new("UICorner", input2)
+
+    local function toColor3(str)
+        local r, g, b = string.match(str, "(%d+)%.(%d+)%.(%d+)")
+        r, g, b = tonumber(r), tonumber(g), tonumber(b)
+        if r and g and b then
+            return Color3.fromRGB(r, g, b)
+        end
+    end
+
+    local function update()
+        local color1 = toColor3(input1.Text)
+        local color2 = toColor3(input2.Text)
+        if color1 and color2 then
+            data.Callback(color1, color2)
+        end
+    end
+
+    input1.FocusLost:Connect(update)
+    input2.FocusLost:Connect(update)
+
+    section:AddElement(box)
 end
 
 local isHidden = false
