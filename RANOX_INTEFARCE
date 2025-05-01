@@ -1443,30 +1443,26 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         {Color3.fromRGB(5,5,5), Color3.fromRGB(0,0,0)}
     }
 
-    local mainStroke = Instance.new("UIStroke", mainFrame)
-    mainStroke.Color = Color3.fromRGB(60, 0, 0)
-    mainStroke.Thickness = 1.5
-    mainStroke.Transparency = 0.3
+    local stroke = mainFrame:FindFirstChildOfClass("UIStroke") or Instance.new("UIStroke", mainFrame)
+    stroke.Color = Color3.fromRGB(60, 0, 0)
+    stroke.Thickness = 1.5
+    stroke.Transparency = 0.3
 
-    local mainGradient = Instance.new("UIGradient", mainFrame)
-    mainGradient.Color = ColorSequence.new{
+    local gradient = mainFrame:FindFirstChildOfClass("UIGradient") or Instance.new("UIGradient", mainFrame)
+    gradient.Color = ColorSequence.new{
         ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
         ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
     }
 
-    local function createColorBox(titleText, labelText, onColorClick)
-        local box = Instance.new("Frame")
+    local function createBox(titleText, onClickColorChange)
+        local box = Instance.new("Frame", container)
         box.Size = UDim2.new(0.5, -15, 0, 0)
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         box.BorderSizePixel = 0
         box.AutomaticSize = Enum.AutomaticSize.Y
         box.ClipsDescendants = true
-        box.Parent = container
 
         Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
-        local stroke = Instance.new("UIStroke", box)
-        stroke.Color = Color3.fromRGB(120, 0, 0)
-        stroke.Thickness = 1.5
 
         local title = Instance.new("TextLabel", box)
         title.Text = titleText
@@ -1478,67 +1474,48 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         title.Position = UDim2.new(0, 10, 0, 10)
         title.TextXAlignment = Enum.TextXAlignment.Left
 
-        local label = Instance.new("TextLabel", box)
-        label.Text = labelText
-        label.Font = Enum.Font.Gotham
-        label.TextSize = 14
-        label.TextColor3 = Color3.fromRGB(180, 180, 180)
-        label.BackgroundTransparency = 1
-        label.Size = UDim2.new(1, -20, 0, 20)
-        label.Position = UDim2.new(0, 10, 0, 40)
-        label.TextXAlignment = Enum.TextXAlignment.Left
-
         local content = Instance.new("Frame", box)
         content.BackgroundTransparency = 1
-        content.Position = UDim2.new(0, 10, 0, 70)
+        content.Position = UDim2.new(0, 10, 0, 50)
         content.Size = UDim2.new(1, -20, 0, 0)
         content.AutomaticSize = Enum.AutomaticSize.Y
 
         local grid = Instance.new("UIGridLayout", content)
         grid.CellSize = UDim2.new(0, 40, 0, 40)
-        grid.CellPadding = UDim2.new(0, 10, 0, 10)
+        grid.CellPadding = UDim.new(0, 10)
         grid.FillDirectionMaxCells = 3
         grid.FillDirection = Enum.FillDirection.Horizontal
         grid.SortOrder = Enum.SortOrder.LayoutOrder
 
         for _, pair in ipairs(colors) do
-            local square = Instance.new("TextButton", content)
-            square.BackgroundColor3 = pair[1]
-            square.BorderSizePixel = 0
-            square.Size = UDim2.new(0, 40, 0, 40)
-            square.Text = ""
+            local btn = Instance.new("TextButton", content)
+            btn.BackgroundColor3 = pair[1]
+            btn.BorderSizePixel = 0
+            btn.Size = UDim2.new(0, 40, 0, 40)
+            btn.Text = ""
+            Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
 
-            Instance.new("UICorner", square).CornerRadius = UDim.new(0, 6)
-
-            local s = Instance.new("UIStroke", square)
-            s.Color = Color3.fromRGB(60, 0, 0)
-            s.Thickness = 1.5
-            s.Transparency = 0.3
-
-            local g = Instance.new("UIGradient", square)
+            local g = Instance.new("UIGradient", btn)
             g.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, pair[1]),
                 ColorSequenceKeypoint.new(1, pair[2])
             }
 
-            square.MouseButton1Click:Connect(function()
-                if onColorClick then
-                    onColorClick(pair[1], pair[2])
+            btn.MouseButton1Click:Connect(function()
+                if onClickColorChange then
+                    onClickColorChange(pair[1], pair[2])
                 end
             end)
         end
-
-        return box
     end
 
-    createColorBox("COR DA INTERFACE", "Quadrados principais", function(color1, color2)
-        mainGradient.Color = ColorSequence.new{
+    createBox("COR DA INTERFACE", function(color1, color2)
+        gradient.Color = ColorSequence.new{
             ColorSequenceKeypoint.new(0, color1),
             ColorSequenceKeypoint.new(1, color2)
         }
+        stroke.Color = color1
     end)
-
-    createColorBox("COR DO TÍTULO", "Título e versão")
 
     return container
 end
