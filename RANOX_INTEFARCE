@@ -1414,7 +1414,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     }
 end
 
-function Window:CreateThemeBoxes(tabName, mainFrame, config)
+function Window:CreateThemeBoxes(tabName, mainFrame, customFunction)
     local tab = pages[tabName]
     if not tab then return end
 
@@ -1520,27 +1520,11 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
     end
 
     createColorBox("COR DA INTERFACE", "Quadrados principais", function(color1, color2)
-        if mainFrame then
-            local stroke = mainFrame:FindFirstChildOfClass("UIStroke")
-            if stroke then
-                stroke.Color = color1
-            end
-
-            local gradient = mainFrame:FindFirstChildOfClass("UIGradient")
-            if gradient then
-                gradient.Color = ColorSequence.new{
-                    ColorSequenceKeypoint.new(0, color1),
-                    ColorSequenceKeypoint.new(1, color2)
-                }
-            end
-        end
+        customFunction(color1, color2)
     end)
 
     createColorBox("COR DO TÍTULO", "Título e versão", function(color1)
-        local title = mainFrame:FindFirstChild("TitleLabel")
-        local subtitle = mainFrame:FindFirstChild("SubtitleLabel")
-        if title then title.TextColor3 = color1 end
-        if subtitle then subtitle.TextColor3 = color1 end
+        customFunction(color1)
     end)
 
     return container
@@ -1634,89 +1618,6 @@ function Window:CreateInfoBox(tabName, title, infoList)
         TitleLabel = titleLabel,
         ContentFrame = content
     }
-end
-
-local function createCompleteElement(tabName, elementTitle, elementDescription, callbacks)
-    local box = Instance.new("Frame")
-    box.Size = UDim2.new(1, 0, 0, 180)
-    box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    box.BorderSizePixel = 0
-    box.AutomaticSize = Enum.AutomaticSize.Y
-    Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
-
-    -- Título do elemento
-    local title = Instance.new("TextLabel", box)
-    title.Text = elementTitle
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 18
-    title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.BackgroundTransparency = 1
-    title.Size = UDim2.new(1, -20, 0, 25)
-    title.Position = UDim2.new(0, 10, 0, 10)
-    title.TextXAlignment = Enum.TextXAlignment.Left
-
-    -- Descrição do elemento
-    local description = Instance.new("TextLabel", box)
-    description.Text = elementDescription
-    description.Font = Enum.Font.Gotham
-    description.TextSize = 14
-    description.TextColor3 = Color3.fromRGB(180, 180, 180)
-    description.BackgroundTransparency = 1
-    description.Size = UDim2.new(1, -20, 0, 20)
-    description.Position = UDim2.new(0, 10, 0, 40)
-    description.TextXAlignment = Enum.TextXAlignment.Left
-
-    -- Toggle Button
-    local toggle = Instance.new("TextButton", box)
-    toggle.Size = UDim2.new(0, 40, 0, 20)
-    toggle.Position = UDim2.new(1, -50, 0, 10)
-    toggle.AnchorPoint = Vector2.new(1, 0)
-    toggle.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-    toggle.Text = ""
-    Instance.new("UICorner", toggle).CornerRadius = UDim.new(0, 10)
-    toggle.MouseButton1Click:Connect(function()
-        local isActive = toggle.BackgroundColor3 == Color3.fromRGB(0, 200, 0)
-        toggle.BackgroundColor3 = isActive and Color3.fromRGB(200, 0, 0) or Color3.fromRGB(0, 200, 0)
-        if callbacks.onToggle then
-            callbacks.onToggle(not isActive)
-        end
-    end)
-
-    -- Slider
-    local slider = Instance.new("Frame", box)
-    slider.Size = UDim2.new(1, -20, 0, 20)
-    slider.Position = UDim2.new(0, 10, 0, 70)
-    slider.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    Instance.new("UICorner", slider).CornerRadius = UDim.new(0, 10)
-
-    local sliderFill = Instance.new("Frame", slider)
-    sliderFill.Size = UDim2.new(0.5, 0, 1, 0) -- Exemplo de preenchimento
-    sliderFill.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
-    Instance.new("UICorner", sliderFill).CornerRadius = UDim.new(0, 10)
-
-    slider.MouseEnter:Connect(function()
-        if callbacks.onSliderHover then
-            callbacks.onSliderHover()
-        end
-    end)
-
-    -- Botão de Confirmação
-    local button = Instance.new("TextButton", box)
-    button.Size = UDim2.new(0, 100, 0, 30)
-    button.Position = UDim2.new(0.5, 0, 0, 100)
-    button.AnchorPoint = Vector2.new(0.5, 0)
-    button.Text = "Confirmar"
-    button.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
-    Instance.new("UICorner", button).CornerRadius = UDim.new(0, 8)
-    button.MouseButton1Click:Connect(function()
-        if callbacks.onButtonClick then
-            callbacks.onButtonClick()
-        end
-    end)
-
-    -- Integração com RANOX
-    RANOX:CreateTab(tabName, box)
-    return box
 end
 
 local isHidden = false
