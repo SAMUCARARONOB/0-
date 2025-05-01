@@ -29,16 +29,25 @@ mainFrame.Active = true
 mainFrame.Parent = screenGui
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
 
-    local stroke = Instance.new("UIStroke", mainFrame)
-    stroke.Color = Color3.fromRGB(60, 0, 0)
-    stroke.Thickness = 1.5
-    stroke.Transparency = 0.3
+    local stroke = Instance.new("UIStroke")
+stroke.Thickness = 1.5
+stroke.Transparency = 0.3
+stroke.Name = "MainStroke"
+stroke.Parent = mainFrame
 
-    local gradient = Instance.new("UIGradient", mainFrame)
+local gradient = Instance.new("UIGradient")
+gradient.Name = "MainGradient"
+gradient.Parent = mainFrame
+
+local function AtualizarCorInterface(corStroke, corGradiente1, corGradiente2)
+    stroke.Color = corStroke
     gradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,0)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,0))
+        ColorSequenceKeypoint.new(0, corGradiente1),
+        ColorSequenceKeypoint.new(1, corGradiente2)
     }
+end
+
+AtualizarCorInterface(Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 255, 0), Color3.fromRGB(0, 0, 255))
 
 local title = Instance.new("TextLabel", mainFrame)
 title.Size = UDim2.new(1, -50, 0, 25)
@@ -1454,8 +1463,9 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
 
         Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
         local stroke = Instance.new("UIStroke", box)
-        stroke.Color = Color3.fromRGB(120, 0, 0)
+        stroke.Color = Color3.fromRGB(60, 0, 0)
         stroke.Thickness = 1.5
+        stroke.Transparency = 0.3
 
         local title = Instance.new("TextLabel", box)
         title.Text = titleText
@@ -1515,34 +1525,25 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             button.AutoButtonColor = false
 
             button.MouseButton1Click:Connect(function()
-                -- Verifica se o stroke e o gradient já existem no mainFrame
                 local stroke = mainFrame:FindFirstChildWhichIsA("UIStroke")
                 local gradient = mainFrame:FindFirstChildWhichIsA("UIGradient")
 
-                -- Caso não exista, criamos
-                if not stroke then
-                    stroke = Instance.new("UIStroke", mainFrame)
-                    stroke.Color = Color3.fromRGB(60, 0, 0)
-                    stroke.Thickness = 1.5
-                    stroke.Transparency = 0.3
+                if stroke then
+                    stroke.Color = pair[1]
+                    print("UIStroke atualizado:", pair[1])
+                else
+                    print("UIStroke não encontrado no mainFrame")
                 end
 
-                if not gradient then
-                    gradient = Instance.new("UIGradient", mainFrame)
+                if gradient then
                     gradient.Color = ColorSequence.new{
-                        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
-                        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
+                        ColorSequenceKeypoint.new(0, pair[1]),
+                        ColorSequenceKeypoint.new(1, pair[2])
                     }
+                    print("UIGradient atualizado.")
+                else
+                    print("UIGradient não encontrado no mainFrame")
                 end
-
-                -- Atualiza as cores do stroke e do gradient
-                stroke.Color = pair[1]
-                gradient.Color = ColorSequence.new{
-                    ColorSequenceKeypoint.new(0, pair[1]),
-                    ColorSequenceKeypoint.new(1, pair[2])
-                }
-
-                print("Cor atualizada para:", pair[1], "e", pair[2])
             end)
         end
 
