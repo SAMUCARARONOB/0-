@@ -47,28 +47,6 @@ local function AtualizarCorInterface(corStroke, corGradiente1, corGradiente2)
     }
 end
 
-local mainFrame = Instance.new("Frame")
-mainFrame.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
-mainFrame.Size = UDim2.new(1, 0, 1, 0)
-mainFrame.Position = UDim2.new(0, 0, 0, 0)
-
-local function AtualizarCorInterface(cor1, cor2)
-    mainFrame.BackgroundColor3 = cor1
-    for _, square in pairs(mainFrame:GetChildren()) do
-        if square:IsA("Frame") then
-            local grad = square:FindFirstChildOfClass("UIGradient")
-            if grad then
-                grad.Color = ColorSequence.new{
-                    ColorSequenceKeypoint.new(0, cor1),
-                    ColorSequenceKeypoint.new(1, cor2)
-                }
-            end
-        end
-    end
-end
-
-AtualizarCorInterface(Color3.fromRGB(5, 5, 5), Color3.fromRGB(5, 5, 5))
-
 local title = Instance.new("TextLabel", mainFrame)
 title.Size = UDim2.new(1, -50, 0, 25)
 title.Position = UDim2.new(0, 10, 0, 0)
@@ -1484,6 +1462,28 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
 
     local inicial = colors[#colors]
     AtualizarCorInterface(inicial[1], inicial[1], inicial[2])
+
+    local mainFrame = Instance.new("Frame")
+mainFrame.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
+mainFrame.Size = UDim2.new(1, 0, 1, 0)
+mainFrame.Position = UDim2.new(0, 0, 0, 0)
+
+local function AtualizarCorInterface(cor1, cor2)
+    mainFrame.BackgroundColor3 = cor1
+    for _, square in pairs(mainFrame:GetChildren()) do
+        if square:IsA("Frame") then
+            local grad = square:FindFirstChildOfClass("UIGradient")
+            if grad then
+                grad.Color = ColorSequence.new{
+                    ColorSequenceKeypoint.new(0, cor1),
+                    ColorSequenceKeypoint.new(1, cor2)
+                }
+            end
+        end
+    end
+end
+
+AtualizarCorInterface(Color3.fromRGB(5, 5, 5), Color3.fromRGB(5, 5, 5))
 
     local function createColorBox(titleText, labelText, mode)
         local box = Instance.new("Frame")
