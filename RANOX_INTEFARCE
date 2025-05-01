@@ -1418,18 +1418,21 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
     local tab = pages[tabName]
     if not tab then return end
 
+    -- Container para os boxes de cores
     local container = Instance.new("Frame", tab)
     container.Size = UDim2.new(1, -20, 0, 0)
     container.Position = UDim2.new(0, 10, 0, 0)
     container.BackgroundTransparency = 1
     container.AutomaticSize = Enum.AutomaticSize.Y
 
+    -- Layout para os boxes
     local layout = Instance.new("UIListLayout", container)
-    layout.FillDirection = Enum.FillDirection.Horizontal
+    layout.FillDirection = Enum.FillDirection.Vertical -- Organiza verticalmente
     layout.SortOrder = Enum.SortOrder.LayoutOrder
-    layout.Padding = UDim.new(0, 10)
+    layout.Padding = UDim.new(0, 10) -- Ajuste para não sobrepor os boxes
     layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
+    -- Cores de exemplo
     local colors = {
         {Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 0, 255)},
         {Color3.fromRGB(0, 255, 0), Color3.fromRGB(0, 255, 255)},
@@ -1441,9 +1444,11 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         {Color3.fromRGB(0, 255, 255), Color3.fromRGB(255, 0, 255)}
     }
 
+    -- Função para criar o box de cor
     local function createColorBox(titleText, labelText, callback)
+        -- Cria o box de cor
         local box = Instance.new("Frame")
-        box.Size = UDim2.new(0.5, -15, 0, 0)
+        box.Size = UDim2.new(1, -20, 0, 150)  -- Definindo o tamanho fixo
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         box.BorderSizePixel = 0
         box.AutomaticSize = Enum.AutomaticSize.Y
@@ -1451,10 +1456,8 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         box.Parent = container
 
         Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
-        local stroke = Instance.new("UIStroke", box)
-        stroke.Color = Color3.fromRGB(120, 0, 0)
-        stroke.Thickness = 1.5
 
+        -- Título do box
         local title = Instance.new("TextLabel", box)
         title.Text = titleText
         title.Font = Enum.Font.GothamBold
@@ -1465,6 +1468,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         title.Position = UDim2.new(0, 10, 0, 10)
         title.TextXAlignment = Enum.TextXAlignment.Left
 
+        -- Label do box
         local label = Instance.new("TextLabel", box)
         label.Text = labelText
         label.Font = Enum.Font.Gotham
@@ -1475,12 +1479,13 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         label.Position = UDim2.new(0, 10, 0, 40)
         label.TextXAlignment = Enum.TextXAlignment.Left
 
+        -- Container para os quadrados de cor
         local content = Instance.new("Frame", box)
         content.BackgroundTransparency = 1
         content.Position = UDim2.new(0, 10, 0, 70)
-        content.Size = UDim2.new(1, -20, 0, 0)
-        content.AutomaticSize = Enum.AutomaticSize.Y
+        content.Size = UDim2.new(1, -20, 0, 70)  -- Definindo altura fixa para os quadrados de cor
 
+        -- Layout para os quadrados
         local grid = Instance.new("UIGridLayout", content)
         grid.CellSize = UDim2.new(0, 40, 0, 40)
         grid.CellPadding = UDim2.new(0, 10, 0, 10)
@@ -1488,6 +1493,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         grid.FillDirection = Enum.FillDirection.Horizontal
         grid.SortOrder = Enum.SortOrder.LayoutOrder
 
+        -- Criando quadrados de cor
         for _, pair in ipairs(colors) do
             local square = Instance.new("TextButton", content)
             square.BackgroundColor3 = pair[1]
@@ -1498,18 +1504,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
 
             Instance.new("UICorner", square).CornerRadius = UDim.new(0, 6)
 
-            local s = Instance.new("UIStroke", square)
-            s.Color = Color3.fromRGB(60, 0, 0)
-            s.Thickness = 1.5
-            s.Transparency = 0.3
-
-            local g = Instance.new("UIGradient", square)
-            g.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, pair[1]),
-                ColorSequenceKeypoint.new(1, pair[2])
-            }
-
-            -- Exibir o código da cor no quadrado
+            -- Exibindo o código da cor
             local colorText = Instance.new("TextLabel", square)
             colorText.Text = string.format("%d.%d.%d\n%d.%d.%d", pair[1].R * 255, pair[1].G * 255, pair[1].B * 255, pair[2].R * 255, pair[2].G * 255, pair[2].B * 255)
             colorText.TextSize = 10
@@ -1526,27 +1521,26 @@ function Window:CreateThemeBoxes(tabName, mainFrame, config)
         end
 
         -- Se não houver espaço suficiente, criar a TextBox para input de cor manual
-        if content.AbsoluteSize.Y > 150 then
-            local colorInput = Instance.new("TextBox", content)
-            colorInput.Size = UDim2.new(1, -20, 0, 30)
-            colorInput.Position = UDim2.new(0, 10, 0, 50)
-            colorInput.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-            colorInput.BorderSizePixel = 0
-            colorInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-            colorInput.Font = Enum.Font.Gotham
-            colorInput.PlaceholderText = "Digite a cor RGB (ex: 255.255.255)"
-            colorInput.TextSize = 14
-            colorInput.TextXAlignment = Enum.TextXAlignment.Left
-            Instance.new("UICorner", colorInput).CornerRadius = UDim.new(0, 12)
+        local colorInput = Instance.new("TextBox", content)
+        colorInput.Size = UDim2.new(1, -20, 0, 30)
+        colorInput.Position = UDim2.new(0, 10, 0, 50)  -- Colocando abaixo dos quadrados de cor
+        colorInput.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        colorInput.BorderSizePixel = 0
+        colorInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+        colorInput.Font = Enum.Font.Gotham
+        colorInput.PlaceholderText = "Digite a cor RGB (ex: 255.255.255)"
+        colorInput.TextSize = 14
+        colorInput.TextXAlignment = Enum.TextXAlignment.Left
+        Instance.new("UICorner", colorInput).CornerRadius = UDim.new(0, 12)
 
-            colorInput.FocusLost:Connect(function()
-                local colorValues = string.split(colorInput.Text, "/")
-                if #colorValues == 2 then
-                    local color1 = Color3.fromRGB(tonumber(colorValues[1]:match("^(%d+)")) or 0, tonumber(colorValues[2]:match("^(%d+)")) or 0, tonumber(colorValues[3]:match("^(%d+)")) or 0)
-                    callback(color1, color1)
-                end
-            end)
-        end
+        -- Atualizando a cor baseada no valor inserido
+        colorInput.FocusLost:Connect(function()
+            local colorValues = string.split(colorInput.Text, "/")
+            if #colorValues == 2 then
+                local color1 = Color3.fromRGB(tonumber(colorValues[1]:match("^(%d+)")) or 0, tonumber(colorValues[2]:match("^(%d+)")) or 0, tonumber(colorValues[3]:match("^(%d+)")) or 0)
+                callback(color1, color1)
+            end
+        end)
 
         return box
     end
