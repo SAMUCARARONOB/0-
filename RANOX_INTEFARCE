@@ -1550,36 +1550,108 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             end)
         end
 
-        -- Adicionando o Color Picker abaixo da caixa
-        local colorPicker = game.ReplicatedStorage:WaitForChild("ColorPicker"):Clone()
-        colorPicker.Parent = box
-        colorPicker.Position = UDim2.new(0, 10, 0, 120)
-        colorPicker.Size = UDim2.new(1, -20, 0, 200)
-
-        local colorPickerFrame = colorPicker:WaitForChild("ColorPickerFrame")
-        local colorShower = colorPickerFrame:WaitForChild("ColorShower")
-
-        colorPickerFrame.Visible = false
-
-        colorShower.MouseButton1Click:Connect(function()
-            colorPickerFrame.Visible = true
-        end)
-
-        colorPickerFrame.MouseMoved:Connect(function(x, y)
-            local color = colorPickerFrame.ImageColor3
-            if mode == "interface" then
-                AtualizarCorInterface(color, color, color)
-            elseif mode == "titulo" then
-                title.TextColor3 = color
-                subtitle.TextColor3 = color
-            end
-        end)
-
         return box
     end
 
     createColorBox("COR DA INTERFACE", "Quadrados principais", "interface")
     createColorBox("COR DO TÍTULO", "Título e versão", "titulo")
+
+function Window:CreateColorPickers(tabName, mainFrame)
+    local tab = pages[tabName]
+    if not tab then return end
+
+    local container = Instance.new("Frame", tab)
+    container.Size = UDim2.new(1, -20, 0, 180)
+    container.Position = UDim2.new(0, 10, 0, 0)
+    container.BackgroundTransparency = 1
+
+    local layout = Instance.new("UIListLayout", container)
+    layout.FillDirection = Enum.FillDirection.Horizontal
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 10)
+    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+    local function createColorPicker(titleText, mode)
+        local holder = Instance.new("Frame")
+        holder.Size = UDim2.new(0.5, -10, 1, 0)
+        holder.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        holder.BorderSizePixel = 0
+        holder.ClipsDescendants = true
+
+        Instance.new("UICorner", holder).CornerRadius = UDim.new(0, 12)
+        local stroke = Instance.new("UIStroke", holder)
+        stroke.Color = Color3.fromRGB(60, 0, 0)
+        stroke.Thickness = 1.5
+        stroke.Transparency = 0.3
+
+        local titleLabel = Instance.new("TextLabel", holder)
+        titleLabel.Text = titleText
+        titleLabel.Font = Enum.Font.GothamBold
+        titleLabel.TextSize = 17
+        titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        titleLabel.BackgroundTransparency = 1
+        titleLabel.Size = UDim2.new(1, -20, 0, 30)
+        titleLabel.Position = UDim2.new(0, 10, 0, 10)
+        titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+        local colorFrame = Instance.new("ImageButton", holder)
+        colorFrame.Size = UDim2.new(1, -20, 0, 120)
+        colorFrame.Position = UDim2.new(0, 10, 0, 40)
+        colorFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        colorFrame.BorderSizePixel = 0
+        colorFrame.AutoButtonColor = false
+        colorFrame.Image = "rbxassetid://6020299385" -- um gradiente de matiz HSV
+
+        Instance.new("UICorner", colorFrame).CornerRadius = UDim.new(0, 8)
+        local drag = Instance.new("Frame", colorFrame)
+        drag.Size = UDim2.new(0, 10, 0, 10)
+        drag.AnchorPoint = Vector2.new(0.5, 0.5)
+        drag.Position = UDim2.new(0, 0, 0, 0)
+        drag.BackgroundColor3 = Color3.new(1,1,1)
+        drag.BorderSizePixel = 0
+        Instance.new("UICorner", drag).CornerRadius = UDim.new(1, 0)
+
+        local dragging = false
+        colorFrame.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragging = true
+            end
+        end)
+        colorFrame.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragging = false
+            end
+        end)
+
+        local userInput = game:GetService("UserInputService")
+        userInput.InputChanged:Connect(function(input)
+            if dragging and input.Position then
+                local absPos = colorFrame.AbsolutePosition
+                local rel = Vector2.new(
+                    math.clamp(input.Position.X - absPos.X, 0, colorFrame.AbsoluteSize.X),
+                    math.clamp(input.Position.Y - absPos.Y, 0, colorFrame.AbsoluteSize.Y)
+                )
+                local x, y = rel.X / colorFrame.AbsoluteSize.X, rel.Y / colorFrame.AbsoluteSize.Y
+                local color = Color3.fromHSV(x, 1 - y, 1)
+                drag.Position = UDim2.new(x, 0, y, 0)
+
+                if mode == "interface" then
+                    AtualizarCorInterface(color, color, Color3.new(0, 0, 0))
+                elseif mode == "titulo" then
+                    title.TextColor3 = color
+                    subtitle.TextColor3 = color
+                end
+            end
+        end)
+
+        return holder
+    end
+
+    local picker1 = createColorPicker("COR DA INTERFACE", "interface")
+    picker1.Parent = container
+
+    local picker2 = createColorPicker("COR DO TÍTULO", "titulo")
+    picker2.Parent = container
 
     return container
 end
