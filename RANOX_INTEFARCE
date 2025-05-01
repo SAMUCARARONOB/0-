@@ -1636,53 +1636,100 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-function Window:CreateGradientEditor(tabName, data)
-    local section = self:GetSection(tabName)
+local function createCompleteElement(titleText, options, callbacks)
+    local box = Instance.new("Frame")
+    box.Size = UDim2.new(1, 0, 0, 150)
+    box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    box.BorderSizePixel = 0
+    box.ClipsDescendants = true
+    box.AutomaticSize = Enum.AutomaticSize.Y
 
-    local box = createColorBox(data.Text, data.Description or "", function() end)
+    Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
+    local stroke = Instance.new("UIStroke", box)
+    stroke.Color = Color3.fromRGB(100, 0, 0)
+    stroke.Thickness = 2
 
-    local input1 = Instance.new("TextBox", box)
-    input1.Size = UDim2.new(1, -20, 0, 25)
-    input1.Position = UDim2.new(0, 10, 0, 70)
-    input1.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    input1.TextColor3 = Color3.new(1, 1, 1)
-    input1.PlaceholderText = "255.0.0"
-    input1.ClearTextOnFocus = false
-    input1.Font = Enum.Font.Gotham
-    input1.TextSize = 14
-    Instance.new("UICorner", input1)
+    -- Title
+    local title = Instance.new("TextLabel", box)
+    title.Text = titleText
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 16
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.BackgroundTransparency = 1
+    title.Size = UDim2.new(1, -20, 0, 20)
+    title.Position = UDim2.new(0, 10, 0, 10)
+    title.TextXAlignment = Enum.TextXAlignment.Left
 
-    local input2 = Instance.new("TextBox", box)
-    input2.Size = UDim2.new(1, -20, 0, 25)
-    input2.Position = UDim2.new(0, 10, 0, 105)
-    input2.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    input2.TextColor3 = Color3.new(1, 1, 1)
-    input2.PlaceholderText = "0.255.0"
-    input2.ClearTextOnFocus = false
-    input2.Font = Enum.Font.Gotham
-    input2.TextSize = 14
-    Instance.new("UICorner", input2)
+    -- Toggle Button
+    local toggle = Instance.new("TextButton", box)
+    toggle.Size = UDim2.new(0, 40, 0, 20)
+    toggle.Position = UDim2.new(1, -50, 0, 10)
+    toggle.AnchorPoint = Vector2.new(1, 0)
+    toggle.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+    toggle.Text = ""
+    Instance.new("UICorner", toggle).CornerRadius = UDim.new(0, 10)
 
-    local function toColor3(str)
-        local r, g, b = string.match(str, "(%d+)%.(%d+)%.(%d+)")
-        r, g, b = tonumber(r), tonumber(g), tonumber(b)
-        if r and g and b then
-            return Color3.fromRGB(r, g, b)
+    toggle.MouseButton1Click:Connect(function()
+        local isActive = toggle.BackgroundColor3 == Color3.fromRGB(0, 200, 0)
+        toggle.BackgroundColor3 = isActive and Color3.fromRGB(200, 0, 0) or Color3.fromRGB(0, 200, 0)
+        if callbacks.onToggle then
+            callbacks.onToggle(not isActive)
         end
-    end
+    end)
 
-    local function update()
-        local color1 = toColor3(input1.Text)
-        local color2 = toColor3(input2.Text)
-        if color1 and color2 then
-            data.Callback(color1, color2)
+    -- Slider
+    local slider = Instance.new("Frame", box)
+    slider.Size = UDim2.new(1, -40, 0, 20)
+    slider.Position = UDim2.new(0, 10, 0, 50)
+    slider.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    Instance.new("UICorner", slider).CornerRadius = UDim.new(0, 10)
+
+    local sliderFill = Instance.new("Frame", slider)
+    sliderFill.Size = UDim2.new(0.5, 0, 1, 0) -- Example percentage
+    sliderFill.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+    Instance.new("UICorner", sliderFill).CornerRadius = UDim.new(0, 10)
+
+    slider.MouseEnter:Connect(function()
+        -- Example interaction callback
+        if callbacks.onSliderHover then
+            callbacks.onSliderHover()
         end
-    end
+    end)
 
-    input1.FocusLost:Connect(update)
-    input2.FocusLost:Connect(update)
+    -- Text Field
+    local textField = Instance.new("TextBox", box)
+    textField.Size = UDim2.new(1, -20, 0, 30)
+    textField.Position = UDim2.new(0, 10, 0, 80)
+    textField.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    textField.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textField.PlaceholderText = "Digite aqui..."
+    textField.Font = Enum.Font.Gotham
+    textField.TextSize = 14
+    Instance.new("UICorner", textField).CornerRadius = UDim.new(0, 8)
 
-    section:AddElement(box)
+    textField.FocusLost:Connect(function(enterPressed)
+        if enterPressed and callbacks.onTextSubmit then
+            callbacks.onTextSubmit(textField.Text)
+        end
+    end)
+
+    -- Button
+    local button = Instance.new("TextButton", box)
+    button.Size = UDim2.new(0, 100, 0, 30)
+    button.Position = UDim2.new(0.5, 0, 0, 120)
+    button.AnchorPoint = Vector2.new(0.5, 0)
+    button.Text = "Confirmar"
+    button.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+    Instance.new("UICorner", button).CornerRadius = UDim.new(0, 8)
+
+    button.MouseButton1Click:Connect(function()
+        if callbacks.onButtonClick then
+            callbacks.onButtonClick()
+        end
+    end)
+
+    -- Return the complete box
+    return box
 end
 
 local isHidden = false
