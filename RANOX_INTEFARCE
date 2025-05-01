@@ -1375,7 +1375,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
 
     local buttonHolder = Instance.new("Frame", content)
     buttonHolder.Size = UDim2.new(1, 0, 0, 30)
-    buttonHolder.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    buttonHolder.BackgroundColor3 = Color3.fromRGB(175, 0, 0)
     buttonHolder.BorderSizePixel = 0
     buttonHolder.ClipsDescendants = true
     local buttonCorner = Instance.new("UICorner", buttonHolder)
@@ -1396,7 +1396,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     local fillBar = Instance.new("Frame", buttonHolder)
     fillBar.Size = UDim2.new(0, 0, 1, 0)
     fillBar.Position = UDim2.new(0, 0, 0, 0)
-    fillBar.BackgroundColor3 = Color3.fromRGB(175, 0, 0)
+    fillBar.BackgroundColor3 = Color3.fromRGB(0, 175, 90)
     fillBar.BorderSizePixel = 0
     fillBar.ZIndex = 1
 
