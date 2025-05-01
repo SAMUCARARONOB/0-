@@ -37,6 +37,10 @@ stroke.Parent = mainFrame
 
 local gradient = Instance.new("UIGradient")
 gradient.Name = "MainGradient"
+gradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
+}
 gradient.Parent = mainFrame
 
 local function AtualizarCorInterface(corStroke, corGradiente1, corGradiente2)
@@ -1462,66 +1466,6 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
 
     local inicial = colors[#colors]
     AtualizarCorInterface(inicial[1], inicial[1], inicial[2])
-
-    local mainFrame = Instance.new("Frame")
-mainFrame.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
-mainFrame.Size = UDim2.new(1, 0, 1, 0)
-mainFrame.Position = UDim2.new(0, 0, 0, 0)
-
-local function AtualizarCorInterface(cor1, cor2)
-    for _, square in pairs(mainFrame:GetChildren()) do
-        if square:IsA("Frame") then
-            local grad = square:FindFirstChildOfClass("UIGradient")
-            if grad then
-                grad.Color = ColorSequence.new{
-                    ColorSequenceKeypoint.new(0, cor1),
-                    ColorSequenceKeypoint.new(1, cor2)
-                }
-            end
-        end
-    end
-end
-
-local function AlterarCorLenta(cor)
-    local targetColor = cor
-    local currentColor = mainFrame.BackgroundColor3
-    local increment = 0.01
-    local tweenStep = 0.1
-    
-    game:GetService("RunService").Heartbeat:Connect(function()
-        if currentColor.R < targetColor.R then
-            currentColor = Color3.fromRGB(
-                math.min(currentColor.R + increment, targetColor.R),
-                currentColor.G,
-                currentColor.B
-            )
-        end
-        
-        if currentColor.G < targetColor.G then
-            currentColor = Color3.fromRGB(
-                currentColor.R,
-                math.min(currentColor.G + increment, targetColor.G),
-                currentColor.B
-            )
-        end
-        
-        if currentColor.B < targetColor.B then
-            currentColor = Color3.fromRGB(
-                currentColor.R,
-                currentColor.G,
-                math.min(currentColor.B + increment, targetColor.B)
-            )
-        end
-
-        mainFrame.BackgroundColor3 = currentColor
-
-        if currentColor == targetColor then
-            AtualizarCorInterface(targetColor, targetColor)
-        end
-    end)
-end
-
-AlterarCorLenta(Color3.fromRGB(255, 255, 255))
 
     local function createColorBox(titleText, labelText, mode)
         local box = Instance.new("Frame")
