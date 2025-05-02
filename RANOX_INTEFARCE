@@ -1562,6 +1562,10 @@ colorInputBox.AutomaticSize = Enum.AutomaticSize.X
 colorInputBox.Position = UDim2.new(0, 10, 0, 0)
 colorInputBox.LayoutOrder = 999
 
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 6)
+corner.Parent = colorInputBox
+
         local layoutForInput = Instance.new("UIListLayout", box)
         layoutForInput.SortOrder = Enum.SortOrder.LayoutOrder
         layoutForInput.Padding = UDim.new(0, 10)
