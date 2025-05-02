@@ -1564,9 +1564,10 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
     if not tab then return end
 
     local container = Instance.new("Frame", tab)
-    container.Size = UDim2.new(1, -20, 0, 320)
+    container.Size = UDim2.new(1, -20, 0, 0)
     container.Position = UDim2.new(0, 10, 0, 0)
     container.BackgroundTransparency = 1
+    container.AutomaticSize = Enum.AutomaticSize.Y
 
     local layout = Instance.new("UIListLayout", container)
     layout.FillDirection = Enum.FillDirection.Horizontal
@@ -1574,112 +1575,159 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
     layout.Padding = UDim.new(0, 10)
     layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
-    -- Funções de conversão de cor
-    local function hexToColor3(hex)
-        hex = hex:gsub("#", "")
-        if #hex == 6 then
-            return Color3.fromRGB(tonumber("0x"..hex:sub(1, 2)), tonumber("0x"..hex:sub(3, 4)), tonumber("0x"..hex:sub(5, 6)))
-        end
-        return nil
-    end
+    local colors = {
+        {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
+        {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},
+        {Color3.fromRGB(0,255,0), Color3.fromRGB(0,255,255)},
+        {Color3.fromRGB(255,0,0), Color3.fromRGB(255,255,0)},
+        {Color3.fromRGB(212,175,55), Color3.fromRGB(192,192,192)},
+        {Color3.fromRGB(128,0,255), Color3.fromRGB(255,128,0)},
+        {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},
+        {Color3.fromRGB(255,105,180), Color3.fromRGB(255,215,0)},
+        {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},
+        {Color3.fromRGB(255,255,0), Color3.fromRGB(0,255,255)},
+        {Color3.fromRGB(0, 255, 128), Color3.fromRGB(0, 64, 64)},
+        {Color3.fromRGB(255, 0, 255), Color3.fromRGB(128, 0, 128)},
+        {Color3.fromRGB(0, 255, 255), Color3.fromRGB(0, 128, 255)},
+        {Color3.fromRGB(255, 69, 0), Color3.fromRGB(255, 140, 0)},
+        {Color3.fromRGB(255, 20, 147), Color3.fromRGB(148, 0, 211)},
+        {Color3.fromRGB(173, 216, 230), Color3.fromRGB(25, 25, 112)},
+        {Color3.fromRGB(144, 238, 144), Color3.fromRGB(0, 100, 0)},
+        {Color3.fromRGB(255, 248, 220), Color3.fromRGB(139, 69, 19)},
+        {Color3.fromRGB(255, 255, 224), Color3.fromRGB(0, 0, 128)},
+        {Color3.fromRGB(255, 255, 255), Color3.fromRGB(140, 140, 140)},
+        {Color3.fromRGB(0, 0, 0), Color3.fromRGB(0, 0, 0)}
+    }
 
-    local function rgbToColor3(str)
-        local r, g, b = str:match("(%d+)[%.%,%s]+(%d+)[%.%,%s]+(%d+)")
-        if r and g and b then
-            return Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b))
-        end
-        return nil
-    end
+    local inicial = colors[#colors]
+    AtualizarCorInterface(inicial[1], inicial[1], inicial[2])
 
-    -- Função que cria a caixa de cor
-    local function createColorBox(titleText, default1, default2, mode)
-        local box = Instance.new("Frame", container)
-        box.Size = UDim2.new(0.5, -15, 0, 300)
+    local function createColorBox(titleText, labelText, mode)
+        local box = Instance.new("Frame")
+        box.Size = UDim2.new(0.5, -15, 0, 0)
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         box.BorderSizePixel = 0
-        Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
+        box.AutomaticSize = Enum.AutomaticSize.Y
+        box.ClipsDescendants = true
+        box.Parent = container
 
+        Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
         local stroke = Instance.new("UIStroke", box)
         stroke.Color = Color3.fromRGB(60, 0, 0)
         stroke.Thickness = 1.5
         stroke.Transparency = 0.3
 
-        local title = Instance.new("TextLabel", box)
-        title.Text = titleText
-        title.Font = Enum.Font.GothamBold
-        title.TextSize = 17
-        title.TextColor3 = Color3.fromRGB(255, 255, 255)
-        title.BackgroundTransparency = 1
-        title.Size = UDim2.new(1, -20, 0, 30)
-        title.Position = UDim2.new(0, 10, 0, 10)
-        title.TextXAlignment = Enum.TextXAlignment.Left
+        local titleLabel = Instance.new("TextLabel", box)
+        titleLabel.Text = titleText
+        titleLabel.Font = Enum.Font.GothamBold
+        titleLabel.TextSize = 17
+        titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        titleLabel.BackgroundTransparency = 1
+        titleLabel.Size = UDim2.new(1, -20, 0, 30)
+        titleLabel.Position = UDim2.new(0, 10, 0, 10)
+        titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-        -- Previews das cores
-        local preview1 = Instance.new("Frame", box)
-        preview1.Position = UDim2.new(0, 10, 0, 50)
-        preview1.Size = UDim2.new(0, 30, 0, 30)
-        preview1.BackgroundColor3 = default1
-        Instance.new("UICorner", preview1).CornerRadius = UDim.new(0, 6)
+        local label = Instance.new("TextLabel", box)
+        label.Text = labelText
+        label.Font = Enum.Font.Gotham
+        label.TextSize = 14
+        label.TextColor3 = Color3.fromRGB(180, 180, 180)
+        label.BackgroundTransparency = 1
+        label.Size = UDim2.new(1, -20, 0, 20)
+        label.Position = UDim2.new(0, 10, 0, 40)
+        label.TextXAlignment = Enum.TextXAlignment.Left
 
-        local preview2 = Instance.new("Frame", box)
-        preview2.Position = UDim2.new(0, 10, 0, 90)
-        preview2.Size = UDim2.new(0, 30, 0, 30)
-        preview2.BackgroundColor3 = default2
-        Instance.new("UICorner", preview2).CornerRadius = UDim.new(0, 6)
+        local content = Instance.new("Frame", box)
+        content.BackgroundTransparency = 1
+        content.Position = UDim2.new(0, 10, 0, 70)
+        content.Size = UDim2.new(1, -20, 0, 0)
+        content.AutomaticSize = Enum.AutomaticSize.Y
 
-        -- Caixas de texto para input
-        local hexBox1 = Instance.new("TextBox", box)
-        hexBox1.PlaceholderText = "#FF0000 ou 255.0.0"
-        hexBox1.Text = ""
-        hexBox1.Size = UDim2.new(1, -60, 0, 30)
-        hexBox1.Position = UDim2.new(0, 50, 0, 50)
-        hexBox1.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-        hexBox1.TextColor3 = Color3.fromRGB(255, 255, 255)
-        hexBox1.Font = Enum.Font.Gotham
-        hexBox1.TextSize = 14
-        hexBox1.ClearTextOnFocus = false
+        local grid = Instance.new("UIGridLayout", content)
+        grid.CellSize = UDim2.new(0, 40, 0, 40)
+        grid.CellPadding = UDim2.new(0, 10, 0, 10)
+        grid.FillDirectionMaxCells = 3
+        grid.FillDirection = Enum.FillDirection.Horizontal
+        grid.SortOrder = Enum.SortOrder.LayoutOrder
 
-        local hexBox2 = hexBox1:Clone()
-        hexBox2.Position = UDim2.new(0, 50, 0, 90)
-        hexBox2.Parent = box
+        for _, pair in ipairs(colors) do
+            local square = Instance.new("Frame", content)
+            square.BackgroundColor3 = pair[1]
+            square.BorderSizePixel = 0
+            square.Size = UDim2.new(0, 40, 0, 40)
+            Instance.new("UICorner", square).CornerRadius = UDim.new(0, 6)
 
-        hexBox1.Parent = box
+            local s = Instance.new("UIStroke", square)
+            s.Color = Color3.fromRGB(60, 0, 0)
+            s.Thickness = 1.5
+            s.Transparency = 0.3
 
-        -- Função que atualiza as cores
-        local function applyColor()
-            local c1 = hexToColor3(hexBox1.Text) or rgbToColor3(hexBox1.Text)
-            local c2 = hexToColor3(hexBox2.Text) or rgbToColor3(hexBox2.Text)
-            if c1 and c2 then
-                preview1.BackgroundColor3 = c1
-                preview2.BackgroundColor3 = c2
-                AtualizarCorInterface(c1, c2)  -- Atualiza a cor do gradient da interface
-            end
-        end
-
-        -- Detecta quando o texto nas caixas de texto muda e aplica a cor
-        hexBox1.FocusLost:Connect(function(enter)
-            if enter then applyColor() end
-        end)
-
-        hexBox2.FocusLost:Connect(function(enter)
-            if enter then applyColor() end
-        end)
-    end
-
-    -- Função para atualizar as cores da interface
-    local function AtualizarCorInterface(corGradiente1, corGradiente2)
-        -- Atualiza a cor no UIGradient da interface
-        local gradient = mainFrame:FindFirstChild("MainGradient")
-        if gradient then
-            gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, corGradiente1),
-                ColorSequenceKeypoint.new(1, corGradiente2)
+            local g = Instance.new("UIGradient", square)
+            g.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, pair[1]),
+                ColorSequenceKeypoint.new(1, pair[2])
             }
+
+            local button = Instance.new("TextButton", square)
+            button.BackgroundTransparency = 1
+            button.Size = UDim2.new(1, 0, 1, 0)
+            button.Text = ""
+            button.AutoButtonColor = false
+
+            button.MouseButton1Click:Connect(function()
+                if mode == "interface" then
+                    AtualizarCorInterface(pair[1], pair[1], pair[2])
+                elseif mode == "titulo" then
+                    title.TextColor3 = pair[1]
+                    subtitle.TextColor3 = pair[2]
+                end
+            end)
         end
+
+        -- Adicionando a TextBox para entrada de cor
+        local colorInputBox = Instance.new("TextBox", box)
+        colorInputBox.Size = UDim2.new(1, -20, 0, 30)
+        colorInputBox.Position = UDim2.new(0, 10, 0, 110)
+        colorInputBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        colorInputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+        colorInputBox.TextSize = 14
+        colorInputBox.PlaceholderText = "Digite a cor (ex: 255.0.0/0.0.0)"
+        colorInputBox.ClearTextOnFocus = false
+
+        -- Função para atualizar a cor com base no texto inserido
+        colorInputBox.FocusLost:Connect(function(enterPressed)
+            if enterPressed then
+                local colorText = colorInputBox.Text
+                local colorsInput = string.split(colorText, "/")
+                if #colorsInput == 2 then
+                    local color1 = string.split(colorsInput[1], ".")
+                    local color2 = string.split(colorsInput[2], ".")
+
+                    -- Validando e aplicando as cores
+                    if #color1 == 3 and #color2 == 3 then
+                        local r1, g1, b1 = tonumber(color1[1]), tonumber(color1[2]), tonumber(color1[3])
+                        local r2, g2, b2 = tonumber(color2[1]), tonumber(color2[2]), tonumber(color2[3])
+
+                        if r1 and g1 and b1 and r2 and g2 and b2 then
+                            local newColor1 = Color3.fromRGB(r1, g1, b1)
+                            local newColor2 = Color3.fromRGB(r2, g2, b2)
+                            if mode == "interface" then
+                                AtualizarCorInterface(newColor1, newColor1, newColor2)
+                            elseif mode == "titulo" then
+                                title.TextColor3 = newColor1
+                                subtitle.TextColor3 = newColor2
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+
+        return box
     end
 
-    -- Criação dos boxes para as cores da interface
-    createColorBox("COR DA INTERFACE", Color3.fromRGB(255, 255, 255), Color3.fromRGB(0, 0, 0), "interface")
+    createColorBox("COR DA INTERFACE", "Quadrados principais", "interface")
+    createColorBox("COR DO TÍTULO", "Título e versão", "titulo")
 
     return container
 end
