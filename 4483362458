@@ -142,7 +142,7 @@ function Ranox:CreateWindow(config)
 
             local scrollFrame = Instance.new("ScrollingFrame")
 scrollFrame.Size = UDim2.new(1, 0, 1, -15)
-scrollFrame.Position = UDim2.new(0, 5, 0, -10)
+scrollFrame.Position = UDim2.new(0, 5, 0, 5)
 scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 scrollFrame.ScrollBarThickness = 6
 scrollFrame.ScrollingDirection = Enum.ScrollingDirection.Y
@@ -160,7 +160,7 @@ scrollFrame.Parent = tabPages
 
             local layout = Instance.new("UIListLayout")
             layout.FillDirection = Enum.FillDirection.Vertical
-            layout.Padding = UDim.new(0.01, 0)
+            layout.Padding = UDim.new(0, 6) -- Ajuste de espaçamento entre os botões
             layout.SortOrder = Enum.SortOrder.LayoutOrder
             layout.Parent = scrollFrame
 
