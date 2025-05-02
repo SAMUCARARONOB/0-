@@ -1574,6 +1574,28 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
     layout.Padding = UDim.new(0, 10)
     layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
+    local stroke = mainFrame:FindFirstChild("MainStroke") or Instance.new("UIStroke")
+    stroke.Thickness = 1.5
+    stroke.Transparency = 0.3
+    stroke.Name = "MainStroke"
+    stroke.Parent = mainFrame
+
+    local gradient = mainFrame:FindFirstChild("MainGradient") or Instance.new("UIGradient")
+    gradient.Name = "MainGradient"
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
+    }
+    gradient.Parent = mainFrame
+
+    local function AtualizarCorInterface(corStroke, corGradiente1, corGradiente2)
+        stroke.Color = corStroke
+        gradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, corGradiente1),
+            ColorSequenceKeypoint.new(1, corGradiente2)
+        }
+    end
+
     local function hexToColor3(hex)
         hex = hex:gsub("#","")
         if #hex == 6 then
@@ -1590,17 +1612,17 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
         return nil
     end
 
-    local function createColorBox(titleText, default1, default2, mode)
+    local function createColorBox(titleText, default1, default2)
         local box = Instance.new("Frame", container)
         box.Size = UDim2.new(0.5, -15, 0, 300)
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         box.BorderSizePixel = 0
         Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
 
-        local stroke = Instance.new("UIStroke", box)
-        stroke.Color = Color3.fromRGB(60, 0, 0)
-        stroke.Thickness = 1.5
-        stroke.Transparency = 0.3
+        local strokeBox = Instance.new("UIStroke", box)
+        strokeBox.Color = Color3.fromRGB(60, 0, 0)
+        strokeBox.Thickness = 1.5
+        strokeBox.Transparency = 0.3
 
         local title = Instance.new("TextLabel", box)
         title.Text = titleText
@@ -1647,12 +1669,7 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
             if c1 and c2 then
                 preview1.BackgroundColor3 = c1
                 preview2.BackgroundColor3 = c2
-                if mode == "interface" then
-                    AtualizarCorInterface(c1, c1, c2)
-                elseif mode == "titulo" then
-                    title.TextColor3 = c1
-                    if subtitle then subtitle.TextColor3 = c2 end
-                end
+                AtualizarCorInterface(c1, c1, c2)
             end
         end
 
@@ -1665,8 +1682,7 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
         end)
     end
 
-    createColorBox("COR DA INTERFACE", Color3.fromRGB(255, 255, 255), Color3.fromRGB(0, 0, 0), "interface")
-    createColorBox("COR DO TÍTULO", Color3.fromRGB(255, 255, 255), Color3.fromRGB(255, 0, 255), "titulo")
+    createColorBox("COR DA INTERFACE", Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 0, 255))
 
     return container
 end
