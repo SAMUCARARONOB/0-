@@ -399,7 +399,7 @@ function Window:CreateToggle(tabName, toggleConfig)
     if not tab then return end
 
     local toggleFrame = Instance.new("Frame", tab)
-    toggleFrame.Size = UDim2.new(1, -20, 0, 40) -- altura reduzida 20%
+    toggleFrame.Size = UDim2.new(1, -20, 0, 40)
     toggleFrame.Position = UDim2.new(0, 10, 0, 0)
     toggleFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     toggleFrame.BackgroundTransparency = 0
@@ -415,7 +415,7 @@ function Window:CreateToggle(tabName, toggleConfig)
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.TextYAlignment = Enum.TextYAlignment.Top
     title.BackgroundTransparency = 1
-    title.Size = UDim2.new(0, title.TextBounds.X + 20, 0, title.TextBounds.Y + 4) -- Ajusta automaticamente com base no texto
+    title.Size = UDim2.new(0, title.TextBounds.X + 20, 0, title.TextBounds.Y + 4)
     title.Position = UDim2.new(0, 12, 0, 4)
 
     local description = Instance.new("TextLabel", toggleFrame)
@@ -426,7 +426,7 @@ function Window:CreateToggle(tabName, toggleConfig)
     description.TextXAlignment = Enum.TextXAlignment.Left
     description.TextYAlignment = Enum.TextYAlignment.Top
     description.BackgroundTransparency = 1
-    description.Size = UDim2.new(0, description.TextBounds.X + 20, 0, description.TextBounds.Y + 4) -- Ajusta automaticamente com base no texto
+    description.Size = UDim2.new(0, description.TextBounds.X + 20, 0, description.TextBounds.Y + 4)
     description.Position = UDim2.new(0, 12, 0, title.Position.Y.Offset + title.Size.Y.Offset + 2)
 
     local switch = Instance.new("Frame", toggleFrame)
@@ -502,12 +502,11 @@ function Window:CreateDropdown(tabName, dropdownConfig)
     dropdownFrame.BorderSizePixel = 0
     dropdownFrame.ZIndex = 2
 
-    local uiCorner = Instance.new("UICorner", dropdownFrame)
-    uiCorner.CornerRadius = UDim.new(0, 8)
+    Instance.new("UICorner", dropdownFrame).CornerRadius = UDim.new(0, 8)
 
     local title = Instance.new("TextLabel", dropdownFrame)
     title.BackgroundTransparency = 1
-    title.Text = dropdownConfig.Text or "Select Island"
+    title.Text = dropdownConfig.Text or "Select Option"
     title.TextColor3 = Color3.fromRGB(200, 200, 200)
     title.Font = Enum.Font.GothamMedium
     title.TextSize = 15
@@ -555,14 +554,14 @@ function Window:CreateDropdown(tabName, dropdownConfig)
 
     local dropdownList = Instance.new("Frame", tab)
     dropdownList.Size = UDim2.new(1, -20, 0, 0)
-    dropdownList.Position = UDim2.new(0, 10, 0, dropdownFrame.Position.Y.Offset + 45)
+    dropdownList.Position = UDim2.new(0, 10, 0, dropdownFrame.Position.Y.Offset + 36)
     dropdownList.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    dropdownList.Visible = false
     dropdownList.ClipsDescendants = true
+    dropdownList.Visible = false
     dropdownList.ZIndex = 5
+    dropdownList.AutomaticSize = Enum.AutomaticSize.Y
 
-    local dropdownCorner = Instance.new("UICorner", dropdownList)
-    dropdownCorner.CornerRadius = UDim.new(0, 8)
+    Instance.new("UICorner", dropdownList).CornerRadius = UDim.new(0, 8)
 
     local listLayout = Instance.new("UIListLayout", dropdownList)
     listLayout.Padding = UDim.new(0, 2)
@@ -571,15 +570,8 @@ function Window:CreateDropdown(tabName, dropdownConfig)
     local isOpen = false
     toggleButton.MouseButton1Click:Connect(function()
         isOpen = not isOpen
-        dropdownList.Visible = true
-        local targetHeight = isOpen and (#dropdownConfig.Options * 38 + 8) or 0
+        dropdownList.Visible = isOpen
         arrowIcon.Text = isOpen and "˅" or "˄"
-        dropdownList:TweenSize(UDim2.new(1, -20, 0, targetHeight), "Out", "Quad", 0.25, true)
-        if not isOpen then
-            task.delay(0.25, function()
-                dropdownList.Visible = false
-            end)
-        end
     end)
 
     for _, option in ipairs(dropdownConfig.Options) do
@@ -593,8 +585,7 @@ function Window:CreateDropdown(tabName, dropdownConfig)
         optBtn.AutoButtonColor = false
         optBtn.ZIndex = 6
 
-        local corner = Instance.new("UICorner", optBtn)
-        corner.CornerRadius = UDim.new(0, 6)
+        Instance.new("UICorner", optBtn).CornerRadius = UDim.new(0, 6)
 
         optBtn.MouseEnter:Connect(function()
             optBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
@@ -609,11 +600,8 @@ function Window:CreateDropdown(tabName, dropdownConfig)
                 dropdownConfig.Callback(option)
             end
             isOpen = false
+            dropdownList.Visible = false
             arrowIcon.Text = "˄"
-            dropdownList:TweenSize(UDim2.new(1, -20, 0, 0), "Out", "Quad", 0.25, true)
-            task.delay(0.25, function()
-                dropdownList.Visible = false
-            end)
         end)
     end
 end
@@ -654,7 +642,6 @@ function Window:CreateSlider(tabName, sliderConfig)
     title.BackgroundTransparency = 1
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.ZIndex = 3
-    title.TextYAlignment = Enum.TextYAlignment.Center
 
     local desc = Instance.new("TextLabel", bg)
     desc.Size = UDim2.new(1, -20, 0, 11)
@@ -666,7 +653,6 @@ function Window:CreateSlider(tabName, sliderConfig)
     desc.BackgroundTransparency = 1
     desc.TextXAlignment = Enum.TextXAlignment.Left
     desc.ZIndex = 3
-    desc.TextYAlignment = Enum.TextYAlignment.Center
 
     local valueLabel = Instance.new("TextLabel", bg)
     valueLabel.Size = UDim2.new(0, 50, 0, 16)
@@ -677,7 +663,6 @@ function Window:CreateSlider(tabName, sliderConfig)
     valueLabel.BackgroundTransparency = 1
     valueLabel.TextXAlignment = Enum.TextXAlignment.Right
     valueLabel.ZIndex = 3
-    valueLabel.TextYAlignment = Enum.TextYAlignment.Center
 
     local bar = Instance.new("Frame", bg)
     bar.Size = UDim2.new(1, -20, 0, 8)
