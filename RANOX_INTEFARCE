@@ -390,7 +390,7 @@ function Window:CreateToggle(tabName, toggleConfig)
     if not tab then return end
 
     local toggleFrame = Instance.new("Frame", tab)
-    toggleFrame.Size = UDim2.new(1, -20, 0, 50)
+    toggleFrame.Size = UDim2.new(1, -20, 0, 40) -- altura reduzida 20%
     toggleFrame.Position = UDim2.new(0, 10, 0, 0)
     toggleFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     toggleFrame.BackgroundTransparency = 0
@@ -399,8 +399,8 @@ function Window:CreateToggle(tabName, toggleConfig)
     Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 8)
 
     local title = Instance.new("TextLabel", toggleFrame)
-    title.Size = UDim2.new(1, -60, 0, 20)
-    title.Position = UDim2.new(0, 12, 0, 6)
+    title.Size = UDim2.new(1, -60, 0, 18)
+    title.Position = UDim2.new(0, 12, 0, 4) -- ajustado para cima
     title.BackgroundTransparency = 1
     title.Text = toggleConfig.Text or "Toggle"
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -409,8 +409,8 @@ function Window:CreateToggle(tabName, toggleConfig)
     title.TextXAlignment = Enum.TextXAlignment.Left
 
     local description = Instance.new("TextLabel", toggleFrame)
-    description.Size = UDim2.new(1, -60, 0, 18)
-    description.Position = UDim2.new(0, 12, 0, 26)
+    description.Size = UDim2.new(1, -60, 0, 16)
+    description.Position = UDim2.new(0, 12, 0, 22)
     description.BackgroundTransparency = 1
     description.Text = toggleConfig.Description or "Descrição"
     description.TextColor3 = Color3.fromRGB(170, 170, 170)
