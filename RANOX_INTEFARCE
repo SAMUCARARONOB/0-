@@ -400,24 +400,26 @@ function Window:CreateToggle(tabName, toggleConfig)
     Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 8)
 
     local title = Instance.new("TextLabel", toggleFrame)
-    title.Size = UDim2.new(1, -60, 0, 18)
-    title.Position = UDim2.new(0, 12, 0, 4) -- ajustado para cima
-    title.BackgroundTransparency = 1
     title.Text = toggleConfig.Text or "Toggle"
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
     title.Font = Enum.Font.GothamMedium
     title.TextSize = 14
     title.TextXAlignment = Enum.TextXAlignment.Left
+    title.TextYAlignment = Enum.TextYAlignment.Top
+    title.BackgroundTransparency = 1
+    title.Size = UDim2.new(0, title.TextBounds.X + 20, 0, title.TextBounds.Y + 4) -- Ajusta automaticamente com base no texto
+    title.Position = UDim2.new(0, 12, 0, 4)
 
     local description = Instance.new("TextLabel", toggleFrame)
-    description.Size = UDim2.new(1, -60, 0, 16)
-    description.Position = UDim2.new(0, 12, 0, 22)
-    description.BackgroundTransparency = 1
     description.Text = toggleConfig.Description or "Descrição"
     description.TextColor3 = Color3.fromRGB(170, 170, 170)
     description.Font = Enum.Font.Gotham
     description.TextSize = 12
     description.TextXAlignment = Enum.TextXAlignment.Left
+    description.TextYAlignment = Enum.TextYAlignment.Top
+    description.BackgroundTransparency = 1
+    description.Size = UDim2.new(0, description.TextBounds.X + 20, 0, description.TextBounds.Y + 4) -- Ajusta automaticamente com base no texto
+    description.Position = UDim2.new(0, 12, 0, title.Position.Y.Offset + title.Size.Y.Offset + 2)
 
     local switch = Instance.new("Frame", toggleFrame)
     switch.Size = UDim2.new(0, 40, 0, 22)
@@ -486,7 +488,7 @@ function Window:CreateDropdown(tabName, dropdownConfig)
     if not tab then return end
 
     local dropdownFrame = Instance.new("Frame", tab)
-    dropdownFrame.Size = UDim2.new(1, -20, 0, 40)
+    dropdownFrame.Size = UDim2.new(1, -20, 0, 32)
     dropdownFrame.Position = UDim2.new(0, 10, 0, 0)
     dropdownFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     dropdownFrame.BorderSizePixel = 0
@@ -496,25 +498,27 @@ function Window:CreateDropdown(tabName, dropdownConfig)
     uiCorner.CornerRadius = UDim.new(0, 8)
 
     local title = Instance.new("TextLabel", dropdownFrame)
-    title.Size = UDim2.new(0.5, -20, 1, 0)
-    title.Position = UDim2.new(0, 12, 0, 0)
     title.BackgroundTransparency = 1
     title.Text = dropdownConfig.Text or "Select Island"
     title.TextColor3 = Color3.fromRGB(200, 200, 200)
     title.Font = Enum.Font.GothamMedium
     title.TextSize = 15
     title.TextXAlignment = Enum.TextXAlignment.Left
+    title.TextYAlignment = Enum.TextYAlignment.Center
+    title.Size = UDim2.new(0, title.TextBounds.X + 10, 1, 0)
+    title.Position = UDim2.new(0, 12, 0, 0)
     title.ZIndex = 3
 
     local selectedLabel = Instance.new("TextLabel", dropdownFrame)
-    selectedLabel.Size = UDim2.new(0.4, -30, 1, 0)
-    selectedLabel.Position = UDim2.new(0.6, 0, 0, 0)
     selectedLabel.BackgroundTransparency = 1
     selectedLabel.Text = dropdownConfig.Default or "None"
     selectedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     selectedLabel.Font = Enum.Font.GothamBold
     selectedLabel.TextSize = 15
     selectedLabel.TextXAlignment = Enum.TextXAlignment.Right
+    selectedLabel.TextYAlignment = Enum.TextYAlignment.Center
+    selectedLabel.Size = UDim2.new(0, selectedLabel.TextBounds.X + 10, 1, 0)
+    selectedLabel.Position = UDim2.new(0.6, 0, 0, 0)
     selectedLabel.ZIndex = 3
 
     local arrowIcon = Instance.new("TextLabel", dropdownFrame)
@@ -613,7 +617,7 @@ function Window:CreateSlider(tabName, sliderConfig)
     layout.SortOrder = Enum.SortOrder.LayoutOrder
 
     local bg = Instance.new("Frame", sliderHolder)
-    bg.Size = UDim2.new(1, 0, 0, 70)
+    bg.Size = UDim2.new(1, 0, 0, 56)
     bg.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     bg.BorderSizePixel = 0
     bg.ZIndex = 2
@@ -625,7 +629,7 @@ function Window:CreateSlider(tabName, sliderConfig)
     border.Transparency = 0.6
 
     local title = Instance.new("TextLabel", bg)
-    title.Size = UDim2.new(1, -60, 0, 18)
+    title.Size = UDim2.new(1, -60, 0, 16)
     title.Position = UDim2.new(0, 10, 0, 4)
     title.Text = sliderConfig.Text or "Slider"
     title.TextColor3 = Color3.fromRGB(220, 220, 220)
@@ -634,9 +638,10 @@ function Window:CreateSlider(tabName, sliderConfig)
     title.BackgroundTransparency = 1
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.ZIndex = 3
+    title.TextYAlignment = Enum.TextYAlignment.Center
 
     local desc = Instance.new("TextLabel", bg)
-    desc.Size = UDim2.new(1, -20, 0, 14)
+    desc.Size = UDim2.new(1, -20, 0, 11)
     desc.Position = UDim2.new(0, 10, 0, 22)
     desc.Text = sliderConfig.Description or "Descrição do slider"
     desc.TextColor3 = Color3.fromRGB(170, 170, 170)
@@ -645,9 +650,10 @@ function Window:CreateSlider(tabName, sliderConfig)
     desc.BackgroundTransparency = 1
     desc.TextXAlignment = Enum.TextXAlignment.Left
     desc.ZIndex = 3
+    desc.TextYAlignment = Enum.TextYAlignment.Center
 
     local valueLabel = Instance.new("TextLabel", bg)
-    valueLabel.Size = UDim2.new(0, 50, 0, 18)
+    valueLabel.Size = UDim2.new(0, 50, 0, 16)
     valueLabel.Position = UDim2.new(1, -60, 0, 4)
     valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     valueLabel.TextSize = 14
@@ -655,9 +661,10 @@ function Window:CreateSlider(tabName, sliderConfig)
     valueLabel.BackgroundTransparency = 1
     valueLabel.TextXAlignment = Enum.TextXAlignment.Right
     valueLabel.ZIndex = 3
+    valueLabel.TextYAlignment = Enum.TextYAlignment.Center
 
     local bar = Instance.new("Frame", bg)
-    bar.Size = UDim2.new(1, -20, 0, 10)
+    bar.Size = UDim2.new(1, -20, 0, 8)
     bar.Position = UDim2.new(0, 10, 0, 45)
     bar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     bar.BorderSizePixel = 0
