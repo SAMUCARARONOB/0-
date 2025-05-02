@@ -1574,7 +1574,23 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
     layout.Padding = UDim.new(0, 10)
     layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
-    local function createColorBox(titleText, defaultColor, onColorChanged)
+    local function hexToColor3(hex)
+        hex = hex:gsub("#","")
+        if #hex == 6 then
+            return Color3.fromRGB(tonumber("0x"..hex:sub(1,2)), tonumber("0x"..hex:sub(3,4)), tonumber("0x"..hex:sub(5,6)))
+        end
+        return nil
+    end
+
+    local function rgbToColor3(str)
+        local r, g, b = str:match("(%d+)[%.%,%s]+(%d+)[%.%,%s]+(%d+)")
+        if r and g and b then
+            return Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b))
+        end
+        return nil
+    end
+
+    local function createColorBox(titleText, default1, default2, mode)
         local box = Instance.new("Frame", container)
         box.Size = UDim2.new(0.5, -15, 0, 300)
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
@@ -1596,107 +1612,61 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
         title.Position = UDim2.new(0, 10, 0, 10)
         title.TextXAlignment = Enum.TextXAlignment.Left
 
-        local preview = Instance.new("Frame", box)
-        preview.Position = UDim2.new(0, 10, 0, 50)
-        preview.Size = UDim2.new(0, 30, 0, 30)
-        preview.BackgroundColor3 = defaultColor
-        Instance.new("UICorner", preview).CornerRadius = UDim.new(0, 6)
+        local preview1 = Instance.new("Frame", box)
+        preview1.Position = UDim2.new(0, 10, 0, 50)
+        preview1.Size = UDim2.new(0, 30, 0, 30)
+        preview1.BackgroundColor3 = default1
+        Instance.new("UICorner", preview1).CornerRadius = UDim.new(0, 6)
 
-        local hexBox = Instance.new("TextBox", box)
-        hexBox.PlaceholderText = "#FF0000"
-        hexBox.Text = ""
-        hexBox.Size = UDim2.new(1, -60, 0, 30)
-        hexBox.Position = UDim2.new(0, 50, 0, 50)
-        hexBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-        hexBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-        hexBox.Font = Enum.Font.Gotham
-        hexBox.TextSize = 14
-        hexBox.ClearTextOnFocus = false
-        Instance.new("UICorner", hexBox).CornerRadius = UDim.new(0, 6)
+        local preview2 = Instance.new("Frame", box)
+        preview2.Position = UDim2.new(0, 10, 0, 90)
+        preview2.Size = UDim2.new(0, 30, 0, 30)
+        preview2.BackgroundColor3 = default2
+        Instance.new("UICorner", preview2).CornerRadius = UDim.new(0, 6)
 
-        local r, g, b = defaultColor.R * 255, defaultColor.G * 255, defaultColor.B * 255
+        local hexBox1 = Instance.new("TextBox", box)
+        hexBox1.PlaceholderText = "#FF0000 ou 255.0.0"
+        hexBox1.Text = ""
+        hexBox1.Size = UDim2.new(1, -60, 0, 30)
+        hexBox1.Position = UDim2.new(0, 50, 0, 50)
+        hexBox1.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        hexBox1.TextColor3 = Color3.fromRGB(255, 255, 255)
+        hexBox1.Font = Enum.Font.Gotham
+        hexBox1.TextSize = 14
+        hexBox1.ClearTextOnFocus = false
 
-        local function updateAll(color)
-            preview.BackgroundColor3 = color
-            onColorChanged(color)
-        end
+        local hexBox2 = hexBox1:Clone()
+        hexBox2.Position = UDim2.new(0, 50, 0, 90)
+        hexBox2.Parent = box
 
-        local function applyHex()
-            local hex = hexBox.Text:gsub("#", "")
-            if #hex == 6 then
-                local rVal = tonumber(hex:sub(1, 2), 16)
-                local gVal = tonumber(hex:sub(3, 4), 16)
-                local bVal = tonumber(hex:sub(5, 6), 16)
-                if rVal and gVal and bVal then
-                    r, g, b = rVal, gVal, bVal
-                    updateAll(Color3.fromRGB(r, g, b))
+        hexBox1.Parent = box
+
+        local function applyColor()
+            local c1 = hexToColor3(hexBox1.Text) or rgbToColor3(hexBox1.Text)
+            local c2 = hexToColor3(hexBox2.Text) or rgbToColor3(hexBox2.Text)
+            if c1 and c2 then
+                preview1.BackgroundColor3 = c1
+                preview2.BackgroundColor3 = c2
+                if mode == "interface" then
+                    AtualizarCorInterface(c1, c1, c2)
+                elseif mode == "titulo" then
+                    title.TextColor3 = c1
+                    if subtitle then subtitle.TextColor3 = c2 end
                 end
             end
         end
 
-        hexBox.FocusLost:Connect(applyHex)
+        hexBox1.FocusLost:Connect(function(enter)
+            if enter then applyColor() end
+        end)
 
-        local function makeRGBSlider(label, yPos, get, set)
-            local lbl = Instance.new("TextLabel", box)
-            lbl.Position = UDim2.new(0, 10, 0, yPos)
-            lbl.Size = UDim2.new(0, 20, 0, 20)
-            lbl.Text = label
-            lbl.Font = Enum.Font.Gotham
-            lbl.TextSize = 13
-            lbl.TextColor3 = Color3.fromRGB(255, 255, 255)
-            lbl.BackgroundTransparency = 1
-            lbl.TextXAlignment = Enum.TextXAlignment.Left
-
-            local input = Instance.new("TextBox", box)
-            input.Position = UDim2.new(0, 50, 0, yPos)
-            input.Size = UDim2.new(1, -60, 0, 20)
-            input.Text = tostring(get())
-            input.Font = Enum.Font.Gotham
-            input.TextSize = 13
-            input.TextColor3 = Color3.fromRGB(255, 255, 255)
-            input.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-            input.ClearTextOnFocus = false
-            Instance.new("UICorner", input).CornerRadius = UDim.new(0, 6)
-
-            input.FocusLost:Connect(function()
-                local value = tonumber(input.Text)
-                if value and value >= 0 and value <= 255 then
-                    set(value)
-                    updateAll(Color3.fromRGB(r, g, b))
-                end
-            end)
-        end
-
-        makeRGBSlider("R", 100, function() return r end, function(v) r = v end)
-        makeRGBSlider("G", 130, function() return g end, function(v) g = v end)
-        makeRGBSlider("B", 160, function() return b end, function(v) b = v end)
-
-        updateAll(Color3.fromRGB(r, g, b))
+        hexBox2.FocusLost:Connect(function(enter)
+            if enter then applyColor() end
+        end)
     end
 
-    createColorBox("COR DA INTERFACE", Color3.fromRGB(255, 0, 0), function(color)
-        for _, v in ipairs(mainFrame:GetDescendants()) do
-            if v:IsA("UIGradient") then
-                v.Color = ColorSequence.new{
-                    ColorSequenceKeypoint.new(0, color),
-                    ColorSequenceKeypoint.new(1, color)
-                }
-            elseif v:IsA("Frame") or v:IsA("TextLabel") or v:IsA("TextButton") then
-                if v.Name ~= "Title" and v.Name ~= "Subtitle" then
-                    v.BackgroundColor3 = color
-                end
-            end
-        end
-    end)
-
-    createColorBox("COR DO TÍTULO", Color3.fromRGB(255, 0, 0), function(color)
-        if mainFrame:FindFirstChild("Title") then
-            mainFrame.Title.TextColor3 = color
-        end
-        if mainFrame:FindFirstChild("Subtitle") then
-            mainFrame.Subtitle.TextColor3 = color
-        end
-    end)
+    createColorBox("COR DA INTERFACE", Color3.fromRGB(255, 255, 255), Color3.fromRGB(0, 0, 0), "interface")
+    createColorBox("COR DO TÍTULO", Color3.fromRGB(255, 255, 255), Color3.fromRGB(255, 0, 255), "titulo")
 
     return container
 end
