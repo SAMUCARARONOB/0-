@@ -32,8 +32,8 @@ header.Parent = mainFrame
 
 local headerGradient = Instance.new("UIGradient")
 headerGradient.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 255)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
 }
 headerGradient.Rotation = 90
 headerGradient.Parent = header
@@ -75,21 +75,21 @@ ballCorner.CornerRadius = UDim.new(1, 0)
 ballCorner.Parent = ballButton
 
 hideButton.MouseButton1Click:Connect(function()
-	local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-	local tweenSize = TweenService:Create(mainFrame, tweenInfo, { Size = UDim2.new(0, 0, 0, 0) })
-	tweenSize:Play()
-	tweenSize.Completed:Connect(function()
-		mainFrame.Visible = false
-		ballButton.Visible = true
-	end)
+    local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tweenSize = TweenService:Create(mainFrame, tweenInfo, { Size = UDim2.new(0, 0, 0, 0) })
+    tweenSize:Play()
+    tweenSize.Completed:Connect(function()
+        mainFrame.Visible = false
+        ballButton.Visible = true
+    end)
 end)
 
 ballButton.MouseButton1Click:Connect(function()
-	mainFrame.Visible = true
-	local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-	local tweenSize = TweenService:Create(mainFrame, tweenInfo, { Size = UDim2.new(0, 500, 0, 375) })
-	tweenSize:Play()
-	ballButton.Visible = false
+    mainFrame.Visible = true
+    local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tweenSize = TweenService:Create(mainFrame, tweenInfo, { Size = UDim2.new(0, 500, 0, 375) })
+    tweenSize:Play()
+    ballButton.Visible = false
 end)
 
 local tabHolder = Instance.new("Frame")
@@ -115,97 +115,97 @@ local tabs = {}
 local firstTab = nil
 
 function Ranox:CreateWindow(config)
-	title.Text = config.Name or "RANOX"
+    title.Text = config.Name or "RANOX"
 
-	return {
-		CreateTab = function(_, tabName)
-			local tabButton = Instance.new("TextButton")
-			tabButton.Text = tabName
-			tabButton.Size = UDim2.new(0, 100, 0, 27)
-			tabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-			tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-			tabButton.Font = Enum.Font.GothamBold
-			tabButton.TextSize = 14
-			tabButton.AutoButtonColor = false
-			tabButton.Parent = tabHolder
+    return {
+        CreateTab = function(_, tabName)
+            local tabButton = Instance.new("TextButton")
+            tabButton.Text = tabName
+            tabButton.Size = UDim2.new(0, 100, 0, 27)
+            tabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            tabButton.Font = Enum.Font.GothamBold
+            tabButton.TextSize = 14
+            tabButton.AutoButtonColor = false
+            tabButton.Parent = tabHolder
 
-			local tabCorner = Instance.new("UICorner")
-			tabCorner.CornerRadius = UDim.new(0, 6)
-			tabCorner.Parent = tabButton
+            local tabCorner = Instance.new("UICorner")
+            tabCorner.CornerRadius = UDim.new(0, 6)
+            tabCorner.Parent = tabButton
 
-			tabButton.MouseEnter:Connect(function()
-				tabButton.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
-			end)
-			tabButton.MouseLeave:Connect(function()
-				tabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-			end)
+            tabButton.MouseEnter:Connect(function()
+                tabButton.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+            end)
+            tabButton.MouseLeave:Connect(function()
+                tabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            end)
 
-			local scrollFrame = Instance.new("ScrollingFrame")
-			scrollFrame.Size = UDim2.new(1, -20, 1, -10)
-			scrollFrame.Position = UDim2.new(0, 10, 0, 5)
-			scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-			scrollFrame.ScrollBarThickness = 6
-			scrollFrame.ScrollingDirection = Enum.ScrollingDirection.Y
-			scrollFrame.BackgroundTransparency = 1
-			scrollFrame.BorderSizePixel = 0
-			scrollFrame.Parent = tabPages
+            local scrollFrame = Instance.new("ScrollingFrame")
+            scrollFrame.Size = UDim2.new(1, -20, 1, -10)
+            scrollFrame.Position = UDim2.new(0, 10, 0, 5)
+            scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+            scrollFrame.ScrollBarThickness = 6
+            scrollFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+            scrollFrame.BackgroundTransparency = 1
+            scrollFrame.BorderSizePixel = 0
+            scrollFrame.Parent = tabPages
 
-			local layout = Instance.new("UIListLayout")
-			layout.FillDirection = Enum.FillDirection.Vertical
-			layout.Padding = UDim.new(0.01, 0)
-			layout.SortOrder = Enum.SortOrder.LayoutOrder
-			layout.Parent = scrollFrame
+            local layout = Instance.new("UIListLayout")
+            layout.FillDirection = Enum.FillDirection.Vertical
+            layout.Padding = UDim.new(0.01, 0)
+            layout.SortOrder = Enum.SortOrder.LayoutOrder
+            layout.Parent = scrollFrame
 
-			layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-				scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 20)
-			end)
+            layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+                scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 20)
+            end)
 
-			tabButton.MouseButton1Click:Connect(function()
-				for _, tab in pairs(tabs) do
-					tab.Visible = false
-				end
-				scrollFrame.Visible = true
-			end)
+            tabButton.MouseButton1Click:Connect(function()
+                for _, tab in pairs(tabs) do
+                    tab.Visible = false
+                end
+                scrollFrame.Visible = true
+            end)
 
-			table.insert(tabs, scrollFrame)
+            table.insert(tabs, scrollFrame)
 
-			if not firstTab then
-				firstTab = scrollFrame
-				scrollFrame.Visible = true
-			else
-				scrollFrame.Visible = false
-			end
+            if not firstTab then
+                firstTab = scrollFrame
+                scrollFrame.Visible = true
+            else
+                scrollFrame.Visible = false
+            end
 
-			return {
-				CreateButton = function(_, buttonConfig)
-					local button = Instance.new("TextButton")
-					button.Text = buttonConfig.Name or "Botão"
-					button.Size = UDim2.new(1, -10, 0, 32)
-					button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-					button.BorderSizePixel = 0
-					button.TextColor3 = Color3.fromRGB(255, 255, 255)
-					button.Font = Enum.Font.Gotham
-					button.TextSize = 14
-					button.Parent = scrollFrame
+            return {
+                CreateButton = function(_, buttonConfig)
+                    local button = Instance.new("TextButton")
+                    button.Text = buttonConfig.Name or "Botão"
+                    button.Size = UDim2.new(1, -10, 0, 32)
+                    button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+                    button.BorderSizePixel = 0
+                    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    button.Font = Enum.Font.Gotham
+                    button.TextSize = 14
+                    button.Parent = scrollFrame
 
-					local btnCorner = Instance.new("UICorner")
-					btnCorner.CornerRadius = UDim.new(0, 6)
-					btnCorner.Parent = button
+                    local btnCorner = Instance.new("UICorner")
+                    btnCorner.CornerRadius = UDim.new(0, 6)
+                    btnCorner.Parent = button
 
-					button.MouseEnter:Connect(function()
-						button.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
-					end)
-					button.MouseLeave:Connect(function()
-						button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-					end)
+                    button.MouseEnter:Connect(function()
+                        button.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+                    end)
+                    button.MouseLeave:Connect(function()
+                        button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+                    end)
 
-					if buttonConfig.Callback then
-						button.MouseButton1Click:Connect(buttonConfig.Callback)
-					end
-				end,
-			}
-		end,
-	}
+                    if buttonConfig.Callback then
+                        button.MouseButton1Click:Connect(buttonConfig.Callback)
+                    end
+                end,
+            }
+        end,
+    }
 end
 
 return Ranox
