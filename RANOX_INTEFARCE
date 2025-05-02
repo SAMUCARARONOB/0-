@@ -33,9 +33,9 @@ local scrollHolder = Instance.new("ScrollingFrame")
 scrollHolder.Name = "scrollHolder"
 scrollHolder.Size = UDim2.new(1, -139, 1, -35)
 scrollHolder.Position = UDim2.new(0, 144, 0, 30)
-scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
-scrollHolder.ScrollBarThickness = 6
 scrollHolder.BackgroundTransparency = 1
+scrollHolder.ScrollBarThickness = 6
+scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
 scrollHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
 scrollHolder.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 scrollHolder.ClipsDescendants = true
@@ -45,6 +45,13 @@ local layout = Instance.new("UIListLayout")
 layout.Padding = UDim.new(0, 6)
 layout.SortOrder = Enum.SortOrder.LayoutOrder
 layout.Parent = scrollHolder
+
+local padding = Instance.new("UIPadding")
+padding.PaddingTop = UDim.new(0, 6)
+padding.PaddingBottom = UDim.new(0, 6)
+padding.PaddingLeft = UDim.new(0, 6)
+padding.PaddingRight = UDim.new(0, 6)
+padding.Parent = scrollHolder
 
 local stroke = Instance.new("UIStroke")
 stroke.Thickness = 1.5
