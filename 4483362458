@@ -1,122 +1,237 @@
 local Ranox = {}
 
-local Players = game:GetService("Players") local TweenService = game:GetService("TweenService") local player = Players.LocalPlayer
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local player = Players.LocalPlayer
 
-local mainUI = Instance.new("ScreenGui") mainUI.Name = "RanoxUI" mainUI.ResetOnSpawn = false mainUI.IgnoreGuiInset = true mainUI.Parent = player:WaitForChild("PlayerGui")
+local mainUI = Instance.new("ScreenGui")
+mainUI.Name = "RanoxUI"
+mainUI.ResetOnSpawn = false
+mainUI.IgnoreGuiInset = true
+mainUI.Parent = player:WaitForChild("PlayerGui")
 
-local mainFrame = Instance.new("Frame") mainFrame.Size = UDim2.new(0, 520, 0, 390) mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0) mainFrame.AnchorPoint = Vector2.new(0.5, 0.5) mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20) mainFrame.BorderSizePixel = 0 mainFrame.Active = true mainFrame.Draggable = true mainFrame.Parent = mainUI
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 520, 0, 390)
+mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Parent = mainUI
 
-local mainCorner = Instance.new("UICorner") mainCorner.CornerRadius = UDim.new(0, 12) mainCorner.Parent = mainFrame
+local roundCorner = Instance.new("UICorner")
+roundCorner.CornerRadius = UDim.new(0, 12)
+roundCorner.Parent = mainFrame
 
-local header = Instance.new("Frame") header.Size = UDim2.new(1, 0, 0, 36) header.BackgroundColor3 = Color3.fromRGB(25, 25, 35) header.BorderSizePixel = 0 header.Parent = mainFrame
+local header = Instance.new("Frame")
+header.Size = UDim2.new(1, 0, 0, 36)
+header.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+header.BorderSizePixel = 0
+header.Parent = mainFrame
 
-local headerGradient = Instance.new("UIGradient") headerGradient.Color = ColorSequence.new{ ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 200)), ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 180, 255)) } headerGradient.Rotation = 90 headerGradient.Parent = header
-
-local title = Instance.new("TextLabel") title.Text = "RANOX" title.Size = UDim2.new(1, -36, 1, 0) title.Position = UDim2.new(0, 12, 0, 0) title.BackgroundTransparency = 1 title.TextColor3 = Color3.fromRGB(255, 255, 255) title.Font = Enum.Font.GothamBold title.TextSize = 20 title.TextXAlignment = Enum.TextXAlignment.Left title.TextStrokeTransparency = 0.6 title.Parent = header
-
-local hideButton = Instance.new("ImageButton") hideButton.Size = UDim2.new(0, 24, 0, 24) hideButton.Position = UDim2.new(1, -30, 0.5, 0) hideButton.AnchorPoint = Vector2.new(0.5, 0.5) hideButton.BackgroundTransparency = 1 hideButton.Image = "rbxassetid://7072719338" hideButton.ImageColor3 = Color3.fromRGB(255, 255, 255) hideButton.Parent = header
-
-local ballButton = Instance.new("ImageButton") ballButton.Size = UDim2.new(0, 44, 0, 44) ballButton.Position = UDim2.new(0.05, 0, 0.9, 0) ballButton.AnchorPoint = Vector2.new(0.5, 0.5) ballButton.BackgroundColor3 = Color3.fromRGB(40, 40, 50) ballButton.Image = "rbxassetid://6337069410" ballButton.Visible = false ballButton.Active = true ballButton.Draggable = true ballButton.Parent = mainUI
-
-local ballCorner = Instance.new("UICorner") ballCorner.CornerRadius = UDim.new(1, 0) ballCorner.Parent = ballButton
-
-hideButton.MouseButton1Click:Connect(function() local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) local tweenSize = TweenService:Create(mainFrame, tweenInfo, { Size = UDim2.new(0, 0, 0, 0) }) tweenSize:Play() tweenSize.Completed:Connect(function() mainFrame.Visible = false ballButton.Visible = true end) end)
-
-ballButton.MouseButton1Click:Connect(function() mainFrame.Visible = true local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) local tweenSize = TweenService:Create(mainFrame, tweenInfo, { Size = UDim2.new(0, 520, 0, 390) }) tweenSize:Play() ballButton.Visible = false end)
-
-local tabHolder = Instance.new("Frame") tabHolder.Size = UDim2.new(1, 0, 0, 36) tabHolder.Position = UDim2.new(0, 0, 0, 36) tabHolder.BackgroundColor3 = Color3.fromRGB(20, 20, 30) tabHolder.BorderSizePixel = 0 tabHolder.Parent = mainFrame
-
-local tabLayout = Instance.new("UIListLayout") tabLayout.FillDirection = Enum.FillDirection.Horizontal tabLayout.Padding = UDim.new(0, 6) tabLayout.SortOrder = Enum.SortOrder.LayoutOrder tabLayout.Parent = tabHolder
-
-local tabPages = Instance.new("Frame") tabPages.Size = UDim2.new(1, 0, 1, -72) tabPages.Position = UDim2.new(0, 0, 0, 72) tabPages.BackgroundTransparency = 1 tabPages.ClipsDescendants = true tabPages.Parent = mainFrame
-
-local tabs = {} local firstTab = nil
-
-function Ranox:CreateWindow(config) title.Text = config.Name or "RANOX" return { CreateTab = function(_, tabName) local tabButton = Instance.new("TextButton") tabButton.Text = tabName tabButton.Size = UDim2.new(0, 110, 0, 32) tabButton.BackgroundColor3 = Color3.fromRGB(35, 35, 45) tabButton.TextColor3 = Color3.fromRGB(255, 255, 255) tabButton.Font = Enum.Font.GothamSemibold tabButton.TextSize = 14 tabButton.AutoButtonColor = false tabButton.Parent = tabHolder
-
-local tabCorner = Instance.new("UICorner")
-        tabCorner.CornerRadius = UDim.new(0, 8)
-        tabCorner.Parent = tabButton
-
-        tabButton.MouseEnter:Connect(function()
-            tabButton.BackgroundColor3 = Color3.fromRGB(45, 65, 85)
-        end)
-        tabButton.MouseLeave:Connect(function()
-            tabButton.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
-        end)
-
-        local scrollFrame = Instance.new("ScrollingFrame")
-        scrollFrame.Size = UDim2.new(1, -10, 1, -10)
-        scrollFrame.Position = UDim2.new(0, 5, 0, 5)
-        scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-        scrollFrame.ScrollBarThickness = 6
-        scrollFrame.ScrollingDirection = Enum.ScrollingDirection.Y
-        scrollFrame.BackgroundTransparency = 1
-        scrollFrame.BorderSizePixel = 0
-        scrollFrame.Visible = false
-        scrollFrame.Parent = tabPages
-
-        local padding = Instance.new("UIPadding")
-        padding.PaddingTop = UDim.new(0, 8)
-        padding.PaddingBottom = UDim.new(0, 8)
-        padding.PaddingLeft = UDim.new(0, 8)
-        padding.PaddingRight = UDim.new(0, 8)
-        padding.Parent = scrollFrame
-
-        local layout = Instance.new("UIListLayout")
-        layout.FillDirection = Enum.FillDirection.Vertical
-        layout.Padding = UDim.new(0, 8)
-        layout.SortOrder = Enum.SortOrder.LayoutOrder
-        layout.Parent = scrollFrame
-
-        layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 16)
-        end)
-
-        tabButton.MouseButton1Click:Connect(function()
-            for _, tab in pairs(tabs) do
-                tab.Visible = false
-            end
-            scrollFrame.Visible = true
-        end)
-
-        table.insert(tabs, scrollFrame)
-        if not firstTab then
-            firstTab = scrollFrame
-            scrollFrame.Visible = true
-        end
-
-        return {
-            CreateButton = function(_, buttonConfig)
-                local button = Instance.new("TextButton")
-                button.Text = buttonConfig.Name or "Botão"
-                button.Size = UDim2.new(1, -16, 0, 34)
-                button.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
-                button.BorderSizePixel = 0
-                button.TextColor3 = Color3.fromRGB(255, 255, 255)
-                button.Font = Enum.Font.Gotham
-                button.TextSize = 14
-                button.Parent = scrollFrame
-
-                local btnCorner = Instance.new("UICorner")
-                btnCorner.CornerRadius = UDim.new(0, 8)
-                btnCorner.Parent = button
-
-                button.MouseEnter:Connect(function()
-                    button.BackgroundColor3 = Color3.fromRGB(55, 85, 115)
-                end)
-                button.MouseLeave:Connect(function()
-                    button.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
-                end)
-
-                if buttonConfig.Callback then
-                    button.MouseButton1Click:Connect(buttonConfig.Callback)
-                end
-            end,
-        }
-    end,
+local headerGradient = Instance.new("UIGradient")
+headerGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 200)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
 }
+headerGradient.Rotation = 90
+headerGradient.Parent = header
 
+local title = Instance.new("TextLabel")
+title.Text = "RANOX"
+title.Size = UDim2.new(1, -40, 1, 0)
+title.Position = UDim2.new(0, 14, 0, 0)
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.TextStrokeTransparency = 0.7
+title.Parent = header
+
+local hideButton = Instance.new("ImageButton")
+hideButton.Size = UDim2.new(0, 24, 0, 24)
+hideButton.Position = UDim2.new(1, -34, 0.5, 0)
+hideButton.AnchorPoint = Vector2.new(0.5, 0.5)
+hideButton.BackgroundTransparency = 1
+hideButton.Image = "rbxassetid://7072719338"
+hideButton.ImageColor3 = Color3.fromRGB(255, 255, 255)
+hideButton.Parent = header
+
+local ballButton = Instance.new("ImageButton")
+ballButton.Size = UDim2.new(0, 44, 0, 44)
+ballButton.Position = UDim2.new(0.05, 0, 0.9, 0)
+ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
+ballButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+ballButton.Image = "rbxassetid://6337069410"
+ballButton.Visible = false
+ballButton.Active = true
+ballButton.Draggable = true
+ballButton.Parent = mainUI
+
+local ballCorner = Instance.new("UICorner")
+ballCorner.CornerRadius = UDim.new(1, 0)
+ballCorner.Parent = ballButton
+
+hideButton.MouseButton1Click:Connect(function()
+    local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tweenSize = TweenService:Create(mainFrame, tweenInfo, { Size = UDim2.new(0, 0, 0, 0) })
+    tweenSize:Play()
+    tweenSize.Completed:Connect(function()
+        mainFrame.Visible = false
+        ballButton.Visible = true
+    end)
+end)
+
+ballButton.MouseButton1Click:Connect(function()
+    mainFrame.Visible = true
+    local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tweenSize = TweenService:Create(mainFrame, tweenInfo, { Size = UDim2.new(0, 520, 0, 390) })
+    tweenSize:Play()
+    ballButton.Visible = false
+end)
+
+local tabHolder = Instance.new("Frame")
+tabHolder.Size = UDim2.new(1, 0, 0, 36)
+tabHolder.Position = UDim2.new(0, 0, 0, 36)
+tabHolder.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+tabHolder.BorderSizePixel = 0
+tabHolder.Parent = mainFrame
+
+local tabLayout = Instance.new("UIListLayout")
+tabLayout.FillDirection = Enum.FillDirection.Horizontal
+tabLayout.Padding = UDim.new(0, 8)
+tabLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+tabLayout.Parent = tabHolder
+
+local tabPages = Instance.new("Frame")
+tabPages.Size = UDim2.new(1, 0, 1, -72)
+tabPages.Position = UDim2.new(0, 0, 0, 72)
+tabPages.BackgroundTransparency = 1
+tabPages.ClipsDescendants = true
+tabPages.Parent = mainFrame
+
+local tabs = {}
+local firstTab = nil
+
+function Ranox:CreateWindow(config)
+    title.Text = config.Name or "RANOX"
+
+    return {
+        CreateTab = function(_, tabName)
+            local tabButton = Instance.new("TextButton")
+            tabButton.Text = tabName
+            tabButton.Size = UDim2.new(0, 120, 0, 30)
+            tabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+            tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            tabButton.Font = Enum.Font.GothamBold
+            tabButton.TextSize = 15
+            tabButton.AutoButtonColor = false
+            tabButton.Parent = tabHolder
+
+            local tabCorner = Instance.new("UICorner")
+            tabCorner.CornerRadius = UDim.new(0, 8)
+            tabCorner.Parent = tabButton
+
+            local tabGlow = Instance.new("UIStroke")
+            tabGlow.Color = Color3.fromRGB(0, 170, 255)
+            tabGlow.Thickness = 1
+            tabGlow.Enabled = false
+            tabGlow.Parent = tabButton
+
+            tabButton.MouseEnter:Connect(function()
+                tabButton.BackgroundColor3 = Color3.fromRGB(55, 55, 80)
+            end)
+            tabButton.MouseLeave:Connect(function()
+                tabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+            end)
+
+            local scrollFrame = Instance.new("ScrollingFrame")
+            scrollFrame.Size = UDim2.new(1, -10, 1, -10)
+            scrollFrame.Position = UDim2.new(0, 5, 0, 5)
+            scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+            scrollFrame.ScrollBarThickness = 6
+            scrollFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+            scrollFrame.BackgroundTransparency = 1
+            scrollFrame.BorderSizePixel = 0
+            scrollFrame.Visible = false
+            scrollFrame.Parent = tabPages
+
+            local padding = Instance.new("UIPadding")
+            padding.PaddingTop = UDim.new(0, 6)
+            padding.PaddingBottom = UDim.new(0, 6)
+            padding.PaddingLeft = UDim.new(0, 6)
+            padding.PaddingRight = UDim.new(0, 6)
+            padding.Parent = scrollFrame
+
+            local layout = Instance.new("UIListLayout")
+            layout.FillDirection = Enum.FillDirection.Vertical
+            layout.Padding = UDim.new(0, 8)
+            layout.SortOrder = Enum.SortOrder.LayoutOrder
+            layout.Parent = scrollFrame
+
+            layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+                scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 12)
+            end)
+
+            tabButton.MouseButton1Click:Connect(function()
+                for _, tab in pairs(tabs) do
+                    tab.Visible = false
+                end
+                for _, btn in pairs(tabHolder:GetChildren()) do
+                    if btn:IsA("TextButton") then
+                        btn.UIStroke.Enabled = false
+                    end
+                end
+                tabGlow.Enabled = true
+                scrollFrame.Visible = true
+            end)
+
+            table.insert(tabs, scrollFrame)
+
+            if not firstTab then
+                firstTab = scrollFrame
+                tabGlow.Enabled = true
+                scrollFrame.Visible = true
+            end
+
+            return {
+                CreateButton = function(_, buttonConfig)
+                    local button = Instance.new("TextButton")
+                    button.Text = buttonConfig.Name or "Botão"
+                    button.Size = UDim2.new(1, -12, 0, 36)
+                    button.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+                    button.BorderSizePixel = 0
+                    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    button.Font = Enum.Font.Gotham
+                    button.TextSize = 14
+                    button.Parent = scrollFrame
+
+                    local btnCorner = Instance.new("UICorner")
+                    btnCorner.CornerRadius = UDim.new(0, 8)
+                    btnCorner.Parent = button
+
+                    local btnStroke = Instance.new("UIStroke")
+                    btnStroke.Color = Color3.fromRGB(0, 180, 255)
+                    btnStroke.Thickness = 1
+                    btnStroke.Transparency = 0.6
+                    btnStroke.Parent = button
+
+                    button.MouseEnter:Connect(function()
+                        button.BackgroundColor3 = Color3.fromRGB(55, 55, 75)
+                    end)
+                    button.MouseLeave:Connect(function()
+                        button.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+                    end)
+
+                    if buttonConfig.Callback then
+                        button.MouseButton1Click:Connect(buttonConfig.Callback)
+                    end
+                end,
+            }
+        end,
+    }
 end
 
 return Ranox
