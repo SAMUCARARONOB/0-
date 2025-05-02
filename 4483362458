@@ -55,7 +55,7 @@ hideButton.Size = UDim2.new(0, 24, 0, 24)
 hideButton.Position = UDim2.new(1, -34, 0.5, 0)
 hideButton.AnchorPoint = Vector2.new(0.5, 0.5)
 hideButton.BackgroundTransparency = 1
-hideButton.Image = "rbxassetid://7072719338" -- ícone de minimizar
+hideButton.Image = "rbxassetid://7072719338"
 hideButton.ImageColor3 = Color3.fromRGB(255, 255, 255)
 hideButton.Parent = header
 
@@ -141,14 +141,21 @@ function Ranox:CreateWindow(config)
             end)
 
             local scrollFrame = Instance.new("ScrollingFrame")
-            scrollFrame.Size = UDim2.new(1, -10, 1, -10)
-            scrollFrame.Position = UDim2.new(0, 5, 0, 5)
+            scrollFrame.Size = UDim2.new(1, 0, 1, 0)
             scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
             scrollFrame.ScrollBarThickness = 6
             scrollFrame.ScrollingDirection = Enum.ScrollingDirection.Y
             scrollFrame.BackgroundTransparency = 1
             scrollFrame.BorderSizePixel = 0
+            scrollFrame.Visible = false
             scrollFrame.Parent = tabPages
+
+            local padding = Instance.new("UIPadding")
+            padding.PaddingTop = UDim.new(0, 6)
+            padding.PaddingBottom = UDim.new(0, 6)
+            padding.PaddingLeft = UDim.new(0, 6)
+            padding.PaddingRight = UDim.new(0, 6)
+            padding.Parent = scrollFrame
 
             local layout = Instance.new("UIListLayout")
             layout.FillDirection = Enum.FillDirection.Vertical
@@ -157,7 +164,7 @@ function Ranox:CreateWindow(config)
             layout.Parent = scrollFrame
 
             layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-                scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 20)
+                scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 12)
             end)
 
             tabButton.MouseButton1Click:Connect(function()
@@ -172,15 +179,13 @@ function Ranox:CreateWindow(config)
             if not firstTab then
                 firstTab = scrollFrame
                 scrollFrame.Visible = true
-            else
-                scrollFrame.Visible = false
             end
 
             return {
                 CreateButton = function(_, buttonConfig)
                     local button = Instance.new("TextButton")
                     button.Text = buttonConfig.Name or "Botão"
-                    button.Size = UDim2.new(1, -10, 0, 32)
+                    button.Size = UDim2.new(1, -12, 0, 32)
                     button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
                     button.BorderSizePixel = 0
                     button.TextColor3 = Color3.fromRGB(255, 255, 255)
