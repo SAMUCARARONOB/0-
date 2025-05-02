@@ -31,8 +31,8 @@ Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
 
 local scrollHolder = Instance.new("ScrollingFrame")
 scrollHolder.Name = "scrollHolder"
-scrollHolder.Size = UDim2.new(1, 0, 1, 0)
-scrollHolder.Position = UDim2.new(0, 0, 0, 0)
+scrollHolder.Size = UDim2.new(1, -139, 1, -35)
+scrollHolder.Position = UDim2.new(0, 139, 0, 30)
 scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
 scrollHolder.ScrollBarThickness = 6
 scrollHolder.BackgroundTransparency = 1
