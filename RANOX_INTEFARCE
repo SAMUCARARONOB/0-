@@ -1684,7 +1684,6 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
             end)
         end
 
-        -- Adicionando a TextBox para entrada de cor
         local colorInputBox = Instance.new("TextBox", box)
         colorInputBox.Size = UDim2.new(1, -20, 0, 30)
         colorInputBox.Position = UDim2.new(0, 10, 0, 110)
@@ -1694,7 +1693,9 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
         colorInputBox.PlaceholderText = "Digite a cor (ex: 255.0.0/0.0.0)"
         colorInputBox.ClearTextOnFocus = false
 
-        -- Função para atualizar a cor com base no texto inserido
+        local corner = Instance.new("UICorner", colorInputBox)
+        corner.CornerRadius = UDim.new(0, 12)
+
         colorInputBox.FocusLost:Connect(function(enterPressed)
             if enterPressed then
                 local colorText = colorInputBox.Text
@@ -1703,7 +1704,6 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
                     local color1 = string.split(colorsInput[1], ".")
                     local color2 = string.split(colorsInput[2], ".")
 
-                    -- Validando e aplicando as cores
                     if #color1 == 3 and #color2 == 3 then
                         local r1, g1, b1 = tonumber(color1[1]), tonumber(color1[2]), tonumber(color1[3])
                         local r2, g2, b2 = tonumber(color2[1]), tonumber(color2[2]), tonumber(color2[3])
