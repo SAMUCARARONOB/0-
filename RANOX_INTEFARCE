@@ -293,25 +293,26 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     Instance.new("UICorner", checkboxFrame).CornerRadius = UDim.new(0, 8)
 
     local title = Instance.new("TextLabel", checkboxFrame)
-    title.Size = UDim2.new(1, -50, 0, 18)
-    title.Position = UDim2.new(0, 10, 0, 4)
-    title.BackgroundTransparency = 1
     title.Text = checkboxConfig.Text or "Checkbox"
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
     title.Font = Enum.Font.Gotham
     title.TextSize = 14
     title.TextXAlignment = Enum.TextXAlignment.Left
+    title.TextYAlignment = Enum.TextYAlignment.Top
+    title.BackgroundTransparency = 1
+    title.Size = UDim2.new(0, title.TextBounds.X + 20, 0, title.TextBounds.Y + 4)
+    title.Position = UDim2.new(0, 10, 0, 4)
 
     local description = Instance.new("TextLabel", checkboxFrame)
-    description.Size = UDim2.new(1, -50, 0, 16)
-    description.Position = UDim2.new(0, 10, 0, 22)
-    description.BackgroundTransparency = 1
     description.Text = checkboxConfig.Description or ""
     description.TextColor3 = Color3.fromRGB(160, 160, 160)
     description.Font = Enum.Font.Gotham
     description.TextSize = 12
     description.TextXAlignment = Enum.TextXAlignment.Left
-    description.TextWrapped = true
+    description.TextYAlignment = Enum.TextYAlignment.Top
+    description.BackgroundTransparency = 1
+    description.Size = UDim2.new(0, description.TextBounds.X + 20, 0, description.TextBounds.Y + 4)
+    description.Position = UDim2.new(0, 10, 0, title.Position.Y.Offset + title.Size.Y.Offset + 2)
 
     local box = Instance.new("Frame", checkboxFrame)
     box.Size = UDim2.new(0, 24, 0, 24)
