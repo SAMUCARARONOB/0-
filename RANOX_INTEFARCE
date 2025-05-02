@@ -1551,15 +1551,16 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         end
 
         local colorInputBox = Instance.new("TextBox", box)
-        colorInputBox.Size = UDim2.new(1, -20, 0, 30)
-        colorInputBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        colorInputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-        colorInputBox.TextSize = 14
-        colorInputBox.PlaceholderText = "Digite a cor (ex: 255.0.0/0.0.0)"
-        colorInputBox.ClearTextOnFocus = false
-        colorInputBox.AutomaticSize = Enum.AutomaticSize.X
-        colorInputBox.Position = UDim2.new(0, 10, 0, 0)
-        colorInputBox.LayoutOrder = 999
+colorInputBox.Text = ""
+colorInputBox.Size = UDim2.new(1, -20, 0, 30)
+colorInputBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+colorInputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+colorInputBox.TextSize = 14
+colorInputBox.PlaceholderText = "(ex: 255.0.0/0.0.0)"
+colorInputBox.ClearTextOnFocus = false
+colorInputBox.AutomaticSize = Enum.AutomaticSize.X
+colorInputBox.Position = UDim2.new(0, 10, 0, 0)
+colorInputBox.LayoutOrder = 999
 
         local layoutForInput = Instance.new("UIListLayout", box)
         layoutForInput.SortOrder = Enum.SortOrder.LayoutOrder
