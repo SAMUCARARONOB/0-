@@ -4,38 +4,26 @@ gui.Name, gui.IgnoreGuiInset, gui.ResetOnSpawn = "RanoxUI", true, false
 
 local main = Instance.new("Frame", gui)
 main.Size, main.Position, main.AnchorPoint = UDim2.new(0, 575, 0, 390), UDim2.new(0.5, 0, 0.5, 0), Vector2.new(0.5, 0.5)
-main.BackgroundColor3, main.BorderSizePixel, main.Active, main.Draggable = Color3.fromRGB(22, 22, 30), 0, true, true
+main.BackgroundColor3, main.BorderSizePixel, main.Active, main.Draggable = Color3.fromRGB(0, 0, 0), 0, true, true
 Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
 
-local shadow = Instance.new("Frame", main)
-shadow.Size = UDim2.new(1, 4, 1, 4)
-shadow.Position = UDim2.new(0, -2, 0, -2)
-shadow.BackgroundColor3, shadow.BorderSizePixel, shadow.ZIndex = Color3.fromRGB(10, 10, 10), 0, 0
-Instance.new("UICorner", shadow).CornerRadius = UDim.new(0, 12)
-
 local header = Instance.new("Frame", main)
-header.Size, header.BackgroundColor3, header.BorderSizePixel = UDim2.new(1, 0, 0, 36), Color3.fromRGB(30, 30, 40), 0
-local grad = Instance.new("UIGradient", header)
-grad.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 40, 55)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 60, 75))
-}
-grad.Rotation = 0
+header.Size, header.BackgroundColor3, header.BorderSizePixel = UDim2.new(1, 0, 0, 36), Color3.fromRGB(0, 0, 0), 0
 
 local title = Instance.new("TextLabel", header)
 title.Text, title.Size, title.Position = "RANOX", UDim2.new(1, -36, 1, 0), UDim2.new(0, 12, 0, 0)
-title.BackgroundTransparency, title.TextColor3, title.Font, title.TextSize, title.TextXAlignment, title.TextStrokeTransparency =
-	1, Color3.fromRGB(255, 255, 255), Enum.Font.GothamBold, 20, Enum.TextXAlignment.Left, 0.4
+title.BackgroundTransparency, title.TextColor3, title.Font, title.TextSize, title.TextXAlignment =
+	1, Color3.fromRGB(255, 255, 255), Enum.Font.GothamBold, 20, Enum.TextXAlignment.Left
 
 local hide = Instance.new("ImageButton", header)
 hide.Size, hide.Position = UDim2.new(0, 24, 0, 24), UDim2.new(1, -30, 0.5, 0)
 hide.AnchorPoint, hide.BackgroundTransparency, hide.Image, hide.ImageColor3 =
-	Vector2.new(0.5, 0.5), 1, "rbxassetid://7072719338", Color3.fromRGB(240, 240, 240)
+	Vector2.new(0.5, 0.5), 1, "rbxassetid://7072719338", Color3.fromRGB(255, 255, 255)
 
 local ball = Instance.new("ImageButton", gui)
 ball.Size, ball.Position = UDim2.new(0, 44, 0, 44), UDim2.new(0.05, 0, 0.9, 0)
 ball.AnchorPoint, ball.BackgroundColor3, ball.Image, ball.Visible, ball.Active, ball.Draggable =
-	Vector2.new(0.5, 0.5), Color3.fromRGB(40, 40, 50), "rbxassetid://6337069410", false, true, true
+	Vector2.new(0.5, 0.5), Color3.fromRGB(0, 0, 0), "rbxassetid://6337069410", false, true, true
 Instance.new("UICorner", ball).CornerRadius = UDim.new(1, 0)
 
 hide.MouseButton1Click:Connect(function()
@@ -52,7 +40,7 @@ end)
 
 local tabHolder = Instance.new("Frame", main)
 tabHolder.Size, tabHolder.Position, tabHolder.BackgroundColor3, tabHolder.BorderSizePixel =
-	UDim2.new(1, 0, 0, 36), UDim2.new(0, 0, 0, 36), Color3.fromRGB(26, 26, 35), 0
+	UDim2.new(1, 0, 0, 36), UDim2.new(0, 0, 0, 36), Color3.fromRGB(0, 0, 0), 0
 local tabLayout = Instance.new("UIListLayout", tabHolder)
 tabLayout.FillDirection, tabLayout.Padding, tabLayout.SortOrder = Enum.FillDirection.Horizontal, UDim.new(0, 6), Enum.SortOrder.LayoutOrder
 
@@ -67,14 +55,15 @@ function Ranox:CreateWindow(cfg)
 		CreateTab = function(_, name)
 			local btn = Instance.new("TextButton", tabHolder)
 			btn.Text, btn.Size = name, UDim2.new(0, 110, 0, 32)
-			btn.BackgroundColor3, btn.TextColor3, btn.Font, btn.TextSize, btn.AutoButtonColor =
-				Color3.fromRGB(40, 40, 55), Color3.fromRGB(255, 255, 255), Enum.Font.GothamMedium, 14, false
+			btn.BackgroundColor3, btn.TextColor3, btn.Font, btn.TextSize = Color3.fromRGB(0, 0, 0), Color3.fromRGB(255, 255, 255), Enum.Font.GothamMedium, 14
+			btn.BorderSizePixel, btn.BorderColor3 = 1, Color3.fromRGB(255, 255, 255)
 			Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
 
 			local sc = Instance.new("ScrollingFrame", pages)
 			sc.Size, sc.Position = UDim2.new(1, -10, 1, -10), UDim2.new(0, 5, 0, 5)
-			sc.CanvasSize, sc.ScrollBarThickness, sc.ScrollingDirection, sc.BackgroundTransparency, sc.BorderSizePixel, sc.Visible =
-				UDim2.new(0, 0, 0, 0), 6, Enum.ScrollingDirection.Y, 1, 0, false
+			sc.CanvasSize, sc.ScrollBarThickness, sc.ScrollingDirection, sc.BackgroundColor3, sc.BorderSizePixel =
+				UDim2.new(0, 0, 0, 0), 6, Enum.ScrollingDirection.Y, Color3.fromRGB(0, 0, 0), 0
+			sc.Visible = false
 			local pad = Instance.new("UIPadding", sc)
 			pad.PaddingTop, pad.PaddingBottom, pad.PaddingLeft, pad.PaddingRight =
 				UDim.new(0, 8), UDim.new(0, 8), UDim.new(0, 8), UDim.new(0, 8)
@@ -96,11 +85,11 @@ function Ranox:CreateWindow(cfg)
 			return {
 				CreateButton = function(_, bcfg)
 					local b = Instance.new("TextButton", sc)
-					b.Text, b.BackgroundColor3, b.BorderSizePixel, b.TextColor3, b.Font, b.TextSize =
-						bcfg.Name or "Botão", Color3.fromRGB(45, 45, 60), 0, Color3.fromRGB(255, 255, 255), Enum.Font.GothamSemibold, 14
+					b.Text, b.BackgroundColor3, b.BorderSizePixel, b.BorderColor3 = bcfg.Name or "Botão", Color3.fromRGB(0, 0, 0), 1, Color3.fromRGB(255, 255, 255)
+					b.TextColor3, b.Font, b.TextSize = Color3.fromRGB(255, 255, 255), Enum.Font.GothamSemibold, 14
 					Instance.new("UICorner", b).CornerRadius = UDim.new(0, 8)
-					b.MouseEnter:Connect(function() b.BackgroundColor3 = Color3.fromRGB(60, 90, 120) end)
-					b.MouseLeave:Connect(function() b.BackgroundColor3 = Color3.fromRGB(45, 45, 60) end)
+					b.MouseEnter:Connect(function() b.BackgroundColor3 = Color3.fromRGB(15, 15, 15) end)
+					b.MouseLeave:Connect(function() b.BackgroundColor3 = Color3.fromRGB(0, 0, 0) end)
 					if bcfg.Callback then b.MouseButton1Click:Connect(bcfg.Callback) end
 				end
 			}
