@@ -150,24 +150,6 @@ local function switchTab(name)
 	selectedTab = name
 end
 
-local function AtualizarCorInterface(corStroke, corGradiente1, corGradiente2)
-	stroke.Color = corStroke
-	gradient.Color = ColorSequence.new{
-		ColorSequenceKeypoint.new(0, corGradiente1),
-		ColorSequenceKeypoint.new(1, corGradiente2)
-	}
-
-	for _, tabBtn in pairs(tabButtons) do
-		local buttonGradient = tabBtn:FindFirstChild("UIGradient")
-		if buttonGradient then
-			buttonGradient.Color = ColorSequence.new{
-				ColorSequenceKeypoint.new(0, corGradiente1),
-				ColorSequenceKeypoint.new(1, corGradiente2)
-			}
-		end
-	end
-end
-
 function Window:CreateTab(tabName, iconId)
 	local tabBtn = Instance.new("TextButton", sidebar)
 	tabBtn.Size = UDim2.new(1, 0, 0, 33)
@@ -186,12 +168,6 @@ function Window:CreateTab(tabName, iconId)
 	local uiStroke = Instance.new("UIStroke", tabBtn)
 	uiStroke.Thickness = 1
 	uiStroke.Color = Color3.fromRGB(20, 20, 20)
-
-	local gradient = Instance.new("UIGradient", tabBtn)
-	gradient.Color = ColorSequence.new{
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
-	}
 
 	local marker = Instance.new("Frame", tabBtn)
 	marker.Name = "TabMarker"
@@ -261,7 +237,6 @@ function Window:CreateTab(tabName, iconId)
 					TweenService:Create(button, TweenInfo.new(0.12), {Size = UDim2.new(1, 0, 0, 33)}):Play()
 				end)
 				button.TabMarker.Visible = true
-				AtualizarCorInterface(Color3.fromRGB(150, 20, 20), Color3.fromRGB(25, 25, 25), Color3.fromRGB(50, 0, 0))
 			else
 				TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 0, 0)}):Play()
 				button.TabMarker.Visible = false
