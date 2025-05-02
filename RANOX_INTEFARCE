@@ -1559,7 +1559,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
     return container
 end
 
-function Window:CreateThemeBoxes(tabName, mainFrame)
+function Window:CreateThemeBoxes2(tabName, mainFrame)
     local tab = pages[tabName]
     if not tab then return end
 
