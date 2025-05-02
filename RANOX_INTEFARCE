@@ -285,7 +285,7 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     if not tab then return end
 
     local checkboxFrame = Instance.new("Frame", tab)
-    checkboxFrame.Size = UDim2.new(1, -20, 0, 54)
+    checkboxFrame.Size = UDim2.new(1, -20, 0, 43)
     checkboxFrame.Position = UDim2.new(0, 10, 0, 0)
     checkboxFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     checkboxFrame.BorderSizePixel = 0
@@ -293,23 +293,23 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     Instance.new("UICorner", checkboxFrame).CornerRadius = UDim.new(0, 8)
 
     local title = Instance.new("TextLabel", checkboxFrame)
-    title.Size = UDim2.new(1, -50, 0, 20)
+    title.Size = UDim2.new(1, -50, 0, 18)
     title.Position = UDim2.new(0, 10, 0, 4)
     title.BackgroundTransparency = 1
     title.Text = checkboxConfig.Text or "Checkbox"
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
     title.Font = Enum.Font.Gotham
-    title.TextSize = 15
+    title.TextSize = 14
     title.TextXAlignment = Enum.TextXAlignment.Left
 
     local description = Instance.new("TextLabel", checkboxFrame)
-    description.Size = UDim2.new(1, -50, 0, 18)
-    description.Position = UDim2.new(0, 10, 0, 26)
+    description.Size = UDim2.new(1, -50, 0, 16)
+    description.Position = UDim2.new(0, 10, 0, 22)
     description.BackgroundTransparency = 1
     description.Text = checkboxConfig.Description or ""
     description.TextColor3 = Color3.fromRGB(160, 160, 160)
     description.Font = Enum.Font.Gotham
-    description.TextSize = 13
+    description.TextSize = 12
     description.TextXAlignment = Enum.TextXAlignment.Left
     description.TextWrapped = true
 
