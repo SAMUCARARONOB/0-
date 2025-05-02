@@ -1652,12 +1652,7 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
             if c1 and c2 then
                 preview1.BackgroundColor3 = c1
                 preview2.BackgroundColor3 = c2
-                if mode == "interface" then
-                    AtualizarCorInterface(c1, c1, c2)  -- Atualiza a cor da interface
-                elseif mode == "titulo" then
-                    title.TextColor3 = c1
-                    if subtitle then subtitle.TextColor3 = c2 end
-                end
+                AtualizarCorInterface(c1, c2)  -- Atualiza a cor do gradient da interface
             end
         end
 
@@ -1671,23 +1666,20 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
         end)
     end
 
-    -- Criação dos boxes para as cores da interface e título
-    createColorBox("COR DA INTERFACE", Color3.fromRGB(255, 255, 255), Color3.fromRGB(0, 0, 0), "interface")
-    createColorBox("COR DO TÍTULO", Color3.fromRGB(255, 255, 255), Color3.fromRGB(255, 0, 255), "titulo")
-
     -- Função para atualizar as cores da interface
-    local function AtualizarCorInterface(corStroke, corGradiente1, corGradiente2)
-        local stroke = mainFrame:FindFirstChild("MainStroke")
+    local function AtualizarCorInterface(corGradiente1, corGradiente2)
+        -- Atualiza a cor no UIGradient da interface
         local gradient = mainFrame:FindFirstChild("MainGradient")
-
-        if stroke and gradient then
-            stroke.Color = corStroke
+        if gradient then
             gradient.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, corGradiente1),
                 ColorSequenceKeypoint.new(1, corGradiente2)
             }
         end
     end
+
+    -- Criação dos boxes para as cores da interface
+    createColorBox("COR DA INTERFACE", Color3.fromRGB(255, 255, 255), Color3.fromRGB(0, 0, 0), "interface")
 
     return container
 end
