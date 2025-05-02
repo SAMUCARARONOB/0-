@@ -29,6 +29,37 @@ mainFrame.Active = true
 mainFrame.Parent = screenGui
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
 
+local sidebar = Instance.new("ScrollingFrame", mainFrame)
+sidebar.Size = UDim2.new(0, mainFrame.AbsoluteSize.X * 0.24, 1, -25)
+sidebar.Position = UDim2.new(0, 0, 0, 25)
+sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+sidebar.BackgroundTransparency = 0.35
+sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
+sidebar.ScrollBarThickness = 5
+sidebar.BorderSizePixel = 0
+sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
+sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
+Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0, 3)
+
+local sidebarLayout = Instance.new("UIListLayout", sidebar)
+sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
+sidebarLayout.Padding = UDim.new(0, 1)
+
+local scrollHolder = Instance.new("ScrollingFrame", mainFrame)
+scrollHolder.Position = UDim2.new(0, sidebar.Size.X.Offset + 4, 0, 30)
+scrollHolder.Size = UDim2.new(1, -sidebar.Size.X.Offset - 4, 1, -35)
+scrollHolder.BackgroundTransparency = 1
+scrollHolder.BorderSizePixel = 0
+scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollHolder.ScrollBarThickness = 0
+scrollHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
+
+mainFrame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+	sidebar.Size = UDim2.new(0, mainFrame.AbsoluteSize.X * 0.24, 1, -25)
+	scrollHolder.Position = UDim2.new(0, sidebar.Size.X.Offset + 4, 0, 30)
+	scrollHolder.Size = UDim2.new(1, -sidebar.Size.X.Offset - 4, 1, -35)
+end)
+
 local stroke = Instance.new("UIStroke")
 stroke.Thickness = 1.5
 stroke.Transparency = 0.3
@@ -90,31 +121,6 @@ end)
     line.Position = UDim2.new(0, 0, 0, 25)
     line.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
     line.BorderSizePixel = 0
-
-local sidebar = Instance.new("ScrollingFrame", mainFrame)
-sidebar.Size = UDim2.new(0.23, 0, 1, -25)
-sidebar.Position = UDim2.new(0, 0, 0, 25)
-sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-sidebar.BackgroundTransparency = 0.35
-sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
-sidebar.ScrollBarThickness = 5
-sidebar.BorderSizePixel = 0
-sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
-sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
-Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0, 3)
-
-local sidebarLayout = Instance.new("UIListLayout", sidebar)
-sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
-sidebarLayout.Padding = UDim.new(0, 1)
-
-local scrollHolder = Instance.new("ScrollingFrame", mainFrame)
-scrollHolder.Position = UDim2.new(0.23, 4, 0, 30)
-scrollHolder.Size = UDim2.new(0.77, -4, 1, -35)
-scrollHolder.BackgroundTransparency = 1
-scrollHolder.BorderSizePixel = 0
-scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
-scrollHolder.ScrollBarThickness = 0
-scrollHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
 
 local ballButton = Instance.new("ImageButton")
 ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
