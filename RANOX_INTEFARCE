@@ -286,10 +286,10 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
 
     local checkboxFrame = Instance.new("Frame", tab)
     checkboxFrame.Size = UDim2.new(1, -20, 0, 43)
-    checkboxFrame.Position = UDim2.new(0, 10, 0, 0)
     checkboxFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     checkboxFrame.BorderSizePixel = 0
     checkboxFrame.ClipsDescendants = true
+    checkboxFrame.LayoutOrder = checkboxConfig.Order or 0
     Instance.new("UICorner", checkboxFrame).CornerRadius = UDim.new(0, 8)
 
     local title = Instance.new("TextLabel", checkboxFrame)
@@ -300,7 +300,7 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.TextYAlignment = Enum.TextYAlignment.Top
     title.BackgroundTransparency = 1
-    title.Size = UDim2.new(0, title.TextBounds.X + 20, 0, title.TextBounds.Y + 4)
+    title.Size = UDim2.new(1, -44, 0, 14)
     title.Position = UDim2.new(0, 10, 0, 4)
 
     local description = Instance.new("TextLabel", checkboxFrame)
@@ -311,8 +311,8 @@ function Window:CreateCheckbox(tabName, checkboxConfig)
     description.TextXAlignment = Enum.TextXAlignment.Left
     description.TextYAlignment = Enum.TextYAlignment.Top
     description.BackgroundTransparency = 1
-    description.Size = UDim2.new(0, description.TextBounds.X + 20, 0, description.TextBounds.Y + 4)
-    description.Position = UDim2.new(0, 10, 0, title.Position.Y.Offset + title.Size.Y.Offset + 2)
+    description.Size = UDim2.new(1, -44, 0, 12)
+    description.Position = UDim2.new(0, 10, 0, 22)
 
     local box = Instance.new("Frame", checkboxFrame)
     box.Size = UDim2.new(0, 24, 0, 24)
