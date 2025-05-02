@@ -53,6 +53,56 @@ padding.PaddingLeft = UDim.new(0, 6)
 padding.PaddingRight = UDim.new(0, 6)
 padding.Parent = scrollHolder
 
+local function ApplyAutoScrolling(scrollHolder)
+    scrollHolder.AutomaticSize = Enum.AutomaticSize.Y
+    scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
+    scrollHolder.ScrollingEnabled = true
+    
+    local function UpdateCanvasSize()
+        local totalHeight = 0
+        
+        for _, child in pairs(scrollHolder:GetChildren()) do
+            if child:IsA("Frame") then
+                totalHeight = totalHeight + child.Size.Y.Offset
+            end
+        end
+        
+        scrollHolder.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
+    end
+    
+    scrollHolder.ChildAdded:Connect(UpdateCanvasSize)
+    scrollHolder.ChildRemoved:Connect(UpdateCanvasSize)
+end
+
+local function CreateElementWithAutoScrolling(tabName, elementConfig)
+    local tab = pages[tabName]
+    if not tab then return end
+
+    local scrollHolder = tab:FindFirstChild("ScrollHolder")
+    if scrollHolder then
+        ApplyAutoScrolling(scrollHolder)
+
+        local elementFrame = Instance.new("Frame", scrollHolder)
+        elementFrame.Size = UDim2.new(1, -20, 0, 40)
+        elementFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        elementFrame.BorderSizePixel = 0
+        Instance.new("UICorner", elementFrame).CornerRadius = UDim.new(0, 8)
+
+        local title = Instance.new("TextLabel", elementFrame)
+        title.Text = elementConfig.Text or "Element"
+        title.TextColor3 = Color3.fromRGB(255, 255, 255)
+        title.Font = Enum.Font.GothamMedium
+        title.TextSize = 14
+        title.TextXAlignment = Enum.TextXAlignment.Left
+        title.TextYAlignment = Enum.TextYAlignment.Top
+        title.BackgroundTransparency = 1
+        title.Size = UDim2.new(0, title.TextBounds.X + 20, 0, title.TextBounds.Y + 4)
+        title.Position = UDim2.new(0, 12, 0, 4)
+
+        UpdateCanvasSize()
+    end
+end
+
 local stroke = Instance.new("UIStroke")
 stroke.Thickness = 1.5
 stroke.Transparency = 0.3
