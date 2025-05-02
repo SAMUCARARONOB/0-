@@ -46,30 +46,20 @@ layout.Padding = UDim.new(0, 6)
 layout.SortOrder = Enum.SortOrder.LayoutOrder
 layout.Parent = scrollHolder
 
-local padding = Instance.new("UIPadding")
-padding.PaddingTop = UDim.new(0, 6)
-padding.PaddingBottom = UDim.new(0, 6)
-padding.PaddingLeft = UDim.new(0, 6)
-padding.PaddingRight = UDim.new(0, 6)
-padding.Parent = scrollHolder
-
 local function ApplyAutoScrolling(scrollHolder)
     scrollHolder.AutomaticSize = Enum.AutomaticSize.Y
-    scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
     scrollHolder.ScrollingEnabled = true
-    
+
     local function UpdateCanvasSize()
         local totalHeight = 0
-        
         for _, child in pairs(scrollHolder:GetChildren()) do
             if child:IsA("Frame") then
-                totalHeight = totalHeight + child.Size.Y.Offset
+                totalHeight = totalHeight + child.Size.Y.Offset + child.Position.Y.Offset
             end
         end
-        
         scrollHolder.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
     end
-    
+
     scrollHolder.ChildAdded:Connect(UpdateCanvasSize)
     scrollHolder.ChildRemoved:Connect(UpdateCanvasSize)
 end
