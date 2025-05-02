@@ -8,8 +8,7 @@ main.BackgroundColor3, main.BorderSizePixel, main.Active, main.Draggable = Color
 Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
 
 local shadow = Instance.new("Frame", main)
-shadow.Size = UDim2.new(1, 2, 1, 2)
-shadow.Position = UDim2.new(0, -1, 0, -1)
+shadow.Size, shadow.Position = UDim2.new(1, 2, 1, 2), UDim2.new(0, -1, 0, -1)
 shadow.BackgroundColor3, shadow.BorderSizePixel, shadow.ZIndex = Color3.fromRGB(120, 120, 120), 0, 0
 Instance.new("UICorner", shadow).CornerRadius = UDim.new(0, 12)
 
@@ -73,41 +72,6 @@ function Ranox:CreateWindow(cfg)
                 sc.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 16)
             end)
 
-            -- Função para criar as linhas com colunas lado a lado
-            local function createRow()
-                local row = Instance.new("Frame")
-                row.Size = UDim2.new(1, 0, 0, 36)
-                row.BackgroundTransparency = 1
-
-                -- Agora as colunas ficam lado a lado
-                local left = Instance.new("Frame", row)
-                left.Name = "Left"
-                left.Size = UDim2.new(0.5, -4, 1, 0)
-                left.Position = UDim2.new(0, 0, 0, 0)
-                left.BackgroundTransparency = 1
-
-                local right = Instance.new("Frame", row)
-                right.Name = "Right"
-                right.Size = UDim2.new(0.5, -4, 1, 0)
-                right.Position = UDim2.new(0.5, 4, 0, 0)
-                right.BackgroundTransparency = 1
-
-                return row, left, right
-            end
-
-            local lastRow, leftCol, rightCol = nil, nil, nil
-            local function getColumn(column)
-                if not lastRow or leftCol.UIListLayout.AbsoluteContentSize.Y > rightCol.UIListLayout.AbsoluteContentSize.Y then
-                    lastRow, leftCol, rightCol = createRow()
-                    lastRow.Parent = sc
-                    local l = Instance.new("UIListLayout", leftCol)
-                    l.FillDirection, l.SortOrder, l.Padding = Enum.FillDirection.Vertical, Enum.SortOrder.LayoutOrder, UDim.new(0, 8)
-                    local r = Instance.new("UIListLayout", rightCol)
-                    r.FillDirection, r.SortOrder, r.Padding = Enum.FillDirection.Vertical, Enum.SortOrder.LayoutOrder, UDim.new(0, 8)
-                end
-                return column == "Right" and rightCol or leftCol
-            end
-
             btn.MouseButton1Click:Connect(function()
                 for _, t in pairs(tabs) do t.Visible = false end
                 sc.Visible = true
@@ -115,18 +79,33 @@ function Ranox:CreateWindow(cfg)
             table.insert(tabs, sc)
             if not first then first = sc; sc.Visible = true end
 
+            local columnToggle = true
+
             return {
                 CreateButton = function(_, bcfg)
+                    local row = Instance.new("Frame", sc)
+                    row.Size, row.BackgroundTransparency = UDim2.new(1, 0, 0, 36), 1
+
+                    local left = Instance.new("Frame", row)
+                    left.Size, left.Position, left.BackgroundTransparency = UDim2.new(0.5, -4, 1, 0), UDim2.new(0, 0, 0, 0), 1
+
+                    local right = Instance.new("Frame", row)
+                    right.Size, right.Position, right.BackgroundTransparency = UDim2.new(0.5, -4, 1, 0), UDim2.new(0.5, 4, 0, 0), 1
+
                     local b = Instance.new("TextButton")
-                    b.Text, b.Size = bcfg.Name or "Botão", UDim2.new(1, 0, 0, 34)
+                    b.Text, b.Size = bcfg.Name or "Botão", UDim2.new(1, 0, 1, 0)
                     b.BackgroundColor3, b.BorderSizePixel, b.TextColor3, b.Font, b.TextSize = Color3.fromRGB(35, 35, 50), 0, Color3.new(1, 1, 1), Enum.Font.Gotham, 14
                     Instance.new("UICorner", b).CornerRadius = UDim.new(0, 8)
                     b.MouseEnter:Connect(function() b.BackgroundColor3 = Color3.fromRGB(55, 85, 115) end)
                     b.MouseLeave:Connect(function() b.BackgroundColor3 = Color3.fromRGB(35, 35, 50) end)
                     if bcfg.Callback then b.MouseButton1Click:Connect(bcfg.Callback) end
 
-                    local col = getColumn(bcfg.Column or "Left")
-                    b.Parent = col
+                    if (bcfg.Column or (columnToggle and "Left" or "Right")) == "Left" then
+                        b.Parent = left
+                    else
+                        b.Parent = right
+                    end
+                    columnToggle = not columnToggle
                 end
             }
         end
