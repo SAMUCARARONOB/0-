@@ -1550,154 +1550,20 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             end)
         end
 
-        return box
-    end
-
-    createColorBox("COR DA INTERFACE", "Quadrados principais", "interface")
-    createColorBox("COR DO TÍTULO", "Título e versão", "titulo")
-
-    return container
-end
-
-function Window:CreateThemeBoxes2(tabName, mainFrame)
-    local tab = pages[tabName]
-    if not tab then return end
-
-    local container = Instance.new("Frame", tab)
-    container.Size = UDim2.new(1, -20, 0, 0)
-    container.Position = UDim2.new(0, 10, 0, 0)
-    container.BackgroundTransparency = 1
-    container.AutomaticSize = Enum.AutomaticSize.Y
-
-    local layout = Instance.new("UIListLayout", container)
-    layout.FillDirection = Enum.FillDirection.Horizontal
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
-    layout.Padding = UDim.new(0, 10)
-    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-
-    local colors = {
-        {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
-        {Color3.fromRGB(0,0,255), Color3.fromRGB(128,0,255)},
-        {Color3.fromRGB(0,255,0), Color3.fromRGB(0,255,255)},
-        {Color3.fromRGB(255,0,0), Color3.fromRGB(255,255,0)},
-        {Color3.fromRGB(212,175,55), Color3.fromRGB(192,192,192)},
-        {Color3.fromRGB(128,0,255), Color3.fromRGB(255,128,0)},
-        {Color3.fromRGB(0,0,255), Color3.fromRGB(255,0,0)},
-        {Color3.fromRGB(255,105,180), Color3.fromRGB(255,215,0)},
-        {Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0)},
-        {Color3.fromRGB(255,255,0), Color3.fromRGB(0,255,255)},
-        {Color3.fromRGB(0, 255, 128), Color3.fromRGB(0, 64, 64)},
-        {Color3.fromRGB(255, 0, 255), Color3.fromRGB(128, 0, 128)},
-        {Color3.fromRGB(0, 255, 255), Color3.fromRGB(0, 128, 255)},
-        {Color3.fromRGB(255, 69, 0), Color3.fromRGB(255, 140, 0)},
-        {Color3.fromRGB(255, 20, 147), Color3.fromRGB(148, 0, 211)},
-        {Color3.fromRGB(173, 216, 230), Color3.fromRGB(25, 25, 112)},
-        {Color3.fromRGB(144, 238, 144), Color3.fromRGB(0, 100, 0)},
-        {Color3.fromRGB(255, 248, 220), Color3.fromRGB(139, 69, 19)},
-        {Color3.fromRGB(255, 255, 224), Color3.fromRGB(0, 0, 128)},
-        {Color3.fromRGB(255, 255, 255), Color3.fromRGB(140, 140, 140)},
-        {Color3.fromRGB(0, 0, 0), Color3.fromRGB(0, 0, 0)}
-    }
-
-    local inicial = colors[#colors]
-    AtualizarCorInterface(inicial[1], inicial[1], inicial[2])
-
-    local function createColorBox(titleText, labelText, mode)
-        local box = Instance.new("Frame")
-        box.Size = UDim2.new(0.5, -15, 0, 0)
-        box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-        box.BorderSizePixel = 0
-        box.AutomaticSize = Enum.AutomaticSize.Y
-        box.ClipsDescendants = true
-        box.Parent = container
-
-        Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
-        local stroke = Instance.new("UIStroke", box)
-        stroke.Color = Color3.fromRGB(60, 0, 0)
-        stroke.Thickness = 1.5
-        stroke.Transparency = 0.3
-
-        local titleLabel = Instance.new("TextLabel", box)
-        titleLabel.Text = titleText
-        titleLabel.Font = Enum.Font.GothamBold
-        titleLabel.TextSize = 17
-        titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-        titleLabel.BackgroundTransparency = 1
-        titleLabel.Size = UDim2.new(1, -20, 0, 30)
-        titleLabel.Position = UDim2.new(0, 10, 0, 10)
-        titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-        local label = Instance.new("TextLabel", box)
-        label.Text = labelText
-        label.Font = Enum.Font.Gotham
-        label.TextSize = 14
-        label.TextColor3 = Color3.fromRGB(180, 180, 180)
-        label.BackgroundTransparency = 1
-        label.Size = UDim2.new(1, -20, 0, 20)
-        label.Position = UDim2.new(0, 10, 0, 40)
-        label.TextXAlignment = Enum.TextXAlignment.Left
-
-        local content = Instance.new("Frame", box)
-        content.BackgroundTransparency = 1
-        content.Position = UDim2.new(0, 10, 0, 70)
-        content.Size = UDim2.new(1, -20, 0, 0)
-        content.AutomaticSize = Enum.AutomaticSize.Y
-
-        local grid = Instance.new("UIGridLayout", content)
-        grid.CellSize = UDim2.new(0, 40, 0, 40)
-        grid.CellPadding = UDim2.new(0, 10, 0, 10)
-        grid.FillDirectionMaxCells = 3
-        grid.FillDirection = Enum.FillDirection.Horizontal
-        grid.SortOrder = Enum.SortOrder.LayoutOrder
-
-        for _, pair in ipairs(colors) do
-            local square = Instance.new("Frame", content)
-            square.BackgroundColor3 = pair[1]
-            square.BorderSizePixel = 0
-            square.Size = UDim2.new(0, 40, 0, 40)
-            Instance.new("UICorner", square).CornerRadius = UDim.new(0, 6)
-
-            local s = Instance.new("UIStroke", square)
-            s.Color = Color3.fromRGB(60, 0, 0)
-            s.Thickness = 1.5
-            s.Transparency = 0.3
-
-            local g = Instance.new("UIGradient", square)
-            g.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, pair[1]),
-                ColorSequenceKeypoint.new(1, pair[2])
-            }
-
-            local button = Instance.new("TextButton", square)
-            button.BackgroundTransparency = 1
-            button.Size = UDim2.new(1, 0, 1, 0)
-            button.Text = ""
-            button.AutoButtonColor = false
-
-            button.MouseButton1Click:Connect(function()
-                if mode == "interface" then
-                    AtualizarCorInterface(pair[1], pair[1], pair[2])
-                elseif mode == "titulo" then
-                    title.TextColor3 = pair[1]
-                    subtitle.TextColor3 = pair[2]
-                end
-            end)
-        end
-
-        local padding = Instance.new("UIPadding", box)
-        padding.PaddingBottom = UDim.new(0, 10)
-
         local colorInputBox = Instance.new("TextBox", box)
         colorInputBox.Size = UDim2.new(1, -20, 0, 30)
-        colorInputBox.Position = UDim2.new(0, 10, 0, 0)
         colorInputBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         colorInputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
         colorInputBox.TextSize = 14
         colorInputBox.PlaceholderText = "Digite a cor (ex: 255.0.0/0.0.0)"
         colorInputBox.ClearTextOnFocus = false
-        colorInputBox.LayoutOrder = 99
-        colorInputBox.AutomaticSize = Enum.AutomaticSize.Y
-        Instance.new("UICorner", colorInputBox).CornerRadius = UDim.new(0, 6)
+        colorInputBox.AutomaticSize = Enum.AutomaticSize.X
+        colorInputBox.Position = UDim2.new(0, 10, 0, 0)
+        colorInputBox.LayoutOrder = 999
+
+        local layoutForInput = Instance.new("UIListLayout", box)
+        layoutForInput.SortOrder = Enum.SortOrder.LayoutOrder
+        layoutForInput.Padding = UDim.new(0, 10)
 
         colorInputBox.FocusLost:Connect(function(enterPressed)
             if enterPressed then
