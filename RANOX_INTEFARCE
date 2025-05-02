@@ -1574,32 +1574,11 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
     layout.Padding = UDim.new(0, 10)
     layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
-    local stroke = mainFrame:FindFirstChild("MainStroke") or Instance.new("UIStroke")
-    stroke.Thickness = 1.5
-    stroke.Transparency = 0.3
-    stroke.Name = "MainStroke"
-    stroke.Parent = mainFrame
-
-    local gradient = mainFrame:FindFirstChild("MainGradient") or Instance.new("UIGradient")
-    gradient.Name = "MainGradient"
-    gradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
-    }
-    gradient.Parent = mainFrame
-
-    local function AtualizarCorInterface(corStroke, corGradiente1, corGradiente2)
-        stroke.Color = corStroke
-        gradient.Color = ColorSequence.new{
-            ColorSequenceKeypoint.new(0, corGradiente1),
-            ColorSequenceKeypoint.new(1, corGradiente2)
-        }
-    end
-
+    -- Funções de conversão de cor
     local function hexToColor3(hex)
-        hex = hex:gsub("#","")
+        hex = hex:gsub("#", "")
         if #hex == 6 then
-            return Color3.fromRGB(tonumber("0x"..hex:sub(1,2)), tonumber("0x"..hex:sub(3,4)), tonumber("0x"..hex:sub(5,6)))
+            return Color3.fromRGB(tonumber("0x"..hex:sub(1, 2)), tonumber("0x"..hex:sub(3, 4)), tonumber("0x"..hex:sub(5, 6)))
         end
         return nil
     end
@@ -1612,17 +1591,18 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
         return nil
     end
 
-    local function createColorBox(titleText, default1, default2)
+    -- Função que cria a caixa de cor
+    local function createColorBox(titleText, default1, default2, mode)
         local box = Instance.new("Frame", container)
         box.Size = UDim2.new(0.5, -15, 0, 300)
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         box.BorderSizePixel = 0
         Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
 
-        local strokeBox = Instance.new("UIStroke", box)
-        strokeBox.Color = Color3.fromRGB(60, 0, 0)
-        strokeBox.Thickness = 1.5
-        strokeBox.Transparency = 0.3
+        local stroke = Instance.new("UIStroke", box)
+        stroke.Color = Color3.fromRGB(60, 0, 0)
+        stroke.Thickness = 1.5
+        stroke.Transparency = 0.3
 
         local title = Instance.new("TextLabel", box)
         title.Text = titleText
@@ -1634,6 +1614,7 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
         title.Position = UDim2.new(0, 10, 0, 10)
         title.TextXAlignment = Enum.TextXAlignment.Left
 
+        -- Previews das cores
         local preview1 = Instance.new("Frame", box)
         preview1.Position = UDim2.new(0, 10, 0, 50)
         preview1.Size = UDim2.new(0, 30, 0, 30)
@@ -1646,6 +1627,7 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
         preview2.BackgroundColor3 = default2
         Instance.new("UICorner", preview2).CornerRadius = UDim.new(0, 6)
 
+        -- Caixas de texto para input
         local hexBox1 = Instance.new("TextBox", box)
         hexBox1.PlaceholderText = "#FF0000 ou 255.0.0"
         hexBox1.Text = ""
@@ -1663,16 +1645,23 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
 
         hexBox1.Parent = box
 
+        -- Função que atualiza as cores
         local function applyColor()
             local c1 = hexToColor3(hexBox1.Text) or rgbToColor3(hexBox1.Text)
             local c2 = hexToColor3(hexBox2.Text) or rgbToColor3(hexBox2.Text)
             if c1 and c2 then
                 preview1.BackgroundColor3 = c1
                 preview2.BackgroundColor3 = c2
-                AtualizarCorInterface(c1, c1, c2)
+                if mode == "interface" then
+                    AtualizarCorInterface(c1, c1, c2)  -- Atualiza a cor da interface
+                elseif mode == "titulo" then
+                    title.TextColor3 = c1
+                    if subtitle then subtitle.TextColor3 = c2 end
+                end
             end
         end
 
+        -- Detecta quando o texto nas caixas de texto muda e aplica a cor
         hexBox1.FocusLost:Connect(function(enter)
             if enter then applyColor() end
         end)
@@ -1682,7 +1671,23 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
         end)
     end
 
-    createColorBox("COR DA INTERFACE", Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 0, 255))
+    -- Criação dos boxes para as cores da interface e título
+    createColorBox("COR DA INTERFACE", Color3.fromRGB(255, 255, 255), Color3.fromRGB(0, 0, 0), "interface")
+    createColorBox("COR DO TÍTULO", Color3.fromRGB(255, 255, 255), Color3.fromRGB(255, 0, 255), "titulo")
+
+    -- Função para atualizar as cores da interface
+    local function AtualizarCorInterface(corStroke, corGradiente1, corGradiente2)
+        local stroke = mainFrame:FindFirstChild("MainStroke")
+        local gradient = mainFrame:FindFirstChild("MainGradient")
+
+        if stroke and gradient then
+            stroke.Color = corStroke
+            gradient.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, corGradiente1),
+                ColorSequenceKeypoint.new(1, corGradiente2)
+            }
+        end
+    end
 
     return container
 end
