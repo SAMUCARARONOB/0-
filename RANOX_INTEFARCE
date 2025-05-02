@@ -8,30 +8,28 @@ function RANOX:CreateWindow(config)
     local Window = {}
 
     local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "RANOX_UI"
-screenGui.ResetOnSpawn = false
-screenGui.IgnoreGuiInset = true
-screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-screenGui.DisplayOrder = 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
-screenGui.Parent = game:GetService("CoreGui")
+    screenGui.Name = "RANOX_UI"
+    screenGui.ResetOnSpawn = false
+    screenGui.IgnoreGuiInset = true
+    screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    screenGui.DisplayOrder = 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
+    screenGui.Parent = game:GetService("CoreGui")
 
     local mainFrame = Instance.new("TextButton")
-mainFrame.Size = UDim2.new(0, 585, 0, 385)
-mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-mainFrame.BackgroundTransparency = 0.05
-mainFrame.Text = ""
-mainFrame.AutoButtonColor = false
-mainFrame.ClipsDescendants = true
-mainFrame.Draggable = true
-mainFrame.Active = true
-mainFrame.Parent = screenGui
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
+    mainFrame.Size = UDim2.new(0, 585, 0, 385)
+    mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    mainFrame.BackgroundTransparency = 0.05
+    mainFrame.Text = ""
+    mainFrame.AutoButtonColor = false
+    mainFrame.ClipsDescendants = true
+    mainFrame.Draggable = true
+    mainFrame.Active = true
+    mainFrame.Parent = screenGui
+    Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
 
-local sidebar = Instance.new("ScrollingFrame", mainFrame)
-sidebar.Size = UDim2.new(0, mainFrame.AbsoluteSize.X * 0.24, 1, -25)
-sidebar.Position = UDim2.new(0, 0, 0, 25)
+local sidebar = Instance.new("ScrollingFrame")
 sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 sidebar.BackgroundTransparency = 0.35
 sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -40,25 +38,32 @@ sidebar.BorderSizePixel = 0
 sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
 sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
 Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0, 3)
+sidebar.Parent = mainFrame
 
 local sidebarLayout = Instance.new("UIListLayout", sidebar)
 sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
 sidebarLayout.Padding = UDim.new(0, 1)
 
-local scrollHolder = Instance.new("ScrollingFrame", mainFrame)
-scrollHolder.Position = UDim2.new(0, sidebar.Size.X.Offset + 4, 0, 30)
-scrollHolder.Size = UDim2.new(1, -sidebar.Size.X.Offset - 4, 1, -35)
+local scrollHolder = Instance.new("ScrollingFrame")
 scrollHolder.BackgroundTransparency = 1
 scrollHolder.BorderSizePixel = 0
 scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
 scrollHolder.ScrollBarThickness = 0
 scrollHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
+scrollHolder.Parent = mainFrame
 
-mainFrame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-	sidebar.Size = UDim2.new(0, mainFrame.AbsoluteSize.X * 0.24, 1, -25)
-	scrollHolder.Position = UDim2.new(0, sidebar.Size.X.Offset + 4, 0, 30)
-	scrollHolder.Size = UDim2.new(1, -sidebar.Size.X.Offset - 4, 1, -35)
-end)
+local function updateLayout()
+	local sidebarWidth = math.floor(mainFrame.AbsoluteSize.X * 0.24)
+	sidebar.Size = UDim2.new(0, sidebarWidth, 1, -25)
+	sidebar.Position = UDim2.new(0, 0, 0, 25)
+
+	scrollHolder.Position = UDim2.new(0, sidebarWidth + 4, 0, 30)
+	scrollHolder.Size = UDim2.new(1, -sidebarWidth - 4, 1, -35)
+end
+
+mainFrame:GetPropertyChangedSignal("AbsoluteSize"):Connect(updateLayout)
+
+task.defer(updateLayout)
 
 local stroke = Instance.new("UIStroke")
 stroke.Thickness = 1.5
