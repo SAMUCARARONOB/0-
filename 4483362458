@@ -15,25 +15,19 @@ Instance.new("UICorner", shadow).CornerRadius = UDim.new(0, 12)
 
 local header = Instance.new("Frame", main)
 header.Size, header.BackgroundColor3, header.BorderSizePixel = UDim2.new(1, 0, 0, 36), Color3.fromRGB(25, 25, 35), 0
-Instance.new("UIGradient", header).Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 100, 100)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 150, 150))
-}
+Instance.new("UIGradient", header).Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 100, 100)), ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 150, 150))}
 
 local title = Instance.new("TextLabel", header)
 title.Text, title.Size, title.Position = "RANOX", UDim2.new(1, -36, 1, 0), UDim2.new(0, 12, 0, 0)
-title.BackgroundTransparency, title.TextColor3, title.Font, title.TextSize, title.TextXAlignment, title.TextStrokeTransparency =
-	1, Color3.new(1, 1, 1), Enum.Font.GothamBold, 20, Enum.TextXAlignment.Left, 0.6
+title.BackgroundTransparency, title.TextColor3, title.Font, title.TextSize, title.TextXAlignment, title.TextStrokeTransparency = 1, Color3.new(1, 1, 1), Enum.Font.GothamBold, 20, Enum.TextXAlignment.Left, 0.6
 
 local hide = Instance.new("ImageButton", header)
 hide.Size, hide.Position = UDim2.new(0, 24, 0, 24), UDim2.new(1, -30, 0.5, 0)
-hide.AnchorPoint, hide.BackgroundTransparency, hide.Image, hide.ImageColor3 =
-	Vector2.new(0.5, 0.5), 1, "rbxassetid://7072719338", Color3.new(1, 1, 1)
+hide.AnchorPoint, hide.BackgroundTransparency, hide.Image, hide.ImageColor3 = Vector2.new(0.5, 0.5), 1, "rbxassetid://7072719338", Color3.new(1, 1, 1)
 
 local ball = Instance.new("ImageButton", gui)
 ball.Size, ball.Position = UDim2.new(0, 44, 0, 44), UDim2.new(0.05, 0, 0.9, 0)
-ball.AnchorPoint, ball.BackgroundColor3, ball.Image, ball.Visible, ball.Active, ball.Draggable =
-	Vector2.new(0.5, 0.5), Color3.fromRGB(40, 40, 50), "rbxassetid://6337069410", false, true, true
+ball.AnchorPoint, ball.BackgroundColor3, ball.Image, ball.Visible, ball.Active, ball.Draggable = Vector2.new(0.5, 0.5), Color3.fromRGB(40, 40, 50), "rbxassetid://6337069410", false, true, true
 Instance.new("UICorner", ball).CornerRadius = UDim.new(1, 0)
 
 hide.MouseButton1Click:Connect(function()
@@ -44,19 +38,17 @@ end)
 
 ball.MouseButton1Click:Connect(function()
 	main.Visible = true
-	ts:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(0, 520, 0, 390)}):Play()
+	ts:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(0, 575, 0, 380)}):Play()
 	ball.Visible = false
 end)
 
 local tabHolder = Instance.new("Frame", main)
-tabHolder.Size, tabHolder.Position, tabHolder.BackgroundColor3, tabHolder.BorderSizePixel =
-	UDim2.new(1, 0, 0, 36), UDim2.new(0, 0, 0, 36), Color3.fromRGB(20, 20, 30), 0
+tabHolder.Size, tabHolder.Position, tabHolder.BackgroundColor3, tabHolder.BorderSizePixel = UDim2.new(1, 0, 0, 36), UDim2.new(0, 0, 0, 36), Color3.fromRGB(20, 20, 30), 0
 local tabLayout = Instance.new("UIListLayout", tabHolder)
 tabLayout.FillDirection, tabLayout.Padding, tabLayout.SortOrder = Enum.FillDirection.Horizontal, UDim.new(0, 6), Enum.SortOrder.LayoutOrder
 
 local pages = Instance.new("Frame", main)
-pages.Size, pages.Position, pages.BackgroundTransparency, pages.ClipsDescendants =
-	UDim2.new(1, 0, 1, -72), UDim2.new(0, 0, 0, 72), 1, true
+pages.Size, pages.Position, pages.BackgroundTransparency, pages.ClipsDescendants = UDim2.new(1, 0, 1, -72), UDim2.new(0, 0, 0, 72), 1, true
 local tabs, first = {}, nil
 
 function Ranox:CreateWindow(cfg)
@@ -65,37 +57,58 @@ function Ranox:CreateWindow(cfg)
 		CreateTab = function(_, name)
 			local btn = Instance.new("TextButton", tabHolder)
 			btn.Text, btn.Size = name, UDim2.new(0, 110, 0, 32)
-			btn.BackgroundColor3, btn.TextColor3, btn.Font, btn.TextSize, btn.AutoButtonColor =
-				Color3.fromRGB(35, 35, 45), Color3.new(1, 1, 1), Enum.Font.GothamSemibold, 14, false
+			btn.BackgroundColor3, btn.TextColor3, btn.Font, btn.TextSize, btn.AutoButtonColor = Color3.fromRGB(35, 35, 45), Color3.new(1, 1, 1), Enum.Font.GothamSemibold, 14, false
 			Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
 
 			local sc = Instance.new("ScrollingFrame", pages)
 			sc.Size, sc.Position = UDim2.new(1, -10, 1, -10), UDim2.new(0, 5, 0, 5)
-			sc.CanvasSize, sc.ScrollBarThickness, sc.ScrollingDirection, sc.BackgroundTransparency, sc.BorderSizePixel, sc.Visible =
-				UDim2.new(0, 0, 0, 0), 6, Enum.ScrollingDirection.Y, 1, 0, false
-			local pad = Instance.new("UIPadding", sc)
-			pad.PaddingTop, pad.PaddingBottom, pad.PaddingLeft, pad.PaddingRight =
-				UDim.new(0, 8), UDim.new(0, 8), UDim.new(0, 8), UDim.new(0, 8)
-			local grid = Instance.new("UIGridLayout", sc)
-			grid.CellSize = UDim2.new(0.5, -20, 0, 34)
-			grid.CellPadding = UDim2.new(0, 10, 0, 8)
-			grid.SortOrder = Enum.SortOrder.LayoutOrder
-			grid:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-				sc.CanvasSize = UDim2.new(0, 0, 0, grid.AbsoluteContentSize.Y + 20)
-			end)
+			sc.CanvasSize, sc.ScrollBarThickness, sc.ScrollingDirection, sc.BackgroundTransparency, sc.BorderSizePixel, sc.Visible = UDim2.new(0, 0, 0, 0), 6, Enum.ScrollingDirection.Y, 1, 0, false
+
+			local holder = Instance.new("Frame", sc)
+			holder.Size, holder.BackgroundTransparency, holder.BorderSizePixel = UDim2.new(1, 0, 0, 0), 1, 0
+			holder.AutomaticSize = Enum.AutomaticSize.Y
+			local holderLayout = Instance.new("UIListLayout", holder)
+			holderLayout.FillDirection, holderLayout.SortOrder = Enum.FillDirection.Horizontal, Enum.SortOrder.LayoutOrder
+			holderLayout.Padding = UDim.new(0, 10)
+
+			local function createColumn()
+				local box = Instance.new("Frame", holder)
+				box.Size = UDim2.new(0.5, -12, 0, 0)
+				box.AutomaticSize = Enum.AutomaticSize.Y
+				box.BackgroundTransparency, box.BorderSizePixel = 1, 0
+
+				local border = Instance.new("Frame", box)
+				border.Size, border.Position = UDim2.new(1, 0, 1, 0), UDim2.new(0, 0, 0, 0)
+				border.BackgroundTransparency, border.BorderColor3 = 1, Color3.fromRGB(100, 100, 100)
+				border.BorderSizePixel = 1
+				border.AutomaticSize = Enum.AutomaticSize.Y
+				border.ClipsDescendants = true
+
+				local list = Instance.new("UIListLayout", border)
+				list.FillDirection, list.SortOrder, list.Padding = Enum.FillDirection.Vertical, Enum.SortOrder.LayoutOrder, UDim.new(0, 8)
+				Instance.new("UICorner", border).CornerRadius = UDim.new(0, 8)
+				Instance.new("UIPadding", border).PaddingTop = UDim.new(0, 8)
+
+				return border
+			end
+
+			local col1 = createColumn()
+			local col2 = createColumn()
 
 			btn.MouseButton1Click:Connect(function()
 				for _, t in pairs(tabs) do t.Visible = false end
 				sc.Visible = true
 			end)
+
 			table.insert(tabs, sc)
 			if not first then first = sc; sc.Visible = true end
 
 			return {
-				CreateButton = function(_, bcfg)
-					local b = Instance.new("TextButton", sc)
-					b.Text, b.BackgroundColor3, b.BorderSizePixel, b.TextColor3, b.Font, b.TextSize =
-						bcfg.Name or "Botão", Color3.fromRGB(35, 35, 50), 0, Color3.new(1, 1, 1), Enum.Font.Gotham, 14
+				CreateButton = function(self, bcfg)
+					local parent = bcfg.Column == 2 and col2 or col1
+					local b = Instance.new("TextButton", parent)
+					b.Text, b.Size = bcfg.Name or "Botão", UDim2.new(1, -16, 0, 34)
+					b.BackgroundColor3, b.BorderSizePixel, b.TextColor3, b.Font, b.TextSize = Color3.fromRGB(35, 35, 50), 0, Color3.new(1, 1, 1), Enum.Font.Gotham, 14
 					Instance.new("UICorner", b).CornerRadius = UDim.new(0, 8)
 					b.MouseEnter:Connect(function() b.BackgroundColor3 = Color3.fromRGB(55, 85, 115) end)
 					b.MouseLeave:Connect(function() b.BackgroundColor3 = Color3.fromRGB(35, 35, 50) end)
