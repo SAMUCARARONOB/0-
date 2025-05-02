@@ -1570,7 +1570,7 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
     container.AutomaticSize = Enum.AutomaticSize.Y
 
     local layout = Instance.new("UIListLayout", container)
-    layout.FillDirection = Enum.FillDirection.Horizontal
+    layout.FillDirection = Enum.FillDirection.Vertical
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Padding = UDim.new(0, 10)
     layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -1686,15 +1686,13 @@ function Window:CreateThemeBoxes2(tabName, mainFrame)
 
         local colorInputBox = Instance.new("TextBox", box)
         colorInputBox.Size = UDim2.new(1, -20, 0, 30)
-        colorInputBox.Position = UDim2.new(0, 10, 0, 110)
+        colorInputBox.Position = UDim2.new(0, 10, 0, 10)
         colorInputBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         colorInputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
         colorInputBox.TextSize = 14
         colorInputBox.PlaceholderText = "Digite a cor (ex: 255.0.0/0.0.0)"
         colorInputBox.ClearTextOnFocus = false
-
-        local corner = Instance.new("UICorner", colorInputBox)
-        corner.CornerRadius = UDim.new(0, 12)
+        colorInputBox.ZIndex = 10
 
         colorInputBox.FocusLost:Connect(function(enterPressed)
             if enterPressed then
