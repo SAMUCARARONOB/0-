@@ -1391,7 +1391,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
 
     local buttonHolder = Instance.new("Frame", content)
     buttonHolder.Size = UDim2.new(1, 0, 0, 30)
-    buttonHolder.BackgroundColor3 = Color3.fromRGB(175, 0, 0)
+    buttonHolder.BackgroundColor3 = Color3.fromRGB(70, 0, 0)
     buttonHolder.BorderSizePixel = 0
     buttonHolder.ClipsDescendants = true
     local buttonCorner = Instance.new("UICorner", buttonHolder)
@@ -1412,7 +1412,7 @@ function Window:CreatePromoBox(tabName, title, description, imageId, link, chann
     local fillBar = Instance.new("Frame", buttonHolder)
     fillBar.Size = UDim2.new(0, 0, 1, 0)
     fillBar.Position = UDim2.new(0, 0, 0, 0)
-    fillBar.BackgroundColor3 = Color3.fromRGB(0, 175, 0)
+    fillBar.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
     fillBar.BorderSizePixel = 0
     fillBar.ZIndex = 1
 
@@ -1452,9 +1452,10 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
     container.AutomaticSize = Enum.AutomaticSize.Y
 
     local layout = Instance.new("UIListLayout", container)
-    layout.FillDirection = Enum.FillDirection.Vertical
+    layout.FillDirection = Enum.FillDirection.Horizontal
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Padding = UDim.new(0, 10)
+    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
     local colors = {
         {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
@@ -1485,7 +1486,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
 
     local function createColorBox(titleText, labelText, mode)
         local box = Instance.new("Frame")
-        box.Size = UDim2.new(0.25, -10, 0, 0)
+        box.Size = UDim2.new(0.5, -15, 0, 0)
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         box.BorderSizePixel = 0
         box.AutomaticSize = Enum.AutomaticSize.Y
@@ -1525,9 +1526,9 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         content.AutomaticSize = Enum.AutomaticSize.Y
 
         local grid = Instance.new("UIGridLayout", content)
-        grid.CellSize = UDim2.new(0, 80, 0, 80)
+        grid.CellSize = UDim2.new(0, 40, 0, 40)
         grid.CellPadding = UDim2.new(0, 10, 0, 10)
-        grid.FillDirectionMaxCells = 4
+        grid.FillDirectionMaxCells = 3
         grid.FillDirection = Enum.FillDirection.Horizontal
         grid.SortOrder = Enum.SortOrder.LayoutOrder
 
@@ -1535,7 +1536,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             local square = Instance.new("Frame", content)
             square.BackgroundColor3 = pair[1]
             square.BorderSizePixel = 0
-            square.Size = UDim2.new(0, 80, 0, 80)
+            square.Size = UDim2.new(0, 40, 0, 40)
             Instance.new("UICorner", square).CornerRadius = UDim.new(0, 6)
 
             local s = Instance.new("UIStroke", square)
@@ -1566,20 +1567,20 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         end
 
         local colorInputBox = Instance.new("TextBox", box)
-        colorInputBox.Text = ""
-        colorInputBox.Size = UDim2.new(1, -20, 0, 30)
-        colorInputBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        colorInputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-        colorInputBox.TextSize = 14
-        colorInputBox.PlaceholderText = "(ex: 255.0.0/0.0.0)"
-        colorInputBox.ClearTextOnFocus = false
-        colorInputBox.AutomaticSize = Enum.AutomaticSize.X
-        colorInputBox.Position = UDim2.new(0, 10, 0, 0)
-        colorInputBox.LayoutOrder = 999
+colorInputBox.Text = ""
+colorInputBox.Size = UDim2.new(1, -20, 0, 30)
+colorInputBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+colorInputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+colorInputBox.TextSize = 14
+colorInputBox.PlaceholderText = "(ex: 255.0.0/0.0.0)"
+colorInputBox.ClearTextOnFocus = false
+colorInputBox.AutomaticSize = Enum.AutomaticSize.X
+colorInputBox.Position = UDim2.new(0, 10, 0, 0)
+colorInputBox.LayoutOrder = 999
 
-        local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0, 6)
-        corner.Parent = colorInputBox
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 6)
+corner.Parent = colorInputBox
 
         local layoutForInput = Instance.new("UIListLayout", box)
         layoutForInput.SortOrder = Enum.SortOrder.LayoutOrder
@@ -1587,32 +1588,34 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
 
         colorInputBox.FocusLost:Connect(function(enterPressed)
             if enterPressed then
-                local inputColor = colorInputBox.Text
-                local r, g, b = inputColor:match("^(%d+).(%d+).(%d+)$")
-                
-                if r and g and b then
-                    r, g, b = tonumber(r), tonumber(g), tonumber(b)
-                    if r and g and b then
-                        local newColor = Color3.fromRGB(r, g, b)
-                        if mode == "interface" then
-                            AtualizarCorInterface(newColor, newColor, newColor)
-                        elseif mode == "titulo" then
-                            title.TextColor3 = newColor
-                            subtitle.TextColor3 = newColor
+                local colorText = colorInputBox.Text
+                local colorsInput = string.split(colorText, "/")
+                if #colorsInput == 2 then
+                    local color1 = string.split(colorsInput[1], ".")
+                    local color2 = string.split(colorsInput[2], ".")
+                    if #color1 == 3 and #color2 == 3 then
+                        local r1, g1, b1 = tonumber(color1[1]), tonumber(color1[2]), tonumber(color1[3])
+                        local r2, g2, b2 = tonumber(color2[1]), tonumber(color2[2]), tonumber(color2[3])
+                        if r1 and g1 and b1 and r2 and g2 and b2 then
+                            local newColor1 = Color3.fromRGB(r1, g1, b1)
+                            local newColor2 = Color3.fromRGB(r2, g2, b2)
+                            if mode == "interface" then
+                                AtualizarCorInterface(newColor1, newColor1, newColor2)
+                            elseif mode == "titulo" then
+                                title.TextColor3 = newColor1
+                                subtitle.TextColor3 = newColor2
+                            end
                         end
                     end
                 end
             end
         end)
 
-        return container
+        return box
     end
 
-    local colorBox1 = createColorBox("Cor de Interface", "Mude a cor de fundo", "interface")
-    local colorBox2 = createColorBox("Cor do Título", "Mude a cor do título", "titulo")
-
-    colorBox1.Parent = container
-    colorBox2.Parent = container
+    createColorBox("COR DA INTERFACE", "Quadrados principais", "interface")
+    createColorBox("COR DO TÍTULO", "Título e versão", "titulo")
 
     return container
 end
