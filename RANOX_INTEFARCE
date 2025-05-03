@@ -1452,10 +1452,9 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
     container.AutomaticSize = Enum.AutomaticSize.Y
 
     local layout = Instance.new("UIListLayout", container)
-    layout.FillDirection = Enum.FillDirection.Horizontal
+    layout.FillDirection = Enum.FillDirection.Vertical
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Padding = UDim.new(0, 10)
-    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
     local colors = {
         {Color3.fromRGB(255,255,0), Color3.fromRGB(0,0,0)},
@@ -1484,25 +1483,9 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
     local inicial = colors[#colors]
     AtualizarCorInterface(inicial[1], inicial[1], inicial[2])
 
-    local function AtualizarCorInterface(corPrimaria, corSecundaria, corTitulo)
-        local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-
-        local interfaceFrame = -- Sua referência para o frame da interface
-        local titulo = -- Sua referência para o título
-
-        local tweenCorInterface = TweenService:Create(interfaceFrame, tweenInfo, {BackgroundColor3 = corPrimaria})
-        tweenCorInterface:Play()
-
-        local tweenCorSecundaria = TweenService:Create(interfaceFrame, tweenInfo, {BorderColor3 = corSecundaria})
-        tweenCorSecundaria:Play()
-
-        local tweenTitulo = TweenService:Create(titulo, tweenInfo, {TextColor3 = corTitulo})
-        tweenTitulo:Play()
-    end
-
     local function createColorBox(titleText, labelText, mode)
         local box = Instance.new("Frame")
-        box.Size = UDim2.new(0.5, -15, 0, 0)
+        box.Size = UDim2.new(0.25, -10, 0, 0)
         box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         box.BorderSizePixel = 0
         box.AutomaticSize = Enum.AutomaticSize.Y
@@ -1542,7 +1525,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         content.AutomaticSize = Enum.AutomaticSize.Y
 
         local grid = Instance.new("UIGridLayout", content)
-        grid.CellSize = UDim2.new(0, 40, 0, 40)
+        grid.CellSize = UDim2.new(0, 80, 0, 80)
         grid.CellPadding = UDim2.new(0, 10, 0, 10)
         grid.FillDirectionMaxCells = 4
         grid.FillDirection = Enum.FillDirection.Horizontal
@@ -1552,7 +1535,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
             local square = Instance.new("Frame", content)
             square.BackgroundColor3 = pair[1]
             square.BorderSizePixel = 0
-            square.Size = UDim2.new(0, 40, 0, 40)
+            square.Size = UDim2.new(0, 80, 0, 80)
             Instance.new("UICorner", square).CornerRadius = UDim.new(0, 6)
 
             local s = Instance.new("UIStroke", square)
