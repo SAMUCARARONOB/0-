@@ -16,35 +16,18 @@ function RANOX:CreateWindow(config)
     screenGui.Parent = game:GetService("CoreGui")
 
     local mainFrame = Instance.new("TextButton")
-mainFrame.Size = UDim2.new(0, 585, 0, 385)
-mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-mainFrame.BackgroundTransparency = 0.05
-mainFrame.Text = ""
-mainFrame.AutoButtonColor = false
-mainFrame.ClipsDescendants = true
-mainFrame.Draggable = true
-mainFrame.Active = true
-mainFrame.Parent = screenGui
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
-
-local scrollHolder = Instance.new("ScrollingFrame")
-scrollHolder.Name = "scrollHolder"
-scrollHolder.Size = UDim2.new(1, -139, 1, -35)
-scrollHolder.Position = UDim2.new(0, 139, 0, 30)
-scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
-scrollHolder.ScrollBarThickness = 6
-scrollHolder.BackgroundTransparency = 1
-scrollHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
-scrollHolder.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-scrollHolder.ClipsDescendants = true
-scrollHolder.Parent = mainFrame
-
-local layout = Instance.new("UIListLayout")
-layout.Padding = UDim.new(0, 6)
-layout.SortOrder = Enum.SortOrder.LayoutOrder
-layout.Parent = scrollHolder
+    mainFrame.Size = UDim2.new(0, 585, 0, 385)
+    mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    mainFrame.BackgroundTransparency = 0.05
+    mainFrame.Text = ""
+    mainFrame.AutoButtonColor = false
+    mainFrame.ClipsDescendants = true
+    mainFrame.Draggable = true
+    mainFrame.Active = true
+    mainFrame.Parent = screenGui
+    Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 4)
 
 local stroke = Instance.new("UIStroke")
 stroke.Thickness = 1.5
@@ -127,6 +110,15 @@ sidebarLayout.Padding = UDim.new(0, 1)
 local tabButtons = {}
 local pages = {}
 local selectedTab = nil
+
+local scrollHolder = Instance.new("ScrollingFrame", mainFrame)
+scrollHolder.Position = UDim2.new(0, 143, 0, 30)
+scrollHolder.Size = UDim2.new(0, 440, 1, -35)
+scrollHolder.BackgroundTransparency = 1
+scrollHolder.BorderSizePixel = 0
+scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollHolder.ScrollBarThickness = 0
+scrollHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
 
 local ballButton = Instance.new("ImageButton")
 ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
