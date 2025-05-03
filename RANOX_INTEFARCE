@@ -12,7 +12,7 @@ function RANOX:CreateWindow(config)
     screenGui.ResetOnSpawn = false
     screenGui.IgnoreGuiInset = true
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    screenGui.DisplayOrder = 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
+    screenGui.DisplayOrder = 999999999999
     screenGui.Parent = game:GetService("CoreGui")
 
     local mainFrame = Instance.new("TextButton")
@@ -1227,6 +1227,8 @@ function Window:NotifyCustom(title, text, iconId)
     screenGui.Name = "NotifyCustom"
     screenGui.ResetOnSpawn = false
     screenGui.IgnoreGuiInset = true
+    screenGui.DisplayOrder = 99999999999999999999999999999
+    screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     screenGui.Parent = player:WaitForChild("PlayerGui")
 
     local blur = Instance.new("BlurEffect")
@@ -1242,7 +1244,7 @@ function Window:NotifyCustom(title, text, iconId)
     frame.BackgroundTransparency = 0.2
     frame.BorderSizePixel = 1
     frame.BorderColor3 = Color3.fromRGB(150, 20, 20)
-    frame.ZIndex = 999999
+    frame.ZIndex = 99999999999999999999999999999
     frame.Parent = screenGui
 
     local corner = Instance.new("UICorner", frame)
@@ -1264,7 +1266,7 @@ function Window:NotifyCustom(title, text, iconId)
     shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
     shadow.ImageTransparency = 0.7
     shadow.BackgroundTransparency = 1
-    shadow.ZIndex = 999998
+    shadow.ZIndex = 99999999999999999999999999999
     shadow.Parent = frame
 
     local icon = Instance.new("ImageLabel")
@@ -1272,7 +1274,7 @@ function Window:NotifyCustom(title, text, iconId)
     icon.Position = UDim2.new(0, 12, 0, 26)
     icon.Image = "rbxassetid://" .. iconId
     icon.BackgroundTransparency = 1
-    icon.ZIndex = 999999
+    icon.ZIndex = 99999999999999999999999999999
     icon.Parent = frame
 
     local titleLabel = Instance.new("TextLabel")
@@ -1284,7 +1286,7 @@ function Window:NotifyCustom(title, text, iconId)
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.BackgroundTransparency = 1
-    titleLabel.ZIndex = 999999
+    titleLabel.ZIndex = 99999999999999999999999999999
     titleLabel.Parent = frame
 
     local textLabel = Instance.new("TextLabel")
@@ -1298,7 +1300,7 @@ function Window:NotifyCustom(title, text, iconId)
     textLabel.TextXAlignment = Enum.TextXAlignment.Left
     textLabel.TextYAlignment = Enum.TextYAlignment.Top
     textLabel.BackgroundTransparency = 1
-    textLabel.ZIndex = 999999
+    textLabel.ZIndex = 99999999999999999999999999999
     textLabel.Parent = frame
 
     frame:TweenPosition(UDim2.new(1, -20, 1, -20), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.4, true)
@@ -1708,6 +1710,89 @@ function Window:CreateInfoBox(tabName, title, infoList)
         TitleLabel = titleLabel,
         ContentFrame = content
     }
+end
+
+local function CreateNotify2()
+    local player = game.Players.LocalPlayer
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "NotifyCustom2"
+    screenGui.ResetOnSpawn = false
+    screenGui.IgnoreGuiInset = true
+    screenGui.Parent = player:WaitForChild("PlayerGui")
+
+    local blur = Instance.new("BlurEffect")
+    blur.Size = 0
+    blur.Parent = game.Lighting
+    game:GetService("TweenService"):Create(blur, TweenInfo.new(0.4, Enum.EasingStyle.Quint), { Size = 6 }):Play()
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 200, 0, 10)
+    frame.Position = UDim2.new(1, -220, 1, -200)
+    frame.AnchorPoint = Vector2.new(1, 1)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    frame.BackgroundTransparency = 0
+    frame.BorderSizePixel = 1
+    frame.BorderColor3 = Color3.fromRGB(150, 20, 20)
+    frame.ZIndex = 99999999999999999999999999999
+    frame.Parent = screenGui
+
+    local corner = Instance.new("UICorner", frame)
+    corner.CornerRadius = UDim.new(0, 5)
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, 0, 0, 12)
+    titleLabel.Position = UDim2.new(0, 0, 0, 0)
+    titleLabel.Text = "Notify"
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.TextSize = 12
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Center
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.ZIndex = 99999999999999999999999999999
+    titleLabel.Parent = frame
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(1, 0, 0, 8)
+    textLabel.Position = UDim2.new(0, 0, 0, 12)
+    textLabel.Text = "Notification"
+    textLabel.Font = Enum.Font.Gotham
+    textLabel.TextSize = 10
+    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textLabel.TextXAlignment = Enum.TextXAlignment.Center
+    textLabel.BackgroundTransparency = 1
+    textLabel.ZIndex = 99999999999999999999999999999
+    textLabel.Parent = frame
+
+    local progressBar = Instance.new("Frame")
+    progressBar.Size = UDim2.new(1, 0, 0, 1)
+    progressBar.Position = UDim2.new(0, 0, 0, 20)
+    progressBar.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    progressBar.ZIndex = 99999999999999999999999999999
+    progressBar.Parent = frame
+
+    frame.Position = UDim2.new(1, -220, 1, -200)
+    frame:TweenPosition(UDim2.new(1, -220, 1, -180), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.4, true)
+
+    local tweenTitle = game:GetService("TweenService"):Create(titleLabel, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, -1, true), {TextTransparency = 0.7})
+    tweenTitle:Play()
+
+    local tweenText = game:GetService("TweenService"):Create(textLabel, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, -1, true), {TextTransparency = 0.7})
+    tweenText:Play()
+
+    game:GetService("TweenService"):Create(progressBar, TweenInfo.new(5, Enum.EasingStyle.Linear), {Size = UDim2.new(0, 0, 0, 1)}):Play()
+
+    task.delay(5, function()
+        frame:TweenPosition(UDim2.new(1, -220, 1, -200), Enum.EasingDirection.In, Enum.EasingStyle.Quint, 0.4, true)
+        task.wait(0.4)
+        screenGui:Destroy()
+        game:GetService("TweenService"):Create(blur, TweenInfo.new(0.4, Enum.EasingStyle.Quint), { Size = 0 }):Play()
+        task.delay(0.4, function() blur:Destroy() end)
+    end)
+end
+
+while true do
+    CreateNotify2()
+    task.wait(60)
 end
 
 local isHidden = false
