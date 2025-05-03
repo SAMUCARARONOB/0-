@@ -1528,7 +1528,7 @@ function Window:CreateThemeBoxes(tabName, mainFrame)
         local grid = Instance.new("UIGridLayout", content)
         grid.CellSize = UDim2.new(0, 40, 0, 40)
         grid.CellPadding = UDim2.new(0, 10, 0, 10)
-        grid.FillDirectionMaxCells = 3
+        grid.FillDirectionMaxCells = 4
         grid.FillDirection = Enum.FillDirection.Horizontal
         grid.SortOrder = Enum.SortOrder.LayoutOrder
 
