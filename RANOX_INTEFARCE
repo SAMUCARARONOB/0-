@@ -1710,7 +1710,133 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-function Window:Create4483362458(tabName, colorConfig) local tab = pages[tabName] if not tab then return end local frame = Instance.new("Frame", tab) frame.Size = UDim2.new(1, -20, 0, 80) frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35) frame.BorderSizePixel = 0 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8) local title = Instance.new("TextLabel", frame) title.Text = colorConfig.Text or "Color Picker" title.TextColor3 = Color3.fromRGB(255, 255, 255) title.Font = Enum.Font.Gotham title.TextSize = 14 title.TextXAlignment = Enum.TextXAlignment.Left title.TextYAlignment = Enum.TextYAlignment.Top title.BackgroundTransparency = 1 title.Size = UDim2.new(1, -44, 0, 14) title.Position = UDim2.new(0, 10, 0, 4) local description = Instance.new("TextLabel", frame) description.Text = colorConfig.Description or "" description.TextColor3 = Color3.fromRGB(160, 160, 160) description.Font = Enum.Font.Gotham description.TextSize = 12 description.TextXAlignment = Enum.TextXAlignment.Left description.TextYAlignment = Enum.TextYAlignment.Top description.BackgroundTransparency = 1 description.Size = UDim2.new(1, -44, 0, 12) description.Position = UDim2.new(0, 10, 0, 22) local preview = Instance.new("Frame", frame) preview.Size = UDim2.new(0, 40, 0, 40) preview.Position = UDim2.new(1, -50, 0.5, -20) preview.BackgroundColor3 = colorConfig.Default or Color3.fromRGB(255, 0, 0) preview.BorderSizePixel = 0 Instance.new("UICorner", preview).CornerRadius = UDim.new(0, 6) local button = Instance.new("TextButton", preview) button.Size = UDim2.new(1, 0, 1, 0) button.BackgroundTransparency = 1 button.Text = "" local function updateColor(color) preview.BackgroundColor3 = color if colorConfig.Callback then colorConfig.Callback(color) end end button.MouseButton1Click:Connect(function() local picker = Instance.new("Frame", frame) picker.Size = UDim2.new(0, 180, 0, 160) picker.Position = UDim2.new(0, 10, 0, 55) picker.BackgroundColor3 = Color3.fromRGB(25, 25, 25) picker.BorderSizePixel = 0 Instance.new("UICorner", picker).CornerRadius = UDim.new(0, 6) local hue = Instance.new("ImageButton", picker) hue.Size = UDim2.new(0, 20, 1, -10) hue.Position = UDim2.new(1, -25, 0, 5) hue.Image = "rbxassetid://14204231522" hue.ScaleType = Enum.ScaleType.Stretch hue.BorderSizePixel = 0 local sv = Instance.new("ImageButton", picker) sv.Size = UDim2.new(0, 130, 0, 130) sv.Position = UDim2.new(0, 5, 0, 5) sv.Image = "rbxassetid://6020299385" sv.BorderSizePixel = 0 local draggingSV = false local draggingHue = false local hueValue = 0 local sat, val = 1, 1 local function updateFromHSV() local color = Color3.fromHSV(hueValue, sat, val) updateColor(color) end sv.InputBegan:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 then draggingSV = true end end) sv.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 then draggingSV = false end end) hue.InputBegan:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 then draggingHue = true end end) hue.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 then draggingHue = false end end) game:GetService("UserInputService").InputChanged:Connect(function(input) if draggingSV and input.Position then local rel = input.Position - sv.AbsolutePosition sat = math.clamp(rel.X / sv.AbsoluteSize.X, 0, 1) val = 1 - math.clamp(rel.Y / sv.AbsoluteSize.Y, 0, 1) updateFromHSV() elseif draggingHue and input.Position then local relY = input.Position.Y - hue.AbsolutePosition.Y hueValue = math.clamp(relY / hue.AbsoluteSize.Y, 0, 1) updateFromHSV() end end) end) if picker then picker:TweenSize(UDim2.new(0, 180, 0, 160), Enum.EasingDirection.InOut, Enum.EasingStyle.Quart, 0.3, true) else picker:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.InOut, Enum.EasingStyle.Quart, 0.3, true) end end) end
+function Window:CreateColorPicker2(tabName, colorConfig)
+    local tab = pages[tabName]
+    if not tab then return end
+
+    local frame = Instance.new("Frame", tab)
+    frame.Size = UDim2.new(1, -20, 0, 80)
+    frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+
+    local title = Instance.new("TextLabel", frame)
+    title.Text = colorConfig.Text or "Color Picker"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.Font = Enum.Font.Gotham
+    title.TextSize = 14
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.TextYAlignment = Enum.TextYAlignment.Top
+    title.BackgroundTransparency = 1
+    title.Size = UDim2.new(1, -44, 0, 14)
+    title.Position = UDim2.new(0, 10, 0, 4)
+
+    local description = Instance.new("TextLabel", frame)
+    description.Text = colorConfig.Description or ""
+    description.TextColor3 = Color3.fromRGB(160, 160, 160)
+    description.Font = Enum.Font.Gotham
+    description.TextSize = 12
+    description.TextXAlignment = Enum.TextXAlignment.Left
+    description.TextYAlignment = Enum.TextYAlignment.Top
+    description.BackgroundTransparency = 1
+    description.Size = UDim2.new(1, -44, 0, 12)
+    description.Position = UDim2.new(0, 10, 0, 22)
+
+    local preview = Instance.new("Frame", frame)
+    preview.Size = UDim2.new(0, 40, 0, 40)
+    preview.Position = UDim2.new(1, -50, 0.5, -20)
+    preview.BackgroundColor3 = colorConfig.Default or Color3.fromRGB(255, 0, 0)
+    preview.BorderSizePixel = 0
+    Instance.new("UICorner", preview).CornerRadius = UDim.new(0, 6)
+
+    local button = Instance.new("TextButton", preview)
+    button.Size = UDim2.new(1, 0, 1, 0)
+    button.BackgroundTransparency = 1
+    button.Text = ""
+
+    local function updateColor(color)
+        preview.BackgroundColor3 = color
+        if colorConfig.Callback then
+            colorConfig.Callback(color)
+        end
+    end
+
+    button.MouseButton1Click:Connect(function()
+        local picker = Instance.new("Frame", frame)
+        picker.Size = UDim2.new(0, 180, 0, 160)
+        picker.Position = UDim2.new(0, 10, 0, 55)
+        picker.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        picker.BorderSizePixel = 0
+        Instance.new("UICorner", picker).CornerRadius = UDim.new(0, 6)
+
+        local hue = Instance.new("ImageButton", picker)
+        hue.Size = UDim2.new(0, 20, 1, -10)
+        hue.Position = UDim2.new(1, -25, 0, 5)
+        hue.Image = "rbxassetid://14204231522"
+        hue.ScaleType = Enum.ScaleType.Stretch
+        hue.BorderSizePixel = 0
+
+        local sv = Instance.new("ImageButton", picker)
+        sv.Size = UDim2.new(0, 130, 0, 130)
+        sv.Position = UDim2.new(0, 5, 0, 5)
+        sv.Image = "rbxassetid://6020299385"
+        sv.BorderSizePixel = 0
+
+        local draggingSV = false
+        local draggingHue = false
+        local hueValue = 0
+        local sat, val = 1, 1
+
+        local function updateFromHSV()
+            local color = Color3.fromHSV(hueValue, sat, val)
+            updateColor(color)
+        end
+
+        sv.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                draggingSV = true
+            end
+        end)
+
+        sv.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                draggingSV = false
+            end
+        end)
+
+        hue.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                draggingHue = true
+            end
+        end)
+
+        hue.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                draggingHue = false
+            end
+        end)
+
+        game:GetService("UserInputService").InputChanged:Connect(function(input)
+            if draggingSV and input.Position then
+                local rel = input.Position - sv.AbsolutePosition
+                sat = math.clamp(rel.X / sv.AbsoluteSize.X, 0, 1)
+                val = 1 - math.clamp(rel.Y / sv.AbsoluteSize.Y, 0, 1)
+                updateFromHSV()
+            elseif draggingHue and input.Position then
+                local relY = input.Position.Y - hue.AbsolutePosition.Y
+                hueValue = math.clamp(relY / hue.AbsoluteSize.Y, 0, 1)
+                updateFromHSV()
+            end
+        end)
+
+        -- Animação de abrir e fechar
+        if picker.Size == UDim2.new(0, 180, 0, 160) then
+            picker:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.InOut, Enum.EasingStyle.Quart, 0.3, true)
+        else
+            picker:TweenSize(UDim2.new(0, 180, 0, 160), Enum.EasingDirection.InOut, Enum.EasingStyle.Quart, 0.3, true)
+        end
+    end)
+end
 
 local isHidden = false
     hideButton.MouseButton1Click:Connect(function()
