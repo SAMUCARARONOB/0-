@@ -1710,75 +1710,7 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-local function CreateNotify2(titleText, messageText, duration)
-    local player = game.Players.LocalPlayer
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "NotifyCustom2"
-    screenGui.ResetOnSpawn = false
-    screenGui.IgnoreGuiInset = true
-    screenGui.Parent = player:WaitForChild("PlayerGui")
-
-    local blur = Instance.new("BlurEffect")
-    blur.Size = 0
-    blur.Parent = game.Lighting
-    game:GetService("TweenService"):Create(blur, TweenInfo.new(0.4, Enum.EasingStyle.Quint), { Size = 6 }):Play()
-
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 200, 0, 30)
-    frame.Position = UDim2.new(0.862, 0, 0.220, 0)
-    frame.AnchorPoint = Vector2.new(0, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    frame.BorderSizePixel = 1
-    frame.BorderColor3 = Color3.fromRGB(150, 20, 20)
-    frame.ZIndex = 999999
-    frame.Parent = screenGui
-
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 5)
-
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, 0, 0, 14)
-    titleLabel.Position = UDim2.new(0, 0, 0, 2)
-    titleLabel.Text = titleText or "Notify"
-    titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 12
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Center
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.ZIndex = 999999
-    titleLabel.Parent = frame
-
-    local textLabel = Instance.new("TextLabel")
-    textLabel.Size = UDim2.new(1, 0, 0, 12)
-    textLabel.Position = UDim2.new(0, 0, 0, 16)
-    textLabel.Text = messageText or "Mensagem"
-    textLabel.Font = Enum.Font.Gotham
-    textLabel.TextSize = 10
-    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    textLabel.TextXAlignment = Enum.TextXAlignment.Center
-    textLabel.BackgroundTransparency = 1
-    textLabel.ZIndex = 999999
-    textLabel.Parent = frame
-
-    local progressBar = Instance.new("Frame")
-    progressBar.Size = UDim2.new(1, 0, 0, 1)
-    progressBar.Position = UDim2.new(0, 0, 1, -1)
-    progressBar.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-    progressBar.ZIndex = 999999
-    progressBar.Parent = frame
-
-    local tweenService = game:GetService("TweenService")
-    tweenService:Create(titleLabel, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, -1, true), {TextTransparency = 0.7}):Play()
-    tweenService:Create(textLabel, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, -1, true), {TextTransparency = 0.7}):Play()
-
-    local timeVisible = duration or 4
-    tweenService:Create(progressBar, TweenInfo.new(timeVisible, Enum.EasingStyle.Linear), {Size = UDim2.new(0, 0, 0, 1)}):Play()
-
-    task.delay(timeVisible, function()
-        screenGui:Destroy()
-        tweenService:Create(blur, TweenInfo.new(0.4, Enum.EasingStyle.Quint), { Size = 0 }):Play()
-        task.delay(0.4, function() blur:Destroy() end)
-    end)
-end
+Window:CreateColorPicker2("MAIN", {Text = "COR DO VIDRO", Description = "Escolha a cor para o vidro quebrado", Default = Color3.fromRGB(255, 0, 0), Callback = function(color) for _,v in pairs(workspace:GetDescendants()) do if v:IsA("BasePart") and v.Name == "Vidrio roto" then v.Color = color end end end})
 
 local isHidden = false
     hideButton.MouseButton1Click:Connect(function()
