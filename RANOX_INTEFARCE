@@ -1769,32 +1769,25 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     picker.LayoutOrder = 4
     Instance.new("UICorner", picker).CornerRadius = UDim.new(0, 6)
 
-    local circle = Instance.new("Frame", picker)
+    local circle = Instance.new("ImageButton", picker)
     circle.Size = UDim2.new(0, 130, 0, 130)
     circle.Position = UDim2.new(0.5, -65, 0, 20)
     circle.BackgroundTransparency = 1
     circle.BorderSizePixel = 0
     circle.ClipsDescendants = true
-    circle.ZIndex = 2
 
-    local function drawHueCircle(parent, radius)
-        for angle = 0, 360, 2 do
-            local dot = Instance.new("Frame")
-            dot.Size = UDim2.new(0, 2, 0, 2)
-            local rad = math.rad(angle)
-            local x = math.cos(rad) * radius
-            local y = math.sin(rad) * radius
-            dot.Position = UDim2.new(0.5, x, 0.5, y)
-            dot.AnchorPoint = Vector2.new(0.5, 0.5)
-            dot.BorderSizePixel = 0
-            dot.BackgroundColor3 = Color3.fromHSV(angle / 360, 1, 1)
-            dot.BackgroundTransparency = 0
-            dot.ZIndex = 2
-            dot.Parent = parent
-        end
-    end
+    local gradient = Instance.new("UIGradient", circle)
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+        ColorSequenceKeypoint.new(0.25, Color3.new(1, 0, 0)),
+        ColorSequenceKeypoint.new(0.5, Color3.new(0, 1, 0)),
+        ColorSequenceKeypoint.new(0.75, Color3.new(0, 0, 1)),
+        ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0)),
+    }
+    gradient.Rotation = 45
 
-    drawHueCircle(circle, 60)
+    local uicorner = Instance.new("UICorner", circle)
+    uicorner.CornerRadius = UDim.new(1, 0)
 
     local marker = Instance.new("Frame", circle)
     marker.Size = UDim2.new(0, 6, 0, 6)
@@ -1802,10 +1795,10 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     marker.Position = UDim2.new(0.5, 0, 0.5, 0)
     marker.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     marker.BorderSizePixel = 0
-    marker.ZIndex = 3
     Instance.new("UICorner", marker).CornerRadius = UDim.new(1, 0)
 
     local dragging = false
+
     local UIS = game:GetService("UserInputService")
     local RS = game:GetService("RunService")
 
