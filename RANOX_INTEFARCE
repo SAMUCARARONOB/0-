@@ -1714,13 +1714,14 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     local tab = pages[tabName]
     if not tab then return end
 
-    local frame = Instance.new("Frame", tab)
-    frame.Size = UDim2.new(1, -20, 0, 80)
-    frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    frame.BorderSizePixel = 0
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+    local mainHolder = Instance.new("Frame", tab)
+    mainHolder.Size = UDim2.new(1, -20, 0, 80)
+    mainHolder.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    mainHolder.BorderSizePixel = 0
+    mainHolder.AutomaticSize = Enum.AutomaticSize.Y
+    Instance.new("UICorner", mainHolder).CornerRadius = UDim.new(0, 8)
 
-    local title = Instance.new("TextLabel", frame)
+    local title = Instance.new("TextLabel", mainHolder)
     title.Text = colorConfig.Text or "Color Picker"
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
     title.Font = Enum.Font.Gotham
@@ -1731,7 +1732,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     title.Size = UDim2.new(1, -44, 0, 14)
     title.Position = UDim2.new(0, 10, 0, 4)
 
-    local description = Instance.new("TextLabel", frame)
+    local description = Instance.new("TextLabel", mainHolder)
     description.Text = colorConfig.Description or ""
     description.TextColor3 = Color3.fromRGB(160, 160, 160)
     description.Font = Enum.Font.Gotham
@@ -1742,7 +1743,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     description.Size = UDim2.new(1, -44, 0, 12)
     description.Position = UDim2.new(0, 10, 0, 22)
 
-    local preview = Instance.new("Frame", frame)
+    local preview = Instance.new("Frame", mainHolder)
     preview.Size = UDim2.new(0, 40, 0, 40)
     preview.Position = UDim2.new(1, -50, 0.5, -20)
     preview.BackgroundColor3 = colorConfig.Default or Color3.fromRGB(255, 0, 0)
@@ -1754,19 +1755,13 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     button.BackgroundTransparency = 1
     button.Text = ""
 
-    local pickerHolder = Instance.new("Frame", frame)
-    pickerHolder.Position = UDim2.new(0, 10, 0, 80)
-    pickerHolder.Size = UDim2.new(1, -20, 0, 0)
-    pickerHolder.BackgroundTransparency = 1
-    pickerHolder.ClipsDescendants = true
-
-    local picker = Instance.new("Frame", pickerHolder)
-    picker.Size = UDim2.new(0, 180, 0, 160)
-    picker.Position = UDim2.new(0, 0, 0, 0)
+    local picker = Instance.new("Frame", mainHolder)
+    picker.Size = UDim2.new(1, -20, 0, 170)
+    picker.Position = UDim2.new(0, 10, 0, 80)
     picker.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     picker.BorderSizePixel = 0
-    Instance.new("UICorner", picker).CornerRadius = UDim.new(0, 6)
     picker.Visible = false
+    Instance.new("UICorner", picker).CornerRadius = UDim.new(0, 6)
 
     local hue = Instance.new("ImageButton", picker)
     hue.Size = UDim2.new(0, 20, 1, -10)
@@ -1799,15 +1794,17 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     local UIS = game:GetService("UserInputService")
 
     UIS.InputChanged:Connect(function(input)
-        if draggingSV and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local rel = input.Position - sv.AbsolutePosition
-            sat = math.clamp(rel.X / sv.AbsoluteSize.X, 0, 1)
-            val = 1 - math.clamp(rel.Y / sv.AbsoluteSize.Y, 0, 1)
-            updateColor()
-        elseif draggingHue and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local relY = input.Position.Y - hue.AbsolutePosition.Y
-            hueValue = math.clamp(relY / hue.AbsoluteSize.Y, 0, 1)
-            updateColor()
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            if draggingSV then
+                local rel = input.Position - sv.AbsolutePosition
+                sat = math.clamp(rel.X / sv.AbsoluteSize.X, 0, 1)
+                val = 1 - math.clamp(rel.Y / sv.AbsoluteSize.Y, 0, 1)
+                updateColor()
+            elseif draggingHue then
+                local relY = input.Position.Y - hue.AbsolutePosition.Y
+                hueValue = math.clamp(relY / hue.AbsoluteSize.Y, 0, 1)
+                updateColor()
+            end
         end
     end)
 
@@ -1816,19 +1813,16 @@ function Window:CreateColorPicker2(tabName, colorConfig)
             draggingSV = true
         end
     end)
-
     sv.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             draggingSV = false
         end
     end)
-
     hue.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             draggingHue = true
         end
     end)
-
     hue.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             draggingHue = false
@@ -1838,14 +1832,16 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     local open = false
     button.MouseButton1Click:Connect(function()
         open = not open
-        picker.Visible = true
         if open then
-            pickerHolder:TweenSize(UDim2.new(1, -20, 0, 170), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.25, true)
-        else
-            pickerHolder:TweenSize(UDim2.new(1, -20, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.25, true)
+            mainHolder:TweenSize(UDim2.new(1, -20, 0, 260), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.25, true)
             task.delay(0.25, function()
-                if not open then picker.Visible = false end
+                if open then
+                    picker.Visible = true
+                end
             end)
+        else
+            picker.Visible = false
+            mainHolder:TweenSize(UDim2.new(1, -20, 0, 80), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.25, true)
         end
     end)
 end
