@@ -1710,7 +1710,7 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-function Window:CreateColorPicker(tabName, colorConfig)
+function Window:CreateColorPicker2(tabName, colorConfig)
     local tab = pages[tabName]
     if not tab then return end
 
