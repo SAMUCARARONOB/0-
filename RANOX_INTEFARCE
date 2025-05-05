@@ -1763,79 +1763,77 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     picker.Visible = false
     Instance.new("UICorner", picker).CornerRadius = UDim.new(0, 6)
 
-    local hue = Instance.new("ImageButton", picker)
-    hue.Size = UDim2.new(0, 20, 1, -10)
-    hue.Position = UDim2.new(1, -25, 0, 5)
-    hue.Image = "rbxassetid://14204231522"
-    hue.ScaleType = Enum.ScaleType.Stretch
-    hue.BorderSizePixel = 0
-    hue.BackgroundTransparency = 1
+    local circle = Instance.new("Frame", picker)
+    circle.Size = UDim2.new(0, 130, 0, 130)
+    circle.Position = UDim2.new(0.5, -65, 0, 20)
+    circle.BackgroundTransparency = 1
+    circle.ClipsDescendants = true
 
-    local sv = Instance.new("ImageButton", picker)
-    sv.Size = UDim2.new(0, 130, 0, 130)
-    sv.Position = UDim2.new(0, 5, 0, 5)
-    sv.Image = "rbxassetid://6020299385"
-    sv.BorderSizePixel = 0
-    sv.BackgroundTransparency = 1
+    local gradient = Instance.new("UIGradient", circle)
+    gradient.Rotation = 0
+    gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0,255,255)),
+        ColorSequenceKeypoint.new(0.25, Color3.fromRGB(0,255,0)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,255,0)),
+        ColorSequenceKeypoint.new(0.75, Color3.fromRGB(255,0,0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,255)),
+    })
 
-    local marker = Instance.new("Frame", sv)
-    marker.Size = UDim2.new(0, 2, 0, 2)
-    marker.BackgroundColor3 = Color3.new(1, 1, 1)
-    marker.BorderSizePixel = 0
+    local bg = Instance.new("ImageLabel", circle)
+    bg.Size = UDim2.new(1, 0, 1, 0)
+    bg.BackgroundTransparency = 1
+    bg.Image = "rbxassetid://6020299385"
+    bg.ImageColor3 = Color3.fromRGB(255,255,255)
+    bg.ScaleType = Enum.ScaleType.Fit
+
+    local marker = Instance.new("Frame", circle)
+    marker.Size = UDim2.new(0, 6, 0, 6)
     marker.AnchorPoint = Vector2.new(0.5, 0.5)
-    marker.Position = UDim2.new(0, 0, 0, 0)
-    marker.Visible = false
+    marker.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    marker.BorderSizePixel = 0
+    Instance.new("UICorner", marker).CornerRadius = UDim.new(1, 0)
 
-    local hueValue = 0
-    local sat, val = 1, 1
+    local UIS = game:GetService("UserInputService")
+    local RS = game:GetService("RunService")
+    local dragging = false
 
-    local function updateColor()
-        local color = Color3.fromHSV(hueValue, sat, val)
+    local function updateColorFromPosition(pos)
+        local rel = pos - circle.AbsolutePosition
+        local cx, cy = circle.AbsoluteSize.X / 2, circle.AbsoluteSize.Y / 2
+        local dx, dy = rel.X - cx, rel.Y - cy
+        local dist = math.sqrt(dx*dx + dy*dy)
+        local r = circle.AbsoluteSize.X / 2
+        if dist > r then return end
+        local angle = math.atan2(dy, dx)
+        if angle < 0 then angle = angle + (2 * math.pi) end
+        local hue = angle / (2 * math.pi)
+        local sat = dist / r
+        local color = Color3.fromHSV(hue, sat, 1)
         preview.BackgroundColor3 = color
-        marker.BackgroundColor3 = color
+        marker.Position = UDim2.new(0, rel.X, 0, rel.Y)
         if colorConfig.Callback then
             colorConfig.Callback(color)
         end
     end
 
-    local draggingSV = false
-    local draggingHue = false
-
-    local UIS = game:GetService("UserInputService")
-    local RS = game:GetService("RunService")
-
     UIS.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            if sv:IsAncestorOf(input.Target) or input.Target == sv then
-                draggingSV = true
-                marker.Visible = true
-            elseif hue:IsAncestorOf(input.Target) or input.Target == hue then
-                draggingHue = true
+            if circle:IsAncestorOf(input.Target) or input.Target == circle then
+                dragging = true
+                updateColorFromPosition(UIS:GetMouseLocation() - Vector2.new(0,36))
             end
         end
     end)
 
     UIS.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            draggingSV = false
-            draggingHue = false
-            marker.Visible = false
+            dragging = false
         end
     end)
 
     RS.RenderStepped:Connect(function()
-        if draggingSV then
-            local pos = UIS:GetMouseLocation() - Vector2.new(0, 36)
-            local rel = pos - sv.AbsolutePosition
-            sat = math.clamp(rel.X / sv.AbsoluteSize.X, 0, 1)
-            val = 1 - math.clamp(rel.Y / sv.AbsoluteSize.Y, 0, 1)
-            updateColor()
-            marker.Position = UDim2.new(0, math.clamp(rel.X, 0, sv.AbsoluteSize.X), 0, math.clamp(rel.Y, 0, sv.AbsoluteSize.Y))
-        elseif draggingHue then
-            local pos = UIS:GetMouseLocation() - Vector2.new(0, 36)
-            local relY = pos.Y - hue.AbsolutePosition.Y
-            hueValue = math.clamp(relY / hue.AbsoluteSize.Y, 0, 1)
-            updateColor()
+        if dragging then
+            updateColorFromPosition(UIS:GetMouseLocation() - Vector2.new(0,36))
         end
     end)
 
