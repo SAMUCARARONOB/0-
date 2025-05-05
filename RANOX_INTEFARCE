@@ -1754,86 +1754,98 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     button.BackgroundTransparency = 1
     button.Text = ""
 
-    local function updateColor(color)
+    local pickerHolder = Instance.new("Frame", frame)
+    pickerHolder.Position = UDim2.new(0, 10, 0, 80)
+    pickerHolder.Size = UDim2.new(1, -20, 0, 0)
+    pickerHolder.BackgroundTransparency = 1
+    pickerHolder.ClipsDescendants = true
+
+    local picker = Instance.new("Frame", pickerHolder)
+    picker.Size = UDim2.new(0, 180, 0, 160)
+    picker.Position = UDim2.new(0, 0, 0, 0)
+    picker.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    picker.BorderSizePixel = 0
+    Instance.new("UICorner", picker).CornerRadius = UDim.new(0, 6)
+    picker.Visible = false
+
+    local hue = Instance.new("ImageButton", picker)
+    hue.Size = UDim2.new(0, 20, 1, -10)
+    hue.Position = UDim2.new(1, -25, 0, 5)
+    hue.Image = "rbxassetid://14204231522"
+    hue.ScaleType = Enum.ScaleType.Stretch
+    hue.BorderSizePixel = 0
+    hue.BackgroundTransparency = 1
+
+    local sv = Instance.new("ImageButton", picker)
+    sv.Size = UDim2.new(0, 130, 0, 130)
+    sv.Position = UDim2.new(0, 5, 0, 5)
+    sv.Image = "rbxassetid://6020299385"
+    sv.BorderSizePixel = 0
+    sv.BackgroundTransparency = 1
+
+    local draggingSV = false
+    local draggingHue = false
+    local hueValue = 0
+    local sat, val = 1, 1
+
+    local function updateColor()
+        local color = Color3.fromHSV(hueValue, sat, val)
         preview.BackgroundColor3 = color
         if colorConfig.Callback then
             colorConfig.Callback(color)
         end
     end
 
-    button.MouseButton1Click:Connect(function()
-        local picker = Instance.new("Frame", frame)
-        picker.Size = UDim2.new(0, 180, 0, 160)
-        picker.Position = UDim2.new(0, 10, 0, 55)
-        picker.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-        picker.BorderSizePixel = 0
-        Instance.new("UICorner", picker).CornerRadius = UDim.new(0, 6)
+    local UIS = game:GetService("UserInputService")
 
-        local hue = Instance.new("ImageButton", picker)
-        hue.Size = UDim2.new(0, 20, 1, -10)
-        hue.Position = UDim2.new(1, -25, 0, 5)
-        hue.Image = "rbxassetid://14204231522"
-        hue.ScaleType = Enum.ScaleType.Stretch
-        hue.BorderSizePixel = 0
-
-        local sv = Instance.new("ImageButton", picker)
-        sv.Size = UDim2.new(0, 130, 0, 130)
-        sv.Position = UDim2.new(0, 5, 0, 5)
-        sv.Image = "rbxassetid://6020299385"
-        sv.BorderSizePixel = 0
-
-        local draggingSV = false
-        local draggingHue = false
-        local hueValue = 0
-        local sat, val = 1, 1
-
-        local function updateFromHSV()
-            local color = Color3.fromHSV(hueValue, sat, val)
-            updateColor(color)
+    UIS.InputChanged:Connect(function(input)
+        if draggingSV and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local rel = input.Position - sv.AbsolutePosition
+            sat = math.clamp(rel.X / sv.AbsoluteSize.X, 0, 1)
+            val = 1 - math.clamp(rel.Y / sv.AbsoluteSize.Y, 0, 1)
+            updateColor()
+        elseif draggingHue and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local relY = input.Position.Y - hue.AbsolutePosition.Y
+            hueValue = math.clamp(relY / hue.AbsoluteSize.Y, 0, 1)
+            updateColor()
         end
+    end)
 
-        sv.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                draggingSV = true
-            end
-        end)
+    sv.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            draggingSV = true
+        end
+    end)
 
-        sv.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                draggingSV = false
-            end
-        end)
+    sv.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            draggingSV = false
+        end
+    end)
 
-        hue.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                draggingHue = true
-            end
-        end)
+    hue.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            draggingHue = true
+        end
+    end)
 
-        hue.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                draggingHue = false
-            end
-        end)
+    hue.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            draggingHue = false
+        end
+    end)
 
-        game:GetService("UserInputService").InputChanged:Connect(function(input)
-            if draggingSV and input.Position then
-                local rel = input.Position - sv.AbsolutePosition
-                sat = math.clamp(rel.X / sv.AbsoluteSize.X, 0, 1)
-                val = 1 - math.clamp(rel.Y / sv.AbsoluteSize.Y, 0, 1)
-                updateFromHSV()
-            elseif draggingHue and input.Position then
-                local relY = input.Position.Y - hue.AbsolutePosition.Y
-                hueValue = math.clamp(relY / hue.AbsoluteSize.Y, 0, 1)
-                updateFromHSV()
-            end
-        end)
-
-        -- Animação de abrir e fechar
-        if picker.Size == UDim2.new(0, 180, 0, 160) then
-            picker:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.InOut, Enum.EasingStyle.Quart, 0.3, true)
+    local open = false
+    button.MouseButton1Click:Connect(function()
+        open = not open
+        picker.Visible = true
+        if open then
+            pickerHolder:TweenSize(UDim2.new(1, -20, 0, 170), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.25, true)
         else
-            picker:TweenSize(UDim2.new(0, 180, 0, 160), Enum.EasingDirection.InOut, Enum.EasingStyle.Quart, 0.3, true)
+            pickerHolder:TweenSize(UDim2.new(1, -20, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.25, true)
+            task.delay(0.25, function()
+                if not open then picker.Visible = false end
+            end)
         end
     end)
 end
