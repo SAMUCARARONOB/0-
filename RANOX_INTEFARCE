@@ -1783,7 +1783,8 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     marker.BackgroundColor3 = Color3.new(1, 1, 1)
     marker.BorderSizePixel = 0
     marker.AnchorPoint = Vector2.new(0.5, 0.5)
-    marker.Position = UDim2.new(0, 130, 0, 130)
+    marker.Position = UDim2.new(0, 0, 0, 0)
+    marker.Visible = false
 
     local hueValue = 0
     local sat, val = 1, 1
@@ -1807,6 +1808,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             if sv:IsAncestorOf(input.Target) or input.Target == sv then
                 draggingSV = true
+                marker.Visible = true
             elseif hue:IsAncestorOf(input.Target) or input.Target == hue then
                 draggingHue = true
             end
@@ -1817,6 +1819,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             draggingSV = false
             draggingHue = false
+            marker.Visible = false
         end
     end)
 
@@ -1827,7 +1830,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
             sat = math.clamp(rel.X / sv.AbsoluteSize.X, 0, 1)
             val = 1 - math.clamp(rel.Y / sv.AbsoluteSize.Y, 0, 1)
             updateColor()
-            marker.Position = UDim2.new(0, rel.X, 0, rel.Y)
+            marker.Position = UDim2.new(0, math.clamp(rel.X, 0, sv.AbsoluteSize.X), 0, math.clamp(rel.Y, 0, sv.AbsoluteSize.Y))
         elseif draggingHue then
             local pos = UIS:GetMouseLocation() - Vector2.new(0, 36)
             local relY = pos.Y - hue.AbsolutePosition.Y
