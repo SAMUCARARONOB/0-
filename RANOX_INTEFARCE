@@ -1710,7 +1710,7 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-function Window:CreateColorPicker2(tabName, colorConfig)
+function Window:CreateColorPicker(tabName, colorConfig)
     local tab = pages[tabName]
     if not tab then return end
 
@@ -1745,7 +1745,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
 
     local preview = Instance.new("Frame", mainHolder)
     preview.Size = UDim2.new(0, 40, 0, 40)
-    preview.Position = UDim2.new(1, -50, 0, 30)
+    preview.Position = UDim2.new(1, -50, 0, 4)
     preview.BackgroundColor3 = colorConfig.Default or Color3.fromRGB(255, 0, 0)
     preview.BorderSizePixel = 0
     Instance.new("UICorner", preview).CornerRadius = UDim.new(0, 6)
@@ -1778,8 +1778,6 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     sv.BorderSizePixel = 0
     sv.BackgroundTransparency = 1
 
-    local draggingSV = false
-    local draggingHue = false
     local hueValue = 0
     local sat, val = 1, 1
 
@@ -1791,41 +1789,41 @@ function Window:CreateColorPicker2(tabName, colorConfig)
         end
     end
 
-    local UIS = game:GetService("UserInputService")
+    local draggingSV = false
+    local draggingHue = false
 
-    UIS.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            if draggingSV then
-                local rel = input.Position - sv.AbsolutePosition
-                sat = math.clamp(rel.X / sv.AbsoluteSize.X, 0, 1)
-                val = 1 - math.clamp(rel.Y / sv.AbsoluteSize.Y, 0, 1)
-                updateColor()
-            elseif draggingHue then
-                local relY = input.Position.Y - hue.AbsolutePosition.Y
-                hueValue = math.clamp(relY / hue.AbsoluteSize.Y, 0, 1)
-                updateColor()
+    local UIS = game:GetService("UserInputService")
+    local RS = game:GetService("RunService")
+
+    UIS.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if sv:IsAncestorOf(input.Target) or input.Target == sv then
+                draggingSV = true
+            elseif hue:IsAncestorOf(input.Target) or input.Target == hue then
+                draggingHue = true
             end
         end
     end)
 
-    sv.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            draggingSV = true
-        end
-    end)
-    sv.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+    UIS.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             draggingSV = false
-        end
-    end)
-    hue.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            draggingHue = true
-        end
-    end)
-    hue.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
             draggingHue = false
+        end
+    end)
+
+    RS.RenderStepped:Connect(function()
+        if draggingSV then
+            local pos = UIS:GetMouseLocation() - Vector2.new(0, 36)
+            local rel = pos - sv.AbsolutePosition
+            sat = math.clamp(rel.X / sv.AbsoluteSize.X, 0, 1)
+            val = 1 - math.clamp(rel.Y / sv.AbsoluteSize.Y, 0, 1)
+            updateColor()
+        elseif draggingHue then
+            local pos = UIS:GetMouseLocation() - Vector2.new(0, 36)
+            local relY = pos.Y - hue.AbsolutePosition.Y
+            hueValue = math.clamp(relY / hue.AbsoluteSize.Y, 0, 1)
+            updateColor()
         end
     end)
 
