@@ -1745,7 +1745,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
 
     local preview = Instance.new("Frame", mainHolder)
     preview.Size = UDim2.new(0, 40, 0, 40)
-    preview.Position = UDim2.new(1, -50, 0.5, -20)
+    preview.Position = UDim2.new(1, -50, 0, 30)
     preview.BackgroundColor3 = colorConfig.Default or Color3.fromRGB(255, 0, 0)
     preview.BorderSizePixel = 0
     Instance.new("UICorner", preview).CornerRadius = UDim.new(0, 6)
