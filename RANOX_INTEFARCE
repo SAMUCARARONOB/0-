@@ -1715,7 +1715,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     if not tab then return end
 
     local mainHolder = Instance.new("Frame", tab)
-    mainHolder.Size = UDim2.new(1, -20, 0, 80)
+    mainHolder.Size = UDim2.new(1, -20, 0, 260)
     mainHolder.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     mainHolder.BorderSizePixel = 0
     mainHolder.AutomaticSize = Enum.AutomaticSize.Y
@@ -1732,17 +1732,6 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     title.Size = UDim2.new(1, -44, 0, 14)
     title.Position = UDim2.new(0, 10, 0, 4)
 
-    local description = Instance.new("TextLabel", mainHolder)
-    description.Text = colorConfig.Description or ""
-    description.TextColor3 = Color3.fromRGB(160, 160, 160)
-    description.Font = Enum.Font.Gotham
-    description.TextSize = 12
-    description.TextXAlignment = Enum.TextXAlignment.Left
-    description.TextYAlignment = Enum.TextYAlignment.Top
-    description.BackgroundTransparency = 1
-    description.Size = UDim2.new(1, -44, 0, 12)
-    description.Position = UDim2.new(0, 10, 0, 22)
-
     local preview = Instance.new("Frame", mainHolder)
     preview.Size = UDim2.new(0, 40, 0, 40)
     preview.Position = UDim2.new(1, -50, 0, 4)
@@ -1750,106 +1739,59 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     preview.BorderSizePixel = 0
     Instance.new("UICorner", preview).CornerRadius = UDim.new(0, 6)
 
-    local button = Instance.new("TextButton", preview)
-    button.Size = UDim2.new(1, 0, 1, 0)
-    button.BackgroundTransparency = 1
-    button.Text = ""
-
-    local picker = Instance.new("Frame", mainHolder)
-    picker.Size = UDim2.new(1, -20, 0, 170)
-    picker.Position = UDim2.new(0, 10, 0, 80)
-    picker.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    picker.BorderSizePixel = 0
-    picker.Visible = false
-    Instance.new("UICorner", picker).CornerRadius = UDim.new(0, 6)
-
-    local circle = Instance.new("Frame", picker)
-    circle.Size = UDim2.new(0, 130, 0, 130)
-    circle.Position = UDim2.new(0.5, -65, 0, 20)
+    local circle = Instance.new("Frame", mainHolder)
+    circle.Size = UDim2.new(0, 160, 0, 160)
+    circle.Position = UDim2.new(0, 10, 0, 50)
     circle.BackgroundTransparency = 1
     circle.ClipsDescendants = true
 
-    local gradient = Instance.new("UIGradient", circle)
-    gradient.Rotation = 0
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(0,255,255)),
-        ColorSequenceKeypoint.new(0.25, Color3.fromRGB(0,255,0)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,255,0)),
-        ColorSequenceKeypoint.new(0.75, Color3.fromRGB(255,0,0)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,255)),
-    })
-
-    local bg = Instance.new("ImageLabel", circle)
-    bg.Size = UDim2.new(1, 0, 1, 0)
-    bg.BackgroundTransparency = 1
-    bg.Image = "rbxassetid://6020299385"
-    bg.ImageColor3 = Color3.fromRGB(255,255,255)
-    bg.ScaleType = Enum.ScaleType.Fit
+    local uicorner = Instance.new("UICorner", circle)
+    uicorner.CornerRadius = UDim.new(1, 0)
 
     local marker = Instance.new("Frame", circle)
     marker.Size = UDim2.new(0, 6, 0, 6)
     marker.AnchorPoint = Vector2.new(0.5, 0.5)
-    marker.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    marker.BackgroundColor3 = Color3.new(1, 1, 1)
     marker.BorderSizePixel = 0
     Instance.new("UICorner", marker).CornerRadius = UDim.new(1, 0)
 
-    local UIS = game:GetService("UserInputService")
     local RS = game:GetService("RunService")
+    local UIS = game:GetService("UserInputService")
+
     local dragging = false
 
-    local function updateColorFromPosition(pos)
-        local rel = pos - circle.AbsolutePosition
-        local cx, cy = circle.AbsoluteSize.X / 2, circle.AbsoluteSize.Y / 2
-        local dx, dy = rel.X - cx, rel.Y - cy
-        local dist = math.sqrt(dx*dx + dy*dy)
-        local r = circle.AbsoluteSize.X / 2
-        if dist > r then return end
-        local angle = math.atan2(dy, dx)
-        if angle < 0 then angle = angle + (2 * math.pi) end
-        local hue = angle / (2 * math.pi)
-        local sat = dist / r
-        local color = Color3.fromHSV(hue, sat, 1)
-        preview.BackgroundColor3 = color
-        marker.Position = UDim2.new(0, rel.X, 0, rel.Y)
-        if colorConfig.Callback then
-            colorConfig.Callback(color)
-        end
-    end
-
-    UIS.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            if circle:IsAncestorOf(input.Target) or input.Target == circle then
-                dragging = true
-                updateColorFromPosition(UIS:GetMouseLocation() - Vector2.new(0,36))
-            end
+    circle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
         end
     end)
 
     UIS.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = false
         end
     end)
 
     RS.RenderStepped:Connect(function()
         if dragging then
-            updateColorFromPosition(UIS:GetMouseLocation() - Vector2.new(0,36))
-        end
-    end)
+            local mousePos = UIS:GetMouseLocation() - Vector2.new(0, 36)
+            local center = circle.AbsolutePosition + circle.AbsoluteSize / 2
+            local rel = mousePos - center
+            local distance = rel.Magnitude
+            local radius = circle.AbsoluteSize.X / 2
 
-    local open = false
-    button.MouseButton1Click:Connect(function()
-        open = not open
-        if open then
-            mainHolder:TweenSize(UDim2.new(1, -20, 0, 260), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.25, true)
-            task.delay(0.25, function()
-                if open then
-                    picker.Visible = true
+            if distance <= radius then
+                local angle = math.atan2(rel.Y, rel.X)
+                local hue = (angle / (2 * math.pi)) % 1
+                local sat = distance / radius
+                local color = Color3.fromHSV(hue, sat, 1)
+                marker.Position = UDim2.new(0.5, rel.X, 0.5, rel.Y)
+                preview.BackgroundColor3 = color
+                marker.BackgroundColor3 = color
+                if colorConfig.Callback then
+                    colorConfig.Callback(color)
                 end
-            end)
-        else
-            picker.Visible = false
-            mainHolder:TweenSize(UDim2.new(1, -20, 0, 80), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.25, true)
+            end
         end
     end)
 end
