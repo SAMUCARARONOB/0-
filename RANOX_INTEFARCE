@@ -1710,7 +1710,7 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
-function Window:CreateColorPicker2(tabName, colorConfig)
+function Window:CreateColorPicker5(tabName, colorConfig)
     local tab = pages[tabName]
     if not tab then return end
 
@@ -1769,14 +1769,13 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     picker.LayoutOrder = 4
     Instance.new("UICorner", picker).CornerRadius = UDim.new(0, 6)
 
-    -- Ciclo preenchido
     local circle = Instance.new("ImageLabel", picker)
     circle.Size = UDim2.new(0, 130, 0, 130)
     circle.Position = UDim2.new(0.5, -65, 0, 20)
     circle.BackgroundTransparency = 1
     circle.BorderSizePixel = 0
     circle.ClipsDescendants = true
-    circle.Image = "rbxassetid://153432789"  -- Esse ID de imagem deve ser trocado com o que você deseja para um círculo colorido, caso deseje usar uma imagem externa.
+    circle.Image = "rbxassetid://6035040925"
 
     local gradient = Instance.new("UIGradient", circle)
     gradient.Color = ColorSequence.new{
@@ -1791,7 +1790,6 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     local uicorner = Instance.new("UICorner", circle)
     uicorner.CornerRadius = UDim.new(1, 0)
 
-    -- Marcador para controle de seleção de cor
     local marker = Instance.new("Frame", circle)
     marker.Size = UDim2.new(0, 6, 0, 6)
     marker.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -1805,9 +1803,8 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     local UIS = game:GetService("UserInputService")
     local RS = game:GetService("RunService")
 
-    -- Função para movimentar o marcador
     UIS.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             local pos = UIS:GetMouseLocation() - Vector2.new(0, 36)
             if (pos - circle.AbsolutePosition).Magnitude <= circle.AbsoluteSize.X / 2 then
                 dragging = true
@@ -1816,7 +1813,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     end)
 
     UIS.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = false
         end
     end)
