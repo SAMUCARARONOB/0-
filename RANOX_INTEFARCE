@@ -1778,12 +1778,20 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     sv.BorderSizePixel = 0
     sv.BackgroundTransparency = 1
 
+    local marker = Instance.new("Frame", sv)
+    marker.Size = UDim2.new(0, 2, 0, 2)
+    marker.BackgroundColor3 = Color3.new(1, 1, 1)
+    marker.BorderSizePixel = 0
+    marker.AnchorPoint = Vector2.new(0.5, 0.5)
+    marker.Position = UDim2.new(0, 130, 0, 130)
+
     local hueValue = 0
     local sat, val = 1, 1
 
     local function updateColor()
         local color = Color3.fromHSV(hueValue, sat, val)
         preview.BackgroundColor3 = color
+        marker.BackgroundColor3 = color
         if colorConfig.Callback then
             colorConfig.Callback(color)
         end
@@ -1819,6 +1827,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
             sat = math.clamp(rel.X / sv.AbsoluteSize.X, 0, 1)
             val = 1 - math.clamp(rel.Y / sv.AbsoluteSize.Y, 0, 1)
             updateColor()
+            marker.Position = UDim2.new(0, rel.X, 0, rel.Y)
         elseif draggingHue then
             local pos = UIS:GetMouseLocation() - Vector2.new(0, 36)
             local relY = pos.Y - hue.AbsolutePosition.Y
