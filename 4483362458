@@ -97,13 +97,4 @@ function Ranox:CreateWindow(cfg)
 	}
 end
 
-return Ranox
-
-rbxassetid://109180550939457
-rbxassetid://136506710166369
-rbxassetid://106933593825188
-rbxassetid://101130630002732
-rbxassetid://84808331464425
-rbxassetid://124956137520240
-rbxassetid://89174698309965
-rbxassetid://133558083095603
+return Ranox -- rbxassetid://109180550939457 rbxassetid://136506710166369 rbxassetid://106933593825188 rbxassetid://101130630002732 rbxassetid://84808331464425 rbxassetid://124956137520240 rbxassetid://89174698309965 rbxassetid://133558083095603
