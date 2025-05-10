@@ -47,13 +47,14 @@ function RANOX:CreateWindow(c)
 
 	local SB = Instance.new("TextBox", T)
 	SB.Size = UDim2.new(0, 120, 0, 24)
-	SB.Position = UDim2.new(1, -130, 0.5, -12)
+	SB.Position = UDim2.new(0, 10, 0.5, -12)
 	SB.Font = Enum.Font.Gotham
 	SB.TextSize = 14
-	SB.Text = ""
+	SB.Text = "Pesquisar"
 	SB.TextColor3 = Color3.fromRGB(255, 255, 255)
 	SB.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 	SB.BorderSizePixel = 0
+	SB.ClearTextOnFocus = false
 	local SUI = Instance.new("UICorner", SB)
 	SUI.CornerRadius = UDim.new(0, 6)
 
