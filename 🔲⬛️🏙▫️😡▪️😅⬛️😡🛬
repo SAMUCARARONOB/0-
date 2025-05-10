@@ -1,165 +1,129 @@
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
-local Player = Players.LocalPlayer
-local Mouse = Player:GetMouse()
-local UIS = game:GetService("UserInputService")
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
 
 local RANOX = {}
 
--- Interface
-local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
-ScreenGui.Name = "RANOX_GUI"
-ScreenGui.IgnoreGuiInset = true
-ScreenGui.ResetOnSpawn = false
+function RANOX:CreateWindow(config)
+	local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
+	ScreenGui.Name = "RANOX_UI"
+	ScreenGui.ResetOnSpawn = false
 
-local Main = Instance.new("Frame", ScreenGui)
-Main.Size = UDim2.new(0, 460, 0, 400) -- 20% maior
-Main.Position = UDim2.new(0.5, -230, 0.5, -200)
-Main.AnchorPoint = Vector2.new(0.5, 0.5)
-Main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-Main.BorderSizePixel = 0
-Main.ClipsDescendants = true
-Main.Visible = false
+	local MainFrame = Instance.new("Frame", ScreenGui)
+	MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+	MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	MainFrame.Size = UDim2.new(0, 500, 0, 420)
+	MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+	MainFrame.BorderSizePixel = 0
+	MainFrame.ClipsDescendants = true
 
--- Animação de entrada
-TweenService:Create(Main, TweenInfo.new(0.6, Enum.EasingStyle.Sine), {Position = Main.Position + UDim2.new(0, 0, 0.05, 0)}):Play()
-task.wait(0.1)
-Main.Visible = true
-TweenService:Create(Main, TweenInfo.new(0.6, Enum.EasingStyle.Sine), {Position = Main.Position - UDim2.new(0, 0, 0.05, 0)}):Play()
+	local UICorner = Instance.new("UICorner", MainFrame)
+	UICorner.CornerRadius = UDim.new(0, 8)
 
--- Gradient no título animado
-local TitleBar = Instance.new("Frame", Main)
-TitleBar.Size = UDim2.new(1, 0, 0, 36)
-TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-TitleBar.BorderSizePixel = 0
+	local Gradient = Instance.new("UIGradient", MainFrame)
+	Gradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 255))
+	})
+	Gradient.Rotation = 45
 
-local UIGradient = Instance.new("UIGradient", TitleBar)
-UIGradient.Color = ColorSequence.new{
-		ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255,0,0)),
-		ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0,255,0)),
-		ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0,0,255)),
-		ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255,0,0))
-}
-UIGradient.Rotation = 0
+	local TitleBar = Instance.new("Frame", MainFrame)
+	TitleBar.Size = UDim2.new(1, 0, 0, 40)
+	TitleBar.BackgroundTransparency = 1
 
-task.spawn(function()
-	while true do
-		UIGradient.Rotation += 1
-		if UIGradient.Rotation >= 360 then UIGradient.Rotation = 0 end
-		task.wait(0.02)
+	local Title = Instance.new("TextLabel", TitleBar)
+	Title.Size = UDim2.new(1, -40, 1, 0)
+	Title.Position = UDim2.new(0, 10, 0, 0)
+	Title.Text = config.Title or "RANOX"
+	Title.Font = Enum.Font.GothamBold
+	Title.TextSize = 20
+	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Title.BackgroundTransparency = 1
+	Title.TextXAlignment = Enum.TextXAlignment.Left
+
+	local SearchBox = Instance.new("TextBox", TitleBar)
+	SearchBox.Size = UDim2.new(0, 120, 0, 24)
+	SearchBox.Position = UDim2.new(1, -130, 0.5, -12)
+	SearchBox.PlaceholderText = "Pesquisar..."
+	SearchBox.Font = Enum.Font.Gotham
+	SearchBox.TextSize = 14
+	SearchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SearchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	SearchBox.BorderSizePixel = 0
+	local SearchUICorner = Instance.new("UICorner", SearchBox)
+	SearchUICorner.CornerRadius = UDim.new(0, 6)
+
+	local ContentFrame = Instance.new("ScrollingFrame", MainFrame)
+	ContentFrame.Size = UDim2.new(1, -20, 1, -60)
+	ContentFrame.Position = UDim2.new(0, 10, 0, 50)
+	ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+	ContentFrame.ScrollBarThickness = 4
+	ContentFrame.BackgroundTransparency = 1
+	ContentFrame.BorderSizePixel = 0
+
+	local UIListLayout = Instance.new("UIListLayout", ContentFrame)
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout.Padding = UDim.new(0, 6)
+
+	local function updateCanvas()
+		task.wait()
+		ContentFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
 	end
-end)
 
--- Título
-local Title = Instance.new("TextLabel", TitleBar)
-Title.Size = UDim2.new(1, 0, 1, 0)
-Title.BackgroundTransparency = 1
-Title.Text = "RANOX INTERFACE"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 16
+	UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvas)
 
--- Botão ball que move a interface
-local Ball = Instance.new("TextButton", TitleBar)
-Ball.Size = UDim2.new(0, 30, 0, 30)
-Ball.Position = UDim2.new(1, -35, 0, 3)
-Ball.BackgroundColor3 = Color3.fromRGB(255, 0, 100)
-Ball.Text = ""
-Ball.BorderSizePixel = 0
-Ball.AutoButtonColor = false
-Ball.Name = "Ball"
-Ball.TextTransparency = 1
-Ball.BackgroundTransparency = 0.2
-Ball.TextColor3 = Color3.new(1,1,1)
-Ball.TextSize = 16
-Ball.Font = Enum.Font.Gotham
+	local EnterTween = TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		Size = UDim2.new(0, 500, 0, 420),
+		Position = UDim2.new(0.5, 0, 0.5, 0)
+	})
+	MainFrame.Size = UDim2.new(0, 0, 0, 0)
+	EnterTween:Play()
 
--- Drag com ball
-local dragging = false
-local dragInput, dragStart, startPos
+	function RANOX:CreateButton(text, callback)
+		local Button = Instance.new("TextButton", ContentFrame)
+		Button.Size = UDim2.new(1, -10, 0, 38)
+		Button.Text = text
+		Button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+		Button.Font = Enum.Font.GothamBold
+		Button.TextSize = 16
+		Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+		Button.BorderSizePixel = 0
+		local Corner = Instance.new("UICorner", Button)
+		Corner.CornerRadius = UDim.new(0, 6)
 
-Ball.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging = true
-		dragStart = input.Position
-		startPos = Main.Position
-
-		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then
-				dragging = false
-			end
+		Button.MouseButton1Click:Connect(function()
+			if callback then callback() end
 		end)
+
+		return Button
 	end
-end)
 
-UIS.InputChanged:Connect(function(input)
-	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-		local delta = input.Position - dragStart
-		Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	function RANOX:CreateLabel(text)
+		local Label = Instance.new("TextLabel", ContentFrame)
+		Label.Size = UDim2.new(1, -10, 0, 30)
+		Label.Text = text
+		Label.BackgroundTransparency = 1
+		Label.Font = Enum.Font.Gotham
+		Label.TextSize = 14
+		Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+		Label.TextXAlignment = Enum.TextXAlignment.Left
+		return Label
 	end
-end)
 
--- Container para os elementos criados (como botões)
-local ElementContainer = Instance.new("Frame", Main)
-ElementContainer.Size = UDim2.new(1, 0, 1, -36)
-ElementContainer.Position = UDim2.new(0, 0, 0, 36)
-ElementContainer.BackgroundTransparency = 1
-
-local UIList = Instance.new("UIListLayout", ElementContainer)
-UIList.Padding = UDim.new(0, 6)
-UIList.SortOrder = Enum.SortOrder.LayoutOrder
-
--- Funções da Rayfield-like API
-function RANOX:CreateButton(options)
-	local button = Instance.new("TextButton", ElementContainer)
-	button.Size = UDim2.new(1, -20, 0, 36)
-	button.Position = UDim2.new(0, 10, 0, 0)
-	button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	button.TextColor3 = Color3.new(1, 1, 1)
-	button.Font = Enum.Font.Gotham
-	button.TextSize = 14
-	button.Text = options.Name or "Button"
-	button.AutoButtonColor = true
-	button.BorderSizePixel = 0
-
-	button.MouseButton1Click:Connect(function()
-		if options.Callback then
-			pcall(options.Callback)
+	local function searchFilter()
+		local query = SearchBox.Text:lower()
+		for _, child in ipairs(ContentFrame:GetChildren()) do
+			if child:IsA("GuiObject") and child ~= UIListLayout then
+				child.Visible = (query == "" or string.find((child.Text or ""):lower(), query))
+			end
 		end
-	end)
-end
+	end
 
-function RANOX:CreateToggle(options)
-	local toggle = Instance.new("TextButton", ElementContainer)
-	toggle.Size = UDim2.new(1, -20, 0, 36)
-	toggle.Position = UDim2.new(0, 10, 0, 0)
-	toggle.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	toggle.TextColor3 = Color3.new(1, 1, 1)
-	toggle.Font = Enum.Font.Gotham
-	toggle.TextSize = 14
-	toggle.Text = "[ OFF ] " .. (options.Name or "Toggle")
-	toggle.BorderSizePixel = 0
+	SearchBox:GetPropertyChangedSignal("Text"):Connect(searchFilter)
 
-	local state = false
-	toggle.MouseButton1Click:Connect(function()
-		state = not state
-		toggle.Text = state and "[ ON ] " .. options.Name or "[ OFF ] " .. options.Name
-		if options.Callback then
-			pcall(options.Callback, state)
-		end
-	end)
-end
-
--- Animação de ocultar
-function RANOX:Hide()
-	TweenService:Create(Main, TweenInfo.new(0.5, Enum.EasingStyle.Sine), {Position = Main.Position + UDim2.new(0, 0, 0.1, 0)}):Play()
-	task.wait(0.5)
-	Main.Visible = false
-end
-
-function RANOX:Show()
-	Main.Visible = true
-	TweenService:Create(Main, TweenInfo.new(0.5, Enum.EasingStyle.Sine), {Position = Main.Position - UDim2.new(0, 0, 0.1, 0)}):Play()
+	return RANOX
 end
 
 return RANOX
