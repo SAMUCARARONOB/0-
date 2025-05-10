@@ -1,6 +1,5 @@
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 
@@ -46,30 +45,6 @@ function RANOX:CreateWindow(config)
 	Title.BackgroundTransparency = 1
 	Title.TextXAlignment = Enum.TextXAlignment.Left
 
-	local SearchBox = Instance.new("TextBox", TitleBar)
-	SearchBox.Size = UDim2.new(0, 120, 0, 24)
-	SearchBox.Position = UDim2.new(1, -160, 0.5, -12)
-	SearchBox.PlaceholderText = "Pesquisar..."
-	SearchBox.Font = Enum.Font.Gotham
-	SearchBox.TextSize = 14
-	SearchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SearchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-	SearchBox.BorderSizePixel = 0
-	local SearchUICorner = Instance.new("UICorner", SearchBox)
-	SearchUICorner.CornerRadius = UDim.new(0, 6)
-
-	local HideButton = Instance.new("TextButton", TitleBar)
-	HideButton.Size = UDim2.new(0, 24, 0, 24)
-	HideButton.Position = UDim2.new(1, -30, 0.5, -12)
-	HideButton.Text = "-"
-	HideButton.Font = Enum.Font.GothamBold
-	HideButton.TextSize = 18
-	HideButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-	HideButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-	HideButton.BorderSizePixel = 0
-	local HideCorner = Instance.new("UICorner", HideButton)
-	HideCorner.CornerRadius = UDim.new(1, 0)
-
 	local TabsHolder = Instance.new("Frame", MainFrame)
 	TabsHolder.Size = UDim2.new(1, -20, 0, 30)
 	TabsHolder.Position = UDim2.new(0, 10, 0, 40)
@@ -80,6 +55,18 @@ function RANOX:CreateWindow(config)
 	TabList.SortOrder = Enum.SortOrder.LayoutOrder
 	TabList.Padding = UDim.new(0, 6)
 
+	local SearchBox = Instance.new("TextBox", TitleBar)
+	SearchBox.Size = UDim2.new(0, 120, 0, 24)
+	SearchBox.Position = UDim2.new(1, -130, 0.5, -12)
+	SearchBox.PlaceholderText = "Pesquisar..."
+	SearchBox.Font = Enum.Font.Gotham
+	SearchBox.TextSize = 14
+	SearchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SearchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	SearchBox.BorderSizePixel = 0
+	local SearchUICorner = Instance.new("UICorner", SearchBox)
+	SearchUICorner.CornerRadius = UDim.new(0, 6)
+
 	local Tabs = {}
 
 	local ContentFrame = Instance.new("Frame", MainFrame)
@@ -87,8 +74,6 @@ function RANOX:CreateWindow(config)
 	ContentFrame.Position = UDim2.new(0, 10, 0, 80)
 	ContentFrame.BackgroundTransparency = 1
 	ContentFrame.BorderSizePixel = 0
-
-	local CurrentMarker
 
 	local function CreateTab(name)
 		local TabButton = Instance.new("TextButton", TabsHolder)
@@ -99,6 +84,7 @@ function RANOX:CreateWindow(config)
 		TabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 		TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 		TabButton.Size = UDim2.new(0, 0, 1, 0)
+		TabButton.BackgroundTransparency = 0
 		TabButton.BorderSizePixel = 0
 		TabButton.ClipsDescendants = true
 
@@ -109,13 +95,14 @@ function RANOX:CreateWindow(config)
 		local Corner = Instance.new("UICorner", TabButton)
 		Corner.CornerRadius = UDim.new(0, 6)
 
-		local Marker = Instance.new("Frame", TabsHolder)
-		Marker.Size = UDim2.new(0, TabButton.TextBounds.X + 20 * 0.7, 0, 2)
+		local Marker = Instance.new("Frame", TabButton)
+		Marker.Size = UDim2.new(0.7, 0, 0, 2)
+		Marker.Position = UDim2.new(0.15, 0, 1, -2)
 		Marker.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Marker.Visible = false
 		Marker.BorderSizePixel = 0
 		local mCorner = Instance.new("UICorner", Marker)
 		mCorner.CornerRadius = UDim.new(1, 0)
-		Marker.Visible = false
 
 		TabButton.Size = UDim2.new(0, TabButton.TextBounds.X + 20, 1, 0)
 
@@ -137,25 +124,18 @@ function RANOX:CreateWindow(config)
 		TabButton.MouseButton1Click:Connect(function()
 			for _, t in pairs(Tabs) do
 				t.Tab.Visible = false
+				t.Marker.Visible = false
 			end
 			TabContent.Visible = true
-			if CurrentMarker then CurrentMarker.Visible = false end
 			Marker.Visible = true
-			CurrentMarker = Marker
-			TweenService:Create(Marker, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-				Position = UDim2.new(0, TabButton.Position.X.Offset + 10, 1, -2),
-				Size = UDim2.new(0, TabButton.AbsoluteSize.X * 0.7, 0, 2)
-			}):Play()
 		end)
 
 		if not next(Tabs) then
 			TabContent.Visible = true
-			Marker.Position = UDim2.new(0, TabButton.Position.X.Offset + 10, 1, -2)
 			Marker.Visible = true
-			CurrentMarker = Marker
 		end
 
-		Tabs[name] = { Tab = TabContent }
+		Tabs[name] = { Tab = TabContent, Marker = Marker }
 
 		local API = {}
 
@@ -170,9 +150,11 @@ function RANOX:CreateWindow(config)
 			Button.BorderSizePixel = 0
 			local Corner = Instance.new("UICorner", Button)
 			Corner.CornerRadius = UDim.new(0, 6)
+
 			Button.MouseButton1Click:Connect(function()
 				if callback then callback() end
 			end)
+
 			return Button
 		end
 
@@ -210,43 +192,6 @@ function RANOX:CreateWindow(config)
 	})
 	MainFrame.Size = UDim2.new(0, 0, 0, 0)
 	EnterTween:Play()
-
-	local Ball = Instance.new("ImageButton", ScreenGui)
-	Ball.Size = UDim2.new(0, 40, 0, 40)
-	Ball.Position = UDim2.new(0, 100, 0, 100)
-	Ball.BackgroundTransparency = 1
-	Ball.Image = "rbxassetid://4483362458"
-	Ball.Visible = false
-
-	local dragging, offset
-	Ball.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = true
-			offset = Vector2.new(input.Position.X - Ball.AbsolutePosition.X, input.Position.Y - Ball.AbsolutePosition.Y)
-		end
-	end)
-
-	UserInputService.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = false
-		end
-	end)
-
-	UserInputService.InputChanged:Connect(function(input)
-		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-			Ball.Position = UDim2.new(0, input.Position.X - offset.X, 0, input.Position.Y - offset.Y)
-		end
-	end)
-
-	HideButton.MouseButton1Click:Connect(function()
-		MainFrame.Visible = false
-		Ball.Visible = true
-	end)
-
-	Ball.MouseButton1Click:Connect(function()
-		MainFrame.Visible = true
-		Ball.Visible = false
-	end)
 
 	return {
 		CreateTab = CreateTab
