@@ -5,193 +5,225 @@ local Mouse = LocalPlayer:GetMouse()
 
 local RANOX = {}
 
-function RANOX:CreateWindow(config)
-	local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
-	ScreenGui.Name = "RANOX_UI"
-	ScreenGui.ResetOnSpawn = false
+function RANOX:CreateWindow(c)
+	local S = Instance.new("ScreenGui", game:GetService("CoreGui"))
+	S.Name = "RANOX_UI"
+	S.ResetOnSpawn = false
 
-	local MainFrame = Instance.new("Frame", ScreenGui)
-	MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-	MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-	MainFrame.Size = UDim2.new(0, 500, 0, 420)
-	MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-	MainFrame.BorderSizePixel = 0
-	MainFrame.ClipsDescendants = true
-	MainFrame.Active = true
-	MainFrame.Draggable = true
+	local M = Instance.new("Frame", S)
+	M.AnchorPoint = Vector2.new(0.5, 0.5)
+	M.Position = UDim2.new(0.5, 0, 0.5, 0)
+	M.Size = UDim2.new(0, 500, 0, 420)
+	M.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+	M.BorderSizePixel = 0
+	M.ClipsDescendants = true
+	M.Active = true
+	M.Draggable = true
 
-	local UICorner = Instance.new("UICorner", MainFrame)
-	UICorner.CornerRadius = UDim.new(0, 8)
+	local UC = Instance.new("UICorner", M)
+	UC.CornerRadius = UDim.new(0, 8)
 
-	local Gradient = Instance.new("UIGradient", MainFrame)
-	Gradient.Color = ColorSequence.new({
+	local G = Instance.new("UIGradient", M)
+	G.Color = ColorSequence.new({
 		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
 		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 255))
 	})
-	Gradient.Rotation = 45
+	G.Rotation = 45
 
-	local TitleBar = Instance.new("Frame", MainFrame)
-	TitleBar.Size = UDim2.new(1, 0, 0, 40)
-	TitleBar.BackgroundTransparency = 1
+	local T = Instance.new("Frame", M)
+	T.Size = UDim2.new(1, 0, 0, 40)
+	T.BackgroundTransparency = 1
 
-	local Title = Instance.new("TextLabel", TitleBar)
-	Title.Size = UDim2.new(1, -40, 1, 0)
-	Title.Position = UDim2.new(0, 10, 0, 0)
-	Title.Text = config.Title or "RANOX"
-	Title.Font = Enum.Font.GothamBold
-	Title.TextSize = 20
-	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Title.BackgroundTransparency = 1
-	Title.TextXAlignment = Enum.TextXAlignment.Left
+	local TL = Instance.new("TextLabel", T)
+	TL.Size = UDim2.new(1, -100, 1, 0)
+	TL.Position = UDim2.new(0, 10, 0, 0)
+	TL.Text = c.Title or "RANOX"
+	TL.Font = Enum.Font.GothamBold
+	TL.TextSize = 20
+	TL.TextColor3 = Color3.fromRGB(255, 255, 255)
+	TL.BackgroundTransparency = 1
+	TL.TextXAlignment = Enum.TextXAlignment.Left
 
-	local TabsHolder = Instance.new("Frame", MainFrame)
+	local SB = Instance.new("TextBox", T)
+	SB.Size = UDim2.new(0, 120, 0, 24)
+	SB.Position = UDim2.new(1, -130, 0.5, -12)
+	SB.Font = Enum.Font.Gotham
+	SB.TextSize = 14
+	SB.Text = ""
+	SB.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SB.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	SB.BorderSizePixel = 0
+	local SUI = Instance.new("UICorner", SB)
+	SUI.CornerRadius = UDim.new(0, 6)
+
+	local Icon = Instance.new("ImageLabel", T)
+	Icon.Image = "rbxassetid://133558083095603"
+	Icon.Size = UDim2.new(0, 16, 0, 16)
+	Icon.Position = UDim2.new(1, -40, 0.5, -8)
+	Icon.BackgroundTransparency = 1
+
+	local BtnOcultar = Instance.new("TextButton", T)
+	BtnOcultar.Size = UDim2.new(0, 24, 0, 24)
+	BtnOcultar.Position = UDim2.new(1, -25, 0.5, -12)
+	BtnOcultar.Text = "-"
+	BtnOcultar.Font = Enum.Font.GothamBold
+	BtnOcultar.TextSize = 18
+	BtnOcultar.TextColor3 = Color3.fromRGB(255, 255, 255)
+	BtnOcultar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	local BOcUIC = Instance.new("UICorner", BtnOcultar)
+	BOcUIC.CornerRadius = UDim.new(1, 0)
+
+	local TabsHolder = Instance.new("Frame", M)
 	TabsHolder.Size = UDim2.new(1, -20, 0, 30)
 	TabsHolder.Position = UDim2.new(0, 10, 0, 40)
 	TabsHolder.BackgroundTransparency = 1
 
-	local TabList = Instance.new("UIListLayout", TabsHolder)
-	TabList.FillDirection = Enum.FillDirection.Horizontal
-	TabList.SortOrder = Enum.SortOrder.LayoutOrder
-	TabList.Padding = UDim.new(0, 6)
-
-	local SearchBox = Instance.new("TextBox", TitleBar)
-	SearchBox.Size = UDim2.new(0, 120, 0, 24)
-	SearchBox.Position = UDim2.new(1, -130, 0.5, -12)
-	SearchBox.PlaceholderText = "Pesquisar..."
-	SearchBox.Font = Enum.Font.Gotham
-	SearchBox.TextSize = 14
-	SearchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SearchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-	SearchBox.BorderSizePixel = 0
-	local SearchUICorner = Instance.new("UICorner", SearchBox)
-	SearchUICorner.CornerRadius = UDim.new(0, 6)
+	local TLay = Instance.new("UIListLayout", TabsHolder)
+	TLay.FillDirection = Enum.FillDirection.Horizontal
+	TLay.SortOrder = Enum.SortOrder.LayoutOrder
+	TLay.Padding = UDim.new(0, 6)
 
 	local Tabs = {}
 
-	local ContentFrame = Instance.new("Frame", MainFrame)
-	ContentFrame.Size = UDim2.new(1, -20, 1, -90)
-	ContentFrame.Position = UDim2.new(0, 10, 0, 80)
-	ContentFrame.BackgroundTransparency = 1
-	ContentFrame.BorderSizePixel = 0
+	local C = Instance.new("Frame", M)
+	C.Size = UDim2.new(1, -20, 1, -90)
+	C.Position = UDim2.new(0, 10, 0, 80)
+	C.BackgroundTransparency = 1
 
-	local function CreateTab(name)
-		local TabButton = Instance.new("TextButton", TabsHolder)
-		TabButton.Text = name
-		TabButton.Font = Enum.Font.GothamBold
-		TabButton.TextSize = 14
-		TabButton.AutoButtonColor = false
-		TabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-		TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-		TabButton.Size = UDim2.new(0, 0, 1, 0)
-		TabButton.BackgroundTransparency = 0
-		TabButton.BorderSizePixel = 0
-		TabButton.ClipsDescendants = true
+	local function CreateTab(n)
+		local B = Instance.new("TextButton", TabsHolder)
+		B.Text = n
+		B.Font = Enum.Font.GothamBold
+		B.TextSize = 14
+		B.AutoButtonColor = false
+		B.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		B.TextColor3 = Color3.fromRGB(255, 255, 255)
+		B.Size = UDim2.new(0, 0, 1, 0)
 
-		local TabPadding = Instance.new("UIPadding", TabButton)
-		TabPadding.PaddingLeft = UDim.new(0, 10)
-		TabPadding.PaddingRight = UDim.new(0, 10)
+		local P = Instance.new("UIPadding", B)
+		P.PaddingLeft = UDim.new(0, 10)
+		P.PaddingRight = UDim.new(0, 10)
+		local C2 = Instance.new("UICorner", B)
+		C2.CornerRadius = UDim.new(0, 6)
 
-		local Corner = Instance.new("UICorner", TabButton)
-		Corner.CornerRadius = UDim.new(0, 6)
+		local M2 = Instance.new("Frame", B)
+		M2.Size = UDim2.new(0.7, 0, 0, 2)
+		M2.Position = UDim2.new(0.15, 0, 1, -2)
+		M2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		M2.Visible = false
+		M2.BorderSizePixel = 0
+		local MC = Instance.new("UICorner", M2)
+		MC.CornerRadius = UDim.new(1, 0)
 
-		local Marker = Instance.new("Frame", TabButton)
-		Marker.Size = UDim2.new(0.7, 0, 0, 2)
-		Marker.Position = UDim2.new(0.15, 0, 1, -2)
-		Marker.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		Marker.Visible = false
-		Marker.BorderSizePixel = 0
-		local mCorner = Instance.new("UICorner", Marker)
-		mCorner.CornerRadius = UDim.new(1, 0)
+		B.Size = UDim2.new(0, B.TextBounds.X + 20, 1, 0)
 
-		TabButton.Size = UDim2.new(0, TabButton.TextBounds.X + 20, 1, 0)
+		local TC = Instance.new("ScrollingFrame", C)
+		TC.Size = UDim2.new(1, 0, 1, 0)
+		TC.CanvasSize = UDim2.new(0, 0, 0, 0)
+		TC.ScrollBarThickness = 4
+		TC.Visible = false
+		TC.BackgroundTransparency = 1
 
-		local TabContent = Instance.new("ScrollingFrame", ContentFrame)
-		TabContent.Size = UDim2.new(1, 0, 1, 0)
-		TabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
-		TabContent.ScrollBarThickness = 4
-		TabContent.Visible = false
-		TabContent.BackgroundTransparency = 1
+		local LL = Instance.new("UIListLayout", TC)
+		LL.SortOrder = Enum.SortOrder.LayoutOrder
+		LL.Padding = UDim.new(0, 6)
 
-		local ListLayout = Instance.new("UIListLayout", TabContent)
-		ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-		ListLayout.Padding = UDim.new(0, 6)
-
-		ListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-			TabContent.CanvasSize = UDim2.new(0, 0, 0, ListLayout.AbsoluteContentSize.Y + 10)
+		LL:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+			TC.CanvasSize = UDim2.new(0, 0, 0, LL.AbsoluteContentSize.Y + 10)
 		end)
 
-		TabButton.MouseButton1Click:Connect(function()
+		B.MouseButton1Click:Connect(function()
 			for _, t in pairs(Tabs) do
 				t.Tab.Visible = false
 				t.Marker.Visible = false
 			end
-			TabContent.Visible = true
-			Marker.Visible = true
+			TC.Visible = true
+			M2.Visible = true
 		end)
 
 		if not next(Tabs) then
-			TabContent.Visible = true
-			Marker.Visible = true
+			TC.Visible = true
+			M2.Visible = true
 		end
 
-		Tabs[name] = { Tab = TabContent, Marker = Marker }
+		Tabs[n] = { Tab = TC, Marker = M2 }
 
-		local API = {}
+		local A = {}
 
-		function API:CreateButton(text, callback)
-			local Button = Instance.new("TextButton", TabContent)
-			Button.Size = UDim2.new(1, -10, 0, 38)
-			Button.Text = text
-			Button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-			Button.Font = Enum.Font.GothamBold
-			Button.TextSize = 16
-			Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-			Button.BorderSizePixel = 0
-			local Corner = Instance.new("UICorner", Button)
-			Corner.CornerRadius = UDim.new(0, 6)
-
-			Button.MouseButton1Click:Connect(function()
-				if callback then callback() end
+		function A:CreateButton(t, cb)
+			local Bt = Instance.new("TextButton", TC)
+			Bt.Size = UDim2.new(1, -10, 0, 38)
+			Bt.Text = t
+			Bt.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+			Bt.Font = Enum.Font.GothamBold
+			Bt.TextSize = 16
+			Bt.TextColor3 = Color3.fromRGB(255, 255, 255)
+			Bt.BorderSizePixel = 0
+			local Co = Instance.new("UICorner", Bt)
+			Co.CornerRadius = UDim.new(0, 6)
+			Bt.MouseButton1Click:Connect(function()
+				if cb then cb() end
 			end)
-
-			return Button
+			return Bt
 		end
 
-		function API:CreateLabel(text)
-			local Label = Instance.new("TextLabel", TabContent)
-			Label.Size = UDim2.new(1, -10, 0, 30)
-			Label.Text = text
-			Label.BackgroundTransparency = 1
-			Label.Font = Enum.Font.Gotham
-			Label.TextSize = 14
-			Label.TextColor3 = Color3.fromRGB(255, 255, 255)
-			Label.TextXAlignment = Enum.TextXAlignment.Left
-			return Label
+		function A:CreateLabel(t)
+			local L = Instance.new("TextLabel", TC)
+			L.Size = UDim2.new(1, -10, 0, 30)
+			L.Text = t
+			L.BackgroundTransparency = 1
+			L.Font = Enum.Font.Gotham
+			L.TextSize = 14
+			L.TextColor3 = Color3.fromRGB(255, 255, 255)
+			L.TextXAlignment = Enum.TextXAlignment.Left
+			return L
 		end
 
-		return API
+		return A
 	end
 
-	local function searchFilter()
-		local query = SearchBox.Text:lower()
+	local function search()
+		local q = SB.Text:lower()
 		for _, t in pairs(Tabs) do
-			for _, child in ipairs(t.Tab:GetChildren()) do
-				if child:IsA("GuiObject") and child.Name ~= "UIListLayout" then
-					child.Visible = (query == "" or string.find((child.Text or ""):lower(), query))
+			for _, ch in ipairs(t.Tab:GetChildren()) do
+				if ch:IsA("GuiObject") and ch.Name ~= "UIListLayout" then
+					ch.Visible = (q == "" or string.find((ch.Text or ""):lower(), q))
 				end
 			end
 		end
 	end
+	SB:GetPropertyChangedSignal("Text"):Connect(search)
 
-	SearchBox:GetPropertyChangedSignal("Text"):Connect(searchFilter)
-
-	local EnterTween = TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+	local BT = TweenService:Create(M, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
 		Size = UDim2.new(0, 500, 0, 420),
 		Position = UDim2.new(0.5, 0, 0.5, 0)
 	})
-	MainFrame.Size = UDim2.new(0, 0, 0, 0)
-	EnterTween:Play()
+	M.Size = UDim2.new(0, 0, 0, 0)
+	BT:Play()
+
+	local Bl = Instance.new("ImageButton")
+	Bl.Image = "rbxassetid://109180550939457"
+	Bl.Size = UDim2.new(0, 30, 0, 30)
+	Bl.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	Bl.Position = M.Position
+	Bl.AnchorPoint = Vector2.new(0.5, 0.5)
+	Bl.Visible = false
+	Bl.Parent = S
+	Bl.Draggable = true
+	local BC = Instance.new("UICorner", Bl)
+	BC.CornerRadius = UDim.new(1, 0)
+
+	BtnOcultar.MouseButton1Click:Connect(function()
+		M.Visible = false
+		Bl.Position = M.Position
+		Bl.Visible = true
+	end)
+
+	Bl.MouseButton1Click:Connect(function()
+		Bl.Visible = false
+		M.Visible = true
+	end)
 
 	return {
 		CreateTab = CreateTab
