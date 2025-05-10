@@ -18,8 +18,7 @@ function RANOX:CreateWindow(config)
 	MainFrame.BorderSizePixel = 0
 	MainFrame.ClipsDescendants = true
 
-	local UICorner = Instance.new("UICorner", MainFrame)
-	UICorner.CornerRadius = UDim.new(0, 8)
+	Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 8)
 
 	local Gradient = Instance.new("UIGradient", MainFrame)
 	Gradient.Color = ColorSequence.new({
@@ -34,7 +33,7 @@ function RANOX:CreateWindow(config)
 	TitleBar.BackgroundTransparency = 1
 
 	local Title = Instance.new("TextLabel", TitleBar)
-	Title.Size = UDim2.new(1, -40, 1, 0)
+	Title.Size = UDim2.new(0.5, -10, 1, 0)
 	Title.Position = UDim2.new(0, 10, 0, 0)
 	Title.Text = config.Title or "RANOX"
 	Title.Font = Enum.Font.GothamBold
@@ -52,12 +51,32 @@ function RANOX:CreateWindow(config)
 	SearchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 	SearchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 	SearchBox.BorderSizePixel = 0
-	local SearchUICorner = Instance.new("UICorner", SearchBox)
-	SearchUICorner.CornerRadius = UDim.new(0, 6)
+	Instance.new("UICorner", SearchBox).CornerRadius = UDim.new(0, 6)
+
+	local HideButton = Instance.new("TextButton", TitleBar)
+	HideButton.Size = UDim2.new(0, 24, 0, 24)
+	HideButton.Position = UDim2.new(1, -160, 0.5, -12)
+	HideButton.Text = "-"
+	HideButton.Font = Enum.Font.GothamBold
+	HideButton.TextSize = 18
+	HideButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	HideButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	HideButton.BorderSizePixel = 0
+	Instance.new("UICorner", HideButton).CornerRadius = UDim.new(0, 6)
+
+	local TabsHolder = Instance.new("Frame", MainFrame)
+	TabsHolder.Size = UDim2.new(1, 0, 0, 36)
+	TabsHolder.Position = UDim2.new(0, 0, 0, 40)
+	TabsHolder.BackgroundTransparency = 1
+
+	local TabLayout = Instance.new("UIListLayout", TabsHolder)
+	TabLayout.FillDirection = Enum.FillDirection.Horizontal
+	TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	TabLayout.Padding = UDim.new(0, 6)
 
 	local ContentFrame = Instance.new("ScrollingFrame", MainFrame)
-	ContentFrame.Size = UDim2.new(1, -20, 1, -60)
-	ContentFrame.Position = UDim2.new(0, 10, 0, 50)
+	ContentFrame.Size = UDim2.new(1, -20, 1, -90)
+	ContentFrame.Position = UDim2.new(0, 10, 0, 80)
 	ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 	ContentFrame.ScrollBarThickness = 4
 	ContentFrame.BackgroundTransparency = 1
@@ -71,7 +90,6 @@ function RANOX:CreateWindow(config)
 		task.wait()
 		ContentFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
 	end
-
 	UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvas)
 
 	local EnterTween = TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
@@ -81,47 +99,100 @@ function RANOX:CreateWindow(config)
 	MainFrame.Size = UDim2.new(0, 0, 0, 0)
 	EnterTween:Play()
 
-	function RANOX:CreateButton(text, callback)
-		local Button = Instance.new("TextButton", ContentFrame)
-		Button.Size = UDim2.new(1, -10, 0, 38)
-		Button.Text = text
-		Button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-		Button.Font = Enum.Font.GothamBold
-		Button.TextSize = 16
-		Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-		Button.BorderSizePixel = 0
-		local Corner = Instance.new("UICorner", Button)
-		Corner.CornerRadius = UDim.new(0, 6)
+	local Tabs = {}
+	local CurrentTab = nil
 
-		Button.MouseButton1Click:Connect(function()
-			if callback then callback() end
+	function RANOX:CreateTab(name)
+		local TextSize = game:GetService("TextService"):GetTextSize(name, 16, Enum.Font.GothamBold, Vector2.new(math.huge, 36))
+		local TabButton = Instance.new("TextButton", TabsHolder)
+		TabButton.Size = UDim2.new(0, TextSize.X + 10, 1, 0)
+		TabButton.Text = name
+		TabButton.Font = Enum.Font.GothamBold
+		TabButton.TextSize = 16
+		TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+		TabButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+		TabButton.BorderSizePixel = 0
+		local corner = Instance.new("UICorner", TabButton)
+		corner.CornerRadius = UDim.new(0, 6)
+
+		local TabContent = Instance.new("Frame")
+		TabContent.Size = UDim2.new(1, 0, 1, 0)
+		TabContent.BackgroundTransparency = 1
+		TabContent.Visible = false
+		TabContent.Parent = ContentFrame
+
+		local Layout = Instance.new("UIListLayout", TabContent)
+		Layout.SortOrder = Enum.SortOrder.LayoutOrder
+		Layout.Padding = UDim.new(0, 6)
+
+		TabButton.MouseButton1Click:Connect(function()
+			if CurrentTab then
+				CurrentTab.Visible = false
+			end
+			for _, btn in pairs(Tabs) do
+				btn.Button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+			end
+			TabContent.Visible = true
+			TabButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+			CurrentTab = TabContent
 		end)
 
-		return Button
-	end
+		if not CurrentTab then
+			CurrentTab = TabContent
+			TabContent.Visible = true
+			TabButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+		end
 
-	function RANOX:CreateLabel(text)
-		local Label = Instance.new("TextLabel", ContentFrame)
-		Label.Size = UDim2.new(1, -10, 0, 30)
-		Label.Text = text
-		Label.BackgroundTransparency = 1
-		Label.Font = Enum.Font.Gotham
-		Label.TextSize = 14
-		Label.TextColor3 = Color3.fromRGB(255, 255, 255)
-		Label.TextXAlignment = Enum.TextXAlignment.Left
-		return Label
+		Tabs[#Tabs + 1] = { Button = TabButton, Content = TabContent }
+
+		local API = {}
+
+		function API:CreateButton(text, callback)
+			local Button = Instance.new("TextButton", TabContent)
+			Button.Size = UDim2.new(1, -10, 0, 38)
+			Button.Text = text
+			Button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+			Button.Font = Enum.Font.GothamBold
+			Button.TextSize = 16
+			Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+			Button.BorderSizePixel = 0
+			Instance.new("UICorner", Button).CornerRadius = UDim.new(0, 6)
+
+			Button.MouseButton1Click:Connect(function()
+				if callback then callback() end
+			end)
+		end
+
+		function API:CreateLabel(text)
+			local Label = Instance.new("TextLabel", TabContent)
+			Label.Size = UDim2.new(1, -10, 0, 30)
+			Label.Text = text
+			Label.BackgroundTransparency = 1
+			Label.Font = Enum.Font.Gotham
+			Label.TextSize = 14
+			Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+			Label.TextXAlignment = Enum.TextXAlignment.Left
+		end
+
+		return API
 	end
 
 	local function searchFilter()
 		local query = SearchBox.Text:lower()
-		for _, child in ipairs(ContentFrame:GetChildren()) do
-			if child:IsA("GuiObject") and child ~= UIListLayout then
-				child.Visible = (query == "" or string.find((child.Text or ""):lower(), query))
+		for _, tab in ipairs(Tabs) do
+			for _, obj in ipairs(tab.Content:GetChildren()) do
+				if obj:IsA("GuiObject") and obj ~= UIListLayout then
+					obj.Visible = (query == "" or string.find((obj.Text or ""):lower(), query))
+				end
 			end
 		end
 	end
 
 	SearchBox:GetPropertyChangedSignal("Text"):Connect(searchFilter)
+
+	HideButton.MouseButton1Click:Connect(function()
+		MainFrame.Visible = not MainFrame.Visible
+	end)
 
 	return RANOX
 end
