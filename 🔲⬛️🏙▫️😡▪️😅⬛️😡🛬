@@ -6,229 +6,219 @@ local Mouse = LocalPlayer:GetMouse()
 local RANOX = {}
 
 function RANOX:CreateWindow(c)
-	local S = Instance.new("ScreenGui", game:GetService("CoreGui"))
-	S.Name = "RANOX_UI"
-	S.ResetOnSpawn = false
+    local S = Instance.new("ScreenGui", game:GetService("CoreGui"))
+    S.Name = "RANOX_UI"
+    S.ResetOnSpawn = false
 
-	local M = Instance.new("Frame", S)
-	M.AnchorPoint = Vector2.new(0.5, 0.5)
-	M.Position = UDim2.new(0.5, 0, 0.5, 0)
-	M.Size = UDim2.new(0, 500, 0, 420)
-	M.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-	M.BorderSizePixel = 0
-	M.ClipsDescendants = true
-	M.Active = true
-	M.Draggable = true
+    local M = Instance.new("Frame", S)
+    M.AnchorPoint = Vector2.new(0.5, 0.5)
+    M.Position = UDim2.new(0.5, 0, 0.5, 0)
+    M.Size = UDim2.new(0, 500, 0, 420)
+    M.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+    M.BorderSizePixel = 0
+    M.ClipsDescendants = true
+    M.Active = true
+    M.Draggable = true
 
-	local UC = Instance.new("UICorner", M)
-	UC.CornerRadius = UDim.new(0, 8)
+    local UC = Instance.new("UICorner", M)
+    UC.CornerRadius = UDim.new(0, 8)
 
-	local G = Instance.new("UIGradient", M)
-	G.Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 255))
-	})
-	G.Rotation = 45
+    local T = Instance.new("Frame", M)
+    T.Size = UDim2.new(1, 0, 0, 40)
+    T.BackgroundTransparency = 1
 
-	local T = Instance.new("Frame", M)
-	T.Size = UDim2.new(1, 0, 0, 40)
-	T.BackgroundTransparency = 1
+    local TL = Instance.new("TextLabel", T)
+    TL.Size = UDim2.new(1, -100, 1, 0)
+    TL.Position = UDim2.new(0, 10, 0, 0)
+    TL.Text = c.Title or "RANOX"
+    TL.Font = Enum.Font.GothamBold
+    TL.TextSize = 20
+    TL.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TL.BackgroundTransparency = 1
+    TL.TextXAlignment = Enum.TextXAlignment.Left
 
-	local TL = Instance.new("TextLabel", T)
-	TL.Size = UDim2.new(1, -100, 1, 0)
-	TL.Position = UDim2.new(0, 10, 0, 0)
-	TL.Text = c.Title or "RANOX"
-	TL.Font = Enum.Font.GothamBold
-	TL.TextSize = 20
-	TL.TextColor3 = Color3.fromRGB(255, 255, 255)
-	TL.BackgroundTransparency = 1
-	TL.TextXAlignment = Enum.TextXAlignment.Left
+    local SB = Instance.new("TextBox", T)
+    SB.Size = UDim2.new(0, 120, 0, 24)
+    SB.Position = UDim2.new(0, 10, 0.5, -12)
+    SB.Font = Enum.Font.Gotham
+    SB.TextSize = 14
+    SB.Text = "Pesquisar"
+    SB.TextColor3 = Color3.fromRGB(255, 255, 255)
+    SB.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    SB.BorderSizePixel = 0
+    SB.ClearTextOnFocus = false
+    local SUI = Instance.new("UICorner", SB)
+    SUI.CornerRadius = UDim.new(0, 6)
 
-	local SB = Instance.new("TextBox", T)
-	SB.Size = UDim2.new(0, 120, 0, 24)
-	SB.Position = UDim2.new(0, 10, 0.5, -12)
-	SB.Font = Enum.Font.Gotham
-	SB.TextSize = 14
-	SB.Text = "Pesquisar"
-	SB.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SB.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-	SB.BorderSizePixel = 0
-	SB.ClearTextOnFocus = false
-	local SUI = Instance.new("UICorner", SB)
-	SUI.CornerRadius = UDim.new(0, 6)
+    local Icon = Instance.new("ImageLabel", T)
+    Icon.Image = "rbxassetid://89174698309965"
+    Icon.Size = UDim2.new(0, 16, 0, 16)
+    Icon.Position = UDim2.new(1, -40, 0.5, -8)
+    Icon.BackgroundTransparency = 1
 
-	local Icon = Instance.new("ImageLabel", T)
-	Icon.Image = "rbxassetid://133558083095603"
-	Icon.Size = UDim2.new(0, 16, 0, 16)
-	Icon.Position = UDim2.new(1, -40, 0.5, -8)
-	Icon.BackgroundTransparency = 1
+    local BtnOcultar = Instance.new("TextButton", T)
+    BtnOcultar.Size = UDim2.new(0, 24, 0, 24)
+    BtnOcultar.Position = UDim2.new(1, -25, 0.5, -12)
+    BtnOcultar.Text = "-"
+    BtnOcultar.Font = Enum.Font.GothamBold
+    BtnOcultar.TextSize = 18
+    BtnOcultar.TextColor3 = Color3.fromRGB(255, 255, 255)
+    BtnOcultar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    local BOcUIC = Instance.new("UICorner", BtnOcultar)
+    BOcUIC.CornerRadius = UDim.new(1, 0)
 
-	local BtnOcultar = Instance.new("TextButton", T)
-	BtnOcultar.Size = UDim2.new(0, 24, 0, 24)
-	BtnOcultar.Position = UDim2.new(1, -25, 0.5, -12)
-	BtnOcultar.Text = "-"
-	BtnOcultar.Font = Enum.Font.GothamBold
-	BtnOcultar.TextSize = 18
-	BtnOcultar.TextColor3 = Color3.fromRGB(255, 255, 255)
-	BtnOcultar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	local BOcUIC = Instance.new("UICorner", BtnOcultar)
-	BOcUIC.CornerRadius = UDim.new(1, 0)
+    local TabsHolder = Instance.new("Frame", M)
+    TabsHolder.Size = UDim2.new(1, -20, 0, 30)
+    TabsHolder.Position = UDim2.new(0, 10, 0, 40)
+    TabsHolder.BackgroundTransparency = 1
 
-	local TabsHolder = Instance.new("Frame", M)
-	TabsHolder.Size = UDim2.new(1, -20, 0, 30)
-	TabsHolder.Position = UDim2.new(0, 10, 0, 40)
-	TabsHolder.BackgroundTransparency = 1
+    local TLay = Instance.new("UIListLayout", TabsHolder)
+    TLay.FillDirection = Enum.FillDirection.Horizontal
+    TLay.SortOrder = Enum.SortOrder.LayoutOrder
+    TLay.Padding = UDim.new(0, 6)
 
-	local TLay = Instance.new("UIListLayout", TabsHolder)
-	TLay.FillDirection = Enum.FillDirection.Horizontal
-	TLay.SortOrder = Enum.SortOrder.LayoutOrder
-	TLay.Padding = UDim.new(0, 6)
+    local Tabs = {}
 
-	local Tabs = {}
+    local C = Instance.new("Frame", M)
+    C.Size = UDim2.new(1, -20, 1, -90)
+    C.Position = UDim2.new(0, 10, 0, 80)
+    C.BackgroundTransparency = 1
 
-	local C = Instance.new("Frame", M)
-	C.Size = UDim2.new(1, -20, 1, -90)
-	C.Position = UDim2.new(0, 10, 0, 80)
-	C.BackgroundTransparency = 1
+    local function CreateTab(n)
+        local B = Instance.new("TextButton", TabsHolder)
+        B.Text = n
+        B.Font = Enum.Font.GothamBold
+        B.TextSize = 14
+        B.AutoButtonColor = false
+        B.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        B.TextColor3 = Color3.fromRGB(255, 255, 255)
+        B.Size = UDim2.new(0, 0, 1, 0)
 
-	local function CreateTab(n)
-		local B = Instance.new("TextButton", TabsHolder)
-		B.Text = n
-		B.Font = Enum.Font.GothamBold
-		B.TextSize = 14
-		B.AutoButtonColor = false
-		B.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-		B.TextColor3 = Color3.fromRGB(255, 255, 255)
-		B.Size = UDim2.new(0, 0, 1, 0)
+        local P = Instance.new("UIPadding", B)
+        P.PaddingLeft = UDim.new(0, 10)
+        P.PaddingRight = UDim.new(0, 10)
+        local C2 = Instance.new("UICorner", B)
+        C2.CornerRadius = UDim.new(0, 6)
 
-		local P = Instance.new("UIPadding", B)
-		P.PaddingLeft = UDim.new(0, 10)
-		P.PaddingRight = UDim.new(0, 10)
-		local C2 = Instance.new("UICorner", B)
-		C2.CornerRadius = UDim.new(0, 6)
+        local M2 = Instance.new("Frame", B)
+        M2.Size = UDim2.new(0.7, 0, 0, 2)
+        M2.Position = UDim2.new(0.15, 0, 1, -2)
+        M2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        M2.Visible = false
+        M2.BorderSizePixel = 0
+        local MC = Instance.new("UICorner", M2)
+        MC.CornerRadius = UDim.new(1, 0)
 
-		local M2 = Instance.new("Frame", B)
-		M2.Size = UDim2.new(0.7, 0, 0, 2)
-		M2.Position = UDim2.new(0.15, 0, 1, -2)
-		M2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		M2.Visible = false
-		M2.BorderSizePixel = 0
-		local MC = Instance.new("UICorner", M2)
-		MC.CornerRadius = UDim.new(1, 0)
+        B.Size = UDim2.new(0, B.TextBounds.X + 20, 1, 0)
 
-		B.Size = UDim2.new(0, B.TextBounds.X + 20, 1, 0)
+        local TC = Instance.new("ScrollingFrame", C)
+        TC.Size = UDim2.new(1, 0, 1, 0)
+        TC.CanvasSize = UDim2.new(0, 0, 0, 0)
+        TC.ScrollBarThickness = 4
+        TC.Visible = false
+        TC.BackgroundTransparency = 1
 
-		local TC = Instance.new("ScrollingFrame", C)
-		TC.Size = UDim2.new(1, 0, 1, 0)
-		TC.CanvasSize = UDim2.new(0, 0, 0, 0)
-		TC.ScrollBarThickness = 4
-		TC.Visible = false
-		TC.BackgroundTransparency = 1
+        local LL = Instance.new("UIListLayout", TC)
+        LL.SortOrder = Enum.SortOrder.LayoutOrder
+        LL.Padding = UDim.new(0, 6)
 
-		local LL = Instance.new("UIListLayout", TC)
-		LL.SortOrder = Enum.SortOrder.LayoutOrder
-		LL.Padding = UDim.new(0, 6)
+        LL:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            TC.CanvasSize = UDim2.new(0, 0, 0, LL.AbsoluteContentSize.Y + 10)
+        end)
 
-		LL:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-			TC.CanvasSize = UDim2.new(0, 0, 0, LL.AbsoluteContentSize.Y + 10)
-		end)
+        B.MouseButton1Click:Connect(function()
+            for _, t in pairs(Tabs) do
+                t.Tab.Visible = false
+                t.Marker.Visible = false
+            end
+            TC.Visible = true
+            M2.Visible = true
+        end)
 
-		B.MouseButton1Click:Connect(function()
-			for _, t in pairs(Tabs) do
-				t.Tab.Visible = false
-				t.Marker.Visible = false
-			end
-			TC.Visible = true
-			M2.Visible = true
-		end)
+        if not next(Tabs) then
+            TC.Visible = true
+            M2.Visible = true
+        end
 
-		if not next(Tabs) then
-			TC.Visible = true
-			M2.Visible = true
-		end
+        Tabs[n] = { Tab = TC, Marker = M2 }
 
-		Tabs[n] = { Tab = TC, Marker = M2 }
+        local A = {}
 
-		local A = {}
+        function A:CreateButton(t, cb)
+            local Bt = Instance.new("TextButton", TC)
+            Bt.Size = UDim2.new(1, -10, 0, 38)
+            Bt.Text = t
+            Bt.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+            Bt.Font = Enum.Font.GothamBold
+            Bt.TextSize = 16
+            Bt.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Bt.BorderSizePixel = 0
+            local Co = Instance.new("UICorner", Bt)
+            Co.CornerRadius = UDim.new(0, 6)
+            Bt.MouseButton1Click:Connect(function()
+                if cb then cb() end
+            end)
+            return Bt
+        end
 
-		function A:CreateButton(t, cb)
-			local Bt = Instance.new("TextButton", TC)
-			Bt.Size = UDim2.new(1, -10, 0, 38)
-			Bt.Text = t
-			Bt.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-			Bt.Font = Enum.Font.GothamBold
-			Bt.TextSize = 16
-			Bt.TextColor3 = Color3.fromRGB(255, 255, 255)
-			Bt.BorderSizePixel = 0
-			local Co = Instance.new("UICorner", Bt)
-			Co.CornerRadius = UDim.new(0, 6)
-			Bt.MouseButton1Click:Connect(function()
-				if cb then cb() end
-			end)
-			return Bt
-		end
+        function A:CreateLabel(t)
+            local L = Instance.new("TextLabel", TC)
+            L.Size = UDim2.new(1, -10, 0, 30)
+            L.Text = t
+            L.BackgroundTransparency = 1
+            L.Font = Enum.Font.Gotham
+            L.TextSize = 14
+            L.TextColor3 = Color3.fromRGB(255, 255, 255)
+            L.TextXAlignment = Enum.TextXAlignment.Left
+            return L
+        end
 
-		function A:CreateLabel(t)
-			local L = Instance.new("TextLabel", TC)
-			L.Size = UDim2.new(1, -10, 0, 30)
-			L.Text = t
-			L.BackgroundTransparency = 1
-			L.Font = Enum.Font.Gotham
-			L.TextSize = 14
-			L.TextColor3 = Color3.fromRGB(255, 255, 255)
-			L.TextXAlignment = Enum.TextXAlignment.Left
-			return L
-		end
+        return A
+    end
 
-		return A
-	end
+    local function search()
+        local q = SB.Text:lower()
+        for _, t in pairs(Tabs) do
+            for _, ch in ipairs(t.Tab:GetChildren()) do
+                if ch:IsA("GuiObject") and ch.Name ~= "UIListLayout" then
+                    ch.Visible = (q == "" or string.find((ch.Text or ""):lower(), q))
+                end
+            end
+        end
+    end
+    SB:GetPropertyChangedSignal("Text"):Connect(search)
 
-	local function search()
-		local q = SB.Text:lower()
-		for _, t in pairs(Tabs) do
-			for _, ch in ipairs(t.Tab:GetChildren()) do
-				if ch:IsA("GuiObject") and ch.Name ~= "UIListLayout" then
-					ch.Visible = (q == "" or string.find((ch.Text or ""):lower(), q))
-				end
-			end
-		end
-	end
-	SB:GetPropertyChangedSignal("Text"):Connect(search)
+    local BT = TweenService:Create(M, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 500, 0, 420),
+        Position = UDim2.new(0.5, 0, 0.5, 0)
+    })
+    M.Size = UDim2.new(0, 0, 0, 0)
+    BT:Play()
 
-	local BT = TweenService:Create(M, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-		Size = UDim2.new(0, 500, 0, 420),
-		Position = UDim2.new(0.5, 0, 0.5, 0)
-	})
-	M.Size = UDim2.new(0, 0, 0, 0)
-	BT:Play()
+    local Bl = Instance.new("ImageButton")
+    Bl.Image = "rbxassetid://109180550939457"
+    Bl.Size = UDim2.new(0, 30, 0, 30)
+    Bl.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Bl.Position = M.Position
+    Bl.AnchorPoint = Vector2.new(0.5, 0.5)
+    Bl.Visible = false
+    Bl.Parent = S
+    Bl.Draggable = true
+    local BC = Instance.new("UICorner", Bl)
+    BC.CornerRadius = UDim.new(1, 0)
 
-	local Bl = Instance.new("ImageButton")
-	Bl.Image = "rbxassetid://109180550939457"
-	Bl.Size = UDim2.new(0, 30, 0, 30)
-	Bl.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	Bl.Position = M.Position
-	Bl.AnchorPoint = Vector2.new(0.5, 0.5)
-	Bl.Visible = false
-	Bl.Parent = S
-	Bl.Draggable = true
-	local BC = Instance.new("UICorner", Bl)
-	BC.CornerRadius = UDim.new(1, 0)
+    BtnOcultar.MouseButton1Click:Connect(function()
+        M.Visible = false
+        Bl.Position = M.Position
+        Bl.Visible = true
+    end)
 
-	BtnOcultar.MouseButton1Click:Connect(function()
-		M.Visible = false
-		Bl.Position = M.Position
-		Bl.Visible = true
-	end)
+    Bl.MouseButton1Click:Connect(function()
+        Bl.Visible = false
+        M.Visible = true
+    end)
 
-	Bl.MouseButton1Click:Connect(function()
-		Bl.Visible = false
-		M.Visible = true
-	end)
-
-	return {
-		CreateTab = CreateTab
-	}
+    return RANOX
 end
 
 return RANOX
