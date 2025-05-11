@@ -16,7 +16,7 @@ function RANOX:CreateWindow(config)
     screenGui.Parent = game:GetService("CoreGui")
 
     local mainFrame = Instance.new("TextButton")
-    mainFrame.Size = UDim2.new(0, 585, 0, 385)
+    mainFrame.Size = UDim2.new(0, 550, 0, 350)
     mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
     mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -113,7 +113,7 @@ local selectedTab = nil
 
 local scrollHolder = Instance.new("ScrollingFrame", mainFrame)
 scrollHolder.Position = UDim2.new(0, 143, 0, 30)
-scrollHolder.Size = UDim2.new(0, 440, 1, -35)
+scrollHolder.Size = UDim2.new(1, -148, 1, -35)
 scrollHolder.BackgroundTransparency = 1
 scrollHolder.BorderSizePixel = 0
 scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -1860,7 +1860,7 @@ end
 
 local isHidden = false
     hideButton.MouseButton1Click:Connect(function()
-        local targetSize = isHidden and UDim2.new(0, 550, 0, 375) or UDim2.new(0, 0, 0, 0)
+        local targetSize = isHidden and UDim2.new(0, 550, 0, 350) or UDim2.new(0, 0, 0, 0)
         local tween = TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
             Size = targetSize
         })
@@ -1872,7 +1872,7 @@ local isHidden = false
 
     ballButton.MouseButton1Click:Connect(function()
         local tween = TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            Size = UDim2.new(0, 585, 0, 385)
+            Size = UDim2.new(0, 550, 0, 350)
         })
         tween:Play()
         isHidden = false
