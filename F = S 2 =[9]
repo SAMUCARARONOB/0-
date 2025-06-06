@@ -14,7 +14,7 @@ function Window.new()
 
     self.MainFrame = Instance.new("Frame", self.ScreenGui)
     self.MainFrame.Size = UDim2.new(0, 500, 0, 350)
-    self.MainFrame.Position = UDim2.new(0.5, -250, 0.5, -175)
+    self.MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
     self.MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
     self.MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     self.MainFrame.ClipsDescendants = true
