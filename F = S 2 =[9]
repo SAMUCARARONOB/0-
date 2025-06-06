@@ -1,140 +1,239 @@
-local S = {}
-local P = {}
-local TService = game:GetService("TweenService")
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
 
-function S:W(N)
-    local S = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
-    S.Name = "S"
-    local F = Instance.new("Frame", S)
-    F.Name = "F"
-    F.BackgroundColor3 = Color3.fromRGB(15,15,15)
-    F.Size = UDim2.new(0, 500, 0, 320)
-    F.Position = UDim2.new(0.5, -250, 0.5, -160)
-    F.AnchorPoint = Vector2.new(0.5, 0.5)
-    F.BorderSizePixel = 0
-    Instance.new("UICorner", F).CornerRadius = UDim.new(0, 6)
+local Window = {}
+Window.__index = Window
+local pages = {}
 
-    local T = Instance.new("TextLabel", F)
-    T.Text = N or "UI"
-    T.Size = UDim2.new(1, 0, 0, 40)
-    T.BackgroundTransparency = 1
-    T.Font = Enum.Font.GothamBold
-    T.TextSize = 16
-    T.TextColor3 = Color3.new(1,1,1)
-    T.Name = "T"
+function Window.new()
+    local self = setmetatable({}, Window)
+    self.ScreenGui = Instance.new("ScreenGui")
+    self.ScreenGui.Name = "CustomHub"
+    self.ScreenGui.Parent = game.CoreGui
 
-    local C = Instance.new("Frame", F)
-    C.Size = UDim2.new(1, 0, 1, -40)
-    C.Position = UDim2.new(0, 0, 0, 40)
-    C.BackgroundTransparency = 1
-    C.Name = "C"
+    self.MainFrame = Instance.new("Frame", self.ScreenGui)
+    self.MainFrame.Size = UDim2.new(0, 500, 0, 350)
+    self.MainFrame.Position = UDim2.new(0.5, -250, 0.5, -175)
+    self.MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+    self.MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    self.MainFrame.ClipsDescendants = true
+    self.MainFrame.BorderSizePixel = 0
+    self.MainFrame.AutomaticSize = Enum.AutomaticSize.None
 
-    local TB = Instance.new("Frame", F)
-    TB.Size = UDim2.new(1, -40, 0, 30)
-    TB.Position = UDim2.new(0, 20, 0, 40)
-    TB.BackgroundTransparency = 1
-    TB.Name = "TB"
-    TB.LayoutOrder = 0
+    local TitleBar = Instance.new("Frame", self.MainFrame)
+    TitleBar.Size = UDim2.new(1, 0, 0, 36)
+    TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+    TitleBar.BorderSizePixel = 0
 
-    local L = Instance.new("UIListLayout", TB)
-    L.FillDirection = Enum.FillDirection.Horizontal
-    L.SortOrder = Enum.SortOrder.LayoutOrder
-    L.Padding = UDim.new(0, 6)
+    local TitleLabel = Instance.new("TextLabel", TitleBar)
+    TitleLabel.Text = "CUSTOM HUB"
+    TitleLabel.Font = Enum.Font.GothamBold
+    TitleLabel.TextSize = 18
+    TitleLabel.TextColor3 = Color3.fromRGB(230, 230, 230)
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.Size = UDim2.new(1, -100, 1, 0)
+    TitleLabel.Position = UDim2.new(0, 10, 0, 0)
+    TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TitleLabel.TextYAlignment = Enum.TextYAlignment.Center
 
-    P[F] = {Tabs = {}, Current = nil, C = C, TB = TB}
-    return F
-end
+    local CloseBtn = Instance.new("TextButton", TitleBar)
+    CloseBtn.Size = UDim2.new(0, 36, 0, 36)
+    CloseBtn.Position = UDim2.new(1, -36, 0, 0)
+    CloseBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    CloseBtn.Text = "X"
+    CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    CloseBtn.Font = Enum.Font.GothamBold
+    CloseBtn.TextSize = 18
+    CloseBtn.BorderSizePixel = 0
 
-function S:A(W, N)
-    local D = Instance.new("TextButton", P[W].TB)
-    D.Text = N
-    D.Size = UDim2.new(0, 100, 1, 0)
-    D.BackgroundColor3 = Color3.fromRGB(30,30,30)
-    D.TextColor3 = Color3.new(1,1,1)
-    D.Font = Enum.Font.Gotham
-    D.TextSize = 13
-    D.BorderSizePixel = 0
-    Instance.new("UICorner", D).CornerRadius = UDim.new(0, 4)
+    local MinimizeBtn = Instance.new("TextButton", TitleBar)
+    MinimizeBtn.Size = UDim2.new(0, 36, 0, 36)
+    MinimizeBtn.Position = UDim2.new(1, -72, 0, 0)
+    MinimizeBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    MinimizeBtn.Text = "−"
+    MinimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    MinimizeBtn.Font = Enum.Font.GothamBold
+    MinimizeBtn.TextSize = 28
+    MinimizeBtn.BorderSizePixel = 0
 
-    local PG = Instance.new("Frame", P[W].C)
-    PG.Name = N
-    PG.Size = UDim2.new(1, 0, 1, 0)
-    PG.Visible = false
-    PG.BackgroundTransparency = 1
-    P[W].Tabs[N] = PG
+    local TabsFrame = Instance.new("Frame", self.MainFrame)
+    TabsFrame.Size = UDim2.new(0, 100, 1, -36)
+    TabsFrame.Position = UDim2.new(0, 0, 0, 36)
+    TabsFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+    TabsFrame.BorderSizePixel = 0
+    TabsFrame.ClipsDescendants = true
 
-    D.MouseButton1Click:Connect(function()
-        if P[W].Current then P[W].Current.Visible = false end
-        P[W].Current = PG
-        PG.Visible = true
+    local ContentFrame = Instance.new("Frame", self.MainFrame)
+    ContentFrame.Size = UDim2.new(1, -100, 1, -36)
+    ContentFrame.Position = UDim2.new(0, 100, 0, 36)
+    ContentFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+    ContentFrame.BorderSizePixel = 0
+    ContentFrame.ClipsDescendants = true
+
+    self.TabsFrame = TabsFrame
+    self.ContentFrame = ContentFrame
+    self.TabButtons = {}
+    self.CurrentTab = nil
+    self.ContentVisible = true
+
+    CloseBtn.MouseButton1Click:Connect(function()
+        self.ScreenGui.Enabled = not self.ScreenGui.Enabled
     end)
 
-    if not P[W].Current then
-        P[W].Current = PG
-        PG.Visible = true
+    MinimizeBtn.MouseButton1Click:Connect(function()
+        self.ContentVisible = not self.ContentVisible
+        if self.ContentVisible then
+            ContentFrame.Visible = true
+            TabsFrame.Visible = true
+            MinimizeBtn.Text = "−"
+            TweenService:Create(self.MainFrame, TweenInfo.new(0.3), {Size = UDim2.new(0, 500, 0, 350)}):Play()
+        else
+            ContentFrame.Visible = false
+            TabsFrame.Visible = false
+            MinimizeBtn.Text = "+"
+            TweenService:Create(self.MainFrame, TweenInfo.new(0.3), {Size = UDim2.new(0, 500, 0, 36)}):Play()
+        end
+    end)
+
+    function self:CreateTab(tabName)
+        local tabButton = Instance.new("TextButton", TabsFrame)
+        tabButton.Size = UDim2.new(1, 0, 0, 36)
+        tabButton.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+        tabButton.BorderSizePixel = 0
+        tabButton.Font = Enum.Font.Gotham
+        tabButton.TextSize = 14
+        tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        tabButton.Text = tabName
+        tabButton.AutoButtonColor = false
+
+        local tabContent = Instance.new("ScrollingFrame", ContentFrame)
+        tabContent.Size = UDim2.new(1, 0, 1, 0)
+        tabContent.BackgroundTransparency = 1
+        tabContent.ScrollBarThickness = 5
+        tabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
+        tabContent.Visible = false
+        tabContent.BorderSizePixel = 0
+        tabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
+
+        pages[tabName] = tabContent
+
+        tabButton.MouseButton1Click:Connect(function()
+            if self.CurrentTab then
+                pages[self.CurrentTab].Visible = false
+                self.TabButtons[self.CurrentTab].BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+            end
+            tabContent.Visible = true
+            tabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            self.CurrentTab = tabName
+        end)
+
+        self.TabButtons[tabName] = tabButton
+
+        if not self.CurrentTab then
+            tabButton:MouseButton1Click()
+        end
+
+        return tabContent
     end
 
-    return PG
+    function self:CreateToggle(tabName, toggleConfig)
+        local tab = pages[tabName]
+        if not tab then return end
+
+        local toggleFrame = Instance.new("Frame", tab)  
+        toggleFrame.Size = UDim2.new(1, -20, 0, 40)
+        toggleFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        toggleFrame.BorderSizePixel = 0
+        toggleFrame.ClipsDescendants = true
+        toggleFrame.LayoutOrder = #tab:GetChildren()
+        Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 8)
+
+        local title = Instance.new("TextLabel", toggleFrame)  
+        title.Text = toggleConfig.Text or "Toggle"
+        title.TextColor3 = Color3.fromRGB(255, 255, 255)
+        title.Font = Enum.Font.GothamMedium
+        title.TextSize = 14
+        title.TextXAlignment = Enum.TextXAlignment.Left
+        title.BackgroundTransparency = 1
+        title.Size = UDim2.new(1, -60, 1, 0)
+        title.Position = UDim2.new(0, 12, 0, 0)
+
+        local switch = Instance.new("Frame", toggleFrame)
+        switch.Size = UDim2.new(0, 40, 0, 22)
+        switch.Position = UDim2.new(1, -50, 0.5, -11)
+        switch.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        switch.BorderSizePixel = 0
+        Instance.new("UICorner", switch).CornerRadius = UDim.new(1, 0)
+
+        local ball = Instance.new("Frame", switch)
+        ball.Size = UDim2.new(0, 16, 0, 16)
+        ball.Position = UDim2.new(0, 3, 0.5, -8)
+        ball.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+        ball.BorderSizePixel = 0
+        Instance.new("UICorner", ball).CornerRadius = UDim.new(1, 0)
+
+        local toggleButton = Instance.new("TextButton", switch)
+        toggleButton.Size = UDim2.new(1, 0, 1, 0)
+        toggleButton.Position = UDim2.new(0, 0, 0, 0)
+        toggleButton.BackgroundTransparency = 1
+        toggleButton.Text = ""
+        toggleButton.AutoButtonColor = false
+
+        local isOn = false
+
+        toggleButton.MouseButton1Click:Connect(function()
+            isOn = not isOn
+            local bgColor = isOn and Color3.fromRGB(170, 0, 0) or Color3.fromRGB(40, 40, 40)
+            local ballPosition = isOn and UDim2.new(1, -19, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)
+            local ballColor = isOn and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 200)
+            TweenService:Create(switch, TweenInfo.new(0.25), {BackgroundColor3 = bgColor}):Play()
+            TweenService:Create(ball, TweenInfo.new(0.25), {Position = ballPosition, BackgroundColor3 = ballColor}):Play()
+            if toggleConfig.Callback then
+                toggleConfig.Callback(isOn)
+            end
+        end)
+
+        return toggleFrame
+    end
+
+    function self:CreateButton(tabName, buttonConfig)
+        local tab = pages[tabName]
+        if not tab then return end
+
+        local btnFrame = Instance.new("Frame", tab)
+        btnFrame.Size = UDim2.new(1, -20, 0, 40)
+        btnFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        btnFrame.BorderSizePixel = 0
+        btnFrame.ClipsDescendants = true
+        btnFrame.LayoutOrder = #tab:GetChildren()
+        Instance.new("UICorner", btnFrame).CornerRadius = UDim.new(0, 8)
+
+        local btn = Instance.new("TextButton", btnFrame)
+        btn.Size = UDim2.new(1, 0, 1, 0)
+        btn.BackgroundTransparency = 1
+        btn.Text = buttonConfig.Text or "Button"
+        btn.Font = Enum.Font.GothamMedium
+        btn.TextSize = 15
+        btn.TextColor3 = Color3.fromRGB(230, 230, 230)
+
+        btn.MouseEnter:Connect(function()
+            TweenService:Create(btnFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(40, 40, 40)}):Play()
+        end)
+        btn.MouseLeave:Connect(function()
+            TweenService:Create(btnFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 25, 25)}):Play()
+        end)
+
+        btn.MouseButton1Click:Connect(function()
+            if buttonConfig.Callback then
+                buttonConfig.Callback()
+            end
+        end)
+
+        return btnFrame
+    end
+
+    return self
 end
 
-function S:T(PG, C)
-    local F = Instance.new("Frame", PG)
-    F.Size = UDim2.new(1, -20, 0, 40)
-    F.Position = UDim2.new(0, 10, 0, 0)
-    F.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    F.BorderSizePixel = 0
-    Instance.new("UICorner", F).CornerRadius = UDim.new(0, 8)
-
-    local TL = Instance.new("TextLabel", F)
-    TL.Text = C.Text or "T"
-    TL.TextColor3 = Color3.new(1,1,1)
-    TL.Font = Enum.Font.Gotham
-    TL.TextSize = 13
-    TL.Size = UDim2.new(1, -60, 0.5, 0)
-    TL.Position = UDim2.new(0, 12, 0, 4)
-    TL.BackgroundTransparency = 1
-    TL.TextXAlignment = Enum.TextXAlignment.Left
-
-    local D = Instance.new("TextLabel", F)
-    D.Text = C.Desc or ""
-    D.TextColor3 = Color3.fromRGB(160,160,160)
-    D.Font = Enum.Font.Gotham
-    D.TextSize = 11
-    D.Size = UDim2.new(1, -60, 0.5, 0)
-    D.Position = UDim2.new(0, 12, 0.5, 0)
-    D.BackgroundTransparency = 1
-    D.TextXAlignment = Enum.TextXAlignment.Left
-
-    local SW = Instance.new("Frame", F)
-    SW.Size = UDim2.new(0, 40, 0, 20)
-    SW.Position = UDim2.new(1, -50, 0.5, -10)
-    SW.BackgroundColor3 = Color3.fromRGB(40,40,40)
-    SW.BorderSizePixel = 0
-    Instance.new("UICorner", SW).CornerRadius = UDim.new(1, 0)
-
-    local B = Instance.new("Frame", SW)
-    B.Size = UDim2.new(0, 16, 0, 16)
-    B.Position = UDim2.new(0, 2, 0.5, -8)
-    B.BackgroundColor3 = Color3.fromRGB(200,200,200)
-    B.BorderSizePixel = 0
-    Instance.new("UICorner", B).CornerRadius = UDim.new(1, 0)
-
-    local BTN = Instance.new("TextButton", SW)
-    BTN.Size = UDim2.new(1, 0, 1, 0)
-    BTN.Text = ""
-    BTN.BackgroundTransparency = 1
-    BTN.AutoButtonColor = false
-
-    local S = false
-    BTN.MouseButton1Click:Connect(function()
-        S = not S
-        local C1 = S and Color3.fromRGB(170, 0, 0) or Color3.fromRGB(40, 40, 40)
-        local P1 = S and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
-        local BC = S and Color3.fromRGB(255,255,255) or Color3.fromRGB(200,200,200)
-        TService:Create(SW, TweenInfo.new(0.25), {BackgroundColor3 = C1}):Play()
-        TService:Create(B, TweenInfo.new(0.25), {Position = P1, BackgroundColor3 = BC}):Play()
-        if C.CB then C.CB(S) end
-    end)
-end
-
-return S
+return Window
