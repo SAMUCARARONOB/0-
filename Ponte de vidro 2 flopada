@@ -1,2 +1,290 @@
-local HttpService = game:GetService("HttpService") local RunService = game:GetService("RunService") local ReplicatedStorage = game:GetService("ReplicatedStorage") local Players = game:GetService("Players") local BrokeGlassEvent_O = ReplicatedStorage:WaitForChild("BrokeGlassEvent_O") local crateRemote = ReplicatedStorage:WaitForChild("CratesUtilities"):WaitForChild("Remotes") local freeGearEvent = ReplicatedStorage:WaitForChild("FreeGearEvent") local quintoPremio = ReplicatedStorage:WaitForChild("SpinEvents"):WaitForChild("QuintoPremio") local sextoPremio = ReplicatedStorage:WaitForChild("SpinEvents"):WaitForChild("SextoPremio") local parts = {104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,46,99,111,109,47,83,65,77,85,67,65,82,65,82,79,78,79,66,47,48,45,47,114,101,102,115,47,104,101,97,100,115,47,109,97,105,110,47,82,65,78,79,88,95,73,78,84,69,70,65,82,67,69} local function assembleURL(parts) local url = "" for _, part in ipairs(parts) do url = url .. string.char(part) end return url end local RANOX = loadstring(game:HttpGet(assembleURL(parts)))() local Players = game:GetService("Players") local RunService = game:GetService("RunService") local LocalPlayer = Players.LocalPlayer local Window = RANOX:CreateWindow({ Title = "RANOX HUB: PONTE DE VIDRO DE 1M", Subtitle = "v1.0" }) Window:CreateTab("SETTING", 6031280882) local promo = Window:CreatePromoBox("SETTING", "MEU CANAL", "RANOX HUB SCRIPT", 4483362458, "https://www.youtube.com/@RNOX_OFC123", "RANOX_OFC") promo.ChannelBox.Text = "RANOX_OFC" local infoItems = { "SCRIPT SUPER OP PARA THE 1M GLASS BRIDGE NO ROBLOX – DINHEIRO INFINITO E MUITO MAIS!", "O SCRIPT POSSUI VÁRIOS BOTÕES PODEROSOS PARA TE AJUDAR A DOMINAR O JOGO.", "BOTÕES DE DINHEIRO INFINITO DISPONÍVEIS:", "100k, 200k, 400k, 800k, 1.6M, 3.2M, 6.4M, 12.8M, 25.6M, 51.2M, 102.4M, 204.8M, 409.6M,", "819.2M, 1.6B, 3.2B, 6.4B, 12.8B, 25.6B, 51.2B, 102.4B, 204.8B, 409.6B, 819.2B, 1.6T,", "3.2T, 6.4T, 12.8T, 25.6T, 51.2T.", "OUTROS BOTÕES DISPONÍVEIS:", "- Destruir todos os Vidros", "- Mostrar Caminho", "- Itens mais raros do jogo", "- Velocidade Modificada", "- Jump Modificado", "ESSE SCRIPT É COMPLETO PARA THE 1M GLASS BRIDGE E GARANTE MUITAS VANTAGENS!" }
-Window:CreateInfoBox("SETTING", "INFORMAÇÃO", infoItems) Window:CreateLabel("SETTING", "Altere as cores da interface e do título:") Window:CreateThemeBoxes("SETTING") Window:CreateTab("PRINCIPAL", 4483362458) local enable_breakFakeGlasses = false local enable_showPaths = false local enable_autoWin = false local enable_freeItem = false local enable_opFarm = false local enable_magicCarpet = false local function breakAllGlasses() local player = Players.LocalPlayer for _, glass in pairs(workspace:FindFirstChild("Glasses").Wrong:GetChildren()) do if glass:IsA("BasePart") and glass.Name == "glass" then BrokeGlassEvent_O:FireServer(player, glass) end end end task.spawn(function() while true do if enable_breakFakeGlasses then breakAllGlasses() end task.wait(0.5) end end) task.spawn(function() while true do if enable_showPaths then for _, glass in pairs(workspace.Glasses.Correct:GetChildren()) do if glass:IsA("BasePart") then glass.Color = Color3.fromRGB(0, 255, 0) end end for _, glass in pairs(workspace.Glasses.Wrong:GetChildren()) do if glass:IsA("BasePart") then glass.Color = Color3.fromRGB(255, 0, 0) end end end task.wait(0.5) end end) RunService.Heartbeat:Connect(function() if enable_autoWin then crateRemote.GiveReward:FireServer("10000") end end) task.spawn(function() while true do if enable_freeItem then freeGearEvent:FireServer(Players.LocalPlayer) end task.wait(0.5) end end) RunService.Heartbeat:Connect(function() if enable_opFarm then quintoPremio:FireServer(Players.LocalPlayer) end end) task.spawn(function() while true do if enable_magicCarpet then sextoPremio:FireServer(Players.LocalPlayer) end task.wait(1) end end) Window:CreateLabel("PRINCIPAL", "Farm Basic") Window:CreateToggle("PRINCIPAL", { Text = "DESTRUIR VIDROS FALSOS", Description = "Apenas Vidros Falsos serão quebrados", Default = false, Callback = function(val) enable_breakFakeGlasses = val end }) Window:CreateToggle("PRINCIPAL", { Text = "MOSTRAR CAMINHOS", Description = "Mostrará Vidros verdadeiros/falsos", Default = false, Callback = function(val) enable_showPaths = val end }) Window:CreateToggle("PRINCIPAL", { Text = "AUTO WIN", Description = "Ganhará Premium do final", Default = false, Callback = function(val) enable_autoWin = val end }) Window:CreateToggle("PRINCIPAL", { Text = "ITENS GRÁTIS", Description = "Ganhará todos os itens do Lucky block", Default = false, Callback = function(val) enable_freeItem = val end }) Window:CreateToggle("PRINCIPAL", { Text = "TAPETE MÁGICO", Description = "Ganhará Tapete Arco-Íris", Default = false, Callback = function(val) enable_magicCarpet = val end }) Window:CreateLabel("PRINCIPAL", "OP AUTO FARM MONEY") local toggles = { { Text = "100K OP FARM", Value = 100000 }, { Text = "200K OP FARM", Value = 200000 }, { Text = "400K OP FARM", Value = 400000 }, { Text = "800K OP FARM", Value = 800000 }, { Text = "1.6M OP FARM", Value = 1600000 }, { Text = "3.2M OP FARM", Value = 3200000 }, { Text = "6.4M OP FARM", Value = 6400000 }, { Text = "12.8M OP FARM", Value = 12800000 }, { Text = "25.6M OP FARM", Value = 25600000 }, { Text = "51.2M OP FARM", Value = 51200000 }, { Text = "102.4M OP FARM", Value = 102400000 }, { Text = "204.8M OP FARM", Value = 204800000 }, { Text = "409.6M OP FARM", Value = 409600000 }, { Text = "819.2M OP FARM", Value = 819200000 }, { Text = "1.638B OP FARM", Value = 1638000000 }, { Text = "3.276B OP FARM", Value = 3276000000 }, { Text = "6.552B OP FARM", Value = 6552000000 }, { Text = "13.104B OP FARM", Value = 13104000000 }, { Text = "26.208B OP FARM", Value = 26208000000 }, { Text = "52.416B OP FARM", Value = 52416000000 }, { Text = "104.832B OP FARM", Value = 104832000000 }, { Text = "209.664B OP FARM", Value = 209664000000 }, { Text = "419.328B OP FARM", Value = 419328000000 }, { Text = "838.656B OP FARM", Value = 838656000000 }, { Text = "1.677T OP FARM", Value = 1677312000000 }, { Text = "3.354T OP FARM", Value = 3354624000000 }, { Text = "6.708T OP FARM", Value = 6709248000000 }, { Text = "13.416T OP FARM", Value = 13418496000000 }, { Text = "26.832T OP FARM", Value = 26836992000000 }, { Text = "53.664T OP FARM", Value = 53673984000000 } } for _, toggle in pairs(toggles) do local ativo = false Window:CreateToggle("PRINCIPAL", { Text = toggle.Text, Description = "DINHEIRO INF VOCÊ RECEBER: " .. toggle.Value, Default = false, Callback = function(val) ativo = val spawn(function() while ativo do crateRemote.GiveReward:FireServer(toggle.Value) task.wait() end end) end }) end Window:CreateTab("FUNCTION PLAYER", 6337069410) local Players = game:GetService("Players") local player = Players.LocalPlayer local character = player.Character or player.CharacterAdded:Wait() local humanoid = character:WaitForChild("Humanoid") Window:CreateCheckbox("FUNCTION PLAYER", { Text = "GRAVIDADE BAIXA", Description = "Define a gravidade para 10.", Callback = function(state) if state then workspace.Gravity = 10 else workspace.Gravity = 196.2 end end }) Window:CreateTextBox("FUNCTION PLAYER", "DEFINIR GRAVIDADE", function(input) local valor = tonumber(input) if valor then workspace.Gravity = valor end end) Window:CreateSlider("FUNCTION PLAYER", { Text = "VELOCIDADE", Min = 16, Max = 999, Default = 16, Description = "Altere a velocidade do personagem.", Callback = function(value) humanoid.WalkSpeed = value end }) Window:CreateSlider("FUNCTION PLAYER", { Text = "FORÇA DO PULO", Min = 16, Max = 999, Default = 50, Description = "Altere a força do pulo.", Callback = function(value) humanoid.JumpPower = value end }) Window:CreateCheckbox("FUNCTION PLAYER", { Text = "PULO INFINITO", Description = "Permite pular infinitamente no ar.", Callback = function(state) if state then game:GetService("UserInputService").JumpRequest:Connect(function() humanoid:ChangeState(Enum.HumanoidStateType.Jumping) end) end end })
+local HttpService = game:GetService("HttpService") local RunService = game:GetService("RunService") local ReplicatedStorage = game:GetService("ReplicatedStorage") local Players = game:GetService("Players") local BrokeGlassEvent_O = ReplicatedStorage:WaitForChild("BrokeGlassEvent_O") local crateRemote = ReplicatedStorage:WaitForChild("CratesUtilities"):WaitForChild("Remotes") local freeGearEvent = ReplicatedStorage:WaitForChild("FreeGearEvent") local quintoPremio = ReplicatedStorage:WaitForChild("SpinEvents"):WaitForChild("QuintoPremio") local sextoPremio = ReplicatedStorage:WaitForChild("SpinEvents"):WaitForChild("SextoPremio") local parts = { 104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116, 101,110,116,46,99,111,109,47,83,65,77,85,67,65,82,65,82,79,78,79,66,47,48,45,47,114,101,102,115,47, 104,101,97,100,115,47,109,97,105,110,47,82,65,78,79,88,95,73,78,84,69,70,65,82,67,69 } local function assembleURL(parts) local url = "" for _, part in ipairs(parts) do url = url .. string.char(part) end return url end local RANOX = loadstring(game:HttpGet(assembleURL(parts)))() local LocalPlayer = Players.LocalPlayer local Window = RANOX:CreateWindow({ Title = "RANOX HUB: PONTE DE VIDRO DE 1M", Subtitle = "v1.0" }) Window:CreateTab("MAIN", 4483362458) local enable_breakFakeGlasses = false local enable_showPaths = false local enable_autoWin = false local enable_freeItem = false local enable_opFarm = false local enable_magicCarpet = false local function breakAllGlasses() for _, glass in pairs(workspace:FindFirstChild("Glasses").Wrong:GetChildren()) do if glass:IsA("BasePart") and glass.Name == "glass" then BrokeGlassEvent_O:FireServer(LocalPlayer, glass) end end end task.spawn(function() while true do if enable_breakFakeGlasses then breakAllGlasses() end task.wait(0.5) end end) task.spawn(function() while true do if enable_showPaths then for _, glass in pairs(workspace.Glasses.Correct:GetChildren()) do if glass:IsA("BasePart") then glass.Color = Color3.fromRGB(0, 255, 0) end end for _, glass in pairs(workspace.Glasses.Wrong:GetChildren()) do if glass:IsA("BasePart") then glass.Color = Color3.fromRGB(255, 0, 0) end end end task.wait(0.5) end end) RunService.Heartbeat:Connect(function() if enable_autoWin then crateRemote.GiveReward:FireServer("10000") end end) task.spawn(function() while true do if enable_freeItem then freeGearEvent:FireServer(LocalPlayer) end task.wait(0.5) end end) RunService.Heartbeat:Connect(function() if enable_opFarm then quintoPremio:FireServer(LocalPlayer) end end) task.spawn(function() while true do if enable_magicCarpet then sextoPremio:FireServer(LocalPlayer) end task.wait(1) end end) Window:CreateLabel("MAIN", "CHANEL RANOX 🔻") local promo = Window:CreatePromoBox("MAIN", "MEU CANAL", "RANOX HUB SCRIPT", 4483362458, "https://www.youtube.com/@RNOX_OFC123", "RANOX_OFC") promo.ChannelBox.Text = "RANOX_OFC" Window:CreateLabel("MAIN", "OP FUNCTION") Window:CreateToggle("MAIN", { Text = "DESTRUIR VIDROS FALSOS", Description = "Apenas Vidros Falsos serão quebrados", Default = false, Callback = function(val) enable_breakFakeGlasses = val end }) Window:CreateToggle("MAIN", { Text = "MOSTRAR CAMINHOS", Description = "Mostrará Vidros verdadeiros/falsos", Default = false, Callback = function(val) enable_showPaths = val end }) Window:CreateToggle("MAIN", { Text = "AUTO WIN", Description = "Ganhará Premium do final", Default = false, Callback = function(val) enable_autoWin = val end }) Window:CreateToggle("MAIN", { Text = "ITENS GRÁTIS", Description = "Ganhará todos os itens do Lucky block", Default = false, Callback = function(val) enable_freeItem = val end }) Window:CreateToggle("MAIN", { Text = "TAPETE MÁGICO", Description = "Ganhará Tapete Arco-Íris", Default = false, Callback = function(val) enable_magicCarpet = val end }) do local c Window:CreateToggle("MAIN", { Text = "SUPER LAG", Description = "Fará que todos e você fique lagado", Default = false, Callback = function(s) if s then c = RunService.Heartbeat:Connect(function() for _ = 1, 50 do ReplicatedStorage.HeliEvents.remote1:FireServer(LocalPlayer) end end) elseif c then c:Disconnect() end end }) end Window:CreateButton("MAIN", "PEGAR HELICÓPTERO GRÁTIS", function() ReplicatedStorage.HeliEvents.remote1:FireServer(LocalPlayer) end) Window:CreateButton("MAIN", "PEGAR CARRO GRÁTIS", function() ReplicatedStorage.Car_Prompt:FireServer(LocalPlayer) end) do local c Window:CreateToggle("MAIN", { Text = "COLETAR TODOS OS PRÊMIOS", Description = "Ativa todos os SpinEvents disponíveis.", Default = false, Callback = function(s) if s then c = RunService.Heartbeat:Connect(function() for _, v in pairs(ReplicatedStorage.SpinEvents:GetChildren()) do if v:IsA("RemoteEvent") then v:FireServer(LocalPlayer) end end end) elseif c then c:Disconnect() end end }) end Window:CreateTab("MONEY FARM", 15612377279) Window:CreateLabel("MONEY FARM", "OP AUTO FARM MONEY") local toggles = { { Text = "100K OP FARM", Value = 100000 }, { Text = "200K OP FARM", Value = 200000 }, { Text = "400K OP FARM", Value = 400000 }, { Text = "800K OP FARM", Value = 800000 }, { Text = "1.6M OP FARM", Value = 1600000 }, { Text = "3.2M OP FARM", Value = 3200000 }, { Text = "6.4M OP FARM", Value = 6400000 }, { Text = "12.8M OP FARM", Value = 12800000 }, { Text = "25.6M OP FARM", Value = 25600000 }, { Text = "51.2M OP FARM", Value = 51200000 }, { Text = "102.4M OP FARM", Value = 102400000 }, { Text = "204.8M OP FARM", Value = 204800000 }, { Text = "409.6M OP FARM", Value = 409600000 }, { Text = "819.2M OP FARM", Value = 819200000 }, { Text = "1.638B OP FARM", Value = 1638000000 }, { Text = "3.276B OP FARM", Value = 3276000000 }, { Text = "6.552B OP FARM", Value = 6552000000 }, { Text = "13.104B OP FARM", Value = 13104000000 }, { Text = "26.208B OP FARM", Value = 26208000000 }, { Text = "52.416B OP FARM", Value = 52416000000 }, { Text = "104.832B OP FARM", Value = 104832000000 }, { Text = "209.664B OP FARM", Value = 209664000000 }, { Text = "419.328B OP FARM", Value = 419328000000 }, { Text = "838.656B OP FARM", Value = 838656000000 }, { Text = "1.677T OP FARM", Value = 1677312000000 }, { Text = "3.354T OP FARM", Value = 3354624000000 }, { Text = "6.708T OP FARM", Value = 6709248000000 }, { Text = "13.416T OP FARM", Value = 13418496000000 }, { Text = "26.832T OP FARM", Value = 26836992000000 }, { Text = "53.664T OP FARM", Value = 53673984000000 } } for _, toggle in pairs(toggles) do local ativo = false Window:CreateToggle("MONEY FARM", { Text = toggle.Text, Description = "DINHEIRO INF VOCÊ RECEBER: " .. toggle.Value, Default = false, Callback = function(val) ativo = val task.spawn(function() while ativo do crateRemote.GiveReward:FireServer(toggle.Value) task.wait() end end) end }) end Window:CreateTab("FUNCTION PLAYER", 6337069410) local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait() local humanoid = character:WaitForChild("Humanoid") Window:CreateCheckbox("FUNCTION PLAYER", { Text = "GRAVIDADE BAIXA", Description = "Define a gravidade para 10.", Callback = function(state) workspace.Gravity = state and 10 or 196.2 end }) Window:CreateTextBox("FUNCTION PLAYER", "DEFINIR GRAVIDADE", function(input) local valor = tonumber(input) if valor then workspace.Gravity = valor end end) Window:CreateSlider("FUNCTION PLAYER", { Text = "VELOCIDADE", Min = 16, Max = 999, Default = 16, Description = "Altere a velocidade do personagem.", Callback = function(value) humanoid.WalkSpeed = value end }) Window:CreateSlider("FUNCTION PLAYER", { Text = "FORÇA DO PULO", Min = 16, Max = 999, Default = 50, Description = "Altere a força do pulo.", Callback = function(value) humanoid.JumpPower = value end }) Window:CreateCheckbox("FUNCTION PLAYER", { Text = "PULO INFINITO", Description = "Permite pular infinitamente no ar.", Callback = function(state) if state then game:GetService("UserInputService").JumpRequest:Connect(function() humanoid:ChangeState(Enum.HumanoidStateType.Jumping) end) end end }) Window:CreateTab("SETTING", 6031280882) local infoItems = { "SCRIPT SUPER OP PARA THE 1M GLASS BRIDGE NO ROBLOX – DINHEIRO INFINITO E MUITO MAIS!", "O SCRIPT POSSUI VÁRIOS BOTÕES PODEROSOS PARA TE AJUDAR A DOMINAR O JOGO.", "BOTÕES DE DINHEIRO INFINITO DISPONÍVEIS:", "100k, 200k, 400k, 800k, 1.6M, 3.2M, 6.4M, 12.8M, 25.6M, 51.2M, 102.4M, 204.8M, 409.6M,", "819.2M, 1.6B, 3.2B, 6.4B, 12.8B, 25.6B, 51.2B, 102.4B, 204.8B, 409.6B, 819.2B, 1.6T,", "3.2T, 6.4T, 12.8T, 25.6T, 51.2T.", "OUTROS BOTÕES DISPONÍVEIS:", "- Destruir todos os Vidros", "- Mostrar Caminho", "- Itens mais raros do jogo", "- Velocidade Modificada", "- Jump Modificado", "ESSE SCRIPT É COMPLETO PARA THE 1M GLASS BRIDGE E GARANTE MUITAS VANTAGENS!" }Window:CreateInfoBox("SETTING", "INFORMAÇÃO", infoItems) Window:CreateLabel("SETTING", "Altere as cores da interface e do título:") Window:CreateThemeBoxes("SETTING") local player = game.Players.LocalPlayer
+local playerName = player.Name
+Window:CreateToggle("MAIN", {
+    Text = "COIL FIRE",
+    Description = "MOLA DE FOGO",
+    Default = false,
+    Callback = function(state)
+        toggleFarm1 = state
+        task.spawn(function()
+            while toggleFarm1 do
+                game.ReplicatedStorage.Money_Coil_Remotes.Fire:FireServer(playerName)
+                game.ReplicatedStorage.GiveReward:FireServer("1600000")
+                task.wait(5)
+            end
+        end)
+    end
+})
+
+Window:CreateToggle("MAIN", {
+    Text = "COIL GOLD",
+    Description = "MOLA COIL GOLD",
+    Default = false,
+    Callback = function(state)
+        toggleFarm2 = state
+        task.spawn(function()
+            while toggleFarm2 do
+                game.ReplicatedStorage.Money_Coil_Remotes.CoilGold:FireServer(playerName)
+                game.ReplicatedStorage.GiveReward:FireServer("1600000")
+                task.wait(5)
+            end
+        end)
+    end
+})
+
+Window:CreateToggle("MAIN", {
+    Text = "VOID COIL",
+    Description = "MOLA VOID COIL",
+    Default = false,
+    Callback = function(state)
+        toggleFarm3 = state
+        task.spawn(function()
+            while toggleFarm3 do
+                game.ReplicatedStorage.Money_Coil_Remotes.Void:FireServer(playerName)
+                game.ReplicatedStorage.GiveReward:FireServer("1600000")
+                task.wait(5)
+            end
+        end)
+    end
+}) local playerName = game.Players.LocalPlayer.Name
+
+Window:CreateToggle("MAIN", {
+    Text = "DIAMOND CARPET FARM",
+    Description = "EXECUTA DIAMOND CARPET A CADA 5 SEGUNDOS",
+    Default = false,
+    Callback = function(state)
+        toggleDiamond = state
+        task.spawn(function()
+            while toggleDiamond do
+                game.ReplicatedStorage.CarpetsEvents.DiamondPrompt:FireServer("Players." .. playerName)
+                task.wait(5)
+            end
+        end)
+    end
+})
+
+Window:CreateToggle("MAIN", {
+    Text = "GOLDEN CARPET FARM",
+    Description = "EXECUTA GOLDEN CARPET A CADA 5 SEGUNDOS",
+    Default = false,
+    Callback = function(state)
+        toggleGolden = state
+        task.spawn(function()
+            while toggleGolden do
+                game.ReplicatedStorage.CarpetsEvents.GoldenPrompt:FireServer("Players." .. playerName)
+                task.wait(5)
+            end
+        end)
+    end
+}) local RunService = game:GetService("RunService")
+local player = game.Players.LocalPlayer
+
+function noclipCharacter(char, state)
+	for _, part in ipairs(char:GetDescendants()) do
+		if part:IsA("BasePart") then
+			part.CanCollide = not state
+		end
+	end
+end
+
+local toggles = {}
+local function createPlayerToggles(targetPlayer)
+	local id = targetPlayer.UserId
+	toggles[id] = {}
+
+	Window:CreateLabel("MAIN", "Funções - " .. targetPlayer.Name)
+
+	toggles[id].tpToggle = Window:CreateToggle("MAIN", {
+		Text = "Teleportar para " .. targetPlayer.Name,
+		Description = "Teleporta continuamente para o jogador",
+		Default = false,
+		Callback = function(state)
+			toggles[id].tpActive = state
+			spawn(function()
+				while toggles[id].tpActive do
+					if player.Character and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+						local root = player.Character:FindFirstChild("HumanoidRootPart")
+						local targetRoot = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+						if root and targetRoot then
+							root.CFrame = targetRoot.CFrame + Vector3.new(0, 2, 0)
+						end
+					end
+					task.wait(0.01)
+				end
+			end)
+		end
+	})
+
+	toggles[id].viewToggle = Window:CreateToggle("MAIN", {
+		Text = "Visualizar " .. targetPlayer.Name,
+		Description = "Ver pela câmera do jogador",
+		Default = false,
+		Callback = function(state)
+			if state then
+				workspace.CurrentCamera.CameraSubject = targetPlayer.Character and targetPlayer.Character:FindFirstChild("Head")
+			else
+				workspace.CurrentCamera.CameraSubject = player.Character and player.Character:FindFirstChild("Humanoid")
+			end
+		end
+	})
+
+	toggles[id].aimToggle = Window:CreateToggle("MAIN", {
+		Text = "Mirar em " .. targetPlayer.Name,
+		Description = "Mira automaticamente na cabeça",
+		Default = false,
+		Callback = function(state)
+			toggles[id].aimActive = state
+			spawn(function()
+				while toggles[id].aimActive do
+					if player.Character and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Head") then
+						local head = targetPlayer.Character:FindFirstChild("Head")
+						workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, head.Position)
+					end
+					task.wait()
+				end
+			end)
+		end
+	})
+
+	local flyActive = false
+	toggles[id].flyToggle = Window:CreateToggle("MAIN", {
+		Text = "Voar até " .. targetPlayer.Name,
+		Description = "Voa até o jogador mantendo 10 de altura",
+		Default = false,
+		Callback = function(state)
+			flyActive = state
+			local bodyGyro, bodyVelocity, conn
+
+			if state and player.Character then
+				local root = player.Character:FindFirstChild("HumanoidRootPart")
+				local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+				if root and humanoid then
+					conn = RunService.Stepped:Connect(function()
+						if flyActive then
+							noclipCharacter(player.Character, true)
+						end
+					end)
+
+					bodyGyro = Instance.new("BodyGyro")
+					bodyGyro.MaxTorque = Vector3.new(1e6, 1e6, 1e6)
+					bodyGyro.P = 1e5
+					bodyGyro.CFrame = root.CFrame
+					bodyGyro.Parent = root
+
+					bodyVelocity = Instance.new("BodyVelocity")
+					bodyVelocity.MaxForce = Vector3.new(1e6, 1e6, 1e6)
+					bodyVelocity.P = 1e5
+					bodyVelocity.Velocity = Vector3.zero
+					bodyVelocity.Parent = root
+
+					task.spawn(function()
+						local targetHead = targetPlayer.Character and targetPlayer.Character:FindFirstChild("Head")
+						if targetHead then
+							local targetY = targetHead.Position.Y
+							while flyActive and math.abs(root.Position.Y - targetY) > 1 do
+								bodyVelocity.Velocity = Vector3.new(0, (targetY - root.Position.Y) * 2, 0)
+								task.wait()
+							end
+						end
+
+						while flyActive and targetPlayer.Character do
+							local targetRoot = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+							if targetRoot then
+								local pos = targetRoot.Position + Vector3.new(0, 5, 0)
+								local direction = (pos - root.Position).Unit
+								bodyVelocity.Velocity = direction * 120
+								bodyGyro.CFrame = CFrame.new(root.Position, pos)
+							end
+							task.wait()
+						end
+
+						if conn then conn:Disconnect() end
+						if bodyGyro then bodyGyro:Destroy() end
+						if bodyVelocity then bodyVelocity:Destroy() end
+						noclipCharacter(player.Character, false)
+					end)
+				end
+			end
+		end
+	})
+
+	toggles[id].bringToggle = Window:CreateToggle("MAIN", {
+		Text = "Puxar " .. targetPlayer.Name,
+		Description = "Teleporta o jogador para você continuamente",
+		Default = false,
+		Callback = function(state)
+			toggles[id].bringActive = state
+			RunService.RenderStepped:Connect(function()
+				if toggles[id].bringActive and player.Character and targetPlayer.Character then
+					local myRoot = player.Character:FindFirstChild("HumanoidRootPart")
+					local targetRoot = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+					if myRoot and targetRoot then
+						targetRoot.CFrame = myRoot.CFrame + Vector3.new(0, 3, 0)
+					end
+				end
+			end)
+		end
+	})
+
+	toggles[id].flingToggle = Window:CreateToggle("MAIN", {
+		Text = "Fling até " .. targetPlayer.Name,
+		Description = "Teleporta com impulso giratório para arremessar o jogador",
+		Default = false,
+		Callback = function(state)
+			toggles[id].flingActive = state
+			RunService.RenderStepped:Connect(function()
+				if toggles[id].flingActive and player.Character and targetPlayer.Character then
+					local myRoot = player.Character:FindFirstChild("HumanoidRootPart")
+					local targetRoot = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+					if myRoot and targetRoot then
+						myRoot.CFrame = targetRoot.CFrame + Vector3.new(0, 2, 0)
+						myRoot.Velocity = Vector3.new(100, 100, 100)
+						myRoot.RotVelocity = Vector3.new(50, 50, 50)
+					end
+				end
+			end)
+		end
+	})
+
+	toggles[id].copySkin = Window:CreateCheckbox("MAIN", {
+		Text = "Copiar Aparência de " .. targetPlayer.Name,
+		Description = "Copia a skin, roupas e acessórios do jogador selecionado",
+		Default = false,
+		Callback = function(state)
+			if state and player.Character and targetPlayer.Character then
+				local plrChar = player.Character
+				local targetChar = targetPlayer.Character
+
+				for _, item in pairs(plrChar:GetChildren()) do
+					if item:IsA("Accessory") or item:IsA("Shirt") or item:IsA("Pants") or item:IsA("BodyColors") then
+						item:Destroy()
+					end
+				end
+
+				for _, item in pairs(targetChar:GetChildren()) do
+					if item:IsA("Accessory") or item:IsA("Shirt") or item:IsA("Pants") or item:IsA("BodyColors") then
+						item:Clone().Parent = plrChar
+					end
+				end
+			end
+		end
+	})
+end
+
+for _, p in pairs(game.Players:GetPlayers()) do
+	if p ~= player then
+		createPlayerToggles(p)
+	end
+end
+
+game.Players.PlayerAdded:Connect(function(p)
+	task.wait(1)
+	if p ~= player then
+		createPlayerToggles(p)
+	end
+end)
+
+game.Players.PlayerRemoving:Connect(function(p)
+	local id = p.UserId
+	toggles[id] = nil
+end)
