@@ -147,9 +147,9 @@ function Library:CreateWindow(name)
         end
     end)
     
-    mainFrame.Position = UDim2.new(0.5, -250, 0, -600)
+    mainFrame.Position = UDim2.new(0.5, 0, 0, 0)
     local tween = TweenService:Create(mainFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), 
-        {Position = UDim2.new(0.5, 0, 0.5, 0)})
+        {Position = UDim2.new(0.5, -250, 0.5, -250)})
     tween:Play()
     
     Library.Enabled = true
