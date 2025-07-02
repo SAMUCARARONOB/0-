@@ -1,191 +1,165 @@
--- RANOX UI - Moderna e super detalhada (estilo Rayfield/REDZHUB) -- Criada para ser modular, linda e fácil de usar -- Salve este arquivo como: ranox-ui.lua
+-- RANOX UI ADVANCED - Interface super moderna com estilo Rayfield + REDZHUB DARK -- Desenvolvido para Roblox - Funciona em PC e celular, com drag, estilo neon/dark, abas, seções, e muito mais
 
-local TweenService = game:GetService("TweenService") local UserInputService = game:GetService("UserInputService") local RANOX = {}
+local TweenService = game:GetService("TweenService") local UserInputService = game:GetService("UserInputService") local RunService = game:GetService("RunService")
 
-function RANOX:CreateWindow(cfg) local UI = {} local screenGui = Instance.new("ScreenGui") screenGui.Name = "RANOX_UI" screenGui.ResetOnSpawn = false screenGui.Parent = game:GetService("CoreGui")
+local RANOX = {}
+
+function RANOX:CreateWindow(config) local UI = {} local dragging, dragInput, dragStart, startPos
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "RANOX_UI_ADVANCED"
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
+gui.Parent = game:GetService("CoreGui")
 
 local main = Instance.new("Frame")
-main.Size = UDim2.new(0, 500, 0, 400)
-main.Position = UDim2.new(0.5, -250, 0.5, -200)
-main.BackgroundColor3 = Color3.fromRGB(18, 18, 20)
+main.Name = "MainWindow"
+main.Size = UDim2.new(0, 600, 0, 450)
+main.Position = UDim2.new(0.5, -300, 0.5, -225)
+main.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 main.BorderSizePixel = 0
 main.AnchorPoint = Vector2.new(0.5, 0.5)
-main.Parent = screenGui
+main.Active = true
+main.Draggable = false
+main.Parent = gui
+
+-- Shadow
+local shadow = Instance.new("ImageLabel")
+shadow.BackgroundTransparency = 1
+shadow.Image = "rbxassetid://1316045217"
+shadow.ImageTransparency = 0.5
+shadow.Size = UDim2.new(1, 30, 1, 30)
+shadow.Position = UDim2.new(0, -15, 0, -15)
+shadow.ZIndex = 0
+shadow.Parent = main
+
+-- Drag system (mobile + PC)
+local function makeDraggable(frame)
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    frame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+
+    RunService.RenderStepped:Connect(function()
+        if dragging and dragInput then
+            local delta = dragInput.Position - dragStart
+            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+end
+
+makeDraggable(main)
 
 local title = Instance.new("TextLabel")
+title.Name = "TitleBar"
 title.Size = UDim2.new(1, 0, 0, 40)
-title.BackgroundTransparency = 1
-title.Text = cfg.Name or "RANOX UI"
+title.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+title.Text = config.Name or "RANOX UI v3.0"
 title.Font = Enum.Font.GothamBold
-title.TextSize = 20
+title.TextSize = 18
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextXAlignment = Enum.TextXAlignment.Center
 title.Parent = main
 
-local tabsFrame = Instance.new("Frame")
-tabsFrame.Size = UDim2.new(0, 120, 1, -40)
-tabsFrame.Position = UDim2.new(0, 0, 0, 40)
-tabsFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 28)
-tabsFrame.BorderSizePixel = 0
-tabsFrame.Parent = main
+local tabHolder = Instance.new("Frame")
+tabHolder.Name = "Tabs"
+tabHolder.Size = UDim2.new(0, 140, 1, -40)
+tabHolder.Position = UDim2.new(0, 0, 0, 40)
+tabHolder.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+tabHolder.BorderSizePixel = 0
+tabHolder.Parent = main
 
-local contentFrame = Instance.new("Frame")
-contentFrame.Size = UDim2.new(1, -120, 1, -40)
-contentFrame.Position = UDim2.new(0, 120, 0, 40)
-contentFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-contentFrame.BorderSizePixel = 0
-contentFrame.Parent = main
+local pageHolder = Instance.new("Frame")
+pageHolder.Name = "Pages"
+pageHolder.Size = UDim2.new(1, -140, 1, -40)
+pageHolder.Position = UDim2.new(0, 140, 0, 40)
+pageHolder.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+pageHolder.BorderSizePixel = 0
+pageHolder.ClipsDescendants = true
+pageHolder.Parent = main
 
 local tabs = {}
+function UI:CreateTab(name)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, 0, 0, 35)
+    button.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+    button.Text = name
+    button.Font = Enum.Font.Gotham
+    button.TextSize = 14
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Parent = tabHolder
 
-function UI:CreateTab(tabName)
-    local tabButton = Instance.new("TextButton")
-    tabButton.Size = UDim2.new(1, 0, 0, 35)
-    tabButton.BackgroundTransparency = 1
-    tabButton.Text = tabName
-    tabButton.Font = Enum.Font.Gotham
-    tabButton.TextSize = 16
-    tabButton.TextColor3 = Color3.fromRGB(180, 180, 180)
-    tabButton.Parent = tabsFrame
+    local page = Instance.new("ScrollingFrame")
+    page.Name = name .. "_Page"
+    page.Size = UDim2.new(1, 0, 1, 0)
+    page.CanvasSize = UDim2.new(0, 0, 10, 0)
+    page.BackgroundTransparency = 1
+    page.Visible = false
+    page.BorderSizePixel = 0
+    page.ScrollBarThickness = 6
+    page.Parent = pageHolder
 
-    local tabContent = Instance.new("Frame")
-    tabContent.Size = UDim2.new(1, 0, 1, 0)
-    tabContent.Visible = false
-    tabContent.BackgroundTransparency = 1
-    tabContent.Parent = contentFrame
-
-    tabButton.MouseButton1Click:Connect(function()
+    button.MouseButton1Click:Connect(function()
         for _, tab in pairs(tabs) do
-            tab.Content.Visible = false
-            tab.Button.TextColor3 = Color3.fromRGB(180, 180, 180)
+            tab.page.Visible = false
+            tab.button.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
         end
-        tabContent.Visible = true
-        tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        page.Visible = true
+        button.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
     end)
 
-    table.insert(tabs, { Button = tabButton, Content = tabContent })
-
-    if #tabs == 1 then
-        tabButton:Activate()
-        tabContent.Visible = true
-        tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    if #tabs == 0 then
+        page.Visible = true
+        button.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
     end
 
-    return tabContent
+    table.insert(tabs, {button = button, page = page})
+    return page
 end
 
-function UI:CreateSection(tab, titleText)
-    local section = Instance.new("Frame")
-    section.Size = UDim2.new(1, 0, 0, 0)
-    section.BackgroundTransparency = 1
-    section.AutomaticSize = Enum.AutomaticSize.Y
-    section.Parent = tab
-
+function UI:CreateSection(tab, name)
     local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, 0, 0, 30)
+    label.Size = UDim2.new(1, -20, 0, 30)
+    label.Position = UDim2.new(0, 10, 0, 0)
     label.BackgroundTransparency = 1
-    label.Text = titleText
+    label.Text = name
     label.Font = Enum.Font.GothamBold
-    label.TextSize = 18
+    label.TextSize = 16
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
     label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = section
-
-    return section
+    label.Parent = tab
+    return tab
 end
 
-function UI:CreateToggle(section, name, callback)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, -10, 0, 30)
-    button.Position = UDim2.new(0, 5, 0, 35)
-    button.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
-    button.Text = "[ OFF ]  " .. name
-    button.Font = Enum.Font.Gotham
-    button.TextSize = 14
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.Parent = section
+function UI:CreateButton(tab, name, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, -20, 0, 30)
+    btn.Position = UDim2.new(0, 10, 0, tab.UIListLayout.AbsoluteContentSize.Y + 40)
+    btn.BackgroundColor3 = Color3.fromRGB(55, 55, 60)
+    btn.Text = name
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 14
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Parent = tab
 
-    local state = false
-    button.MouseButton1Click:Connect(function()
-        state = not state
-        button.Text = (state and "[ ON  ]  " or "[ OFF ]  ") .. name
-        callback(state)
-    end)
-end
-
-function UI:CreateButton(section, text, callback)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, -10, 0, 30)
-    button.Position = UDim2.new(0, 5, 0, 75)
-    button.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
-    button.Text = text
-    button.Font = Enum.Font.Gotham
-    button.TextSize = 14
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.Parent = section
-
-    button.MouseButton1Click:Connect(function()
+    btn.MouseButton1Click:Connect(function()
         callback()
-    end)
-end
-
-function UI:CreateSlider(section, name, min, max, default, callback)
-    local slider = Instance.new("TextButton")
-    slider.Size = UDim2.new(1, -10, 0, 30)
-    slider.Position = UDim2.new(0, 5, 0, 115)
-    slider.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
-    slider.Text = name .. ": " .. tostring(default)
-    slider.Font = Enum.Font.Gotham
-    slider.TextSize = 14
-    slider.TextColor3 = Color3.fromRGB(255, 255, 255)
-    slider.Parent = section
-
-    local value = default
-    slider.MouseButton1Click:Connect(function()
-        value = math.clamp(value + 1, min, max)
-        slider.Text = name .. ": " .. tostring(value)
-        callback(value)
-    end)
-end
-
-function UI:CreateDropdown(section, name, options, callback)
-    local dropdown = Instance.new("TextButton")
-    dropdown.Size = UDim2.new(1, -10, 0, 30)
-    dropdown.Position = UDim2.new(0, 5, 0, 155)
-    dropdown.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
-    dropdown.Text = name .. " ▼"
-    dropdown.Font = Enum.Font.Gotham
-    dropdown.TextSize = 14
-    dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
-    dropdown.Parent = section
-
-    local open = false
-    local menu = Instance.new("Frame")
-    menu.Size = UDim2.new(1, -10, 0, #options * 25)
-    menu.Position = UDim2.new(0, 5, 0, 190)
-    menu.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
-    menu.Visible = false
-    menu.Parent = section
-
-    for _, option in ipairs(options) do
-        local opt = Instance.new("TextButton")
-        opt.Size = UDim2.new(1, 0, 0, 25)
-        opt.Text = option
-        opt.BackgroundTransparency = 1
-        opt.Font = Enum.Font.Gotham
-        opt.TextSize = 14
-        opt.TextColor3 = Color3.fromRGB(255, 255, 255)
-        opt.Parent = menu
-        opt.MouseButton1Click:Connect(function()
-            dropdown.Text = name .. ": " .. option
-            menu.Visible = false
-            open = false
-            callback(option)
-        end)
-    end
-
-    dropdown.MouseButton1Click:Connect(function()
-        open = not open
-        menu.Visible = open
     end)
 end
 
