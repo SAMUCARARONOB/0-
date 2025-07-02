@@ -1,658 +1,196 @@
--- RANOX UI System for Roblox
--- By: seu_nome_ou_empresa
--- Versão: 2.0
+-- RANOX UI - Moderna e super detalhada (estilo Rayfield/REDZHUB) -- Criada para ser modular, linda e fácil de usar -- Salve este arquivo como: ranox-ui.lua
 
-local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService") local UserInputService = game:GetService("UserInputService") local RANOX = {}
 
-local player = Players.LocalPlayer
-local gui = Instance.new("ScreenGui")
-gui.Name = "RANOX_UI"
-gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-gui.Parent = player:WaitForChild("PlayerGui")
+function RANOX:CreateWindow(cfg) local UI = {} local screenGui = Instance.new("ScreenGui") screenGui.Name = "RANOX_UI" screenGui.ResetOnSpawn = false screenGui.Parent = game:GetService("CoreGui")
 
-local mainColors = {
-    Primary = Color3.fromRGB(122, 90, 245),
-    Background = Color3.fromRGB(24, 24, 24),
-    Surface = Color3.fromRGB(30, 30, 30),
-    SurfaceLight = Color3.fromRGB(42, 42, 42),
-    Text = Color3.fromRGB(224, 224, 224),
-    Border = Color3.fromRGB(51, 51, 51)
-}
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 500, 0, 400)
+main.Position = UDim2.new(0.5, -250, 0.5, -200)
+main.BackgroundColor3 = Color3.fromRGB(18, 18, 20)
+main.BorderSizePixel = 0
+main.AnchorPoint = Vector2.new(0.5, 0.5)
+main.Parent = screenGui
 
-local RANOX = {
-    Window = nil,
-    Tabs = {},
-    Elements = {},
-    Theme = mainColors
-}
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundTransparency = 1
+title.Text = cfg.Name or "RANOX UI"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Parent = main
 
-local function createElement(properties)
-    local element = Instance.new(properties.Class)
-    for prop, value in pairs(properties) do
-        if prop ~= "Class" and prop ~= "Parent" then
-            element[prop] = value
-        end
-    end
-    element.Parent = properties.Parent
-    return element
-end
+local tabsFrame = Instance.new("Frame")
+tabsFrame.Size = UDim2.new(0, 120, 1, -40)
+tabsFrame.Position = UDim2.new(0, 0, 0, 40)
+tabsFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 28)
+tabsFrame.BorderSizePixel = 0
+tabsFrame.Parent = main
 
-local function createButtonEffect(button)
-    button.MouseEnter:Connect(function()
-        TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = mainColors.SurfaceLight}):Play()
-    end)
-    
-    button.MouseLeave:Connect(function()
-        TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = mainColors.Surface}):Play()
-    end)
-    
-    button.MouseButton1Down:Connect(function()
-        TweenService:Create(button, TweenInfo.new(0.1), {BackgroundColor3 = mainColors.Primary}):Play()
-    end)
-    
-    button.MouseButton1Up:Connect(function()
-        TweenService:Create(button, TweenInfo.new(0.1), {BackgroundColor3 = mainColors.SurfaceLight}):Play()
-    end)
-end
+local contentFrame = Instance.new("Frame")
+contentFrame.Size = UDim2.new(1, -120, 1, -40)
+contentFrame.Position = UDim2.new(0, 120, 0, 40)
+contentFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+contentFrame.BorderSizePixel = 0
+contentFrame.Parent = main
 
-local function createToggleEffect(toggleFrame, toggleButton)
-    toggleButton.MouseButton1Click:Connect(function()
-        local newState = not toggleButton.Active
-        toggleButton.Active = newState
-        
-        if newState then
-            TweenService:Create(toggleFrame, TweenInfo.new(0.2), {BackgroundColor3 = mainColors.Primary}):Play()
-            TweenService:Create(toggleButton, TweenInfo.new(0.2), {Position = UDim2.new(0.7, 0, 0.5, 0)}):Play()
-        else
-            TweenService:Create(toggleFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(51, 51, 51)}):Play()
-            TweenService:Create(toggleButton, TweenInfo.new(0.2), {Position = UDim2.new(0.3, 0, 0.5, 0)}):Play()
-        end
-        
-        if toggleButton.Callback then
-            toggleButton.Callback(newState)
-        end
-    end)
-end
+local tabs = {}
 
-local function createSliderEffect(slider, fill, valueLabel)
-    local dragging = false
-    
-    local function updateSlider(input)
-        local pos = UDim2.new(
-            math.clamp((input.Position.X - slider.AbsolutePosition.X) / slider.AbsoluteSize.X, 0, 1),
-            0, 0.5, 0
-        )
-        fill.Size = UDim2.new(pos.X.Scale, 0, 1, 0)
-        
-        local value = math.floor(pos.X.Scale * 100)
-        valueLabel.Text = value .. "%"
-        
-        if slider.Callback then
-            slider.Callback(value)
-        end
-    end
-    
-    slider.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            updateSlider(input)
-        end
-    end)
-    
-    slider.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-    
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            updateSlider(input)
-        end
-    end)
-end
+function UI:CreateTab(tabName)
+    local tabButton = Instance.new("TextButton")
+    tabButton.Size = UDim2.new(1, 0, 0, 35)
+    tabButton.BackgroundTransparency = 1
+    tabButton.Text = tabName
+    tabButton.Font = Enum.Font.Gotham
+    tabButton.TextSize = 16
+    tabButton.TextColor3 = Color3.fromRGB(180, 180, 180)
+    tabButton.Parent = tabsFrame
 
-function RANOX:CreateWindow(title)
-    if self.Window then self.Window:Destroy() end
-    
-    local mainFrame = createElement({
-        Class = "Frame",
-        Name = "MainWindow",
-        Size = UDim2.new(0.4, 0, 0.6, 0),
-        Position = UDim2.new(0.3, 0, 0.2, 0),
-        BackgroundColor3 = mainColors.Background,
-        BorderColor3 = mainColors.Border,
-        Parent = gui
-    })
-    
-    createElement({
-        Class = "UICorner",
-        CornerRadius = UDim.new(0, 8),
-        Parent = mainFrame
-    })
-    
-    createElement({
-        Class = "UIStroke",
-        Color = mainColors.Border,
-        Thickness = 2,
-        Parent = mainFrame
-    })
-    
-    local header = createElement({
-        Class = "Frame",
-        Name = "Header",
-        Size = UDim2.new(1, 0, 0.08, 0),
-        BackgroundColor3 = mainColors.Surface,
-        BorderSizePixel = 0,
-        Parent = mainFrame
-    })
-    
-    createElement({
-        Class = "TextLabel",
-        Name = "Title",
-        Size = UDim2.new(0.7, 0, 1, 0),
-        BackgroundTransparency = 1,
-        Text = title,
-        TextColor3 = mainColors.Primary,
-        TextScaled = true,
-        Font = Enum.Font.GothamBold,
-        Parent = header
-    })
-    
-    local tabContainer = createElement({
-        Class = "Frame",
-        Name = "TabContainer",
-        Size = UDim2.new(1, 0, 0.08, 0),
-        Position = UDim2.new(0, 0, 0.08, 0),
-        BackgroundColor3 = mainColors.Surface,
-        BorderSizePixel = 0,
-        Parent = mainFrame
-    })
-    
-    local tabList = createElement({
-        Class = "UIListLayout",
-        FillDirection = Enum.FillDirection.Horizontal,
-        Parent = tabContainer
-    })
-    
-    local contentFrame = createElement({
-        Class = "ScrollingFrame",
-        Name = "Content",
-        Size = UDim2.new(1, 0, 0.84, 0),
-        Position = UDim2.new(0, 0, 0.16, 0),
-        BackgroundTransparency = 1,
-        ScrollBarThickness = 5,
-        Parent = mainFrame
-    })
-    
-    createElement({
-        Class = "UIPadding",
-        PaddingTop = UDim.new(0, 10),
-        PaddingBottom = UDim.new(0, 10),
-        PaddingLeft = UDim.new(0, 10),
-        PaddingRight = UDim.new(0, 10),
-        Parent = contentFrame
-    })
-    
-    createElement({
-        Class = "UIListLayout",
-        SortOrder = Enum.SortOrder.LayoutOrder,
-        Padding = UDim.new(0, 15),
-        Parent = contentFrame
-    })
-    
-    self.Window = mainFrame
-    self.ContentFrame = contentFrame
-    self.TabContainer = tabContainer
-    
-    return self
-end
+    local tabContent = Instance.new("Frame")
+    tabContent.Size = UDim2.new(1, 0, 1, 0)
+    tabContent.Visible = false
+    tabContent.BackgroundTransparency = 1
+    tabContent.Parent = contentFrame
 
-function RANOX:CreateTab(name)
-    local tabButton = createElement({
-        Class = "TextButton",
-        Name = name .. "Tab",
-        Size = UDim2.new(0.2, 0, 1, 0),
-        BackgroundColor3 = mainColors.Surface,
-        Text = name,
-        TextColor3 = mainColors.Text,
-        TextScaled = true,
-        Font = Enum.Font.Gotham,
-        Parent = self.TabContainer
-    })
-    
-    createButtonEffect(tabButton)
-    
-    local tabContent = createElement({
-        Class = "Frame",
-        Name = name .. "Content",
-        Size = UDim2.new(1, 0, 1, 0),
-        BackgroundTransparency = 1,
-        Visible = false,
-        Parent = self.ContentFrame
-    })
-    
-    createElement({
-        Class = "UIListLayout",
-        SortOrder = Enum.SortOrder.LayoutOrder,
-        Padding = UDim.new(0, 15),
-        Parent = tabContent
-    })
-    
     tabButton.MouseButton1Click:Connect(function()
-        for _, tab in pairs(self.Tabs) do
+        for _, tab in pairs(tabs) do
             tab.Content.Visible = false
+            tab.Button.TextColor3 = Color3.fromRGB(180, 180, 180)
         end
         tabContent.Visible = true
+        tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     end)
-    
-    if #self.Tabs == 0 then
+
+    table.insert(tabs, { Button = tabButton, Content = tabContent })
+
+    if #tabs == 1 then
+        tabButton:Activate()
         tabContent.Visible = true
+        tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     end
-    
-    local tabData = {
-        Button = tabButton,
-        Content = tabContent,
-        Name = name
-    }
-    
-    table.insert(self.Tabs, tabData)
-    return tabData
+
+    return tabContent
 end
 
-function RANOX:CreateSection(tab, title)
-    local sectionFrame = createElement({
-        Class = "Frame",
-        Name = title .. "Section",
-        Size = UDim2.new(1, 0, 0, 150),
-        BackgroundColor3 = mainColors.Surface,
-        LayoutOrder = #tabContent:GetChildren() + 1,
-        Parent = tab.Content
-    })
-    
-    createElement({
-        Class = "UICorner",
-        CornerRadius = UDim.new(0, 6),
-        Parent = sectionFrame
-    })
-    
-    createElement({
-        Class = "UIStroke",
-        Color = mainColors.Border,
-        Thickness = 1,
-        Parent = sectionFrame
-    })
-    
-    local header = createElement({
-        Class = "Frame",
-        Name = "Header",
-        Size = UDim2.new(1, 0, 0.2, 0),
-        BackgroundColor3 = mainColors.SurfaceLight,
-        BorderSizePixel = 0,
-        Parent = sectionFrame
-    })
-    
-    createElement({
-        Class = "UICorner",
-        CornerRadius = UDim.new(0, 6),
-        CornerRadii = UDim.new(0, 6),
-        Parent = header
-    })
-    
-    createElement({
-        Class = "TextLabel",
-        Name = "Title",
-        Size = UDim2.new(1, -20, 1, 0),
-        Position = UDim2.new(0, 10, 0, 0),
-        BackgroundTransparency = 1,
-        Text = title,
-        TextColor3 = mainColors.Primary,
-        TextSize = 18,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        Font = Enum.Font.GothamBold,
-        Parent = header
-    })
-    
-    local content = createElement({
-        Class = "Frame",
-        Name = "Content",
-        Size = UDim2.new(1, 0, 0.8, 0),
-        Position = UDim2.new(0, 0, 0.2, 0),
-        BackgroundTransparency = 1,
-        Parent = sectionFrame
-    })
-    
-    createElement({
-        Class = "UIPadding",
-        PaddingTop = UDim.new(0, 10),
-        PaddingBottom = UDim.new(0, 10),
-        PaddingLeft = UDim.new(0, 10),
-        PaddingRight = UDim.new(0, 10),
-        Parent = content
-    })
-    
-    createElement({
-        Class = "UIListLayout",
-        SortOrder = Enum.SortOrder.LayoutOrder,
-        Padding = UDim.new(0, 10),
-        Parent = content
-    })
-    
-    return content
+function UI:CreateSection(tab, titleText)
+    local section = Instance.new("Frame")
+    section.Size = UDim2.new(1, 0, 0, 0)
+    section.BackgroundTransparency = 1
+    section.AutomaticSize = Enum.AutomaticSize.Y
+    section.Parent = tab
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 0, 30)
+    label.BackgroundTransparency = 1
+    label.Text = titleText
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 18
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = section
+
+    return section
 end
 
-function RANOX:CreateToggle(section, text, callback)
-    local toggleFrame = createElement({
-        Class = "Frame",
-        Name = text .. "Toggle",
-        Size = UDim2.new(1, 0, 0, 30),
-        BackgroundTransparency = 1,
-        LayoutOrder = #section:GetChildren() + 1,
-        Parent = section
-    })
-    
-    local label = createElement({
-        Class = "TextLabel",
-        Name = "Label",
-        Size = UDim2.new(0.7, 0, 1, 0),
-        BackgroundTransparency = 1,
-        Text = text,
-        TextColor3 = mainColors.Text,
-        TextSize = 16,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        Font = Enum.Font.Gotham,
-        Parent = toggleFrame
-    })
-    
-    local toggleContainer = createElement({
-        Class = "Frame",
-        Name = "ToggleContainer",
-        Size = UDim2.new(0.25, 0, 0.8, 0),
-        Position = UDim2.new(0.75, 0, 0.1, 0),
-        BackgroundColor3 = Color3.fromRGB(51, 51, 51),
-        Parent = toggleFrame
-    })
-    
-    createElement({
-        Class = "UICorner",
-        CornerRadius = UDim.new(1, 0),
-        Parent = toggleContainer
-    })
-    
-    local toggleButton = createElement({
-        Class = "TextButton",
-        Name = "ToggleButton",
-        Size = UDim2.new(0.4, 0, 0.8, 0),
-        Position = UDim2.new(0.3, 0, 0.1, 0),
-        BackgroundColor3 = mainColors.Text,
-        Text = "",
-        Parent = toggleContainer
-    })
-    
-    createElement({
-        Class = "UICorner",
-        CornerRadius = UDim.new(1, 0),
-        Parent = toggleButton
-    })
-    
-    toggleButton.Active = false
-    toggleButton.Callback = callback
-    createToggleEffect(toggleContainer, toggleButton)
-    
-    return toggleButton
-end
+function UI:CreateToggle(section, name, callback)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, -10, 0, 30)
+    button.Position = UDim2.new(0, 5, 0, 35)
+    button.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+    button.Text = "[ OFF ]  " .. name
+    button.Font = Enum.Font.Gotham
+    button.TextSize = 14
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Parent = section
 
-function RANOX:CreateSlider(section, text, callback)
-    local sliderFrame = createElement({
-        Class = "Frame",
-        Name = text .. "Slider",
-        Size = UDim2.new(1, 0, 0, 50),
-        BackgroundTransparency = 1,
-        LayoutOrder = #section:GetChildren() + 1,
-        Parent = section
-    })
-    
-    local label = createElement({
-        Class = "TextLabel",
-        Name = "Label",
-        Size = UDim2.new(1, 0, 0.4, 0),
-        BackgroundTransparency = 1,
-        Text = text,
-        TextColor3 = mainColors.Text,
-        TextSize = 16,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        Font = Enum.Font.Gotham,
-        Parent = sliderFrame
-    })
-    
-    local valueLabel = createElement({
-        Class = "TextLabel",
-        Name = "Value",
-        Size = UDim2.new(0.2, 0, 0.4, 0),
-        Position = UDim2.new(0.8, 0, 0, 0),
-        BackgroundTransparency = 1,
-        Text = "50%",
-        TextColor3 = mainColors.Text,
-        TextSize = 16,
-        TextXAlignment = Enum.TextXAlignment.Right,
-        Font = Enum.Font.Gotham,
-        Parent = sliderFrame
-    })
-    
-    local sliderContainer = createElement({
-        Class = "Frame",
-        Name = "SliderContainer",
-        Size = UDim2.new(1, 0, 0.5, 0),
-        Position = UDim2.new(0, 0, 0.5, 0),
-        BackgroundColor3 = Color3.fromRGB(51, 51, 51),
-        Parent = sliderFrame
-    })
-    
-    createElement({
-        Class = "UICorner",
-        CornerRadius = UDim.new(1, 0),
-        Parent = sliderContainer
-    })
-    
-    local sliderFill = createElement({
-        Class = "Frame",
-        Name = "Fill",
-        Size = UDim2.new(0.5, 0, 1, 0),
-        BackgroundColor3 = mainColors.Primary,
-        Parent = sliderContainer
-    })
-    
-    createElement({
-        Class = "UICorner",
-        CornerRadius = UDim.new(1, 0),
-        Parent = sliderFill
-    })
-    
-    local sliderButton = createElement({
-        Class = "TextButton",
-        Name = "SliderButton",
-        Size = UDim2.new(1, 0, 1, 0),
-        BackgroundTransparency = 1,
-        Text = "",
-        Parent = sliderContainer
-    })
-    
-    sliderButton.Callback = callback
-    createSliderEffect(sliderButton, sliderFill, valueLabel)
-    
-    return sliderButton
-end
-
-function RANOX:CreateButton(section, text, callback)
-    local button = createElement({
-        Class = "TextButton",
-        Name = text .. "Button",
-        Size = UDim2.new(1, 0, 0, 35),
-        BackgroundColor3 = mainColors.Surface,
-        Text = text,
-        TextColor3 = mainColors.Text,
-        TextSize = 16,
-        Font = Enum.Font.Gotham,
-        LayoutOrder = #section:GetChildren() + 1,
-        Parent = section
-    })
-    
-    createElement({
-        Class = "UICorner",
-        CornerRadius = UDim.new(0, 6),
-        Parent = button
-    })
-    
-    createButtonEffect(button)
-    
-    button.MouseButton1Click:Connect(callback)
-    
-    return button
-end
-
-function RANOX:CreateLabel(section, text)
-    local label = createElement({
-        Class = "TextLabel",
-        Name = text .. "Label",
-        Size = UDim2.new(1, 0, 0, 30),
-        BackgroundTransparency = 1,
-        Text = text,
-        TextColor3 = mainColors.Text,
-        TextSize = 16,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        Font = Enum.Font.Gotham,
-        LayoutOrder = #section:GetChildren() + 1,
-        Parent = section
-    })
-    
-    return label
-end
-
-function RANOX:CreateDropdown(section, text, options, callback)
-    local dropdownFrame = createElement({
-        Class = "Frame",
-        Name = text .. "Dropdown",
-        Size = UDim2.new(1, 0, 0, 30),
-        BackgroundTransparency = 1,
-        LayoutOrder = #section:GetChildren() + 1,
-        Parent = section
-    })
-    
-    local label = createElement({
-        Class = "TextLabel",
-        Name = "Label",
-        Size = UDim2.new(1, 0, 0, 30),
-        BackgroundTransparency = 1,
-        Text = text,
-        TextColor3 = mainColors.Text,
-        TextSize = 16,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        Font = Enum.Font.Gotham,
-        Parent = dropdownFrame
-    })
-    
-    local dropdownButton = createElement({
-        Class = "TextButton",
-        Name = "DropdownButton",
-        Size = UDim2.new(1, 0, 0, 35),
-        Position = UDim2.new(0, 0, 0, 30),
-        BackgroundColor3 = mainColors.Surface,
-        Text = "Selecione...",
-        TextColor3 = mainColors.Text,
-        TextSize = 16,
-        Font = Enum.Font.Gotham,
-        Parent = dropdownFrame
-    })
-    
-    createElement({
-        Class = "UICorner",
-        CornerRadius = UDim.new(0, 6),
-        Parent = dropdownButton
-    })
-    
-    createButtonEffect(dropdownButton)
-    
-    local dropdownList = createElement({
-        Class = "ScrollingFrame",
-        Name = "DropdownList",
-        Size = UDim2.new(1, 0, 0, 0),
-        Position = UDim2.new(0, 0, 0, 65),
-        BackgroundColor3 = mainColors.SurfaceLight,
-        Visible = false,
-        ScrollBarThickness = 5,
-        CanvasSize = UDim2.new(0, 0, 0, 0),
-        Parent = dropdownFrame
-    })
-    
-    createElement({
-        Class = "UICorner",
-        CornerRadius = UDim.new(0, 6),
-        Parent = dropdownList
-    })
-    
-    createElement({
-        Class = "UIListLayout",
-        SortOrder = Enum.SortOrder.LayoutOrder,
-        Padding = UDim.new(0, 5),
-        Parent = dropdownList
-    })
-    
-    local isOpen = false
-    
-    dropdownButton.MouseButton1Click:Connect(function()
-        isOpen = not isOpen
-        dropdownList.Visible = isOpen
-        
-        if isOpen then
-            TweenService:Create(dropdownList, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 150)}):Play()
-        else
-            TweenService:Create(dropdownList, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 0)}):Play()
-        end
+    local state = false
+    button.MouseButton1Click:Connect(function()
+        state = not state
+        button.Text = (state and "[ ON  ]  " or "[ OFF ]  ") .. name
+        callback(state)
     end)
-    
-    for i, option in ipairs(options) do
-        local optionButton = createElement({
-            Class = "TextButton",
-            Name = option .. "Option",
-            Size = UDim2.new(1, -10, 0, 30),
-            Position = UDim2.new(0, 5, 0, (i-1)*35),
-            BackgroundColor3 = mainColors.Surface,
-            Text = option,
-            TextColor3 = mainColors.Text,
-            TextSize = 16,
-            Font = Enum.Font.Gotham,
-            LayoutOrder = i,
-            Parent = dropdownList
-        })
-        
-        createElement({
-            Class = "UICorner",
-            CornerRadius = UDim.new(0, 6),
-            Parent = optionButton
-        })
-        
-        createButtonEffect(optionButton)
-        
-        optionButton.MouseButton1Click:Connect(function()
-            dropdownButton.Text = option
-            isOpen = false
-            TweenService:Create(dropdownList, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 0)}):Play()
-            
-            if callback then
-                callback(option)
-            end
+end
+
+function UI:CreateButton(section, text, callback)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, -10, 0, 30)
+    button.Position = UDim2.new(0, 5, 0, 75)
+    button.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+    button.Text = text
+    button.Font = Enum.Font.Gotham
+    button.TextSize = 14
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Parent = section
+
+    button.MouseButton1Click:Connect(function()
+        callback()
+    end)
+end
+
+function UI:CreateSlider(section, name, min, max, default, callback)
+    local slider = Instance.new("TextButton")
+    slider.Size = UDim2.new(1, -10, 0, 30)
+    slider.Position = UDim2.new(0, 5, 0, 115)
+    slider.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+    slider.Text = name .. ": " .. tostring(default)
+    slider.Font = Enum.Font.Gotham
+    slider.TextSize = 14
+    slider.TextColor3 = Color3.fromRGB(255, 255, 255)
+    slider.Parent = section
+
+    local value = default
+    slider.MouseButton1Click:Connect(function()
+        value = math.clamp(value + 1, min, max)
+        slider.Text = name .. ": " .. tostring(value)
+        callback(value)
+    end)
+end
+
+function UI:CreateDropdown(section, name, options, callback)
+    local dropdown = Instance.new("TextButton")
+    dropdown.Size = UDim2.new(1, -10, 0, 30)
+    dropdown.Position = UDim2.new(0, 5, 0, 155)
+    dropdown.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
+    dropdown.Text = name .. " ▼"
+    dropdown.Font = Enum.Font.Gotham
+    dropdown.TextSize = 14
+    dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
+    dropdown.Parent = section
+
+    local open = false
+    local menu = Instance.new("Frame")
+    menu.Size = UDim2.new(1, -10, 0, #options * 25)
+    menu.Position = UDim2.new(0, 5, 0, 190)
+    menu.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+    menu.Visible = false
+    menu.Parent = section
+
+    for _, option in ipairs(options) do
+        local opt = Instance.new("TextButton")
+        opt.Size = UDim2.new(1, 0, 0, 25)
+        opt.Text = option
+        opt.BackgroundTransparency = 1
+        opt.Font = Enum.Font.Gotham
+        opt.TextSize = 14
+        opt.TextColor3 = Color3.fromRGB(255, 255, 255)
+        opt.Parent = menu
+        opt.MouseButton1Click:Connect(function()
+            dropdown.Text = name .. ": " .. option
+            menu.Visible = false
+            open = false
+            callback(option)
         end)
     end
-    
-    dropdownList.CanvasSize = UDim2.new(0, 0, 0, #options * 35)
-    
-    return dropdownButton
+
+    dropdown.MouseButton1Click:Connect(function()
+        open = not open
+        menu.Visible = open
+    end)
 end
 
-function RANOX:Init()
-    return self
+return UI
+
 end
 
 return RANOX
