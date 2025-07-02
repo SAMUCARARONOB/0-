@@ -31,7 +31,7 @@ function Library:CreateWindow(name)
     local mainFrame = Instance.new("Frame")
     mainFrame.Name = "MainFrame"
     mainFrame.Size = UDim2.new(0, 550, 0, 350)
-    mainFrame.Position = UDim2.new(0.5, -275, 0.5, -175) -- Centralizado
+    mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0) -- Centralizado
     mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     mainFrame.BackgroundColor3 = DARK_THEME.Background
     mainFrame.ClipsDescendants = true
@@ -153,9 +153,9 @@ function Library:CreateWindow(name)
     end)
     
     -- Animação de entrada
-    mainFrame.Position = UDim2.new(0.5, -275, 0, -400)
+    mainFrame.Position = UDim2.new(0.5, 0, 0, -400)
     local tween = TweenService:Create(mainFrame, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), 
-        {Position = UDim2.new(0.5, -275, 0.5, -175)})
+        {Position = UDim2.new(0.5, 0, 0.5, 0)})
     tween:Play()
     
     -- Sistema de toggle com F9
@@ -165,9 +165,9 @@ function Library:CreateWindow(name)
             gui.Enabled = Library.Enabled
             
             if Library.Enabled then
-                mainFrame.Position = UDim2.new(0.5, -275, 0, -400)
+                mainFrame.Position = UDim2.new(0.5, 0, 0, -400)
                 local tween = TweenService:Create(mainFrame, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), 
-                    {Position = UDim2.new(0.5, -275, 0.5, -175)})
+                    {Position = UDim2.new(0.5, 0, 0.5, 0)})
                 tween:Play()
             end
         end
