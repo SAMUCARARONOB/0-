@@ -1,170 +1,1245 @@
--- RANOX UI ADVANCED - Interface super moderna com estilo Rayfield + REDZHUB DARK -- Desenvolvido para Roblox - Funciona em PC e celular, com drag, estilo neon/dark, abas, seções, e muito mais
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local Lighting = game:GetService("Lighting")
+local HttpService = game:GetService("HttpService")
 
-local TweenService = game:GetService("TweenService") local UserInputService = game:GetService("UserInputService") local RunService = game:GetService("RunService")
+local plr = Players.LocalPlayer
+local pg = plr:WaitForChild("PlayerGui")
 
-local RANOX = {}
+-- Configurações de tema
+local theme = {
+    Background = Color3.fromRGB(15, 15, 20),
+    Primary = Color3.fromRGB(80, 60, 150),
+    Secondary = Color3.fromRGB(50, 40, 100),
+    Accent = Color3.fromRGB(170, 100, 255),
+    Text = Color3.fromRGB(220, 220, 255),
+    SubText = Color3.fromRGB(180, 180, 200),
+    Success = Color3.fromRGB(85, 255, 127),
+    Error = Color3.fromRGB(255, 85, 85),
+    Warning = Color3.fromRGB(255, 170, 0),
+    Card = Color3.fromRGB(25, 25, 35),
+    Border = Color3.fromRGB(60, 50, 120)
+}
 
-function RANOX:CreateWindow(config) local UI = {} local dragging, dragInput, dragStart, startPos
+-- Criar GUI premium
+local sc = Instance.new("ScreenGui")
+sc.Name = "CheatXPremium"
+sc.Parent = pg
+sc.ResetOnSpawn = false
+sc.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-local gui = Instance.new("ScreenGui")
-gui.Name = "RANOX_UI_ADVANCED"
-gui.ZIndexBehavior = Enum.ZIndexBehavior.Global
-gui.ResetOnSpawn = false
-gui.IgnoreGuiInset = true
-gui.Parent = game:GetService("CoreGui")
+-- Frame principal com efeitos visuais
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Parent = sc
+mainFrame.Size = UDim2.new(0.3, 0, 0.65, 0)
+mainFrame.Position = UDim2.new(0.01, 0, 0.1, 0)
+mainFrame.BackgroundColor3 = theme.Background
+mainFrame.BackgroundTransparency = 0.15
 
-local main = Instance.new("Frame")
-main.Name = "MainWindow"
-main.Size = UDim2.new(0, 600, 0, 450)
-main.Position = UDim2.new(0.5, 0, 0.5, 0)
-main.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-main.BorderSizePixel = 0
-main.AnchorPoint = Vector2.new(0.5, 0.5)
-main.Active = true
-main.Draggable = false
-main.Parent = gui
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0.05, 0)
+corner.Parent = mainFrame
 
--- Shadow
-local shadow = Instance.new("ImageLabel")
-shadow.BackgroundTransparency = 1
-shadow.Image = "rbxassetid://1316045217"
-shadow.ImageTransparency = 0.5
-shadow.Size = UDim2.new(1, 30, 1, 30)
-shadow.Position = UDim2.new(0, -15, 0, -15)
-shadow.ZIndex = 0
-shadow.Parent = main
+local stroke = Instance.new("UIStroke")
+stroke.Color = theme.Primary
+stroke.Thickness = 2
+stroke.Transparency = 0.3
+stroke.Parent = mainFrame
 
--- Drag system (mobile + PC)
-local function makeDraggable(frame)
-    frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            dragStart = input.Position
-            startPos = frame.Position
+-- Efeito de brilho
+local glow = Instance.new("ImageLabel")
+glow.Name = "Glow"
+glow.Image = "rbxassetid://5028857084"
+glow.ImageColor3 = theme.Accent
+glow.ImageTransparency = 0.9
+glow.ScaleType = Enum.ScaleType.Slice
+glow.SliceCenter = Rect.new(24, 24, 276, 276)
+glow.Size = UDim2.new(1, 40, 1, 40)
+glow.Position = UDim2.new(0, -20, 0, -20)
+glow.BackgroundTransparency = 1
+glow.ZIndex = -1
+glow.Parent = mainFrame
 
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-
-    frame.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            dragInput = input
-        end
-    end)
-
-    RunService.RenderStepped:Connect(function()
-        if dragging and dragInput then
-            local delta = dragInput.Position - dragStart
-            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-    end)
-end
-
-makeDraggable(main)
+-- Header com gradiente animado
+local header = Instance.new("Frame")
+header.Name = "Header"
+header.Parent = mainFrame
+header.Size = UDim2.new(1, 0, 0.12, 0)
+header.BackgroundTransparency = 1
 
 local title = Instance.new("TextLabel")
-title.Name = "TitleBar"
-title.Size = UDim2.new(1, 0, 0, 40)
-title.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-title.Text = config.Name or "RANOX UI v3.0"
-title.Font = Enum.Font.GothamBold
-title.TextSize = 18
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.TextXAlignment = Enum.TextXAlignment.Center
-title.Parent = main
+title.Name = "Title"
+title.Parent = header
+title.Size = UDim2.new(0.7, 0, 1, 0)
+title.Text = "CHEAT X v1.0"
+title.Font = Enum.Font.GothamBlack
+title.TextColor3 = theme.Text
+title.TextSize = 20
+title.BackgroundTransparency = 1
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.TextYAlignment = Enum.TextYAlignment.Center
+title.Position = UDim2.new(0.05, 0, 0, 0)
 
-local tabHolder = Instance.new("Frame")
-tabHolder.Name = "Tabs"
-tabHolder.Size = UDim2.new(0, 140, 1, -40)
-tabHolder.Position = UDim2.new(0, 0, 0, 40)
-tabHolder.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-tabHolder.BorderSizePixel = 0
-tabHolder.Parent = main
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(170, 100, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(100, 150, 255))
+})
+gradient.Rotation = 90
+gradient.Parent = title
 
-local pageHolder = Instance.new("Frame")
-pageHolder.Name = "Pages"
-pageHolder.Size = UDim2.new(1, -140, 1, -40)
-pageHolder.Position = UDim2.new(0, 140, 0, 40)
-pageHolder.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
-pageHolder.BorderSizePixel = 0
-pageHolder.ClipsDescendants = true
-pageHolder.Parent = main
-
-local tabs = {}
-function UI:CreateTab(name)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, 0, 0, 35)
-    button.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
-    button.Text = name
-    button.Font = Enum.Font.Gotham
-    button.TextSize = 14
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.Parent = tabHolder
-
-    local page = Instance.new("ScrollingFrame")
-    page.Name = name .. "_Page"
-    page.Size = UDim2.new(1, 0, 1, 0)
-    page.CanvasSize = UDim2.new(0, 0, 10, 0)
-    page.BackgroundTransparency = 1
-    page.Visible = false
-    page.BorderSizePixel = 0
-    page.ScrollBarThickness = 6
-    page.Parent = pageHolder
-
-    button.MouseButton1Click:Connect(function()
-        for _, tab in pairs(tabs) do
-            tab.page.Visible = false
-            tab.button.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+-- Animar gradiente
+task.spawn(function()
+    while true do
+        for i = 0, 1, 0.01 do
+            RunService.RenderStepped:Wait()
+            local color1 = Color3.fromHSV(i, 0.8, 1)
+            local color2 = Color3.fromHSV((i + 0.5) % 1, 0.8, 1)
+            gradient.Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, color1),
+                ColorSequenceKeypoint.new(1, color2)
+            })
         end
-        page.Visible = true
-        button.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
-    end)
-
-    if #tabs == 0 then
-        page.Visible = true
-        button.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
     end
+end)
 
-    table.insert(tabs, {button = button, page = page})
-    return page
-end
+-- Botão de fechar
+local closeBtn = Instance.new("TextButton")
+closeBtn.Name = "CloseButton"
+closeBtn.Parent = header
+closeBtn.Size = UDim2.new(0.15, 0, 0.8, 0)
+closeBtn.Position = UDim2.new(0.83, 0, 0.1, 0)
+closeBtn.Text = "X"
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextColor3 = theme.Accent
+closeBtn.BackgroundTransparency = 1
+closeBtn.TextSize = 18
 
-function UI:CreateSection(tab, name)
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -20, 0, 30)
-    label.Position = UDim2.new(0, 10, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = name
-    label.Font = Enum.Font.GothamBold
-    label.TextSize = 16
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = tab
-    return tab
-end
+-- Sistema de abas
+local tabsContainer = Instance.new("Frame")
+tabsContainer.Name = "Tabs"
+tabsContainer.Parent = mainFrame
+tabsContainer.Size = UDim2.new(1, 0, 0.08, 0)
+tabsContainer.Position = UDim2.new(0, 0, 0.12, 0)
+tabsContainer.BackgroundTransparency = 1
 
-function UI:CreateButton(tab, name, callback)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -20, 0, 30)
-    btn.Position = UDim2.new(0, 10, 0, tab.UIListLayout.AbsoluteContentSize.Y + 40)
-    btn.BackgroundColor3 = Color3.fromRGB(55, 55, 60)
-    btn.Text = name
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 14
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.Parent = tab
+local tabs = {"Geral", "Player", "Visual", "Mundo", "Extra"}
+local tabFrames = {}
+local tabButtons = {}
 
-    btn.MouseButton1Click:Connect(function()
-        callback()
+for i, tabName in ipairs(tabs) do
+    local tabButton = Instance.new("TextButton")
+    tabButton.Name = tabName.."Tab"
+    tabButton.Parent = tabsContainer
+    tabButton.Size = UDim2.new(1/#tabs, 0, 1, 0)
+    tabButton.Position = UDim2.new((i-1)/#tabs, 0, 0, 0)
+    tabButton.Text = tabName
+    tabButton.Font = Enum.Font.GothamSemibold
+    tabButton.TextColor3 = theme.SubText
+    tabButton.TextSize = 14
+    tabButton.BackgroundColor3 = theme.Card
+    tabButton.BackgroundTransparency = 0.7
+    tabButton.AutoButtonColor = false
+    
+    local tabCorner = Instance.new("UICorner")
+    tabCorner.CornerRadius = UDim.new(0.05, 0)
+    tabCorner.Parent = tabButton
+    
+    local tabStroke = Instance.new("UIStroke")
+    tabStroke.Color = theme.Border
+    tabStroke.Thickness = 1
+    tabStroke.Transparency = 0.5
+    tabStroke.Parent = tabButton
+    
+    -- Frame de conteúdo da aba
+    local tabFrame = Instance.new("ScrollingFrame")
+    tabFrame.Name = tabName.."Frame"
+    tabFrame.Parent = mainFrame
+    tabFrame.Size = UDim2.new(1, -10, 0.75, -10)
+    tabFrame.Position = UDim2.new(0.5, 0, 0.9, 0)
+    tabFrame.AnchorPoint = Vector2.new(0.5, 1)
+    tabFrame.BackgroundTransparency = 1
+    tabFrame.ScrollBarThickness = 6
+    tabFrame.Visible = (i == 1)
+    
+    local listLayout = Instance.new("UIListLayout")
+    listLayout.Parent = tabFrame
+    listLayout.Padding = UDim.new(0, 10)
+    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    
+    tabFrame.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y)
+    listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        tabFrame.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 10)
+    end)
+    
+    tabFrames[tabName] = tabFrame
+    tabButtons[tabButton] = tabFrame
+    
+    tabButton.MouseButton1Click:Connect(function()
+        for btn, frame in pairs(tabButtons) do
+            frame.Visible = (frame == tabFrame)
+            if frame == tabFrame then
+                TweenService:Create(btn, TweenInfo.new(0.2), {
+                    BackgroundColor3 = theme.Primary,
+                    TextColor3 = theme.Text
+                }):Play()
+            else
+                TweenService:Create(btn, TweenInfo.new(0.2), {
+                    BackgroundColor3 = theme.Card,
+                    TextColor3 = theme.SubText
+                }):Play()
+            end
+        end
     end)
 end
 
-return UI
+-- Barra de pesquisa premium
+local searchBox = Instance.new("TextBox")
+searchBox.Name = "Search"
+searchBox.Parent = mainFrame
+searchBox.Size = UDim2.new(0.95, 0, 0.08, 0)
+searchBox.Position = UDim2.new(0.025, 0, 0.21, 0)
+searchBox.PlaceholderText = "Digite o comando aqui..."
+searchBox.Text = ""
+searchBox.Font = Enum.Font.GothamSemibold
+searchBox.TextColor3 = theme.Text
+searchBox.TextSize = 14
+searchBox.BackgroundColor3 = theme.Card
+searchBox.BackgroundTransparency = 0.2
+searchBox.ClearTextOnFocus = false
 
+local searchCorner = Instance.new("UICorner")
+searchCorner.CornerRadius = UDim.new(0.05, 0)
+searchCorner.Parent = searchBox
+
+local searchStroke = Instance.new("UIStroke")
+searchStroke.Color = theme.Border
+searchStroke.Thickness = 1
+searchStroke.Parent = searchBox
+
+local searchIcon = Instance.new("ImageLabel")
+searchIcon.Name = "SearchIcon"
+searchIcon.Parent = searchBox
+searchIcon.Size = UDim2.new(0, 20, 0, 20)
+searchIcon.Position = UDim2.new(0.02, 0, 0.5, -10)
+searchIcon.Image = "rbxassetid://3926305904"
+searchIcon.ImageRectOffset = Vector2.new(964, 324)
+searchIcon.ImageRectSize = Vector2.new(36, 36)
+searchIcon.ImageColor3 = theme.SubText
+searchIcon.BackgroundTransparency = 1
+
+-- Botão flutuante premium
+local ball = Instance.new("ImageButton")
+ball.Name = "Ball"
+ball.Parent = sc
+ball.Size = UDim2.new(0, 50, 0, 50)
+ball.Image = "rbxassetid://121785829679292"
+ball.BackgroundTransparency = 1
+ball.Visible = false
+
+local ballCorner = Instance.new("UICorner")
+ballCorner.CornerRadius = UDim.new(1, 0)
+ballCorner.Parent = ball
+
+local ballGlow = Instance.new("ImageLabel")
+ballGlow.Name = "BallGlow"
+ballGlow.Parent = ball
+ballGlow.Image = "rbxassetid://5028857084"
+ballGlow.ImageColor3 = theme.Accent
+ballGlow.ImageTransparency = 0.8
+ballGlow.ScaleType = Enum.ScaleType.Slice
+ballGlow.SliceCenter = Rect.new(24, 24, 276, 276)
+ballGlow.Size = UDim2.new(1, 20, 1, 20)
+ballGlow.Position = UDim2.new(0, -10, 0, -10)
+ballGlow.BackgroundTransparency = 1
+ballGlow.ZIndex = -1
+
+-- Variáveis de estado
+local isOpen = true
+local dragging = false
+local dragStart, startPos
+
+-- Função para criar cartão de comando
+local function createCommandCard(parent, command, description)
+    local card = Instance.new("Frame")
+    card.Name = "CommandCard"
+    card.Parent = parent
+    card.Size = UDim2.new(1, 0, 0, 70)
+    card.BackgroundColor3 = theme.Card
+    card.BackgroundTransparency = 0.5
+    
+    local cardCorner = Instance.new("UICorner")
+    cardCorner.CornerRadius = UDim.new(0.05, 0)
+    cardCorner.Parent = card
+    
+    local cardStroke = Instance.new("UIStroke")
+    cardStroke.Color = theme.Border
+    cardStroke.Thickness = 1
+    cardStroke.Transparency = 0.5
+    cardStroke.Parent = card
+    
+    local cmdText = Instance.new("TextLabel")
+    cmdText.Name = "Command"
+    cmdText.Parent = card
+    cmdText.Size = UDim2.new(0.8, 0, 0.5, 0)
+    cmdText.Position = UDim2.new(0.05, 0, 0.1, 0)
+    cmdText.Text = command
+    cmdText.Font = Enum.Font.GothamBold
+    cmdText.TextColor3 = theme.Text
+    cmdText.TextSize = 16
+    cmdText.TextXAlignment = Enum.TextXAlignment.Left
+    cmdText.BackgroundTransparency = 1
+    
+    local descText = Instance.new("TextLabel")
+    descText.Name = "Description"
+    descText.Parent = card
+    descText.Size = UDim2.new(0.8, 0, 0.4, 0)
+    descText.Position = UDim2.new(0.05, 0, 0.5, 0)
+    descText.Text = description
+    descText.Font = Enum.Font.Gotham
+    descText.TextColor3 = theme.SubText
+    descText.TextSize = 12
+    descText.TextXAlignment = Enum.TextXAlignment.Left
+    descText.BackgroundTransparency = 1
+    
+    return card
 end
 
-return RANOX
+-- Comandos e descrições (50 comandos)
+local commands = {
+    Geral = {
+        {cmd = "/speed [valor]", desc = "Altera sua velocidade de caminhada"},
+        {cmd = "/jump [valor]", desc = "Altera seu poder de pulo"},
+        {cmd = "/fly", desc = "Ativa modo voar"},
+        {cmd = "/unfly", desc = "Desativa modo voar"},
+        {cmd = "/noclip", desc = "Ativa modo noclip"},
+        {cmd = "/unnoclip", desc = "Desativa modo noclip"},
+        {cmd = "/infinitejump", desc = "Ativa pulo infinito"},
+        {cmd = "/unijump", desc = "Desativa pulo infinito"},
+        {cmd = "/antiafk", desc = "Ativa modo anti-AFK"},
+        {cmd = "/godmode", desc = "Ativa modo deus (invulnerável)"},
+        {cmd = "/ungodmode", desc = "Desativa modo deus"},
+        {cmd = "/invisible", desc = "Torna seu personagem invisível"},
+        {cmd = "/visible", desc = "Torna seu personagem visível"},
+        {cmd = "/freeze", desc = "Congela seu personagem"},
+        {cmd = "/unfreeze", desc = "Descongela seu personagem"},
+        {cmd = "/tp [jogador]", desc = "Teleporta para um jogador"},
+        {cmd = "/bring [jogador]", desc = "Trazer um jogador para você"},
+        {cmd = "/goto [jogador]", desc = "Ir até um jogador"},
+        {cmd = "/spectate [jogador]", desc = "Observar um jogador"},
+        {cmd = "/unspectate", desc = "Parar de observar"}
+    },
+    Player = {
+        {cmd = "/heal", desc = "Cura seu personagem completamente"},
+        {cmd = "/respawn", desc = "Renascer personagem"},
+        {cmd = "/sit", desc = "Sentar"},
+        {cmd = "/unsit", desc = "Levantar"},
+        {cmd = "/fling", desc = "Ativa modo fling (jogar outros)"},
+        {cmd = "/unfling", desc = "Desativa modo fling"},
+        {cmd = "/size [valor]", desc = "Altera o tamanho do personagem"},
+        {cmd = "/gravity [valor]", desc = "Altera a gravidade do jogo"},
+        {cmd = "/time [hora]", desc = "Altera a hora do dia"},
+        {cmd = "/fog [densidade]", desc = "Altera a densidade da neblina"},
+        {cmd = "/brightness [valor]", desc = "Altera o brilho do mundo"},
+        {cmd = "/infjump", desc = "Ativa pulo infinito (alternativa)"},
+        {cmd = "/uninfjump", desc = "Desativa pulo infinito"},
+        {cmd = "/nofall", desc = "Imune a dano de queda"},
+        {cmd = "/unnofall", desc = "Remove imunidade a queda"},
+        {cmd = "/infyield", desc = "Ativa rendimento infinito"},
+        {cmd = "/uninfyield", desc = "Desativa rendimento infinito"},
+        {cmd = "/norecoil", desc = "Remove recuo de armas"},
+        {cmd = "/unnorecoil", desc = "Restaura recuo de armas"},
+        {cmd = "/autoclick", desc = "Ativa clique automático"}
+    },
+    Visual = {
+        {cmd = "/esp [cor]", desc = "Ativa ESP para todos os jogadores"},
+        {cmd = "/unesp", desc = "Desativa ESP"},
+        {cmd = "/boxesp", desc = "Ativa ESP com caixas"},
+        {cmd = "/chams", desc = "Ativa efeito chams (cor sólida)"},
+        {cmd = "/tracers", desc = "Ativa linhas até jogadores"},
+        {cmd = "/names", desc = "Mostra nomes acima dos jogadores"},
+        {cmd = "/fullbright", desc = "Ativa iluminação total (sem sombras)"},
+        {cmd = "/nofog", desc = "Remove toda a neblina do jogo"},
+        {cmd = "/color r g b", desc = "Muda a cor do seu personagem"},
+        {cmd = "/rainbow", desc = "Ativa efeito arco-íris no personagem"},
+        {cmd = "/xray", desc = "Ativa visão de raio-X (ver através das paredes)"},
+        {cmd = "/nightvision", desc = "Ativa visão noturna"},
+        {cmd = "/unnightvision", desc = "Desativa visão noturna"},
+        {cmd = "/wireframe", desc = "Ativa modo wireframe"},
+        {cmd = "/unwireframe", desc = "Desativa modo wireframe"},
+        {cmd = "/fov [valor]", desc = "Altera campo de visão da câmera"},
+        {cmd = "/depth [valor]", desc = "Altera profundidade de campo"},
+        {cmd = "/bloom [valor]", desc = "Altera efeito bloom"},
+        {cmd = "/motionblur", desc = "Ativa blur de movimento"},
+        {cmd = "/unmotionblur", desc = "Desativa blur de movimento"}
+    },
+    Mundo = {
+        {cmd = "/day", desc = "Define hora do dia para meio-dia"},
+        {cmd = "/night", desc = "Define hora do dia para meia-noite"},
+        {cmd = "/fogend [dist]", desc = "Define distância final da neblina"},
+        {cmd = "/fogcolor r g b", desc = "Muda cor da neblina"},
+        {cmd = "/ambient r g b", desc = "Muda cor ambiente"},
+        {cmd = "/outdoorambient r g b", desc = "Muda cor ambiente externa"},
+        {cmd = "/removewater", desc = "Remove toda água do jogo"},
+        {cmd = "/noclipall", desc = "Noclip para todos os objetos"},
+        {cmd = "/clipall", desc = "Desativa noclip para todos os objetos"},
+        {cmd = "/removeinvis", desc = "Remove todas as partes invisíveis"},
+        {cmd = "/timefreeze", desc = "Congela o tempo do jogo"},
+        {cmd = "/untimefreeze", desc = "Descongela o tempo do jogo"},
+        {cmd = "/wind [velocidade]", desc = "Altera velocidade do vento"},
+        {cmd = "/nowind", desc = "Remove vento do jogo"},
+        {cmd = "/removeprops", desc = "Remove todos os objetos soltos"},
+        {cmd = "/removevehicles", desc = "Remove todos os veículos"},
+        {cmd = "/removeweapons", desc = "Remove todas as armas"},
+        {cmd = "/removedecals", desc = "Remove todas as decals"},
+        {cmd = "/removeparticles", desc = "Remove todos os efeitos de partículas"},
+        {cmd = "/removeaudio", desc = "Remove todos os sons do jogo"}
+    },
+    Extra = {
+        {cmd = "/cmds", desc = "Mostra todos os comandos disponíveis"},
+        {cmd = "/clear", desc = "Limpa o histórico de comandos"},
+        {cmd = "/notify [msg]", desc = "Mostra uma notificação"},
+        {cmd = "/savepos", desc = "Salva sua posição atual"},
+        {cmd = "/loadpos", desc = "Teleporta para posição salva"},
+        {cmd = "/view", desc = "Salva sua câmera atual"},
+        {cmd = "/unview", desc = "Restaura sua câmera"},
+        {cmd = "/clicktp", desc = "Ativa teleporte com clique"},
+        {cmd = "/unclicktp", desc = "Desativa teleporte com clique"},
+        {cmd = "/tool [nome]", desc = "Dá uma ferramenta pelo nome"},
+        {cmd = "/flyspeed [valor]", desc = "Altera velocidade do voo"},
+        {cmd = "/superjump", desc = "Ativa pulo super alto"},
+        {cmd = "/unsuperjump", desc = "Desativa pulo super alto"},
+        {cmd = "/autofarm", desc = "Ativa farm automático"},
+        {cmd = "/unautofarm", desc = "Desativa farm automático"},
+        {cmd = "/autocollect", desc = "Ativa coleta automática"},
+        {cmd = "/unautocollect", desc = "Desativa coleta automática"},
+        {cmd = "/autowin", desc = "Ativa vitória automática"},
+        {cmd = "/unautowin", desc = "Desativa vitória automática"},
+        {cmd = "/lagserver", desc = "Cria lag no servidor (use com cuidado)"}
+    }
+}
+
+-- Preencher as abas com comandos
+for tabName, tabCmds in pairs(commands) do
+    for _, cmdData in ipairs(tabCmds) do
+        createCommandCard(tabFrames[tabName], cmdData.cmd, cmdData.desc)
+    end
+end
+
+-- Botões de interação
+closeBtn.MouseButton1Click:Connect(function()
+    isOpen = false
+    mainFrame.Visible = false
+    ball.Visible = true
+    ball.Position = mainFrame.Position
+end)
+
+ball.MouseButton1Click:Connect(function()
+    isOpen = true
+    mainFrame.Visible = true
+    ball.Visible = false
+end)
+
+ball.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = ball.Position
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        local newPos = UDim2.new(
+            startPos.X.Scale, 
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale, 
+            startPos.Y.Offset + delta.Y
+        )
+        ball.Position = newPos
+        mainFrame.Position = newPos
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+-- Variáveis de estado para comandos
+local espEnabled = false
+local flyEnabled = false
+local noclipEnabled = false
+local infiniteJumpEnabled = false
+local godModeEnabled = false
+local invisibleEnabled = false
+local frozen = false
+local flingEnabled = false
+local tracersEnabled = false
+local namesEnabled = false
+local chamsEnabled = false
+local noFogEnabled = false
+local clickTpEnabled = false
+local spectating = nil
+local rainbowEnabled = false
+local xrayEnabled = false
+local savedPosition = nil
+local savedCameraCFrame = nil
+local flySpeed = 50
+local nightVisionEnabled = false
+local wireframeEnabled = false
+local motionBlurEnabled = false
+local noFallEnabled = false
+local infiniteYieldEnabled = false
+local noRecoilEnabled = false
+local autoClickEnabled = false
+local superJumpEnabled = false
+local autoFarmEnabled = false
+local autoCollectEnabled = false
+local autoWinEnabled = false
+local timeFrozen = false
+
+-- Funções de comandos
+local function parseColor(str)
+    local colors = {
+        red = Color3.fromRGB(255,0,0),
+        blue = Color3.fromRGB(0,0,255),
+        green = Color3.fromRGB(0,255,0),
+        yellow = Color3.fromRGB(255,255,0),
+        purple = Color3.fromRGB(128,0,128),
+        white = Color3.fromRGB(255,255,255),
+        black = Color3.fromRGB(0,0,0)
+    }
+    return colors[str:lower()] or Color3.fromRGB(255,255,255)
+end
+
+local function toggleESP(state, color)
+    espEnabled = state
+    espColor = color or espColor
+    for _, p in pairs(Players:GetPlayers()) do
+        if p ~= plr and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+            local h = p.Character:FindFirstChild("Highlight")
+            if state then
+                if not h then
+                    h = Instance.new("Highlight")
+                    h.Name = "Highlight"
+                    h.FillColor = espColor
+                    h.OutlineColor = Color3.new(0,0,0)
+                    h.Parent = p.Character
+                end
+            else
+                if h then
+                    h:Destroy()
+                end
+            end
+        end
+    end
+end
+
+local function toggleFly(state)
+    flyEnabled = state
+    if state then
+        local bv = Instance.new("BodyVelocity")
+        bv.Name = "FlyVelocity"
+        bv.MaxForce = Vector3.new(0, math.huge, 0)
+        bv.Velocity = Vector3.new(0, flySpeed, 0)
+        bv.Parent = plr.Character:FindFirstChild("HumanoidRootPart")
+    else
+        local bv = plr.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("FlyVelocity")
+        if bv then
+            bv:Destroy()
+        end
+    end
+end
+
+RunService.Stepped:Connect(function()
+    if noclipEnabled and plr.Character then
+        for _, part in pairs(plr.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
+local function toggleNoclip(state)
+    noclipEnabled = state
+end
+
+UserInputService.JumpRequest:Connect(function()
+    if infiniteJumpEnabled and plr.Character and plr.Character:FindFirstChild("Humanoid") then
+        plr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    end
+end)
+
+local function toggleInfiniteJump(state)
+    infiniteJumpEnabled = state
+end
+
+local function setWalkSpeed(value)
+    if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+        plr.Character.Humanoid.WalkSpeed = value
+    end
+end
+
+local function setJumpPower(value)
+    if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+        plr.Character.Humanoid.JumpPower = value
+    end
+end
+
+local function teleportToPlayer(name)
+    for _, p in pairs(Players:GetPlayers()) do
+        if p.Name:lower() == name:lower() and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+            plr.Character:MoveTo(p.Character.HumanoidRootPart.Position)
+        end
+    end
+end
+
+local function toggleGodMode(state)
+    godModeEnabled = state
+    if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+        plr.Character.Humanoid.Name = state and "1" or "Humanoid"
+    end
+end
+
+local function setInvisible(state)
+    invisibleEnabled = state
+    if plr.Character then
+        for _, part in pairs(plr.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.Transparency = state and 1 or 0
+            end
+        end
+    end
+end
+
+local function freezePlayer(state)
+    frozen = state
+    if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+        plr.Character.HumanoidRootPart.Anchored = state
+    end
+end
+
+local function killPlayer(name)
+    for _, p in pairs(Players:GetPlayers()) do
+        if p.Name:lower() == name:lower() and p.Character and p.Character:FindFirstChild("Humanoid") then
+            p.Character.Humanoid.Health = 0
+        end
+    end
+end
+
+local function setColor(r, g, b)
+    if plr.Character then
+        for _, part in pairs(plr.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.Color = Color3.fromRGB(r, g, b)
+            end
+        end
+    end
+end
+
+-- Funções para novos comandos
+local function bringPlayer(name)
+    for _, p in pairs(Players:GetPlayers()) do
+        if p.Name:lower() == name:lower() and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+            p.Character:MoveTo(plr.Character.HumanoidRootPart.Position)
+        end
+    end
+end
+
+local function spectatePlayer(name)
+    for _, p in pairs(Players:GetPlayers()) do
+        if p.Name:lower() == name:lower() and p.Character and p.Character:FindFirstChild("Humanoid") then
+            spectating = p
+            workspace.CurrentCamera.CameraSubject = p.Character.Humanoid
+        end
+    end
+end
+
+local function unspectate()
+    spectating = nil
+    workspace.CurrentCamera.CameraSubject = plr.Character.Humanoid
+end
+
+local function respawnPlayer()
+    plr:LoadCharacter()
+end
+
+local function healPlayer()
+    if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+        plr.Character.Humanoid.Health = plr.Character.Humanoid.MaxHealth
+    end
+end
+
+local function sitPlayer()
+    if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+        plr.Character.Humanoid.Sit = true
+    end
+end
+
+local function unsitPlayer()
+    if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+        plr.Character.Humanoid.Sit = false
+    end
+end
+
+local function toggleFling(state)
+    flingEnabled = state
+end
+
+local function setSize(scale)
+    if plr.Character then
+        for _, part in pairs(plr.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.Size = part.Size * scale
+            end
+        end
+    end
+end
+
+local function setGravity(value)
+    workspace.Gravity = value
+end
+
+local function setTime(hour)
+    Lighting.ClockTime = hour
+end
+
+local function setFogDensity(density)
+    Lighting.FogEnd = density
+end
+
+local function setBrightness(value)
+    Lighting.Brightness = value
+end
+
+local function toggleNoFog(state)
+    noFogEnabled = state
+    if state then
+        Lighting.FogEnd = 100000
+    else
+        Lighting.FogEnd = 100
+    end
+end
+
+local function setFogColor(r, g, b)
+    Lighting.FogColor = Color3.fromRGB(r, g, b)
+end
+
+local function setAmbient(r, g, b)
+    Lighting.Ambient = Color3.fromRGB(r, g, b)
+end
+
+local function setOutdoorAmbient(r, g, b)
+    Lighting.OutdoorAmbient = Color3.fromRGB(r, g, b)
+end
+
+local function removeWater()
+    for _, part in pairs(workspace:GetDescendants()) do
+        if part:IsA("BasePart") and part.Material == Enum.Material.Water then
+            part:Destroy()
+        end
+    end
+end
+
+local function toggleNoclipAll(state)
+    for _, part in pairs(workspace:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = not state
+        end
+    end
+end
+
+local function toggleClipAll(state)
+    for _, part in pairs(workspace:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = state
+        end
+    end
+end
+
+local function removeInvisibleParts()
+    for _, part in pairs(workspace:GetDescendants()) do
+        if part:IsA("BasePart") and part.Transparency == 1 then
+            part:Destroy()
+        end
+    end
+end
+
+local function toggleClickTp(state)
+    clickTpEnabled = state
+end
+
+local function savePosition()
+    if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+        savedPosition = plr.Character.HumanoidRootPart.CFrame
+    end
+end
+
+local function loadPosition()
+    if savedPosition and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+        plr.Character.HumanoidRootPart.CFrame = savedPosition
+    end
+end
+
+local function saveView()
+    savedCameraCFrame = workspace.CurrentCamera.CFrame
+end
+
+local function loadView()
+    if savedCameraCFrame then
+        workspace.CurrentCamera.CameraType = Enum.CameraType.Scriptable
+        workspace.CurrentCamera.CFrame = savedCameraCFrame
+        wait(1)
+        workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+    end
+end
+
+local function setFlySpeed(value)
+    flySpeed = value
+    if flyEnabled then
+        toggleFly(false)
+        toggleFly(true)
+    end
+end
+
+local function toggleRainbow(state)
+    rainbowEnabled = state
+    if state then
+        coroutine.wrap(function()
+            while rainbowEnabled do
+                for i = 0, 1, 0.01 do
+                    RunService.RenderStepped:Wait()
+                    local color = Color3.fromHSV(i, 1, 1)
+                    setColor(color.r * 255, color.g * 255, color.b * 255)
+                end
+            end
+        end)()
+    end
+end
+
+local function toggleXray(state)
+    xrayEnabled = state
+    if state then
+        for _, part in pairs(workspace:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.LocalTransparencyModifier = 0.5
+            end
+        end
+    else
+        for _, part in pairs(workspace:GetDescendants()) do
+            part.LocalTransparencyModifier = 0
+        end
+    end
+end
+
+local function toggleNightVision(state)
+    nightVisionEnabled = state
+    if state then
+        Lighting.Ambient = Color3.new(0.5, 0.5, 0.5)
+        Lighting.ColorShift_Top = Color3.new(0, 0.5, 0)
+    else
+        Lighting.Ambient = Color3.new(0.5, 0.5, 0.5)
+        Lighting.ColorShift_Top = Color3.new(0, 0, 0)
+    end
+end
+
+local function toggleWireframe(state)
+    wireframeEnabled = state
+    if state then
+        for _, part in pairs(workspace:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.Material = Enum.Material.ForceField
+            end
+        end
+    else
+        for _, part in pairs(workspace:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.Material = Enum.Material.Plastic
+            end
+        end
+    end
+end
+
+local function setFov(value)
+    workspace.CurrentCamera.FieldOfView = value
+end
+
+local function setDepth(value)
+    Lighting.DepthOfField.Enabled = true
+    Lighting.DepthOfField.FarIntensity = value
+end
+
+local function setBloom(intensity)
+    Lighting.Bloom.Enabled = true
+    Lighting.Bloom.Intensity = intensity
+end
+
+local function toggleMotionBlur(state)
+    motionBlurEnabled = state
+    if state then
+        local blur = Instance.new("BlurEffect")
+        blur.Size = 10
+        blur.Parent = Lighting
+    else
+        for _, effect in pairs(Lighting:GetChildren()) do
+            if effect:IsA("BlurEffect") then
+                effect:Destroy()
+            end
+        end
+    end
+end
+
+local function toggleNoFall(state)
+    noFallEnabled = state
+end
+
+local function toggleInfiniteYield(state)
+    infiniteYieldEnabled = state
+end
+
+local function toggleNoRecoil(state)
+    noRecoilEnabled = state
+end
+
+local function toggleAutoClick(state)
+    autoClickEnabled = state
+end
+
+local function toggleSuperJump(state)
+    superJumpEnabled = state
+end
+
+local function toggleAutoFarm(state)
+    autoFarmEnabled = state
+end
+
+local function toggleAutoCollect(state)
+    autoCollectEnabled = state
+end
+
+local function toggleAutoWin(state)
+    autoWinEnabled = state
+end
+
+local function toggleTimeFreeze(state)
+    timeFrozen = state
+    if state then
+        RunService:Set3dRenderingEnabled(false)
+    else
+        RunService:Set3dRenderingEnabled(true)
+    end
+end
+
+local function setWindSpeed(speed)
+    for _, part in pairs(workspace:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.Velocity = Vector3.new(speed, 0, 0)
+        end
+    end
+end
+
+local function removeWind()
+    setWindSpeed(0)
+end
+
+local function removeProps()
+    for _, part in pairs(workspace:GetChildren()) do
+        if part:IsA("Model") and not part:FindFirstChild("Humanoid") then
+            part:Destroy()
+        end
+    end
+end
+
+local function removeVehicles()
+    for _, part in pairs(workspace:GetChildren()) do
+        if part:IsA("VehicleSeat") then
+            part:Destroy()
+        end
+    end
+end
+
+local function removeWeapons()
+    for _, part in pairs(workspace:GetChildren()) do
+        if part:IsA("Tool") then
+            part:Destroy()
+        end
+    end
+end
+
+local function removeDecals()
+    for _, part in pairs(workspace:GetDescendants()) do
+        if part:IsA("Decal") then
+            part:Destroy()
+        end
+    end
+end
+
+local function removeParticles()
+    for _, part in pairs(workspace:GetDescendants()) do
+        if part:IsA("ParticleEmitter") then
+            part:Destroy()
+        end
+    end
+end
+
+local function removeAudio()
+    for _, part in pairs(workspace:GetDescendants()) do
+        if part:IsA("Sound") then
+            part:Destroy()
+        end
+    end
+end
+
+local function lagServer()
+    while true do
+        wait(0.1)
+        for i = 1, 10000 do
+            local p = Instance.new("Part")
+            p.Parent = workspace
+            p.Anchored = true
+            p.Position = Vector3.new(0, 1000, 0)
+        end
+    end
+end
+
+-- Processador de comandos
+local function processCommand(msg)
+    local args = {}
+    for word in msg:gmatch("%S+") do
+        table.insert(args, word)
+    end
+    if #args == 0 then return end
+    
+    local cmd = args[1]:lower()
+    
+    -- Comandos gerais
+    if cmd == "/speed" then
+        setWalkSpeed(tonumber(args[2]) or 16)
+    elseif cmd == "/jump" then
+        setJumpPower(tonumber(args[2]) or 50)
+    elseif cmd == "/esp" then
+        toggleESP(true, parseColor(args[2] or "white"))
+    elseif cmd == "/unesp" then
+        toggleESP(false)
+    elseif cmd == "/fly" then
+        toggleFly(true)
+    elseif cmd == "/unfly" then
+        toggleFly(false)
+    elseif cmd == "/noclip" then
+        toggleNoclip(true)
+    elseif cmd == "/unnoclip" then
+        toggleNoclip(false)
+    elseif cmd == "/infinitejump" or cmd == "/infjump" then
+        toggleInfiniteJump(true)
+    elseif cmd == "/unijump" or cmd == "/uninfjump" then
+        toggleInfiniteJump(false)
+    elseif cmd == "/tp" then
+        teleportToPlayer(args[2])
+    elseif cmd == "/godmode" then
+        toggleGodMode(true)
+    elseif cmd == "/ungodmode" then
+        toggleGodMode(false)
+    elseif cmd == "/invisible" then
+        setInvisible(true)
+    elseif cmd == "/visible" then
+        setInvisible(false)
+    elseif cmd == "/freeze" then
+        freezePlayer(true)
+    elseif cmd == "/unfreeze" then
+        freezePlayer(false)
+    elseif cmd == "/kill" then
+        killPlayer(args[2])
+    elseif cmd == "/color" then
+        setColor(tonumber(args[2]) or 255, tonumber(args[3]) or 255, tonumber(args[4]) or 255)
+    
+    -- Novos comandos
+    elseif cmd == "/bring" then
+        bringPlayer(args[2])
+    elseif cmd == "/goto" then
+        teleportToPlayer(args[2])
+    elseif cmd == "/spectate" then
+        spectatePlayer(args[2])
+    elseif cmd == "/unspectate" then
+        unspectate()
+    elseif cmd == "/respawn" then
+        respawnPlayer()
+    elseif cmd == "/heal" then
+        healPlayer()
+    elseif cmd == "/sit" then
+        sitPlayer()
+    elseif cmd == "/unsit" then
+        unsitPlayer()
+    elseif cmd == "/fling" then
+        toggleFling(true)
+    elseif cmd == "/unfling" then
+        toggleFling(false)
+    elseif cmd == "/size" then
+        setSize(tonumber(args[2]) or 1)
+    elseif cmd == "/gravity" then
+        setGravity(tonumber(args[2]) or 196.2)
+    elseif cmd == "/time" then
+        setTime(tonumber(args[2]) or 12)
+    elseif cmd == "/fog" then
+        setFogDensity(tonumber(args[2]) or 1000)
+    elseif cmd == "/brightness" then
+        setBrightness(tonumber(args[2]) or 1)
+    elseif cmd == "/nofog" then
+        toggleNoFog(true)
+    elseif cmd == "/fogcolor" then
+        setFogColor(tonumber(args[2]) or 200, tonumber(args[3]) or 200, tonumber(args[4]) or 200)
+    elseif cmd == "/ambient" then
+        setAmbient(tonumber(args[2]) or 100, tonumber(args[3]) or 100, tonumber(args[4]) or 100)
+    elseif cmd == "/outdoorambient" then
+        setOutdoorAmbient(tonumber(args[2]) or 100, tonumber(args[3]) or 100, tonumber(args[4]) or 100)
+    elseif cmd == "/removewater" then
+        removeWater()
+    elseif cmd == "/noclipall" then
+        toggleNoclipAll(true)
+    elseif cmd == "/clipall" then
+        toggleNoclipAll(false)
+    elseif cmd == "/removeinvis" then
+        removeInvisibleParts()
+    elseif cmd == "/clicktp" then
+        toggleClickTp(true)
+    elseif cmd == "/unclicktp" then
+        toggleClickTp(false)
+    elseif cmd == "/savepos" then
+        savePosition()
+    elseif cmd == "/loadpos" then
+        loadPosition()
+    elseif cmd == "/view" then
+        saveView()
+    elseif cmd == "/unview" then
+        loadView()
+    elseif cmd == "/flyspeed" then
+        setFlySpeed(tonumber(args[2]) or 50)
+    elseif cmd == "/rainbow" then
+        toggleRainbow(true)
+    elseif cmd == "/unrainbow" then
+        toggleRainbow(false)
+    elseif cmd == "/xray" then
+        toggleXray(true)
+    elseif cmd == "/unxray" then
+        toggleXray(false)
+    elseif cmd == "/nightvision" then
+        toggleNightVision(true)
+    elseif cmd == "/unnightvision" then
+        toggleNightVision(false)
+    elseif cmd == "/wireframe" then
+        toggleWireframe(true)
+    elseif cmd == "/unwireframe" then
+        toggleWireframe(false)
+    elseif cmd == "/fov" then
+        setFov(tonumber(args[2]) or 70)
+    elseif cmd == "/depth" then
+        setDepth(tonumber(args[2]) or 0.5)
+    elseif cmd == "/bloom" then
+        setBloom(tonumber(args[2]) or 1)
+    elseif cmd == "/motionblur" then
+        toggleMotionBlur(true)
+    elseif cmd == "/unmotionblur" then
+        toggleMotionBlur(false)
+    elseif cmd == "/nofall" then
+        toggleNoFall(true)
+    elseif cmd == "/unnofall" then
+        toggleNoFall(false)
+    elseif cmd == "/infyield" then
+        toggleInfiniteYield(true)
+    elseif cmd == "/uninfyield" then
+        toggleInfiniteYield(false)
+    elseif cmd == "/norecoil" then
+        toggleNoRecoil(true)
+    elseif cmd == "/unnorecoil" then
+        toggleNoRecoil(false)
+    elseif cmd == "/autoclick" then
+        toggleAutoClick(true)
+    elseif cmd == "/superjump" then
+        toggleSuperJump(true)
+    elseif cmd == "/unsuperjump" then
+        toggleSuperJump(false)
+    elseif cmd == "/autofarm" then
+        toggleAutoFarm(true)
+    elseif cmd == "/unautofarm" then
+        toggleAutoFarm(false)
+    elseif cmd == "/autocollect" then
+        toggleAutoCollect(true)
+    elseif cmd == "/unautocollect" then
+        toggleAutoCollect(false)
+    elseif cmd == "/autowin" then
+        toggleAutoWin(true)
+    elseif cmd == "/unautowin" then
+        toggleAutoWin(false)
+    elseif cmd == "/timefreeze" then
+        toggleTimeFreeze(true)
+    elseif cmd == "/untimefreeze" then
+        toggleTimeFreeze(false)
+    elseif cmd == "/wind" then
+        setWindSpeed(tonumber(args[2]) or 50)
+    elseif cmd == "/nowind" then
+        removeWind()
+    elseif cmd == "/removeprops" then
+        removeProps()
+    elseif cmd == "/removevehicles" then
+        removeVehicles()
+    elseif cmd == "/removeweapons" then
+        removeWeapons()
+    elseif cmd == "/removedecals" then
+        removeDecals()
+    elseif cmd == "/removeparticles" then
+        removeParticles()
+    elseif cmd == "/removeaudio" then
+        removeAudio()
+    elseif cmd == "/lagserver" then
+        lagServer()
+    end
+end
+
+plr.Chatted:Connect(processCommand)
+searchBox.FocusLost:Connect(function(enter)
+    if enter and #searchBox.Text > 0 then
+        processCommand(searchBox.Text)
+        searchBox.Text = ""
+    end
+end)
+
+-- Click TP
+UserInputService.InputBegan:Connect(function(input, processed)
+    if clickTpEnabled and input.UserInputType == Enum.UserInputType.MouseButton1 and not processed then
+        local mouse = plr:GetMouse()
+        local target = mouse.Hit.Position
+        if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+            plr.Character:MoveTo(target)
+        end
+    end
+end)
+
+-- Fling
+RunService.Heartbeat:Connect(function()
+    if flingEnabled and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+        plr.Character.HumanoidRootPart.Velocity = Vector3.new(0, 1000, 0)
+    end
+end)
+
+-- Atualizar ESP quando um jogador entrar
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(char)
+        if espEnabled then
+            createESP(player)
+        end
+    end)
+end)
+
+-- Notificação inicial
+StarterGui:SetCore("SendNotification", {
+    Title = "CheatX Premium",
+    Text = "Sistema carregado com sucesso! Digite /cmds para ver todos os comandos",
+    Duration = 5,
+})
