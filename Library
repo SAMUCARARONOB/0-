@@ -1,1 +1,861 @@
+local player = game:GetService("Players").LocalPlayer
+local distanceThreshold = 20
+local visibleObjects = {}
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local HttpService = game:GetService("HttpService")
 
+-- Configurações de tema
+local theme = {
+    Background = Color3.fromRGB(30, 30, 45),
+    Primary = Color3.fromRGB(110, 66, 245),
+    Secondary = Color3.fromRGB(70, 50, 150),
+    Text = Color3.fromRGB(240, 240, 240),
+    Error = Color3.fromRGB(255, 85, 85),
+    Success = Color3.fromRGB(85, 255, 127),
+    Border = Color3.fromRGB(60, 60, 80),
+    Highlight = Color3.fromRGB(140, 110, 255)
+}
+
+-- Configurações para dispositivos móveis
+local isMobile = UserInputService.TouchEnabled
+local safeArea = 0.9 -- Área segura para evitar sobreposição com controles do sistema
+
+-- Função para criar elementos com estilo
+local function createStyledElement(className, properties)
+    local element = Instance.new(className)
+    
+    for prop, value in pairs(properties) do
+        if prop == "Children" then
+            for _, child in ipairs(value) do
+                child.Parent = element
+            end
+        else
+            element[prop] = value
+        end
+    end
+    
+    return element
+end
+
+-- Função para criar ícone
+local function createIcon(imageId, rectOffset, rectSize, color)
+    return createStyledElement("ImageLabel", {
+        Image = "rbxassetid://"..imageId,
+        ImageRectOffset = rectOffset,
+        ImageRectSize = rectSize,
+        ImageColor3 = color,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(0, 20, 0, 20),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Position = UDim2.new(0.5, 0, 0.5, 0)
+    })
+end
+
+-- Sistema de histórico
+local History = {
+    logs = {},
+    maxLogs = 50,
+    
+    addLog = function(self, object, action)
+        table.insert(self.logs, 1, {
+            timestamp = os.time(),
+            object = object,
+            action = action
+        })
+        
+        if #self.logs > self.maxLogs then
+            table.remove(self.logs)
+        end
+    end,
+    
+    clear = function(self)
+        self.logs = {}
+    end
+}
+
+-- Criar GUI principal
+local function createGui()
+    if player.PlayerGui:FindFirstChild("ObjectScannerUI") then
+        player.PlayerGui.ObjectScannerUI:Destroy()
+    end
+
+    local screenGui = createStyledElement("ScreenGui", {
+        Name = "ObjectScannerUI",
+        DisplayOrder = 10,
+        ResetOnSpawn = false,
+        Parent = player:WaitForChild("PlayerGui")
+    })
+
+    -- Frame principal com sombra (centralizado na tela móvel)
+    local mainFrame = createStyledElement("Frame", {
+        Name = "MainFrame",
+        Size = isMobile and UDim2.new(0.9, 0, 0.8, 0) or UDim2.new(0.7, 0, 0.75, 0),
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        BackgroundColor3 = theme.Background,
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Parent = screenGui,
+        Children = {
+            createStyledElement("UICorner", {CornerRadius = UDim.new(0.03, 0)}),
+            createStyledElement("UIStroke", {
+                Color = theme.Primary,
+                Thickness = 2,
+                ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+            })
+        }
+    })
+
+    -- Barra de título
+    local titleBar = createStyledElement("Frame", {
+        Name = "TitleBar",
+        Size = UDim2.new(1, 0, 0.08, 0),
+        BackgroundColor3 = theme.Primary,
+        BorderSizePixel = 0,
+        Parent = mainFrame,
+        Children = {
+            createStyledElement("UICorner", {
+                CornerRadius = UDim.new(0.03, 0),
+                Name = "TopCorners"
+            }),
+            createStyledElement("TextLabel", {
+                Name = "Title",
+                Size = UDim2.new(0.7, 0, 1, 0),
+                Position = UDim2.new(0.15, 0, 0, 0),
+                BackgroundTransparency = 1,
+                Text = "SCANNER DE OBJETOS",
+                TextColor3 = theme.Text,
+                Font = Enum.Font.GothamBold,
+                TextSize = isMobile and 16 or 18,
+                TextXAlignment = Enum.TextXAlignment.Left
+            }),
+            createStyledElement("ImageButton", {
+                Name = "MinimizeButton",
+                Size = UDim2.new(0.1, 0, 1, 0),
+                Position = UDim2.new(0.7, 0, 0, 0),
+                BackgroundTransparency = 1,
+                Image = "rbxassetid://3926305904",
+                ImageRectOffset = Vector2.new(884, 284),
+                ImageRectSize = Vector2.new(24, 24),
+                ImageColor3 = theme.Text
+            }),
+            createStyledElement("ImageButton", {
+                Name = "CloseButton",
+                Size = UDim2.new(0.1, 0, 1, 0),
+                Position = UDim2.new(0.9, 0, 0, 0),
+                BackgroundTransparency = 1,
+                Image = "rbxassetid://3926305904",
+                ImageRectOffset = Vector2.new(284, 4),
+                ImageRectSize = Vector2.new(24, 24),
+                ImageColor3 = theme.Text
+            })
+        }
+    })
+
+    -- Corrigir cantos superiores
+    titleBar:FindFirstChild("TopCorners").CornerRadius = UDim.new(0.03, 0)
+
+    -- Área de conteúdo
+    local contentFrame = createStyledElement("Frame", {
+        Name = "ContentFrame",
+        Size = UDim2.new(1, -20, 0.85, -10),
+        Position = UDim2.new(0.5, 0, 0.95, 0),
+        AnchorPoint = Vector2.new(0.5, 1),
+        BackgroundTransparency = 1,
+        Parent = mainFrame
+    })
+
+    -- Filtro de pesquisa
+    local searchBar = createStyledElement("Frame", {
+        Name = "SearchBar",
+        Size = UDim2.new(1, 0, 0.08, 0),
+        BackgroundColor3 = theme.Secondary,
+        Parent = contentFrame,
+        Children = {
+            createStyledElement("UICorner", {CornerRadius = UDim.new(0.1, 0)}),
+            createStyledElement("TextBox", {
+                Name = "SearchBox",
+                Size = UDim2.new(0.8, 0, 0.8, 0),
+                Position = UDim2.new(0.1, 0, 0.1, 0),
+                BackgroundTransparency = 1,
+                Text = "",
+                PlaceholderText = "Pesquisar objetos...",
+                TextColor3 = theme.Text,
+                Font = Enum.Font.Gotham,
+                TextSize = isMobile and 14 or 16,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                ClearTextOnFocus = false
+            }),
+            createIcon("3926305904", Vector2.new(964, 324), Vector2.new(36, 36), theme.Text)
+        }
+    })
+
+    -- Lista de objetos
+    local objectsList = createStyledElement("ScrollingFrame", {
+        Name = "ObjectsList",
+        Size = UDim2.new(1, 0, 0.7, 0),
+        Position = UDim2.new(0, 0, 0.1, 0),
+        BackgroundTransparency = 1,
+        ScrollBarThickness = 6,
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        Parent = contentFrame,
+        Children = {
+            createStyledElement("UIListLayout", {
+                SortOrder = Enum.SortOrder.LayoutOrder,
+                Padding = UDim.new(0, 5)
+            })
+        }
+    })
+
+    -- Painel de controle
+    local controlPanel = createStyledElement("Frame", {
+        Name = "ControlPanel",
+        Size = UDim2.new(1, 0, 0.18, 0),
+        Position = UDim2.new(0, 0, 0.9, 0),
+        BackgroundTransparency = 1,
+        Parent = contentFrame
+    })
+
+    -- Botões principais
+    local copyAllButton = createStyledElement("TextButton", {
+        Name = "CopyAllButton",
+        Size = UDim2.new(0.48, 0, 0.9, 0),
+        Position = UDim2.new(0.01, 0, 0.05, 0),
+        BackgroundColor3 = theme.Primary,
+        Text = "COPIAR TUDO",
+        TextColor3 = theme.Text,
+        Font = Enum.Font.Gotham,
+        TextSize = isMobile and 14 or 16,
+        Parent = controlPanel,
+        Children = {
+            createStyledElement("UICorner", {CornerRadius = UDim.new(0.1, 0)}),
+            createStyledElement("UIStroke", {
+                Color = theme.Border,
+                Thickness = 1
+            })
+        }
+    })
+
+    local distanceButton = createStyledElement("TextButton", {
+        Name = "DistanceButton",
+        Size = UDim2.new(0.48, 0, 0.9, 0),
+        Position = UDim2.new(0.51, 0, 0.05, 0),
+        BackgroundColor3 = theme.Secondary,
+        Text = "DISTÂNCIA: 20m",
+        TextColor3 = theme.Text,
+        Font = Enum.Font.Gotham,
+        TextSize = isMobile and 14 or 16,
+        Parent = controlPanel,
+        Children = {
+            createStyledElement("UICorner", {CornerRadius = UDim.new(0.1, 0)}),
+            createStyledElement("UIStroke", {
+                Color = theme.Border,
+                Thickness = 1
+            })
+        }
+    })
+
+    -- Painel de botões secundários
+    local secondaryControls = createStyledElement("Frame", {
+        Name = "SecondaryControls",
+        Size = UDim2.new(1, 0, 0.9, 0),
+        Position = UDim2.new(0, 0, 1.1, 0),
+        BackgroundTransparency = 1,
+        Parent = controlPanel
+    })
+
+    -- Botões secundários
+    local labelsToggle = createStyledElement("TextButton", {
+        Name = "LabelsToggle",
+        Size = UDim2.new(0.24, 0, 0.9, 0),
+        Position = UDim2.new(0.01, 0, 0, 0),
+        BackgroundColor3 = theme.Secondary,
+        Text = "ETIQUETAS",
+        TextColor3 = theme.Text,
+        Font = Enum.Font.Gotham,
+        TextSize = isMobile and 12 or 14,
+        Parent = secondaryControls,
+        Children = {
+            createStyledElement("UICorner", {CornerRadius = UDim.new(0.1, 0)}),
+            createStyledElement("UIStroke", {
+                Color = theme.Border,
+                Thickness = 1
+            })
+        }
+    })
+
+    local clearButton = createStyledElement("TextButton", {
+        Name = "ClearButton",
+        Size = UDim2.new(0.24, 0, 0.9, 0),
+        Position = UDim2.new(0.26, 0, 0, 0),
+        BackgroundColor3 = theme.Secondary,
+        Text = "LIMPAR",
+        TextColor3 = theme.Text,
+        Font = Enum.Font.Gotham,
+        TextSize = isMobile and 12 or 14,
+        Parent = secondaryControls,
+        Children = {
+            createStyledElement("UICorner", {CornerRadius = UDim.new(0.1, 0)}),
+            createStyledElement("UIStroke", {
+                Color = theme.Border,
+                Thickness = 1
+            })
+        }
+    })
+
+    local historyButton = createStyledElement("TextButton", {
+        Name = "HistoryButton",
+        Size = UDim2.new(0.24, 0, 0.9, 0),
+        Position = UDim2.new(0.51, 0, 0, 0),
+        BackgroundColor3 = theme.Secondary,
+        Text = "HISTÓRICO",
+        TextColor3 = theme.Text,
+        Font = Enum.Font.Gotham,
+        TextSize = isMobile and 12 or 14,
+        Parent = secondaryControls,
+        Children = {
+            createStyledElement("UICorner", {CornerRadius = UDim.new(0.1, 0)}),
+            createStyledElement("UIStroke", {
+                Color = theme.Border,
+                Thickness = 1
+            })
+        }
+    })
+
+    local settingsButton = createStyledElement("TextButton", {
+        Name = "SettingsButton",
+        Size = UDim2.new(0.24, 0, 0.9, 0),
+        Position = UDim2.new(0.76, 0, 0, 0),
+        BackgroundColor3 = theme.Secondary,
+        Text = "CONFIG",
+        TextColor3 = theme.Text,
+        Font = Enum.Font.Gotham,
+        TextSize = isMobile and 12 or 14,
+        Parent = secondaryControls,
+        Children = {
+            createStyledElement("UICorner", {CornerRadius = UDim.new(0.1, 0)}),
+            createStyledElement("UIStroke", {
+                Color = theme.Border,
+                Thickness = 1
+            })
+        }
+    })
+
+    -- Variáveis de estado
+    local labelsEnabled = true
+    local isMinimized = false
+    local originalSize = mainFrame.Size
+    local originalPosition = mainFrame.Position
+
+    -- Animação de hover para botões
+    local function setupButtonHover(button, baseColor, hoverColor)
+        button.MouseEnter:Connect(function()
+            game:GetService("TweenService"):Create(
+                button,
+                TweenInfo.new(0.2),
+                {BackgroundColor3 = hoverColor}
+            ):Play()
+        end)
+        
+        button.MouseLeave:Connect(function()
+            game:GetService("TweenService"):Create(
+                button,
+                TweenInfo.new(0.2),
+                {BackgroundColor3 = baseColor}
+            ):Play()
+        end)
+    end
+
+    local function lightenColor(color, factor)
+        return Color3.new(
+            math.clamp(color.R * factor, 0, 1),
+            math.clamp(color.G * factor, 0, 1),
+            math.clamp(color.B * factor, 0, 1)
+        )
+    end
+
+    -- Configurar hover para todos os botões
+    setupButtonHover(copyAllButton, theme.Primary, lightenColor(theme.Primary, 1.3))
+    setupButtonHover(distanceButton, theme.Secondary, lightenColor(theme.Secondary, 1.3))
+    setupButtonHover(labelsToggle, theme.Secondary, lightenColor(theme.Secondary, 1.3))
+    setupButtonHover(clearButton, theme.Secondary, lightenColor(theme.Secondary, 1.3))
+    setupButtonHover(historyButton, theme.Secondary, lightenColor(theme.Secondary, 1.3))
+    setupButtonHover(settingsButton, theme.Secondary, lightenColor(theme.Secondary, 1.3))
+
+    -- Fechar interface
+    titleBar.CloseButton.MouseButton1Click:Connect(function()
+        game:GetService("TweenService"):Create(
+            mainFrame,
+            TweenInfo.new(0.3),
+            {Size = UDim2.new(0, 0, 0, 0)}
+        ):Play()
+        wait(0.3)
+        screenGui:Destroy()
+    end)
+
+    -- Minimizar interface
+    titleBar.MinimizeButton.MouseButton1Click:Connect(function()
+        if isMinimized then
+            -- Restaurar
+            TweenService:Create(mainFrame, TweenInfo.new(0.3), {
+                Size = originalSize,
+                Position = originalPosition
+            }):Play()
+            contentFrame.Visible = true
+            isMinimized = false
+        else
+            -- Minimizar
+            originalSize = mainFrame.Size
+            originalPosition = mainFrame.Position
+            
+            TweenService:Create(mainFrame, TweenInfo.new(0.3), {
+                Size = UDim2.new(0.2, 0, 0.05, 0),
+                Position = UDim2.new(0.8, 0, 0.05, 0)
+            }):Play()
+            contentFrame.Visible = false
+            isMinimized = true
+        end
+    end)
+
+    -- Função para criar label 3D
+    local function create3DLabel(object, color)
+        if not object:FindFirstChild("ObjectLabel") then
+            local billboard = Instance.new("BillboardGui")
+            billboard.Name = "ObjectLabel"
+            billboard.Adornee = object
+            billboard.Size = UDim2.new(0, 200, 0, 50)
+            billboard.StudsOffset = Vector3.new(0, 2.5, 0)
+            billboard.AlwaysOnTop = true
+            billboard.MaxDistance = 150
+            
+            local container = Instance.new("Frame")
+            container.Size = UDim2.new(1, 0, 1, 0)
+            container.BackgroundTransparency = 0.7
+            container.BackgroundColor3 = Color3.new(0, 0, 0)
+            container.BorderSizePixel = 0
+            
+            local label = Instance.new("TextLabel")
+            label.Size = UDim2.new(1, -10, 1, -10)
+            label.Position = UDim2.new(0.5, 0, 0.5, 0)
+            label.AnchorPoint = Vector2.new(0.5, 0.5)
+            label.BackgroundTransparency = 1
+            label.Text = object:GetFullName()
+            label.TextColor3 = color
+            label.TextScaled = true
+            label.Font = Enum.Font.Gotham
+            label.Parent = container
+            
+            container.Parent = billboard
+            billboard.Parent = object
+            
+            -- Animação de entrada
+            container.Size = UDim2.new(0, 0, 0, 0)
+            TweenService:Create(
+                container,
+                TweenInfo.new(0.3),
+                {Size = UDim2.new(1, 0, 1, 0)}
+            ):Play()
+            
+            History:addLog(object, "Etiqueta criada")
+        end
+    end
+
+    -- Função para remover label 3D
+    local function remove3DLabel(object)
+        local label = object:FindFirstChild("ObjectLabel")
+        if label then
+            TweenService:Create(
+                label.Frame,
+                TweenInfo.new(0.3),
+                {Size = UDim2.new(0, 0, 0, 0)}
+            ):Play()
+            wait(0.3)
+            label:Destroy()
+            History:addLog(object, "Etiqueta removida")
+        end
+    end
+
+    -- Função para criar item na lista
+    local function createListItem(object)
+        if visibleObjects[object] then return end
+        
+        local itemFrame = createStyledElement("Frame", {
+            Name = object:GetFullName(),
+            Size = UDim2.new(1, -10, 0, 40),
+            BackgroundTransparency = 0.8,
+            BackgroundColor3 = theme.Secondary,
+            LayoutOrder = #objectsList:GetChildren(),
+            Parent = objectsList,
+            Children = {
+                createStyledElement("UICorner", {CornerRadius = UDim.new(0.1, 0)}),
+                createStyledElement("UIStroke", {
+                    Color = theme.Primary,
+                    Thickness = 1
+                })
+            }
+        })
+        
+        local nameLabel = createStyledElement("TextLabel", {
+            Size = UDim2.new(0.7, 0, 1, 0),
+            Position = UDim2.new(0.05, 0, 0, 0),
+            BackgroundTransparency = 1,
+            Text = object.Name,
+            TextColor3 = theme.Text,
+            Font = Enum.Font.Gotham,
+            TextSize = isMobile and 12 or 14,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            TextTruncate = Enum.TextTruncate.AtEnd,
+            Parent = itemFrame
+        })
+        
+        local distanceLabel = createStyledElement("TextLabel", {
+            Size = UDim2.new(0.25, 0, 1, 0),
+            Position = UDim2.new(0.75, 0, 0, 0),
+            BackgroundTransparency = 1,
+            Text = "0m",
+            TextColor3 = theme.Text,
+            Font = Enum.Font.Gotham,
+            TextSize = isMobile and 12 or 14,
+            Parent = itemFrame
+        })
+        
+        local copyButton = createStyledElement("ImageButton", {
+            Size = UDim2.new(0, 30, 0, 30),
+            Position = UDim2.new(0.95, -30, 0.5, -15),
+            AnchorPoint = Vector2.new(1, 0.5),
+            BackgroundTransparency = 1,
+            Image = "rbxassetid://3926305904",
+            ImageRectOffset = Vector2.new(964, 324),
+            ImageRectSize = Vector2.new(36, 36),
+            ImageColor3 = theme.Text,
+            Parent = itemFrame
+        })
+        
+        -- Animação de entrada
+        itemFrame.Position = UDim2.new(1, 0, 0, itemFrame.LayoutOrder * 45)
+        TweenService:Create(
+            itemFrame,
+            TweenInfo.new(0.3),
+            {Position = UDim2.new(0, 5, 0, itemFrame.LayoutOrder * 45)}
+        ):Play()
+        
+        -- Atualizar distância em tempo real
+        local connection
+        connection = RunService.Heartbeat:Connect(function()
+            if object:IsDescendantOf(workspace) and player.Character and player.Character.PrimaryPart then
+                local distance = (object.Position - player.Character.PrimaryPart.Position).Magnitude
+                distanceLabel.Text = string.format("%.1fm", distance)
+                distanceLabel.TextColor3 = distance > distanceThreshold and theme.Error or theme.Success
+                
+                -- Destacar objetos próximos
+                if distance <= 5 then
+                    itemFrame.BackgroundColor3 = theme.Highlight
+                else
+                    itemFrame.BackgroundColor3 = theme.Secondary
+                end
+            else
+                connection:Disconnect()
+            end
+        end)
+        
+        -- Copiar nome do objeto
+        copyButton.MouseButton1Click:Connect(function()
+            setclipboard(object:GetFullName())
+            copyButton.ImageColor3 = theme.Success
+            History:addLog(object, "Copiado")
+            wait(0.5)
+            copyButton.ImageColor3 = theme.Text
+        end)
+        
+        -- Teleportar para o objeto (longo pressionar)
+        local teleporting = false
+        copyButton.MouseButton1Down:Connect(function()
+            teleporting = true
+            wait(1) -- Pressionar por 1 segundo
+            if teleporting and player.Character and player.Character.PrimaryPart then
+                player.Character.PrimaryPart.CFrame = CFrame.new(object.Position) + Vector3.new(0, 3, 0)
+                History:addLog(object, "Teleportado")
+            end
+        end)
+        
+        copyButton.MouseButton1Up:Connect(function()
+            teleporting = false
+        end)
+        
+        visibleObjects[object] = {
+            GuiItem = itemFrame,
+            Connection = connection
+        }
+        
+        -- Atualizar tamanho do canvas
+        objectsList.CanvasSize = UDim2.new(0, 0, 0, #objectsList:GetChildren() * 45)
+        
+        History:addLog(object, "Adicionado à lista")
+    end
+
+    -- Filtrar lista por pesquisa
+    local function filterList(searchTerm)
+        for obj, data in pairs(visibleObjects) do
+            if obj:IsDescendantOf(workspace) then
+                local item = data.GuiItem
+                local show = string.find(string.lower(obj.Name), string.lower(searchTerm)) ~= nil
+                item.Visible = show
+            end
+        end
+    end
+
+    -- Copiar todos os nomes
+    copyAllButton.MouseButton1Click:Connect(function()
+        local names = {}
+        for obj in pairs(visibleObjects) do
+            if obj:IsDescendantOf(workspace) then
+                table.insert(names, obj:GetFullName())
+            end
+        end
+        
+        if #names > 0 then
+            setclipboard(table.concat(names, "\n"))
+            copyAllButton.Text = "COPIADO!"
+            History:addLog(nil, "Todos objetos copiados")
+            wait(1)
+            copyAllButton.Text = "COPIAR TUDO"
+        else
+            copyAllButton.Text = "NENHUM OBJETO!"
+            wait(1)
+            copyAllButton.Text = "COPIAR TUDO"
+        end
+    end)
+
+    -- Ajustar distância
+    distanceButton.MouseButton1Click:Connect(function()
+        distanceThreshold = distanceThreshold == 20 and 50 or distanceThreshold == 50 and 100 or 20
+        distanceButton.Text = "DISTÂNCIA: "..distanceThreshold.."m"
+        History:addLog(nil, "Distância alterada para "..distanceThreshold.."m")
+    end)
+
+    -- Alternar etiquetas 3D
+    labelsToggle.MouseButton1Click:Connect(function()
+        labelsEnabled = not labelsEnabled
+        labelsToggle.Text = labelsEnabled and "ETIQUETAS" or "SEM ETIQUETAS"
+        
+        for obj in pairs(visibleObjects) do
+            if obj:IsDescendantOf(workspace) then
+                if labelsEnabled then
+                    create3DLabel(obj, theme.Primary)
+                else
+                    remove3DLabel(obj)
+                end
+            end
+        end
+    end)
+
+    -- Limpar lista
+    clearButton.MouseButton1Click:Connect(function()
+        for obj, data in pairs(visibleObjects) do
+            if data.GuiItem then
+                data.GuiItem:Destroy()
+            end
+            if data.Connection then
+                data.Connection:Disconnect()
+            end
+            if obj:FindFirstChild("ObjectLabel") then
+                obj.ObjectLabel:Destroy()
+            end
+        end
+        
+        visibleObjects = {}
+        objectsList.CanvasSize = UDim2.new(0, 0, 0, 0)
+        History:addLog(nil, "Lista limpa")
+    end)
+
+    -- Mostrar histórico
+    historyButton.MouseButton1Click:Connect(function()
+        -- Implementar visualização de histórico
+        print("Histórico:")
+        for i, log in ipairs(History.logs) do
+            local time = os.date("%X", log.timestamp)
+            local action = log.action
+            local name = log.object and log.object.Name or "Sistema"
+            print(string.format("[%s] %s: %s", time, name, action))
+        end
+    end)
+
+    -- Configurações
+    settingsButton.MouseButton1Click:Connect(function()
+        -- Implementar menu de configurações
+        print("Menu de configurações aberto")
+    end)
+
+    -- Sistema de arrastar
+    local dragging
+    local dragInput
+    local dragStart
+    local startPos
+
+    local function updateInput(input)
+        local delta = input.Position - dragStart
+        mainFrame.Position = UDim2.new(
+            startPos.X.Scale, 
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale, 
+            startPos.Y.Offset + delta.Y
+        )
+    end
+
+    titleBar.InputBegan:Connect(function(input)
+        if (input.UserInputType == Enum.UserInputType.MouseButton1 or 
+            input.UserInputType == Enum.UserInputType.Touch) and not isMinimized then
+            
+            dragging = true
+            dragStart = input.Position
+            startPos = mainFrame.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    titleBar.InputChanged:Connect(function(input)
+        if (input.UserInputType == Enum.UserInputType.MouseMovement or 
+            input.UserInputType == Enum.UserInputType.Touch) and not isMinimized then
+            dragInput = input
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            updateInput(input)
+            
+            -- Limitar à área segura da tela (especialmente para mobile)
+            local viewport = workspace.CurrentCamera.ViewportSize
+            local frameSize = mainFrame.AbsoluteSize
+            
+            local minX = frameSize.X / 2
+            local maxX = viewport.X - frameSize.X / 2
+            local minY = frameSize.Y / 2
+            local maxY = viewport.Y * safeArea - frameSize.Y / 2
+            
+            mainFrame.Position = UDim2.new(
+                math.clamp(mainFrame.Position.X.Scale, minX/viewport.X, maxX/viewport.X),
+                mainFrame.Position.X.Offset,
+                math.clamp(mainFrame.Position.Y.Scale, minY/viewport.Y, maxY/viewport.Y),
+                mainFrame.Position.Y.Offset
+            )
+        end
+    end)
+
+    -- Pesquisar objetos
+    searchBar.SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+        filterList(searchBar.SearchBox.Text)
+    end)
+
+    -- Função de atualização principal
+    local function updateScanner()
+        while screenGui and screenGui.Parent do
+            local character = player.Character
+            local rootPart = character and character:FindFirstChild("HumanoidRootPart")
+            
+            if rootPart then
+                -- Remover objetos distantes
+                for obj, data in pairs(visibleObjects) do
+                    if not obj:IsDescendantOf(workspace) or 
+                       (rootPart.Position - obj.Position).Magnitude > distanceThreshold * 1.2 then
+                        
+                        if data.GuiItem then
+                            -- Animação de saída
+                            TweenService:Create(
+                                data.GuiItem,
+                                TweenInfo.new(0.3),
+                                {Position = UDim2.new(-1, 0, 0, data.GuiItem.LayoutOrder * 45)}
+                            ):Play()
+                            wait(0.3)
+                            data.GuiItem:Destroy()
+                        end
+                        
+                        if data.Connection then
+                            data.Connection:Disconnect()
+                        end
+                        
+                        if obj:FindFirstChild("ObjectLabel") then
+                            obj.ObjectLabel:Destroy()
+                        end
+                        
+                        visibleObjects[obj] = nil
+                        History:addLog(obj, "Removido da lista")
+                    end
+                end
+                
+                -- Adicionar novos objetos
+                for _, obj in ipairs(workspace:GetDescendants()) do
+                    if obj:IsA("BasePart") and 
+                       not obj:IsDescendantOf(character) and 
+                       (rootPart.Position - obj.Position).Magnitude <= distanceThreshold and
+                       not visibleObjects[obj] then
+                        
+                        createListItem(obj)
+                        if labelsEnabled then
+                            create3DLabel(obj, theme.Primary)
+                        end
+                    end
+                end
+            end
+            
+            -- Atualizar tamanho da lista
+            objectsList.CanvasSize = UDim2.new(0, 0, 0, #objectsList:GetChildren() * 45)
+            wait(0.2)
+        end
+    end
+
+    -- Iniciar scanner
+    spawn(updateScanner)
+    
+    return screenGui
+end
+
+-- Inicialização
+player.CharacterAdded:Connect(function(character)
+    character:WaitForChild("HumanoidRootPart")
+    createGui()
+end)
+
+if player.Character then
+    createGui()
+end
+
+-- Sistema de notificação
+local function showNotification(message, color)
+    if not player.PlayerGui:FindFirstChild("ObjectScannerUI") then return end
+    
+    local notification = Instance.new("TextLabel")
+    notification.Name = "ScannerNotification"
+    notification.Text = message
+    notification.TextColor3 = color
+    notification.BackgroundColor3 = Color3.new(0, 0, 0)
+    notification.BackgroundTransparency = 0.7
+    notification.Size = UDim2.new(0.8, 0, 0.1, 0)
+    notification.Position = UDim2.new(0.1, 0, 0.05, 0)
+    notification.AnchorPoint = Vector2.new(0.5, 0.5)
+    notification.Font = Enum.Font.GothamBold
+    notification.TextSize = 16
+    notification.Parent = player.PlayerGui.ObjectScannerUI
+    
+    -- Animação
+    TweenService:Create(notification, TweenInfo.new(0.3), {
+        Position = UDim2.new(0.5, 0, 0.1, 0)
+    }):Play()
+    
+    wait(2)
+    
+    TweenService:Create(notification, TweenInfo.new(0.3), {
+        Position = UDim2.new(0.5, 0, -0.1, 0)
+    }):Play()
+    
+    wait(0.3)
+    notification:Destroy()
+end
+
+-- Exemplo de uso da notificação
+showNotification("Scanner de Objetos Ativado", theme.Success)
