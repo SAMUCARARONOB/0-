@@ -1,0 +1,956 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local HttpService = game:GetService("HttpService")
+local TextService = game:GetService("TextService")
+local Lighting = game:GetService("Lighting")
+local CoreGui = game:GetService("CoreGui")
+
+local player = Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Name = "QuantumSpyUltimate"
+gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.DisplayOrder = 999
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0.95, 0, 0.75, 0)
+main.Position = UDim2.new(0.5, 0, 0.5, 0)
+main.AnchorPoint = Vector2.new(0.5, 0.5)
+main.BackgroundColor3 = Color3.fromRGB(10, 12, 18)
+main.BorderSizePixel = 0
+main.ClipsDescendants = true
+main.Parent = gui
+
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 14)
+mainCorner.Parent = main
+
+local mainStroke = Instance.new("UIStroke")
+mainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+mainStroke.Color = Color3.fromRGB(40, 60, 90)
+mainStroke.Thickness = 2
+mainStroke.Parent = main
+
+local header = Instance.new("Frame")
+header.Size = UDim2.new(1, 0, 0, 50)
+header.Position = UDim2.new(0, 0, 0, 0)
+header.BackgroundColor3 = Color3.fromRGB(15, 18, 26)
+header.BorderSizePixel = 0
+header.Parent = main
+
+local headerCorner = Instance.new("UICorner")
+headerCorner.CornerRadius = UDim.new(0, 14)
+headerCorner.Parent = header
+
+local accentLine = Instance.new("Frame")
+accentLine.Size = UDim2.new(1, 0, 0, 3)
+accentLine.Position = UDim2.new(0, 0, 1, -3)
+accentLine.BackgroundColor3 = Color3.fromRGB(0, 180, 255)
+accentLine.BorderSizePixel = 0
+accentLine.Parent = header
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(0.7, 0, 1, 0)
+title.Position = UDim2.new(0.15, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.fromRGB(220, 220, 255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.Text = "🛰️ QUANTUM SPY"
+title.TextXAlignment = Enum.TextXAlignment.Center
+title.Parent = header
+
+local buttonContainer = Instance.new("Frame")
+buttonContainer.Size = UDim2.new(0.3, 0, 1, 0)
+buttonContainer.Position = UDim2.new(0.7, 0, 0, 0)
+buttonContainer.BackgroundTransparency = 1
+buttonContainer.Parent = header
+
+local function createControlButton(text, position, color)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0.3, 0, 0.7, 0)
+    btn.Position = position
+    btn.BackgroundColor3 = color
+    btn.Text = text
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 16
+    btn.TextColor3 = Color3.new(1, 1, 1)
+    btn.AutoButtonColor = false
+    btn.Parent = buttonContainer
+    
+    local btnCorner = Instance.new("UICorner")
+    btnCorner.CornerRadius = UDim.new(0, 8)
+    btnCorner.Parent = btn
+    
+    btn.MouseEnter:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.2}):Play()
+    end)
+    
+    btn.MouseLeave:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundTransparency = 0}):Play()
+    end)
+    
+    return btn
+end
+
+local btnMin = createControlButton("_", UDim2.new(0, 5, 0.15, 0), Color3.fromRGB(40, 50, 70))
+local btnMax = createControlButton("□", UDim2.new(0.35, 5, 0.15, 0), Color3.fromRGB(50, 60, 90))
+local btnClose = createControlButton("×", UDim2.new(0.7, 5, 0.15, 0), Color3.fromRGB(180, 60, 70))
+
+local minimized = false
+local originalSize = UDim2.new(0.95, 0, 0.75, 0)
+local originalPosition = UDim2.new(0.5, 0, 0.5, 0)
+
+local tabContainer = Instance.new("Frame")
+tabContainer.Size = UDim2.new(1, -20, 0, 40)
+tabContainer.Position = UDim2.new(0, 10, 0, 55)
+tabContainer.BackgroundTransparency = 1
+tabContainer.Parent = main
+
+local tabs = {"LOGS", "SCRIPT GEN", "SETTINGS", "TOOLS", "PLAYER"}
+local currentTab = "LOGS"
+
+local function createTabButton(name)
+    local tab = Instance.new("TextButton")
+    tab.Size = UDim2.new(0.2, -5, 1, 0)
+    tab.Position = UDim2.new(0.2 * (table.find(tabs, name) - 1), 0, 0, 0)
+    tab.BackgroundColor3 = currentTab == name and Color3.fromRGB(30, 40, 60) or Color3.fromRGB(20, 25, 35)
+    tab.Text = name
+    tab.Font = Enum.Font.GothamMedium
+    tab.TextSize = 14
+    tab.TextColor3 = currentTab == name and Color3.fromRGB(0, 200, 255) or Color3.fromRGB(150, 160, 180)
+    tab.Parent = tabContainer
+    
+    local tabCorner = Instance.new("UICorner")
+    tabCorner.CornerRadius = UDim.new(0, 8)
+    tabCorner.Parent = tab
+    
+    tab.MouseButton1Click:Connect(function()
+        currentTab = name
+        for _, t in ipairs(tabContainer:GetChildren()) do
+            if t:IsA("TextButton") then
+                t.BackgroundColor3 = t.Text == name and Color3.fromRGB(30, 40, 60) or Color3.fromRGB(20, 25, 35)
+                t.TextColor3 = t.Text == name and Color3.fromRGB(0, 200, 255) or Color3.fromRGB(150, 160, 180)
+            end
+        end
+        for _, child in ipairs(contentContainer:GetChildren()) do
+            child.Visible = false
+        end
+        if name == "LOGS" then logsContainer.Visible = true end
+        if name == "SCRIPT GEN" then scriptGenContainer.Visible = true end
+        if name == "SETTINGS" then settingsContainer.Visible = true end
+        if name == "TOOLS" then toolsContainer.Visible = true end
+        if name == "PLAYER" then playerInfoContainer.Visible = true end
+    end)
+    
+    return tab
+end
+
+for _, tabName in ipairs(tabs) do
+    createTabButton(tabName)
+end
+
+local contentContainer = Instance.new("Frame")
+contentContainer.Size = UDim2.new(1, -20, 1, -110)
+contentContainer.Position = UDim2.new(0, 10, 0, 100)
+contentContainer.BackgroundTransparency = 1
+contentContainer.Parent = main
+
+local logsContainer = Instance.new("ScrollingFrame")
+logsContainer.Size = UDim2.new(1, 0, 1, 0)
+logsContainer.BackgroundTransparency = 1
+logsContainer.ScrollBarThickness = 6
+logsContainer.ScrollBarImageColor3 = Color3.fromRGB(0, 150, 200)
+logsContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
+logsContainer.Visible = currentTab == "LOGS"
+logsContainer.Parent = contentContainer
+
+local logsLayout = Instance.new("UIListLayout")
+logsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+logsLayout.Padding = UDim.new(0, 15)
+logsLayout.Parent = logsContainer
+
+local searchBox = Instance.new("TextBox")
+searchBox.Size = UDim2.new(1, 0, 0, 35)
+searchBox.Position = UDim2.new(0, 0, 0, 0)
+searchBox.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
+searchBox.TextColor3 = Color3.fromRGB(200, 200, 220)
+searchBox.Font = Enum.Font.Gotham
+searchBox.TextSize = 14
+searchBox.PlaceholderText = "🔍 Filtrar logs..."
+searchBox.PlaceholderColor3 = Color3.fromRGB(100, 120, 150)
+searchBox.Text = ""
+searchBox.Parent = logsContainer
+
+local searchCorner = Instance.new("UICorner")
+searchCorner.CornerRadius = UDim.new(0, 8)
+searchCorner.Parent = searchBox
+
+local logsList = Instance.new("Frame")
+logsList.Size = UDim2.new(1, 0, 1, -40)
+logsList.Position = UDim2.new(0, 0, 0, 40)
+logsList.BackgroundTransparency = 1
+logsList.Parent = logsContainer
+
+local logsListLayout = Instance.new("UIListLayout")
+logsListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+logsListLayout.Padding = UDim.new(0, 12)
+logsListLayout.Parent = logsList
+
+local footer = Instance.new("Frame")
+footer.Size = UDim2.new(1, -10, 0, 30)
+footer.Position = UDim2.new(0, 5, 1, -35)
+footer.BackgroundColor3 = Color3.fromRGB(15, 18, 26)
+footer.Parent = main
+
+local footerCorner = Instance.new("UICorner")
+footerCorner.CornerRadius = UDim.new(0, 8)
+footerCorner.Parent = footer
+
+local statsLabel = Instance.new("TextLabel")
+statsLabel.Size = UDim2.new(0.5, 0, 1, 0)
+statsLabel.BackgroundTransparency = 1
+statsLabel.TextColor3 = Color3.fromRGB(180, 200, 230)
+statsLabel.Font = Enum.Font.Gotham
+statsLabel.TextSize = 12
+statsLabel.Text = "📊 Logs: 0 | 🚀 FPS: 0"
+statsLabel.TextXAlignment = Enum.TextXAlignment.Left
+statsLabel.Parent = footer
+
+local statusLabel = Instance.new("TextLabel")
+statusLabel.Size = UDim2.new(0.5, -10, 1, 0)
+statusLabel.Position = UDim2.new(0.5, 10, 0, 0)
+statusLabel.BackgroundTransparency = 1
+statusLabel.TextColor3 = Color3.fromRGB(0, 200, 255)
+statusLabel.Font = Enum.Font.GothamBold
+statusLabel.TextSize = 12
+statusLabel.Text = "🟢 CONECTADO"
+statusLabel.TextXAlignment = Enum.TextXAlignment.Right
+statusLabel.Parent = footer
+
+local isDragging = false
+local dragStart
+local startPos
+
+local function updateDrag(input)
+    local delta = input.Position - dragStart
+    main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+header.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        isDragging = true
+        dragStart = input.Position
+        startPos = main.Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                isDragging = false
+            end
+        end)
+    end
+end)
+
+header.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        if isDragging then
+            updateDrag(input)
+        end
+    end
+end)
+
+local function serializeValue(v)
+    local t = typeof(v)
+    if t == "string" then
+        return string.format("%q", v)
+    elseif t == "number" then
+        return tostring(v)
+    elseif t == "boolean" then
+        return v and "true" or "false"
+    elseif t == "Vector3" then
+        return string.format("Vector3.new(%.2f, %.2f, %.2f)", v.X, v.Y, v.Z)
+    elseif t == "CFrame" then
+        return string.format("CFrame.new(%.2f, %.2f, %.2f)", v.X, v.Y, v.Z)
+    elseif t == "Color3" then
+        return string.format("Color3.new(%.2f, %.2f, %.2f)", v.R, v.G, v.B)
+    elseif t == "Instance" then
+        return v:GetFullName()
+    else
+        return "nil"
+    end
+end
+
+local function createLogEntry(remote, args)
+    local entry = Instance.new("Frame")
+    entry.Size = UDim2.new(1, 0, 0, 60)
+    entry.BackgroundColor3 = Color3.fromRGB(22, 26, 36)
+    entry.Parent = logsList
+    
+    local entryCorner = Instance.new("UICorner")
+    entryCorner.CornerRadius = UDim.new(0, 10)
+    entryCorner.Parent = entry
+    
+    local entryStroke = Instance.new("UIStroke")
+    entryStroke.Color = Color3.fromRGB(40, 60, 90)
+    entryStroke.Thickness = 1
+    entryStroke.Parent = entry
+    
+    local icon = Instance.new("TextLabel")
+    icon.Size = UDim2.new(0, 40, 0, 40)
+    icon.Position = UDim2.new(0, 10, 0.5, -20)
+    icon.BackgroundTransparency = 1
+    icon.Text = remote:IsA("RemoteEvent") and "📡" or "🔮"
+    icon.TextColor3 = Color3.fromRGB(0, 180, 255)
+    icon.Font = Enum.Font.GothamBold
+    icon.TextSize = 22
+    icon.Parent = entry
+    
+    local nameLabel = Instance.new("TextLabel")
+    nameLabel.Size = UDim2.new(0.6, -50, 0, 25)
+    nameLabel.Position = UDim2.new(0, 50, 0, 8)
+    nameLabel.BackgroundTransparency = 1
+    nameLabel.TextColor3 = Color3.fromRGB(220, 230, 255)
+    nameLabel.Font = Enum.Font.GothamMedium
+    nameLabel.TextSize = 16
+    nameLabel.Text = remote.Name
+    nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    nameLabel.Parent = entry
+    
+    local pathLabel = Instance.new("TextLabel")
+    pathLabel.Size = UDim2.new(0.6, -50, 0, 20)
+    pathLabel.Position = UDim2.new(0, 50, 0, 30)
+    pathLabel.BackgroundTransparency = 1
+    pathLabel.TextColor3 = Color3.fromRGB(140, 160, 190)
+    pathLabel.Font = Enum.Font.Gotham
+    pathLabel.TextSize = 12
+    pathLabel.Text = string.sub(remote:GetFullName(), 1, 40)
+    pathLabel.TextXAlignment = Enum.TextXAlignment.Left
+    pathLabel.Parent = entry
+    
+    local argsLabel = Instance.new("TextLabel")
+    argsLabel.Size = UDim2.new(0.3, 0, 0, 20)
+    argsLabel.Position = UDim2.new(0.65, 0, 0, 8)
+    argsLabel.BackgroundTransparency = 1
+    argsLabel.TextColor3 = Color3.fromRGB(200, 180, 100)
+    argsLabel.Font = Enum.Font.Gotham
+    argsLabel.TextSize = 12
+    argsLabel.Text = #args.." args"
+    argsLabel.TextXAlignment = Enum.TextXAlignment.Right
+    argsLabel.Parent = entry
+    
+    local buttonFrame = Instance.new("Frame")
+    buttonFrame.Size = UDim2.new(0.35, -10, 0, 30)
+    buttonFrame.Position = UDim2.new(0.65, 0, 0, 30)
+    buttonFrame.BackgroundTransparency = 1
+    buttonFrame.Parent = entry
+    
+    local function createMiniButton(text, position, color)
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(0.45, 0, 1, 0)
+        btn.Position = position
+        btn.BackgroundColor3 = color
+        btn.Text = text
+        btn.Font = Enum.Font.GothamBold
+        btn.TextSize = 12
+        btn.TextColor3 = Color3.new(1, 1, 1)
+        btn.AutoButtonColor = false
+        btn.Parent = buttonFrame
+        
+        local btnCorner = Instance.new("UICorner")
+        btnCorner.CornerRadius = UDim.new(0, 6)
+        btnCorner.Parent = btn
+        
+        btn.MouseEnter:Connect(function()
+            TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.2}):Play()
+        end)
+        
+        btn.MouseLeave:Connect(function()
+            TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundTransparency = 0}):Play()
+        end)
+        
+        return btn
+    end
+
+    local btnFire = createMiniButton("EXEC", UDim2.new(0, 0, 0, 0), Color3.fromRGB(0, 120, 80))
+    local btnCopy = createMiniButton("COPIAR", UDim2.new(0.55, 0, 0, 0), Color3.fromRGB(40, 100, 180))
+    
+    btnFire.MouseButton1Click:Connect(function()
+        TweenService:Create(btnFire, TweenInfo.new(0.1), {Size = UDim2.new(0.4, 0, 0.9, 0)}):Play()
+        TweenService:Create(btnFire, TweenInfo.new(0.1), {Size = UDim2.new(0.45, 0, 1, 0)}):Play()
+        pcall(function()
+            if remote:IsA("RemoteEvent") then
+                remote:FireServer(unpack(args))
+            else
+                remote:InvokeServer(unpack(args))
+            end
+        end)
+    end)
+    
+    btnCopy.MouseButton1Click:Connect(function()
+        local scriptText = "game:GetService('ReplicatedStorage')."..remote.Name..":"..
+            (remote:IsA("RemoteEvent") and "FireServer" or "InvokeServer").."("
+        
+        for i, arg in ipairs(args) do
+            scriptText = scriptText..serializeValue(arg)
+            if i < #args then scriptText = scriptText..", " end
+        end
+        scriptText = scriptText..")"
+        
+        if setclipboard then
+            setclipboard(scriptText)
+            btnCopy.Text = "COPIADO!"
+            task.delay(1.5, function()
+                btnCopy.Text = "COPIAR"
+            end)
+        end
+    end)
+    
+    logsListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        logsContainer.CanvasSize = UDim2.new(0, 0, 0, logsListLayout.AbsoluteContentSize.Y + 60)
+    end)
+end
+
+local function toggleMinimize()
+    minimized = not minimized
+    
+    if minimized then
+        TweenService:Create(main, TweenInfo.new(0.4, Enum.EasingStyle.Quint), 
+            {Size = UDim2.new(0.95, 0, 0, 50)}):Play()
+        tabContainer.Visible = false
+        contentContainer.Visible = false
+        footer.Visible = false
+    else
+        TweenService:Create(main, TweenInfo.new(0.4, Enum.EasingStyle.Quint), 
+            {Size = originalSize}):Play()
+        tabContainer.Visible = true
+        contentContainer.Visible = true
+        footer.Visible = true
+    end
+end
+
+btnMin.MouseButton1Click:Connect(toggleMinimize)
+
+btnMax.MouseButton1Click:Connect(function()
+    TweenService:Create(main, TweenInfo.new(0.4, Enum.EasingStyle.Quint), 
+        {Size = UDim2.new(0.95, 0, 0.75, 0)}):Play()
+end)
+
+btnClose.MouseButton1Click:Connect(function()
+    TweenService:Create(main, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
+    TweenService:Create(main, TweenInfo.new(0.3), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+    task.wait(0.3)
+    gui:Destroy()
+end)
+
+local remoteSpy = {
+    Logs = {},
+    Enabled = true,
+    ActiveLoops = {}
+}
+
+local oldNamecall
+oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+    if not remoteSpy.Enabled or minimized then return oldNamecall(self, ...) end
+    
+    local method = getnamecallmethod()
+    if (method == "FireServer" or method == "InvokeServer") then
+        local args = {...}
+        createLogEntry(self, args)
+        table.insert(remoteSpy.Logs, {remote = self, args = args})
+        
+        statsLabel.Text = string.format("📊 Logs: %d | 🚀 FPS: %d", 
+            #remoteSpy.Logs, math.round(1/RunService.Heartbeat:Wait()))
+    end
+    return oldNamecall(self, ...)
+end)
+
+local lastFpsUpdate = 0
+local fpsHistory = {}
+local function updateStats()
+    local now = tick()
+    if now - lastFpsUpdate > 0.5 then
+        local fps = math.round(1/RunService.Heartbeat:Wait())
+        table.insert(fpsHistory, fps)
+        if #fpsHistory > 10 then table.remove(fpsHistory, 1) end
+        
+        local avgFps = 0
+        for _, v in ipairs(fpsHistory) do avgFps = avgFps + v end
+        avgFps = math.round(avgFps / #fpsHistory)
+        
+        statsLabel.Text = string.format("📊 Logs: %d | 🚀 FPS: %d", #remoteSpy.Logs, avgFps)
+        lastFpsUpdate = now
+    end
+end
+
+RunService.Heartbeat:Connect(updateStats)
+
+createLogEntry(Instance.new("RemoteEvent"), {"Teste Inicial", 123, true, Vector3.new(1,2,3)})
+createLogEntry(Instance.new("RemoteFunction"), {"Sistema Iniciado", Color3.new(1,0.5,0), "v3.0"})
+statsLabel.Text = "📊 Logs: 2 | 🚀 FPS: "..math.round(1/RunService.Heartbeat:Wait())
+
+local toolsContainer = Instance.new("Frame")
+toolsContainer.Size = UDim2.new(1, 0, 1, 0)
+toolsContainer.BackgroundTransparency = 1
+toolsContainer.Visible = currentTab == "TOOLS"
+toolsContainer.Parent = contentContainer
+
+local toolsGrid = Instance.new("UIGridLayout")
+toolsGrid.CellSize = UDim2.new(0.5, -10, 0, 80)
+toolsGrid.CellPadding = UDim2.new(0, 10, 0, 15)
+toolsGrid.HorizontalAlignment = Enum.HorizontalAlignment.Center
+toolsGrid.SortOrder = Enum.SortOrder.LayoutOrder
+toolsGrid.Parent = toolsContainer
+
+local function createToolButton(name, icon, color)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 0, 80)
+    btn.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
+    btn.Text = ""
+    btn.AutoButtonColor = false
+    btn.Parent = toolsContainer
+    
+    local btnCorner = Instance.new("UICorner")
+    btnCorner.CornerRadius = UDim.new(0, 12)
+    btnCorner.Parent = btn
+    
+    local iconLabel = Instance.new("TextLabel")
+    iconLabel.Size = UDim2.new(0, 40, 0, 40)
+    iconLabel.Position = UDim2.new(0.5, -20, 0.3, -20)
+    iconLabel.BackgroundTransparency = 1
+    iconLabel.Text = icon
+    iconLabel.TextColor3 = color
+    iconLabel.Font = Enum.Font.GothamBold
+    iconLabel.TextSize = 24
+    iconLabel.Parent = btn
+    
+    local nameLabel = Instance.new("TextLabel")
+    nameLabel.Size = UDim2.new(1, -10, 0, 20)
+    nameLabel.Position = UDim2.new(0, 5, 0.7, 0)
+    nameLabel.BackgroundTransparency = 1
+    nameLabel.Text = name
+    nameLabel.TextColor3 = Color3.fromRGB(180, 200, 230)
+    nameLabel.Font = Enum.Font.GothamMedium
+    nameLabel.TextSize = 14
+    nameLabel.Parent = btn
+    
+    btn.MouseEnter:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 30, 45)}):Play()
+    end)
+    
+    btn.MouseLeave:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(20, 25, 35)}):Play()
+    end)
+    
+    return btn
+end
+
+local teleportBtn = createToolButton("TELEPORT", "🔮", Color3.fromRGB(0, 200, 255))
+local noclipBtn = createToolButton("NOCLIP", "👻", Color3.fromRGB(200, 100, 255))
+local espBtn = createToolButton("ESP", "👁️", Color3.fromRGB(255, 150, 50))
+local flyBtn = createToolButton("VOAR", "✈️", Color3.fromRGB(100, 220, 100))
+local speedBtn = createToolButton("VELOCIDADE", "⚡", Color3.fromRGB(255, 220, 50))
+local godBtn = createToolButton("INVENCÍVEL", "🛡️", Color3.fromRGB(180, 60, 70))
+
+local noclipActive = false
+local flyActive = false
+local espActive = false
+local godActive = false
+local speedActive = false
+
+noclipBtn.MouseButton1Click:Connect(function()
+    noclipActive = not noclipActive
+    noclipBtn.Text = noclipActive and "DESATIVAR" or "NOCLIP"
+    
+    if noclipActive then
+        RunService.Stepped:Connect(function()
+            if player.Character then
+                for _, part in ipairs(player.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+flyBtn.MouseButton1Click:Connect(function()
+    flyActive = not flyActive
+    flyBtn.Text = flyActive and "DESATIVAR" or "VOAR"
+    
+    if flyActive then
+        local flySpeed = 50
+        local bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+        bodyVelocity.MaxForce = Vector3.new(0, 0, 0)
+        bodyVelocity.Parent = player.Character.HumanoidRootPart
+        
+        UserInputService.InputBegan:Connect(function(input)
+            if input.KeyCode == Enum.KeyCode.Space then
+                bodyVelocity.Velocity = Vector3.new(0, flySpeed, 0)
+            end
+        end)
+        
+        UserInputService.InputEnded:Connect(function(input)
+            if input.KeyCode == Enum.KeyCode.Space then
+                bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+            end
+        end)
+    else
+        if player.Character.HumanoidRootPart:FindFirstChild("BodyVelocity") then
+            player.Character.HumanoidRootPart.BodyVelocity:Destroy()
+        end
+    end
+end)
+
+espBtn.MouseButton1Click:Connect(function()
+    espActive = not espActive
+    espBtn.Text = espActive and "DESATIVAR" or "ESP"
+    
+    if espActive then
+        for _, plr in ipairs(Players:GetPlayers()) do
+            if plr ~= player then
+                local espBox = Instance.new("BoxHandleAdornment")
+                espBox.Name = "ESP_"..plr.Name
+                espBox.Adornee = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
+                espBox.AlwaysOnTop = true
+                espBox.ZIndex = 10
+                espBox.Size = Vector3.new(3, 6, 3)
+                espBox.Color3 = Color3.new(1, 0, 0)
+                espBox.Transparency = 0.5
+                espBox.Parent = CoreGui
+            end
+        end
+    else
+        for _, obj in ipairs(CoreGui:GetChildren()) do
+            if obj.Name:find("ESP_") then
+                obj:Destroy()
+            end
+        end
+    end
+end)
+
+godBtn.MouseButton1Click:Connect(function()
+    godActive = not godActive
+    godBtn.Text = godActive and "DESATIVAR" or "INVENCÍVEL"
+    
+    if godActive and player.Character then
+        player.Character.Humanoid.MaxHealth = math.huge
+        player.Character.Humanoid.Health = math.huge
+    end
+end)
+
+speedBtn.MouseButton1Click:Connect(function()
+    speedActive = not speedActive
+    speedBtn.Text = speedActive and "DESATIVAR" or "VELOCIDADE"
+    
+    if speedActive and player.Character then
+        player.Character.Humanoid.WalkSpeed = 50
+    else
+        player.Character.Humanoid.WalkSpeed = 16
+    end
+end)
+
+local settingsContainer = Instance.new("Frame")
+settingsContainer.Size = UDim2.new(1, 0, 1, 0)
+settingsContainer.BackgroundTransparency = 1
+settingsContainer.Visible = currentTab == "SETTINGS"
+settingsContainer.Parent = contentContainer
+
+local settingsList = Instance.new("ScrollingFrame")
+settingsList.Size = UDim2.new(1, 0, 1, 0)
+settingsList.BackgroundTransparency = 1
+settingsList.ScrollBarThickness = 6
+settingsList.CanvasSize = UDim2.new(0, 0, 0, 0)
+settingsList.Parent = settingsContainer
+
+local settingsLayout = Instance.new("UIListLayout")
+settingsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+settingsLayout.Padding = UDim.new(0, 15)
+settingsLayout.Parent = settingsList
+
+local function createSetting(name, default)
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 0, 50)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
+    frame.Parent = settingsList
+    
+    local frameCorner = Instance.new("UICorner")
+    frameCorner.CornerRadius = UDim.new(0, 10)
+    frameCorner.Parent = frame
+    
+    local nameLabel = Instance.new("TextLabel")
+    nameLabel.Size = UDim2.new(0.7, 0, 1, 0)
+    nameLabel.BackgroundTransparency = 1
+    nameLabel.Text = name
+    nameLabel.TextColor3 = Color3.fromRGB(220, 230, 255)
+    nameLabel.Font = Enum.Font.Gotham
+    nameLabel.TextSize = 16
+    nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    nameLabel.Parent = frame
+    
+    local toggle = Instance.new("TextButton")
+    toggle.Size = UDim2.new(0, 40, 0, 20)
+    toggle.Position = UDim2.new(0.9, -40, 0.5, -10)
+    toggle.BackgroundColor3 = default and Color3.fromRGB(0, 150, 80) or Color3.fromRGB(80, 20, 30)
+    toggle.Text = ""
+    toggle.Parent = frame
+    
+    local toggleCorner = Instance.new("UICorner")
+    toggleCorner.CornerRadius = UDim.new(0, 10)
+    toggleCorner.Parent = toggle
+    
+    local knob = Instance.new("Frame")
+    knob.Size = UDim2.new(0, 16, 0, 16)
+    knob.Position = default and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
+    knob.BackgroundColor3 = Color3.new(1, 1, 1)
+    knob.Parent = toggle
+    
+    local knobCorner = Instance.new("UICorner")
+    knobCorner.CornerRadius = UDim.new(0, 10)
+    knobCorner.Parent = knob
+    
+    toggle.MouseButton1Click:Connect(function()
+        default = not default
+        if default then
+            TweenService:Create(toggle, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 150, 80)}):Play()
+            TweenService:Create(knob, TweenInfo.new(0.2), {Position = UDim2.new(1, -18, 0.5, -8)}):Play()
+        else
+            TweenService:Create(toggle, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(80, 20, 30)}):Play()
+            TweenService:Create(knob, TweenInfo.new(0.2), {Position = UDim2.new(0, 2, 0.5, -8)}):Play()
+        end
+    end)
+    
+    return frame
+end
+
+createSetting("Capturar Remotes", true)
+createSetting("Auto Scroll", true)
+createSetting("Mostrar Argumentos", false)
+createSetting("Modo Noturno", true)
+createSetting("Efeitos Visuais", true)
+createSetting("Notificações", true)
+createSetting("Animação de Entrada", true)
+
+settingsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    settingsList.CanvasSize = UDim2.new(0, 0, 0, settingsLayout.AbsoluteContentSize.Y + 20)
+end)
+
+local scriptGenContainer = Instance.new("Frame")
+scriptGenContainer.Size = UDim2.new(1, 0, 1, 0)
+scriptGenContainer.BackgroundTransparency = 1
+scriptGenContainer.Visible = false
+scriptGenContainer.Parent = contentContainer
+
+local scriptEditor = Instance.new("TextBox")
+scriptEditor.Size = UDim2.new(1, -20, 0.7, 0)
+scriptEditor.Position = UDim2.new(0, 10, 0, 10)
+scriptEditor.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
+scriptEditor.TextColor3 = Color3.fromRGB(220, 220, 255)
+scriptEditor.Font = Enum.Font.Code
+scriptEditor.TextSize = 14
+scriptEditor.Text = "-- Digite seu script aqui\nprint('Hello World!')"
+scriptEditor.MultiLine = true
+scriptEditor.TextXAlignment = Enum.TextXAlignment.Left
+scriptEditor.TextYAlignment = Enum.TextYAlignment.Top
+scriptEditor.Parent = scriptGenContainer
+
+local scriptEditorCorner = Instance.new("UICorner")
+scriptEditorCorner.CornerRadius = UDim.new(0, 10)
+scriptEditorCorner.Parent = scriptEditor
+
+local executeBtn = Instance.new("TextButton")
+executeBtn.Size = UDim2.new(0.3, -10, 0.1, 0)
+executeBtn.Position = UDim2.new(0.1, 0, 0.8, 0)
+executeBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 80)
+executeBtn.Text = "EXECUTAR"
+executeBtn.Font = Enum.Font.GothamBold
+executeBtn.TextSize = 14
+executeBtn.TextColor3 = Color3.new(1,1,1)
+executeBtn.Parent = scriptGenContainer
+
+local clearBtn = Instance.new("TextButton")
+clearBtn.Size = UDim2.new(0.3, -10, 0.1, 0)
+clearBtn.Position = UDim2.new(0.6, 0, 0.8, 0)
+clearBtn.BackgroundColor3 = Color3.fromRGB(180, 60, 70)
+clearBtn.Text = "LIMPAR"
+clearBtn.Font = Enum.Font.GothamBold
+clearBtn.TextSize = 14
+clearBtn.TextColor3 = Color3.new(1,1,1)
+clearBtn.Parent = scriptGenContainer
+
+executeBtn.MouseButton1Click:Connect(function()
+    loadstring(scriptEditor.Text)()
+end)
+
+clearBtn.MouseButton1Click:Connect(function()
+    scriptEditor.Text = ""
+end)
+
+local playerInfoContainer = Instance.new("Frame")
+playerInfoContainer.Size = UDim2.new(1, 0, 1, 0)
+playerInfoContainer.BackgroundTransparency = 1
+playerInfoContainer.Visible = false
+playerInfoContainer.Parent = contentContainer
+
+local playerList = Instance.new("ScrollingFrame")
+playerList.Size = UDim2.new(1, 0, 0.8, 0)
+playerList.BackgroundTransparency = 1
+playerList.ScrollBarThickness = 6
+playerList.CanvasSize = UDim2.new(0, 0, 0, 0)
+playerList.Parent = playerInfoContainer
+
+local playerListLayout = Instance.new("UIListLayout")
+playerListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+playerListLayout.Padding = UDim.new(0, 10)
+playerListLayout.Parent = playerList
+
+local function createPlayerEntry(plr)
+    local entry = Instance.new("Frame")
+    entry.Size = UDim2.new(1, -20, 0, 70)
+    entry.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
+    entry.Position = UDim2.new(0, 10, 0, 0)
+    entry.Parent = playerList
+    
+    local entryCorner = Instance.new("UICorner")
+    entryCorner.CornerRadius = UDim.new(0, 10)
+    entryCorner.Parent = entry
+    
+    local avatar = Instance.new("ImageLabel")
+    avatar.Size = UDim2.new(0, 50, 0, 50)
+    avatar.Position = UDim2.new(0, 10, 0.5, -25)
+    avatar.BackgroundTransparency = 1
+    avatar.Image = "rbxthumb://type=AvatarHeadShot&id="..plr.UserId.."&w=150&h=150"
+    avatar.Parent = entry
+    
+    local nameLabel = Instance.new("TextLabel")
+    nameLabel.Size = UDim2.new(0.5, -70, 0, 25)
+    nameLabel.Position = UDim2.new(0, 70, 0, 10)
+    nameLabel.BackgroundTransparency = 1
+    nameLabel.Text = plr.Name
+    nameLabel.TextColor3 = Color3.fromRGB(220, 230, 255)
+    nameLabel.Font = Enum.Font.GothamMedium
+    nameLabel.TextSize = 16
+    nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    nameLabel.Parent = entry
+    
+    local healthLabel = Instance.new("TextLabel")
+    healthLabel.Size = UDim2.new(0.5, -70, 0, 20)
+    healthLabel.Position = UDim2.new(0, 70, 0, 35)
+    healthLabel.BackgroundTransparency = 1
+    healthLabel.Text = "❤️ Health: 100"
+    healthLabel.TextColor3 = Color3.fromRGB(180, 100, 100)
+    healthLabel.Font = Enum.Font.Gotham
+    healthLabel.TextSize = 14
+    healthLabel.TextXAlignment = Enum.TextXAlignment.Left
+    healthLabel.Parent = entry
+    
+    local teleportBtn = Instance.new("TextButton")
+    teleportBtn.Size = UDim2.new(0.3, -10, 0.5, -10)
+    teleportBtn.Position = UDim2.new(0.7, 0, 0.25, 0)
+    teleportBtn.BackgroundColor3 = Color3.fromRGB(40, 100, 180)
+    teleportBtn.Text = "TELEPORT"
+    teleportBtn.Font = Enum.Font.GothamBold
+    teleportBtn.TextSize = 12
+    teleportBtn.TextColor3 = Color3.new(1,1,1)
+    teleportBtn.Parent = entry
+    
+    teleportBtn.MouseButton1Click:Connect(function()
+        if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character.HumanoidRootPart.CFrame = plr.Character.HumanoidRootPart.CFrame
+        end
+    end)
+    
+    return entry
+end
+
+for _, plr in ipairs(Players:GetPlayers()) do
+    if plr ~= player then
+        createPlayerEntry(plr)
+    end
+end
+
+playerListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    playerList.CanvasSize = UDim2.new(0, 0, 0, playerListLayout.AbsoluteContentSize.Y + 20)
+end)
+
+local themeBtn = Instance.new("TextButton")
+themeBtn.Size = UDim2.new(0.4, 0, 0.1, 0)
+themeBtn.Position = UDim2.new(0.3, 0, 0.9, 0)
+themeBtn.BackgroundColor3 = Color3.fromRGB(60, 80, 120)
+themeBtn.Text = "ALTERNAR TEMA"
+themeBtn.Font = Enum.Font.GothamBold
+themeBtn.TextSize = 14
+themeBtn.TextColor3 = Color3.new(1,1,1)
+themeBtn.Parent = playerInfoContainer
+
+local isDarkTheme = true
+themeBtn.MouseButton1Click:Connect(function()
+    isDarkTheme = not isDarkTheme
+    if isDarkTheme then
+        main.BackgroundColor3 = Color3.fromRGB(10, 12, 18)
+        header.BackgroundColor3 = Color3.fromRGB(15, 18, 26)
+        footer.BackgroundColor3 = Color3.fromRGB(15, 18, 26)
+    else
+        main.BackgroundColor3 = Color3.fromRGB(230, 230, 240)
+        header.BackgroundColor3 = Color3.fromRGB(220, 220, 230)
+        footer.BackgroundColor3 = Color3.fromRGB(220, 220, 230)
+    end
+end)
+
+local function createNotification(title, message, color)
+    local notif = Instance.new("Frame")
+    notif.Size = UDim2.new(0, 300, 0, 80)
+    notif.Position = UDim2.new(1, 10, 1, -90)
+    notif.BackgroundColor3 = color
+    notif.Parent = gui
+    
+    local notifCorner = Instance.new("UICorner")
+    notifCorner.CornerRadius = UDim.new(0, 12)
+    notifCorner.Parent = notif
+    
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, -20, 0, 25)
+    titleLabel.Position = UDim2.new(0, 10, 0, 5)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Text = title
+    titleLabel.TextColor3 = Color3.new(1,1,1)
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.TextSize = 16
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.Parent = notif
+    
+    local msgLabel = Instance.new("TextLabel")
+    msgLabel.Size = UDim2.new(1, -20, 0, 40)
+    msgLabel.Position = UDim2.new(0, 10, 0, 30)
+    msgLabel.BackgroundTransparency = 1
+    msgLabel.Text = message
+    msgLabel.TextColor3 = Color3.new(1,1,1)
+    msgLabel.Font = Enum.Font.Gotham
+    msgLabel.TextSize = 14
+    msgLabel.TextXAlignment = Enum.TextXAlignment.Left
+    msgLabel.Parent = notif
+    
+    TweenService:Create(notif, TweenInfo.new(0.3), {Position = UDim2.new(1, -310, 1, -90)}):Play()
+    task.delay(3, function()
+        TweenService:Create(notif, TweenInfo.new(0.3), {Position = UDim2.new(1, 10, 1, -90)}):Play()
+        task.wait(0.3)
+        notif:Destroy()
+    end)
+end
+
+createNotification("Sistema Iniciado", "Quantum Spy Ultimate está ativo!", Color3.fromRGB(0, 120, 180))
+
+local glowEffect = Instance.new("BloomEffect")
+glowEffect.Intensity = 0.8
+glowEffect.Threshold = 0.7
+glowEffect.Size = 24
+glowEffect.Parent = Lighting
+
+local colorCorrection = Instance.new("ColorCorrectionEffect")
+colorCorrection.Brightness = 0.05
+colorCorrection.Contrast = 0.1
+colorCorrection.Parent = Lighting
