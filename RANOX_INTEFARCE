@@ -2206,7 +2206,8 @@ function Window:CreateColorPicker2(tabName, colorConfig)
                 
                 if distance <= colorWheelRadius then
                     local angle = math.atan2(-relative.Y, relative.X)
-                    if angle < 0 then angle += 2 * math.pi end
+                    angle = angle + math.pi
+                    if angle < 0 then angle = angle + 2 * math.pi end
                     
                     hue = angle / (2 * math.pi)
                     saturation = distance / colorWheelRadius
@@ -2215,7 +2216,8 @@ function Window:CreateColorPicker2(tabName, colorConfig)
                 else
                     local normalized = relative.Unit
                     local angle = math.atan2(-normalized.Y, normalized.X)
-                    if angle < 0 then angle += 2 * math.pi end
+                    angle = angle + math.pi
+                    if angle < 0 then angle = angle + 2 * math.pi end
                     
                     hue = angle / (2 * math.pi)
                     saturation = 1
