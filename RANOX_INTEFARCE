@@ -1720,14 +1720,12 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     pickerFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     pickerFrame.BorderSizePixel = 0
     pickerFrame.ClipsDescendants = true
-    local pickerCorner = Instance.new("UICorner", pickerFrame)
-    pickerCorner.CornerRadius = UDim.new(0, 6)
-
+    Instance.new("UICorner", pickerFrame).CornerRadius = UDim.new(0, 6)
     local header = Instance.new("Frame", pickerFrame)
-    header.Size = UDim2.new(1, 0, 0, 30)
+    header.Size = UDim2.new(1, 0, 1, 0)
     header.Position = UDim2.new(0, 0, 0, 0)
     header.BackgroundTransparency = 1
-
+    header.Name = "Header"
     local title = Instance.new("TextLabel", header)
     title.Size = UDim2.new(0.7, 0, 1, 0)
     title.Position = UDim2.new(0, 10, 0, 0)
@@ -1737,63 +1735,47 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     title.Font = Enum.Font.GothamSemibold
     title.TextSize = 14
     title.TextXAlignment = Enum.TextXAlignment.Left
-
     local preview = Instance.new("Frame", header)
     preview.Size = UDim2.new(0, 40, 0, 20)
     preview.Position = UDim2.new(1, -50, 0, 5)
     preview.BackgroundColor3 = colorConfig.Default or Color3.fromRGB(50, 50, 255)
-    local previewCorner = Instance.new("UICorner", preview)
-    previewCorner.CornerRadius = UDim.new(0, 4)
-    local previewStroke = Instance.new("UIStroke", preview)
-    previewStroke.Color = Color3.fromRGB(60, 60, 60)
-    previewStroke.Thickness = 1
-
-    local toggle = Instance.new("ImageButton", header)
+    preview.Name = "Preview"
+    Instance.new("UICorner", preview).CornerRadius = UDim.new(0, 4)
+    Instance.new("UIStroke", preview).Thickness = 1
+    local toggle = Instance.new("ImageLabel", header)
     toggle.Size = UDim2.new(0, 18, 0, 18)
     toggle.Position = UDim2.new(1, -25, 0, 6)
     toggle.BackgroundTransparency = 1
     toggle.Image = "rbxassetid://7072718162"
     toggle.ImageColor3 = Color3.fromRGB(150, 150, 150)
-
+    toggle.Name = "ToggleIcon"
     local content = Instance.new("Frame", pickerFrame)
     content.Size = UDim2.new(1, 0, 0, 0)
     content.Position = UDim2.new(0, 0, 0, 30)
     content.BackgroundTransparency = 1
     content.ClipsDescendants = true
-
+    content.Name = "Content"
     local colorWheelOuter = Instance.new("ImageButton", content)
     colorWheelOuter.Size = UDim2.new(0, 160, 0, 160)
     colorWheelOuter.Position = UDim2.new(0, 10, 0, 10)
     colorWheelOuter.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     colorWheelOuter.Image = "rbxassetid://14049212108"
-    local wheelCorner = Instance.new("UICorner", colorWheelOuter)
-    wheelCorner.CornerRadius = UDim.new(1, 0)
-    local wheelStroke = Instance.new("UIStroke", colorWheelOuter)
-    wheelStroke.Color = Color3.fromRGB(60, 60, 60)
-    wheelStroke.Thickness = 2
-
+    Instance.new("UICorner", colorWheelOuter).CornerRadius = UDim.new(1, 0)
+    Instance.new("UIStroke", colorWheelOuter).Thickness = 2
     local colorSelector = Instance.new("Frame", colorWheelOuter)
     colorSelector.Size = UDim2.new(0, 8, 0, 8)
     colorSelector.AnchorPoint = Vector2.new(0.5, 0.5)
     colorSelector.Position = UDim2.new(0.5, 0, 0.5, 0)
     colorSelector.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     colorSelector.BorderSizePixel = 0
-    local selectorCorner = Instance.new("UICorner", colorSelector)
-    selectorCorner.CornerRadius = UDim.new(1, 0)
-    local selectorStroke = Instance.new("UIStroke", colorSelector)
-    selectorStroke.Color = Color3.fromRGB(0, 0, 0)
-    selectorStroke.Thickness = 1
-
+    Instance.new("UICorner", colorSelector).CornerRadius = UDim.new(1, 0)
+    Instance.new("UIStroke", colorSelector).Thickness = 1
     local hueSlider = Instance.new("Frame", content)
     hueSlider.Size = UDim2.new(0, 20, 0, 160)
     hueSlider.Position = UDim2.new(0, 180, 0, 10)
     hueSlider.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    local hueCorner = Instance.new("UICorner", hueSlider)
-    hueCorner.CornerRadius = UDim.new(0, 3)
-    local hueStroke = Instance.new("UIStroke", hueSlider)
-    hueStroke.Color = Color3.fromRGB(60, 60, 60)
-    hueStroke.Thickness = 2
-
+    Instance.new("UICorner", hueSlider).CornerRadius = UDim.new(0, 3)
+    Instance.new("UIStroke", hueSlider).Thickness = 2
     local hueGradient = Instance.new("UIGradient", hueSlider)
     hueGradient.Color = ColorSequence.new({
         ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
@@ -1805,49 +1787,34 @@ function Window:CreateColorPicker2(tabName, colorConfig)
         ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0))
     })
     hueGradient.Rotation = 270
-
     local hueSelector = Instance.new("Frame", hueSlider)
     hueSelector.Size = UDim2.new(1, 4, 0, 4)
     hueSelector.AnchorPoint = Vector2.new(0.5, 0.5)
     hueSelector.Position = UDim2.new(0.5, 0, 0, 0)
     hueSelector.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     hueSelector.BorderSizePixel = 0
-    local hueSelectorCorner = Instance.new("UICorner", hueSelector)
-    hueSelectorCorner.CornerRadius = UDim.new(0, 2)
-    local hueSelectorStroke = Instance.new("UIStroke", hueSelector)
-    hueSelectorStroke.Color = Color3.fromRGB(0, 0, 0)
-    hueSelectorStroke.Thickness = 1
-
+    Instance.new("UICorner", hueSelector).CornerRadius = UDim.new(0, 2)
+    Instance.new("UIStroke", hueSelector).Thickness = 1
     local controlsFrame = Instance.new("Frame", content)
     controlsFrame.Size = UDim2.new(1, -200, 0, 160)
     controlsFrame.Position = UDim2.new(0, 200, 0, 10)
     controlsFrame.BackgroundTransparency = 1
-
     local newPreview = Instance.new("Frame", controlsFrame)
     newPreview.Size = UDim2.new(1, 0, 0, 30)
     newPreview.Position = UDim2.new(0, 0, 0, 0)
     newPreview.BackgroundColor3 = colorConfig.Default or Color3.fromRGB(50, 50, 255)
-    local newPreviewCorner = Instance.new("UICorner", newPreview)
-    newPreviewCorner.CornerRadius = UDim.new(0, 4)
-    local newPreviewStroke = Instance.new("UIStroke", newPreview)
-    newPreviewStroke.Color = Color3.fromRGB(60, 60, 60)
-    newPreviewStroke.Thickness = 1
-
+    Instance.new("UICorner", newPreview).CornerRadius = UDim.new(0, 4)
+    Instance.new("UIStroke", newPreview).Thickness = 1
     local oldPreview = Instance.new("Frame", controlsFrame)
     oldPreview.Size = UDim2.new(1, 0, 0, 30)
     oldPreview.Position = UDim2.new(0, 0, 0, 40)
     oldPreview.BackgroundColor3 = colorConfig.Default or Color3.fromRGB(50, 50, 255)
-    local oldPreviewCorner = Instance.new("UICorner", oldPreview)
-    oldPreviewCorner.CornerRadius = UDim.new(0, 4)
-    local oldPreviewStroke = Instance.new("UIStroke", oldPreview)
-    oldPreviewStroke.Color = Color3.fromRGB(60, 60, 60)
-    oldPreviewStroke.Thickness = 1
-
+    Instance.new("UICorner", oldPreview).CornerRadius = UDim.new(0, 4)
+    Instance.new("UIStroke", oldPreview).Thickness = 1
     local inputGrid = Instance.new("Frame", controlsFrame)
     inputGrid.Size = UDim2.new(1, 0, 0, 70)
     inputGrid.Position = UDim2.new(0, 0, 0, 90)
     inputGrid.BackgroundTransparency = 1
-
     local rgbLabel = Instance.new("TextLabel", inputGrid)
     rgbLabel.Size = UDim2.new(0.3, -5, 0, 20)
     rgbLabel.Position = UDim2.new(0, 0, 0, 0)
@@ -1857,7 +1824,6 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     rgbLabel.Font = Enum.Font.Gotham
     rgbLabel.TextSize = 12
     rgbLabel.TextXAlignment = Enum.TextXAlignment.Left
-
     local rgbBox = Instance.new("TextBox", inputGrid)
     rgbBox.Size = UDim2.new(0.7, 0, 0, 20)
     rgbBox.Position = UDim2.new(0.3, 5, 0, 0)
@@ -1867,12 +1833,8 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     rgbBox.TextSize = 12
     rgbBox.Text = "50, 50, 255"
     rgbBox.PlaceholderText = "R, G, B"
-    local rgbBoxCorner = Instance.new("UICorner", rgbBox)
-    rgbBoxCorner.CornerRadius = UDim.new(0, 4)
-    local rgbBoxStroke = Instance.new("UIStroke", rgbBox)
-    rgbBoxStroke.Color = Color3.fromRGB(60, 60, 60)
-    rgbBoxStroke.Thickness = 1
-
+    Instance.new("UICorner", rgbBox).CornerRadius = UDim.new(0, 4)
+    Instance.new("UIStroke", rgbBox).Thickness = 1
     local hexLabel = Instance.new("TextLabel", inputGrid)
     hexLabel.Size = UDim2.new(0.3, -5, 0, 20)
     hexLabel.Position = UDim2.new(0, 0, 0, 25)
@@ -1882,7 +1844,6 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     hexLabel.Font = Enum.Font.Gotham
     hexLabel.TextSize = 12
     hexLabel.TextXAlignment = Enum.TextXAlignment.Left
-
     local hexBox = Instance.new("TextBox", inputGrid)
     hexBox.Size = UDim2.new(0.7, 0, 0, 20)
     hexBox.Position = UDim2.new(0.3, 5, 0, 25)
@@ -1892,12 +1853,8 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     hexBox.TextSize = 12
     hexBox.Text = "#3232FF"
     hexBox.PlaceholderText = "#RRGGBB"
-    local hexBoxCorner = Instance.new("UICorner", hexBox)
-    hexBoxCorner.CornerRadius = UDim.new(0, 4)
-    local hexBoxStroke = Instance.new("UIStroke", hexBox)
-    hexBoxStroke.Color = Color3.fromRGB(60, 60, 60)
-    hexBoxStroke.Thickness = 1
-
+    Instance.new("UICorner", hexBox).CornerRadius = UDim.new(0, 4)
+    Instance.new("UIStroke", hexBox).Thickness = 1
     local hsvLabel = Instance.new("TextLabel", inputGrid)
     hsvLabel.Size = UDim2.new(0.3, -5, 0, 20)
     hsvLabel.Position = UDim2.new(0, 0, 0, 50)
@@ -1907,7 +1864,6 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     hsvLabel.Font = Enum.Font.Gotham
     hsvLabel.TextSize = 12
     hsvLabel.TextXAlignment = Enum.TextXAlignment.Left
-
     local hsvBox = Instance.new("TextBox", inputGrid)
     hsvBox.Size = UDim2.new(0.7, 0, 0, 20)
     hsvBox.Position = UDim2.new(0.3, 5, 0, 50)
@@ -1917,17 +1873,12 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     hsvBox.TextSize = 12
     hsvBox.Text = "240, 80, 100"
     hsvBox.PlaceholderText = "H, S, V"
-    local hsvBoxCorner = Instance.new("UICorner", hsvBox)
-    hsvBoxCorner.CornerRadius = UDim.new(0, 4)
-    local hsvBoxStroke = Instance.new("UIStroke", hsvBox)
-    hsvBoxStroke.Color = Color3.fromRGB(60, 60, 60)
-    hsvBoxStroke.Thickness = 1
-
+    Instance.new("UICorner", hsvBox).CornerRadius = UDim.new(0, 4)
+    Instance.new("UIStroke", hsvBox).Thickness = 1
     local actionButtons = Instance.new("Frame", content)
     actionButtons.Size = UDim2.new(1, -20, 0, 30)
     actionButtons.Position = UDim2.new(0, 10, 0, 190)
     actionButtons.BackgroundTransparency = 1
-
     local randomButton = Instance.new("TextButton", actionButtons)
     randomButton.Size = UDim2.new(0.5, -5, 1, 0)
     randomButton.Position = UDim2.new(0, 0, 0, 0)
@@ -1936,12 +1887,8 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     randomButton.TextColor3 = Color3.fromRGB(220, 220, 220)
     randomButton.Font = Enum.Font.Gotham
     randomButton.TextSize = 12
-    local randomCorner = Instance.new("UICorner", randomButton)
-    randomCorner.CornerRadius = UDim.new(0, 4)
-    local randomStroke = Instance.new("UIStroke", randomButton)
-    randomStroke.Color = Color3.fromRGB(60, 60, 60)
-    randomStroke.Thickness = 1
-
+    Instance.new("UICorner", randomButton).CornerRadius = UDim.new(0, 4)
+    Instance.new("UIStroke", randomButton).Thickness = 1
     local saveButton = Instance.new("TextButton", actionButtons)
     saveButton.Size = UDim2.new(0.5, -5, 1, 0)
     saveButton.Position = UDim2.new(0.5, 5, 0, 0)
@@ -1950,12 +1897,8 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     saveButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     saveButton.Font = Enum.Font.GothamSemibold
     saveButton.TextSize = 12
-    local saveCorner = Instance.new("UICorner", saveButton)
-    saveCorner.CornerRadius = UDim.new(0, 4)
-    local saveStroke = Instance.new("UIStroke", saveButton)
-    saveStroke.Color = Color3.fromRGB(80, 80, 150)
-    saveStroke.Thickness = 1
-
+    Instance.new("UICorner", saveButton).CornerRadius = UDim.new(0, 4)
+    Instance.new("UIStroke", saveButton).Thickness = 1
     local rainbowButton = Instance.new("TextButton", content)
     rainbowButton.Size = UDim2.new(1, -20, 0, 30)
     rainbowButton.Position = UDim2.new(0, 10, 0, 230)
@@ -1964,174 +1907,179 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     rainbowButton.TextColor3 = Color3.fromRGB(220, 220, 220)
     rainbowButton.Font = Enum.Font.Gotham
     rainbowButton.TextSize = 12
-    local rainbowCorner = Instance.new("UICorner", rainbowButton)
-    rainbowCorner.CornerRadius = UDim.new(0, 4)
-    local rainbowStroke = Instance.new("UIStroke", rainbowButton)
-    rainbowStroke.Color = Color3.fromRGB(60, 60, 60)
-    rainbowStroke.Thickness = 1
-
+    Instance.new("UICorner", rainbowButton).CornerRadius = UDim.new(0, 4)
+    Instance.new("UIStroke", rainbowButton).Thickness = 1
     local currentColor = colorConfig.Default or Color3.fromRGB(50, 50, 255)
     local savedColor = currentColor
     local hue = 0
     local saturation = 1
     local value = 1
     local isRainbow = false
-
+    local isOpen = false
+    local lastInteraction = 0
     local function updateColor()
         currentColor = Color3.fromHSV(hue, saturation, value)
         preview.BackgroundColor3 = currentColor
         newPreview.BackgroundColor3 = currentColor
         oldPreview.BackgroundColor3 = savedColor
-        
         local r, g, b = math.floor(currentColor.R * 255), math.floor(currentColor.G * 255), math.floor(currentColor.B * 255)
         rgbBox.Text = string.format("%d, %d, %d", r, g, b)
-        
         hexBox.Text = string.format("#%02X%02X%02X", r, g, b)
-        
         local h, s, v = math.floor(hue * 360), math.floor(saturation * 100), math.floor(value * 100)
         hsvBox.Text = string.format("%d, %d, %d", h, s, v)
-        
         if colorConfig.Callback then
             colorConfig.Callback(currentColor)
         end
     end
-
     local function setHue(newHue)
         hue = math.clamp(newHue, 0, 1)
         hueSelector.Position = UDim2.new(0.5, 0, hue, 0)
         updateColor()
     end
-
     local function setSaturationValue(newSaturation, newValue)
         saturation = math.clamp(newSaturation, 0, 1)
         value = math.clamp(newValue, 0, 1)
-        
         local radius = colorWheelOuter.AbsoluteSize.X / 2
         local center = Vector2.new(
             colorWheelOuter.AbsolutePosition.X + radius,
             colorWheelOuter.AbsolutePosition.Y + radius
         )
-        
         local angle = hue * 2 * math.pi
         local satRadius = saturation * radius
         local posX = center.X + math.cos(angle) * satRadius
         local posY = center.Y - math.sin(angle) * satRadius
-        
         colorSelector.Position = UDim2.new(0, posX - colorWheelOuter.AbsolutePosition.X, 0, posY - colorWheelOuter.AbsolutePosition.Y)
         updateColor()
     end
-
     local function setFromRGB(r, g, b)
         r = math.clamp(r, 0, 255) / 255
         g = math.clamp(g, 0, 255) / 255
         b = math.clamp(b, 0, 255) / 255
-        
         local h, s, v = Color3.toHSV(Color3.new(r, g, b))
         hue = h
         saturation = s
         value = v
-        
         hueSelector.Position = UDim2.new(0.5, 0, hue, 0)
-        
         local radius = colorWheelOuter.AbsoluteSize.X / 2
         local center = Vector2.new(
             colorWheelOuter.AbsolutePosition.X + radius,
             colorWheelOuter.AbsolutePosition.Y + radius
         )
-        
         local angle = hue * 2 * math.pi
         local satRadius = saturation * radius
         local posX = center.X + math.cos(angle) * satRadius
         local posY = center.Y - math.sin(angle) * satRadius
-        
         colorSelector.Position = UDim2.new(0, posX - colorWheelOuter.AbsolutePosition.X, 0, posY - colorWheelOuter.AbsolutePosition.Y)
         updateColor()
     end
-
     local function setFromHSV(h, s, v)
         hue = math.clamp(h, 0, 360) / 360
         saturation = math.clamp(s, 0, 100) / 100
         value = math.clamp(v, 0, 100) / 100
-        
         hueSelector.Position = UDim2.new(0.5, 0, hue, 0)
-        
         local radius = colorWheelOuter.AbsoluteSize.X / 2
         local center = Vector2.new(
             colorWheelOuter.AbsolutePosition.X + radius,
             colorWheelOuter.AbsolutePosition.Y + radius
         )
-        
         local angle = hue * 2 * math.pi
         local satRadius = saturation * radius
         local posX = center.X + math.cos(angle) * satRadius
         local posY = center.Y - math.sin(angle) * satRadius
-        
         colorSelector.Position = UDim2.new(0, posX - colorWheelOuter.AbsolutePosition.X, 0, posY - colorWheelOuter.AbsolutePosition.Y)
         updateColor()
     end
-
     local function setFromHex(hex)
         hex = hex:gsub("#", "")
         if #hex ~= 6 then return end
-        
         local r = tonumber(hex:sub(1, 2), 16)
         local g = tonumber(hex:sub(3, 4), 16)
         local b = tonumber(hex:sub(5, 6), 16)
-        
         if r and g and b then
             setFromRGB(r, g, b)
         end
     end
-
     setFromRGB(50, 50, 255)
-
+    local function openPicker()
+        if isOpen then return end
+        isOpen = true
+        game:GetService("TweenService"):Create(content, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 0, 270)}):Play()
+        game:GetService("TweenService"):Create(pickerFrame, TweenInfo.new(0.3), {Size = UDim2.new(1, -20, 0, 300)}):Play()
+        toggle.Rotation = 180
+        lastInteraction = os.time()
+    end
+    local function closePicker()
+        if not isOpen then return end
+        isOpen = false
+        game:GetService("TweenService"):Create(content, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 0, 0)}):Play()
+        game:GetService("TweenService"):Create(pickerFrame, TweenInfo.new(0.3), {Size = UDim2.new(1, -20, 0, 30)}):Play()
+        toggle.Rotation = 0
+    end
+    local function trackInteraction()
+        lastInteraction = os.time()
+    end
+    header.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if isOpen then
+                closePicker()
+            else
+                openPicker()
+            end
+            trackInteraction()
+        end
+    end)
+    spawn(function()
+        while true do
+            if isOpen and (os.time() - lastInteraction) > 4 then
+                closePicker()
+            end
+            task.wait(0.5)
+        end
+    end)
     colorWheelOuter.MouseButton1Down:Connect(function(x, y)
+        openPicker()
+        trackInteraction()
         local radius = colorWheelOuter.AbsoluteSize.X / 2
         local center = Vector2.new(
             colorWheelOuter.AbsolutePosition.X + radius,
             colorWheelOuter.AbsolutePosition.Y + radius
         )
-        
-        while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
-            local mousePos = UserInputService:GetMouseLocation()
+        while game:GetService("UserInputService"):IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
+            local mousePos = game:GetService("UserInputService"):GetMouseLocation()
             local relative = mousePos - center
             local distance = relative.Magnitude
-            
             if distance <= radius then
                 local angle = math.atan2(-relative.Y, relative.X)
                 if angle < 0 then angle += 2 * math.pi end
-                
                 hue = angle / (2 * math.pi)
                 saturation = distance / radius
-                
                 setSaturationValue(saturation, value)
             else
                 local normalized = relative.Unit
                 local angle = math.atan2(-normalized.Y, normalized.X)
                 if angle < 0 then angle += 2 * math.pi end
-                
                 hue = angle / (2 * math.pi)
                 saturation = 1
-                
                 setSaturationValue(saturation, value)
             end
-            
+            trackInteraction()
             task.wait()
         end
     end)
-
     hueSlider.MouseButton1Down:Connect(function()
-        while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
-            local mousePos = UserInputService:GetMouseLocation()
+        openPicker()
+        trackInteraction()
+        while game:GetService("UserInputService"):IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
+            local mousePos = game:GetService("UserInputService"):GetMouseLocation()
             local relativeY = mousePos.Y - hueSlider.AbsolutePosition.Y
             local percent = math.clamp(relativeY / hueSlider.AbsoluteSize.Y, 0, 1)
-            
             setHue(percent)
+            trackInteraction()
             task.wait()
         end
     end)
-
     rgbBox.FocusLost:Connect(function()
+        trackInteraction()
         local r, g, b = rgbBox.Text:match("(%d+),%s*(%d+),%s*(%d+)")
         if r and g and b then
             setFromRGB(tonumber(r), tonumber(g), tonumber(b))
@@ -2139,12 +2087,12 @@ function Window:CreateColorPicker2(tabName, colorConfig)
             updateColor()
         end
     end)
-
     hexBox.FocusLost:Connect(function()
+        trackInteraction()
         setFromHex(hexBox.Text)
     end)
-
     hsvBox.FocusLost:Connect(function()
+        trackInteraction()
         local h, s, v = hsvBox.Text:match("(%d+),%s*(%d+),%s*(%d+)")
         if h and s and v then
             setFromHSV(tonumber(h), tonumber(s), tonumber(v))
@@ -2152,24 +2100,23 @@ function Window:CreateColorPicker2(tabName, colorConfig)
             updateColor()
         end
     end)
-
     randomButton.MouseButton1Click:Connect(function()
+        trackInteraction()
         setFromRGB(math.random(0, 255), math.random(0, 255), math.random(0, 255))
     end)
-
     saveButton.MouseButton1Click:Connect(function()
+        trackInteraction()
         savedColor = currentColor
         oldPreview.BackgroundColor3 = savedColor
     end)
-
     rainbowButton.MouseButton1Click:Connect(function()
+        trackInteraction()
         isRainbow = not isRainbow
         rainbowButton.Text = isRainbow and "Rainbow Effect [ON]" or "Rainbow Effect [OFF]"
-        
         if isRainbow then
             spawn(function()
                 local time = 0
-                while isRainbow do
+                while isRainbow and isOpen do
                     time = time + 0.01
                     if time > 1 then time = 0 end
                     setHue(time)
@@ -2178,19 +2125,16 @@ function Window:CreateColorPicker2(tabName, colorConfig)
             end)
         end
     end)
-
-    toggle.MouseButton1Click:Connect(function()
-        if content.Size.Y.Offset > 0 then
-            game:GetService("TweenService"):Create(content, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 0, 0)}):Play()
-            game:GetService("TweenService"):Create(pickerFrame, TweenInfo.new(0.3), {Size = UDim2.new(1, -20, 0, 30)}):Play()
-            toggle.Rotation = 0
-        else
-            game:GetService("TweenService"):Create(content, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 0, 270)}):Play()
-            game:GetService("TweenService"):Create(pickerFrame, TweenInfo.new(0.3), {Size = UDim2.new(1, -20, 0, 300)}):Play()
-            toggle.Rotation = 180
+    preview.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if isOpen then
+                closePicker()
+            else
+                openPicker()
+            end
+            trackInteraction()
         end
     end)
-
     local function updateVisuals()
         local theme = settings().Theme
         pickerFrame.BackgroundColor3 = theme.Element
@@ -2213,8 +2157,18 @@ function Window:CreateColorPicker2(tabName, colorConfig)
         randomButton.TextColor3 = theme.TextPrimary
         saveButton.TextColor3 = theme.TextPrimary
         rainbowButton.TextColor3 = theme.TextPrimary
+        hueStroke.Color = theme.Border
+        wheelStroke.Color = theme.Border
+        previewStroke.Color = theme.Border
+        newPreviewStroke.Color = theme.Border
+        oldPreviewStroke.Color = theme.Border
+        rgbBoxStroke.Color = theme.Border
+        hexBoxStroke.Color = theme.Border
+        hsvBoxStroke.Color = theme.Border
+        randomStroke.Color = theme.Border
+        saveStroke.Color = theme.Border
+        rainbowStroke.Color = theme.Border
     end
-
     updateVisuals()
     settings().ThemeChanged:Connect(updateVisuals)
 end
