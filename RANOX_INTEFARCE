@@ -1784,7 +1784,6 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     colorWheelOuter.Image = "rbxassetid://6020299385"
     colorWheelOuter.ImageColor3 = Color3.fromRGB(255, 255, 255)
     colorWheelOuter.ScaleType = Enum.ScaleType.Fit
-    colorWheelOuter.Rotation = 1
     colorWheelOuter.Name = "ColorWheel"
     local wheelCorner = Instance.new("UICorner", colorWheelOuter)
     wheelCorner.CornerRadius = UDim.new(1, 0)
@@ -2205,21 +2204,15 @@ function Window:CreateColorPicker2(tabName, colorConfig)
                 local distance = relative.Magnitude
                 
                 if distance <= colorWheelRadius then
-                    local angle = math.atan2(-relative.Y, relative.X)
-                    angle = angle + math.pi
-                    if angle < 0 then angle = angle + 2 * math.pi end
-                    
-                    hue = angle / (2 * math.pi)
+                    local angle = math.atan2(relative.Y, relative.X)
+                    hue = (angle + math.pi) / (2 * math.pi)
                     saturation = distance / colorWheelRadius
                     
                     setSaturationValue(saturation, value)
                 else
                     local normalized = relative.Unit
-                    local angle = math.atan2(-normalized.Y, normalized.X)
-                    angle = angle + math.pi
-                    if angle < 0 then angle = angle + 2 * math.pi end
-                    
-                    hue = angle / (2 * math.pi)
+                    local angle = math.atan2(normalized.Y, normalized.X)
+                    hue = (angle + math.pi) / (2 * math.pi)
                     saturation = 1
                     
                     setSaturationValue(saturation, value)
