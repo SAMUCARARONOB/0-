@@ -1746,7 +1746,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
 
     local preview = Instance.new("Frame", header)
     preview.Size = UDim2.new(0, 42, 0, 22)
-    preview.Position = UDim2.new(1, -52, 0, 5)
+    preview.Position = UDim2.new(0.5, -21, 0, 5)
     preview.BackgroundColor3 = colorConfig.Default or Color3.fromRGB(50, 50, 255)
     preview.Name = "Preview"
     local previewCorner = Instance.new("UICorner", preview)
@@ -1756,13 +1756,13 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     previewStroke.Thickness = 1
     preview.ZIndex = 2
 
-    local toggle = Instance.new("ImageLabel", header)
-    toggle.Size = UDim2.new(0, 18, 0, 18)
-    toggle.Position = UDim2.new(1, -28, 0, 7)
+    local toggle = Instance.new("ImageButton", header)
+    toggle.Size = UDim2.new(0, 20, 0, 20)
+    toggle.Position = UDim2.new(1, -30, 0, 6)
     toggle.BackgroundTransparency = 1
     toggle.Image = "rbxassetid://7072718162"
     toggle.ImageColor3 = Color3.fromRGB(180, 180, 180)
-    toggle.Name = "ToggleIcon"
+    toggle.Name = "ToggleButton"
     toggle.ZIndex = 2
 
     local content = Instance.new("Frame", pickerFrame)
@@ -1773,15 +1773,16 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     content.Name = "Content"
 
     local wheelContainer = Instance.new("Frame", content)
-    wheelContainer.Size = UDim2.new(0, 180, 0, 180)
-    wheelContainer.Position = UDim2.new(0, 10, 0, 10)
+    wheelContainer.Size = UDim2.new(0, 200, 0, 200)
+    wheelContainer.Position = UDim2.new(0.5, -100, 0, 10)
     wheelContainer.BackgroundTransparency = 1
 
     local colorWheelOuter = Instance.new("ImageButton", wheelContainer)
     colorWheelOuter.Size = UDim2.new(1, 0, 1, 0)
     colorWheelOuter.Position = UDim2.new(0, 0, 0, 0)
     colorWheelOuter.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    colorWheelOuter.Image = "rbxassetid://2617280895"
+    colorWheelOuter.Image = "rbxassetid://6020299385"
+    colorWheelOuter.ImageColor3 = Color3.fromRGB(255, 255, 255)
     colorWheelOuter.ScaleType = Enum.ScaleType.Fit
     colorWheelOuter.Name = "ColorWheel"
     local wheelCorner = Instance.new("UICorner", colorWheelOuter)
@@ -1791,7 +1792,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     wheelStroke.Thickness = 2
 
     local colorSelector = Instance.new("Frame", colorWheelOuter)
-    colorSelector.Size = UDim2.new(0, 14, 0, 14)
+    colorSelector.Size = UDim2.new(0, 16, 0, 16)
     colorSelector.AnchorPoint = Vector2.new(0.5, 0.5)
     colorSelector.Position = UDim2.new(0.5, 0, 0.5, 0)
     colorSelector.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -1804,13 +1805,13 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     selectorStroke.Thickness = 2
 
     local hueSliderContainer = Instance.new("Frame", content)
-    hueSliderContainer.Size = UDim2.new(0, 30, 0, 180)
-    hueSliderContainer.Position = UDim2.new(0, 200, 0, 10)
+    hueSliderContainer.Size = UDim2.new(0, 30, 0, 200)
+    hueSliderContainer.Position = UDim2.new(0.5, 110, 0, 10)
     hueSliderContainer.BackgroundTransparency = 1
 
     local hueSlider = Instance.new("Frame", hueSliderContainer)
-    hueSlider.Size = UDim2.new(0, 22, 0, 180)
-    hueSlider.Position = UDim2.new(0.5, -11, 0, 0)
+    hueSlider.Size = UDim2.new(0, 24, 0, 200)
+    hueSlider.Position = UDim2.new(0.5, -12, 0, 0)
     hueSlider.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
     hueSlider.Name = "HueSlider"
     local hueCorner = Instance.new("UICorner", hueSlider)
@@ -1832,7 +1833,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     hueGradient.Rotation = 270
 
     local hueSelector = Instance.new("Frame", hueSlider)
-    hueSelector.Size = UDim2.new(1, 4, 0, 6)
+    hueSelector.Size = UDim2.new(1, 4, 0, 8)
     hueSelector.AnchorPoint = Vector2.new(0.5, 0.5)
     hueSelector.Position = UDim2.new(0.5, 0, 0, 0)
     hueSelector.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -1845,13 +1846,13 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     hueSelectorStroke.Thickness = 1
 
     local controlsFrame = Instance.new("Frame", content)
-    controlsFrame.Size = UDim2.new(1, -240, 0, 180)
-    controlsFrame.Position = UDim2.new(0, 240, 0, 10)
+    controlsFrame.Size = UDim2.new(1, -40, 0, 100)
+    controlsFrame.Position = UDim2.new(0, 20, 0, 220)
     controlsFrame.BackgroundTransparency = 1
     controlsFrame.Name = "Controls"
 
     local previewLabelNew = Instance.new("TextLabel", controlsFrame)
-    previewLabelNew.Size = UDim2.new(1, 0, 0, 16)
+    previewLabelNew.Size = UDim2.new(0.5, -5, 0, 16)
     previewLabelNew.Position = UDim2.new(0, 0, 0, 0)
     previewLabelNew.BackgroundTransparency = 1
     previewLabelNew.Text = "Current Color"
@@ -1861,7 +1862,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     previewLabelNew.TextXAlignment = Enum.TextXAlignment.Left
 
     local newPreview = Instance.new("Frame", controlsFrame)
-    newPreview.Size = UDim2.new(1, 0, 0, 26)
+    newPreview.Size = UDim2.new(0.5, -5, 0, 26)
     newPreview.Position = UDim2.new(0, 0, 0, 16)
     newPreview.BackgroundColor3 = colorConfig.Default or Color3.fromRGB(50, 50, 255)
     newPreview.Name = "NewPreview"
@@ -1872,8 +1873,8 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     newPreviewStroke.Thickness = 1
 
     local previewLabelOld = Instance.new("TextLabel", controlsFrame)
-    previewLabelOld.Size = UDim2.new(1, 0, 0, 16)
-    previewLabelOld.Position = UDim2.new(0, 0, 0, 46)
+    previewLabelOld.Size = UDim2.new(0.5, -5, 0, 16)
+    previewLabelOld.Position = UDim2.new(0.5, 5, 0, 0)
     previewLabelOld.BackgroundTransparency = 1
     previewLabelOld.Text = "Saved Color"
     previewLabelOld.TextColor3 = Color3.fromRGB(180, 180, 180)
@@ -1882,8 +1883,8 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     previewLabelOld.TextXAlignment = Enum.TextXAlignment.Left
 
     local oldPreview = Instance.new("Frame", controlsFrame)
-    oldPreview.Size = UDim2.new(1, 0, 0, 26)
-    oldPreview.Position = UDim2.new(0, 0, 0, 62)
+    oldPreview.Size = UDim2.new(0.5, -5, 0, 26)
+    oldPreview.Position = UDim2.new(0.5, 5, 0, 16)
     oldPreview.BackgroundColor3 = colorConfig.Default or Color3.fromRGB(50, 50, 255)
     oldPreview.Name = "OldPreview"
     local oldPreviewCorner = Instance.new("UICorner", oldPreview)
@@ -1894,7 +1895,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
 
     local inputGrid = Instance.new("Frame", content)
     inputGrid.Size = UDim2.new(1, -20, 0, 100)
-    inputGrid.Position = UDim2.new(0, 10, 0, 200)
+    inputGrid.Position = UDim2.new(0, 10, 0, 330)
     inputGrid.BackgroundTransparency = 1
     inputGrid.Name = "InputGrid"
 
@@ -1975,7 +1976,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
 
     local actionButtons = Instance.new("Frame", content)
     actionButtons.Size = UDim2.new(1, -20, 0, 32)
-    actionButtons.Position = UDim2.new(0, 10, 0, 310)
+    actionButtons.Position = UDim2.new(0, 10, 0, 440)
     actionButtons.BackgroundTransparency = 1
     actionButtons.Name = "ActionButtons"
 
@@ -2011,7 +2012,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
 
     local rainbowButton = Instance.new("TextButton", content)
     rainbowButton.Size = UDim2.new(1, -20, 0, 32)
-    rainbowButton.Position = UDim2.new(0, 10, 0, 350)
+    rainbowButton.Position = UDim2.new(0, 10, 0, 480)
     rainbowButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     rainbowButton.Text = "Rainbow Effect: OFF"
     rainbowButton.TextColor3 = Color3.fromRGB(220, 220, 220)
@@ -2032,10 +2033,12 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     local isRainbow = false
     local isOpen = false
     local lastInteraction = 0
-    local colorWheelSize = 180
+    local colorWheelSize = 200
     local colorWheelRadius = colorWheelSize / 2
     local isDraggingColor = false
     local isDraggingHue = false
+    local TweenService = game:GetService("TweenService")
+    local UserInputService = game:GetService("UserInputService")
 
     local function updateColor()
         currentColor = Color3.fromHSV(hue, saturation, value)
@@ -2136,8 +2139,8 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     local function openPicker()
         if isOpen then return end
         isOpen = true
-        game:GetService("TweenService"):Create(content, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(1, 0, 0, 390)}):Play()
-        game:GetService("TweenService"):Create(pickerFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(1, -20, 0, 422)}):Play()
+        TweenService:Create(content, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(1, 0, 0, 520)}):Play()
+        TweenService:Create(pickerFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(1, -20, 0, 552)}):Play()
         toggle.Rotation = 180
         lastInteraction = os.time()
     end
@@ -2145,8 +2148,8 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     local function closePicker()
         if not isOpen then return end
         isOpen = false
-        game:GetService("TweenService"):Create(content, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(1, 0, 0, 0)}):Play()
-        game:GetService("TweenService"):Create(pickerFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(1, -20, 0, 32)}):Play()
+        TweenService:Create(content, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(1, 0, 0, 0)}):Play()
+        TweenService:Create(pickerFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(1, -20, 0, 32)}):Play()
         toggle.Rotation = 0
     end
 
@@ -2154,15 +2157,13 @@ function Window:CreateColorPicker2(tabName, colorConfig)
         lastInteraction = os.time()
     end
 
-    header.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            if isOpen then
-                closePicker()
-            else
-                openPicker()
-            end
-            trackInteraction()
+    toggle.MouseButton1Click:Connect(function()
+        if isOpen then
+            closePicker()
+        else
+            openPicker()
         end
+        trackInteraction()
     end)
 
     preview.InputBegan:Connect(function(input)
@@ -2198,7 +2199,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
             )
             
             while isDraggingColor do
-                local mousePos = game:GetService("UserInputService"):GetMouseLocation()
+                local mousePos = UserInputService:GetMouseLocation()
                 local relative = mousePos - center
                 local distance = relative.Magnitude
                 
@@ -2226,7 +2227,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
         end
     end)
 
-    game:GetService("UserInputService").InputEnded:Connect(function(input)
+    UserInputService.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             isDraggingColor = false
             isDraggingHue = false
@@ -2240,7 +2241,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
             isDraggingHue = true
             
             while isDraggingHue do
-                local mousePos = game:GetService("UserInputService"):GetMouseLocation()
+                local mousePos = UserInputService:GetMouseLocation()
                 local relativeY = mousePos.Y - hueSlider.AbsolutePosition.Y
                 local percent = math.clamp(relativeY / hueSlider.AbsoluteSize.Y, 0, 1)
                 
@@ -2309,17 +2310,14 @@ function Window:CreateColorPicker2(tabName, colorConfig)
         if isRainbow then
             spawn(function()
                 local time = 0
-                while isRainbow and isOpen do
+                while isRainbow do
                     time = time + 0.02
                     if time > 1 then time = 0 end
                     setHue(time)
                     task.wait(0.05)
                 end
-                if not isOpen then
-                    isRainbow = false
-                    rainbowButton.Text = "Rainbow Effect: OFF"
-                    rainbowButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-                end
+                rainbowButton.Text = "Rainbow Effect: OFF"
+                rainbowButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
             end)
         end
     end)
