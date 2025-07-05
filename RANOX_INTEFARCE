@@ -1713,26 +1713,25 @@ end
 function Window:CreateColorPicker2(tabName, colorConfig)
     local tab = pages[tabName]
     if not tab then return end
-    
+
     local pickerFrame = Instance.new("Frame", tab)
     pickerFrame.Size = UDim2.new(1, -20, 0, 32)
     pickerFrame.Position = UDim2.new(0, 10, 0, 0)
     pickerFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     pickerFrame.BorderSizePixel = 0
     pickerFrame.ClipsDescendants = true
-    
-    local UICorner = Instance.new("UICorner", pickerFrame)
-    UICorner.CornerRadius = UDim.new(0, 6)
-    
-    local UIStroke = Instance.new("UIStroke", pickerFrame)
-    UIStroke.Color = Color3.fromRGB(50, 50, 50)
-    UIStroke.Thickness = 1
+    local pickerCorner = Instance.new("UICorner", pickerFrame)
+    pickerCorner.CornerRadius = UDim.new(0, 6)
+    local pickerStroke = Instance.new("UIStroke", pickerFrame)
+    pickerStroke.Color = Color3.fromRGB(50, 50, 50)
+    pickerStroke.Thickness = 1
 
-    -- Header
     local header = Instance.new("Frame", pickerFrame)
     header.Size = UDim2.new(1, 0, 1, 0)
+    header.Position = UDim2.new(0, 0, 0, 0)
     header.BackgroundTransparency = 1
     header.Name = "Header"
+    header.Active = true
 
     local title = Instance.new("TextLabel", header)
     title.Size = UDim2.new(0.7, 0, 1, 0)
@@ -1743,25 +1742,29 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     title.Font = Enum.Font.GothamSemibold
     title.TextSize = 14
     title.TextXAlignment = Enum.TextXAlignment.Left
+    title.Name = "Title"
 
     local preview = Instance.new("Frame", header)
     preview.Size = UDim2.new(0, 42, 0, 22)
     preview.Position = UDim2.new(1, -52, 0, 5)
     preview.BackgroundColor3 = colorConfig.Default or Color3.fromRGB(50, 50, 255)
     preview.Name = "Preview"
-    
-    Instance.new("UICorner", preview).CornerRadius = UDim.new(0, 4)
-    Instance.new("UIStroke", preview).Color = Color3.fromRGB(60, 60, 60)
+    local previewCorner = Instance.new("UICorner", preview)
+    previewCorner.CornerRadius = UDim.new(0, 4)
+    local previewStroke = Instance.new("UIStroke", preview)
+    previewStroke.Color = Color3.fromRGB(60, 60, 60)
+    previewStroke.Thickness = 1
+    preview.ZIndex = 2
 
-    -- Toggle button
     local toggle = Instance.new("ImageButton", header)
     toggle.Size = UDim2.new(0, 20, 0, 20)
     toggle.Position = UDim2.new(1, -30, 0, 6)
     toggle.BackgroundTransparency = 1
     toggle.Image = "rbxassetid://7072718162"
     toggle.ImageColor3 = Color3.fromRGB(180, 180, 180)
+    toggle.Name = "ToggleButton"
+    toggle.ZIndex = 2
 
-    -- Color selection content
     local content = Instance.new("Frame", pickerFrame)
     content.Size = UDim2.new(1, 0, 0, 0)
     content.Position = UDim2.new(0, 0, 0, 32)
@@ -1769,79 +1772,95 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     content.ClipsDescendants = true
     content.Name = "Content"
 
-    -- RGB Sliders
-    local sliders = {"Red", "Green", "Blue"}
-    local sliderFrames = {}
+    local wheelContainer = Instance.new("Frame", content)
+    wheelContainer.Size = UDim2.new(0, 200, 0, 200)
+    wheelContainer.Position = UDim2.new(0.5, -100, 0, 10)
+    wheelContainer.BackgroundTransparency = 1
+
+    local colorWheelOuter = Instance.new("ImageButton", wheelContainer)
+    colorWheelOuter.Size = UDim2.new(1, 0, 1, 0)
+    colorWheelOuter.Position = UDim2.new(0, 0, 0, 0)
+    colorWheelOuter.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    colorWheelOuter.Image = "rbxassetid://6020299385"
+    colorWheelOuter.ImageColor3 = Color3.fromRGB(255, 255, 255)
+    colorWheelOuter.ScaleType = Enum.ScaleType.Fit
+    colorWheelOuter.Rotation = 180
+    colorWheelOuter.Name = "ColorWheel"
+    local wheelCorner = Instance.new("UICorner", colorWheelOuter)
+    wheelCorner.CornerRadius = UDim.new(1, 0)
+    local wheelStroke = Instance.new("UIStroke", colorWheelOuter)
+    wheelStroke.Color = Color3.fromRGB(60, 60, 60)
+    wheelStroke.Thickness = 2
+
+    local colorSelector = Instance.new("Frame", colorWheelOuter)
+    colorSelector.Size = UDim2.new(0, 16, 0, 16)
+    colorSelector.AnchorPoint = Vector2.new(0.5, 0.5)
+    colorSelector.Position = UDim2.new(0.5, 0, 0.5, 0)
+    colorSelector.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    colorSelector.BorderSizePixel = 0
+    colorSelector.ZIndex = 3
+    local selectorCorner = Instance.new("UICorner", colorSelector)
+    selectorCorner.CornerRadius = UDim.new(1, 0)
+    local selectorStroke = Instance.new("UIStroke", colorSelector)
+    selectorStroke.Color = Color3.fromRGB(0, 0, 0)
+    selectorStroke.Thickness = 2
+
+    local hueSliderContainer = Instance.new("Frame", content)
+    hueSliderContainer.Size = UDim2.new(0, 30, 0, 200)
+    hueSliderContainer.Position = UDim2.new(0.5, 110, 0, 10)
+    hueSliderContainer.BackgroundTransparency = 1
+
+    local hueSlider = Instance.new("Frame", hueSliderContainer)
+    hueSlider.Size = UDim2.new(0, 24, 0, 200)
+    hueSlider.Position = UDim2.new(0.5, -12, 0, 0)
+    hueSlider.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    hueSlider.Name = "HueSlider"
+    local hueCorner = Instance.new("UICorner", hueSlider)
+    hueCorner.CornerRadius = UDim.new(0, 4)
+    local hueStroke = Instance.new("UIStroke", hueSlider)
+    hueStroke.Color = Color3.fromRGB(60, 60, 60)
+    hueStroke.Thickness = 2
+
+    local hueGradient = Instance.new("UIGradient", hueSlider)
+    hueGradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
+        ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255, 255, 0)),
+        ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 255, 0)),
+        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 255)),
+        ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
+        ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255, 0, 255)),
+        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0))
+    })
+    hueGradient.Rotation = 270
+
+    local hueSelector = Instance.new("Frame", hueSlider)
+    hueSelector.Size = UDim2.new(1, 4, 0, 8)
+    hueSelector.AnchorPoint = Vector2.new(0.5, 0.5)
+    hueSelector.Position = UDim2.new(0.5, 0, 0, 0)
+    hueSelector.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    hueSelector.BorderSizePixel = 0
+    hueSelector.ZIndex = 2
+    local hueSelectorCorner = Instance.new("UICorner", hueSelector)
+    hueSelectorCorner.CornerRadius = UDim.new(0, 2)
+    local hueSelectorStroke = Instance.new("UIStroke", hueSelector)
+    hueSelectorStroke.Color = Color3.fromRGB(0, 0, 0)
+    hueSelectorStroke.Thickness = 1
+
     local currentColor = colorConfig.Default or Color3.fromRGB(50, 50, 255)
-    
-    for i, color in ipairs(sliders) do
-        local sliderFrame = Instance.new("Frame", content)
-        sliderFrame.Size = UDim2.new(1, -20, 0, 30)
-        sliderFrame.Position = UDim2.new(0, 10, 0, 10 + ((i-1) * 40))
-        sliderFrame.BackgroundTransparency = 1
-        
-        local label = Instance.new("TextLabel", sliderFrame)
-        label.Size = UDim2.new(0, 50, 1, 0)
-        label.Text = color
-        label.TextColor3 = Color3.fromRGB(180, 180, 180)
-        label.Font = Enum.Font.Gotham
-        label.TextSize = 12
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        
-        local track = Instance.new("Frame", sliderFrame)
-        track.Size = UDim2.new(1, -60, 0, 6)
-        track.Position = UDim2.new(0, 50, 0.5, -3)
-        track.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        Instance.new("UICorner", track)
-        
-        local fill = Instance.new("Frame", track)
-        fill.Size = UDim2.new(0.5, 0, 1, 0)
-        fill.BackgroundColor3 = Color3.fromRGB(
-            color == "Red" and 255 or 50,
-            color == "Green" and 255 or 50,
-            color == "Blue" and 255 or 50
-        )
-        Instance.new("UICorner", fill)
-        
-        local thumb = Instance.new("Frame", track)
-        thumb.Size = UDim2.new(0, 14, 0, 14)
-        thumb.Position = UDim2.new(0.5, -7, 0.5, -7)
-        thumb.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
-        thumb.BorderSizePixel = 0
-        Instance.new("UICorner", thumb).CornerRadius = UDim.new(1, 0)
-        Instance.new("UIStroke", thumb).Color = Color3.fromRGB(30, 30, 30)
-        
-        sliderFrames[color] = {
-            track = track,
-            fill = fill,
-            thumb = thumb,
-            value = currentColor[color:lower()] * 255
-        }
-    end
-
-    -- Action buttons
-    local buttonContainer = Instance.new("Frame", content)
-    buttonContainer.Size = UDim2.new(1, -20, 0, 30)
-    buttonContainer.Position = UDim2.new(0, 10, 0, 150)
-    buttonContainer.BackgroundTransparency = 1
-    
-    local randomButton = createButton("Random", UDim2.new(0.48, -5, 1, 0), UDim2.new(0, 0, 0, 0))
-    randomButton.Parent = buttonContainer
-    
-    local saveButton = createButton("Save", UDim2.new(0.48, -5, 1, 0), UDim2.new(0.52, 5, 0, 0))
-    saveButton.BackgroundColor3 = Color3.fromRGB(60, 100, 180)
-    saveButton.Parent = buttonContainer
-
-    -- Core functionality
+    local savedColor = currentColor
+    local hue = 0
+    local saturation = 1
+    local value = 1
     local isOpen = false
+    local colorWheelSize = 200
+    local colorWheelRadius = colorWheelSize / 2
+    local isDraggingColor = false
+    local isDraggingHue = false
     local TweenService = game:GetService("TweenService")
-    
+    local UserInputService = game:GetService("UserInputService")
+
     local function updateColor()
-        local r = sliderFrames["Red"].value / 255
-        local g = sliderFrames["Green"].value / 255
-        local b = sliderFrames["Blue"].value / 255
-        
-        currentColor = Color3.new(r, g, b)
+        currentColor = Color3.fromHSV(hue, saturation, value)
         preview.BackgroundColor3 = currentColor
         
         if colorConfig.Callback then
@@ -1849,81 +1868,147 @@ function Window:CreateColorPicker2(tabName, colorConfig)
         end
     end
 
-    local function updateSlider(color, value)
-        sliderFrames[color].value = math.clamp(value, 0, 255)
-        local percent = sliderFrames[color].value / 255
-        
-        sliderFrames[color].fill.Size = UDim2.new(percent, 0, 1, 0)
-        sliderFrames[color].thumb.Position = UDim2.new(percent, -7, 0.5, -7)
+    local function setHue(newHue)
+        hue = math.clamp(newHue, 0, 1)
+        hueSelector.Position = UDim2.new(0.5, 0, hue, 0)
+        updateColor()
     end
+
+    local function setSaturationValue(newSaturation, newValue)
+        saturation = math.clamp(newSaturation, 0, 1)
+        value = math.clamp(newValue, 0, 1)
+        
+        local center = Vector2.new(colorWheelRadius, colorWheelRadius)
+        local angle = hue * 2 * math.pi
+        local satRadius = saturation * colorWheelRadius
+        local posX = center.X + math.cos(angle) * satRadius
+        local posY = center.Y - math.sin(angle) * satRadius
+        
+        colorSelector.Position = UDim2.new(0, posX, 0, posY)
+        updateColor()
+    end
+
+    local function setFromRGB(r, g, b)
+        r = math.clamp(r, 0, 255) / 255
+        g = math.clamp(g, 0, 255) / 255
+        b = math.clamp(b, 0, 255) / 255
+        
+        local h, s, v = Color3.toHSV(Color3.new(r, g, b))
+        hue = h
+        saturation = s
+        value = v
+        
+        hueSelector.Position = UDim2.new(0.5, 0, hue, 0)
+        
+        local center = Vector2.new(colorWheelRadius, colorWheelRadius)
+        local angle = hue * 2 * math.pi
+        local satRadius = saturation * colorWheelRadius
+        local posX = center.X + math.cos(angle) * satRadius
+        local posY = center.Y - math.sin(angle) * satRadius
+        
+        colorSelector.Position = UDim2.new(0, posX, 0, posY)
+        updateColor()
+    end
+
+    setFromRGB(50, 50, 255)
 
     local function openPicker()
         if isOpen then return end
         isOpen = true
-        TweenService:Create(content, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 0, 190)}):Play()
-        TweenService:Create(pickerFrame, TweenInfo.new(0.3), {Size = UDim2.new(1, -20, 0, 222)}):Play()
+        TweenService:Create(content, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(1, 0, 0, 240)}):Play()
+        TweenService:Create(pickerFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(1, -20, 0, 272)}):Play()
         toggle.Rotation = 180
     end
 
     local function closePicker()
         if not isOpen then return end
         isOpen = false
-        TweenService:Create(content, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 0, 0)}):Play()
-        TweenService:Create(pickerFrame, TweenInfo.new(0.3), {Size = UDim2.new(1, -20, 0, 32)}):Play()
+        TweenService:Create(content, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(1, 0, 0, 0)}):Play()
+        TweenService:Create(pickerFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(1, -20, 0, 32)}):Play()
         toggle.Rotation = 0
     end
 
-    -- Connect events
     toggle.MouseButton1Click:Connect(function()
-        if isOpen then closePicker() else openPicker() end
+        if isOpen then
+            closePicker()
+        else
+            openPicker()
+        end
     end)
 
-    preview.MouseButton1Click:Connect(toggle.MouseButton1Click)
+    preview.MouseButton1Click:Connect(function()
+        if isOpen then
+            closePicker()
+        else
+            openPicker()
+        end
+    end)
 
-    -- Slider interaction
-    for color, slider in pairs(sliderFrames) do
-        slider.track.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                local mouseX = input.Position.X
-                local absolutePos = slider.track.AbsolutePosition.X
-                local absoluteSize = slider.track.AbsoluteSize.X
+    colorWheelOuter.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            isDraggingColor = true
+            
+            local center = Vector2.new(
+                colorWheelOuter.AbsolutePosition.X + colorWheelRadius,
+                colorWheelOuter.AbsolutePosition.Y + colorWheelRadius
+            )
+            
+            while isDraggingColor do
+                local mousePos = UserInputService:GetMouseLocation()
+                local relative = mousePos - center
+                local distance = relative.Magnitude
                 
-                local percent = (mouseX - absolutePos) / absoluteSize
-                updateSlider(color, math.floor(percent * 255))
-                updateColor()
+                if distance <= colorWheelRadius then
+                    local angle = math.atan2(-relative.Y, relative.X)
+                    angle = angle - math.pi
+                    if angle < 0 then
+                        angle = angle + 2 * math.pi
+                    end
+                    
+                    hue = angle / (2 * math.pi)
+                    saturation = distance / colorWheelRadius
+                    
+                    setSaturationValue(saturation, value)
+                else
+                    local normalized = relative.Unit
+                    local angle = math.atan2(-normalized.Y, normalized.X)
+                    angle = angle - math.pi
+                    if angle < 0 then
+                        angle = angle + 2 * math.pi
+                    end
+                    
+                    hue = angle / (2 * math.pi)
+                    saturation = 1
+                    
+                    setSaturationValue(saturation, value)
+                end
+                
+                task.wait()
             end
-        end)
-    end
-
-    randomButton.MouseButton1Click:Connect(function()
-        for color, _ in pairs(sliderFrames) do
-            updateSlider(color, math.random(0, 255))
-        end
-        updateColor()
-    end)
-
-    saveButton.MouseButton1Click:Connect(function()
-        if colorConfig.Save then
-            colorConfig.Save(currentColor)
         end
     end)
-end
 
--- Helper function for buttons
-function createButton(text, size, position)
-    local button = Instance.new("TextButton")
-    button.Size = size
-    button.Position = position
-    button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-    button.Text = text
-    button.TextColor3 = Color3.fromRGB(220, 220, 220)
-    button.Font = Enum.Font.GothamMedium
-    button.TextSize = 12
-    
-    Instance.new("UICorner", button).CornerRadius = UDim.new(0, 4)
-    Instance.new("UIStroke", button).Color = Color3.fromRGB(80, 80, 80)
-    
-    return button
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            isDraggingColor = false
+            isDraggingHue = false
+        end
+    end)
+
+    hueSlider.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            isDraggingHue = true
+            
+            while isDraggingHue do
+                local mousePos = UserInputService:GetMouseLocation()
+                local relativeY = mousePos.Y - hueSlider.AbsolutePosition.Y
+                local percent = math.clamp(relativeY / hueSlider.AbsoluteSize.Y, 0, 1)
+                
+                setHue(percent)
+                task.wait()
+            end
+        end
+    end)
 end
 
 local isHidden = false
