@@ -1784,7 +1784,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     colorWheelOuter.Image = "rbxassetid://6020299385"
     colorWheelOuter.ImageColor3 = Color3.fromRGB(255, 255, 255)
     colorWheelOuter.ScaleType = Enum.ScaleType.Fit
-    colorWheelOuter.Rotation = 180
+    colorWheelOuter.Rotation = 1
     colorWheelOuter.Name = "ColorWheel"
     local wheelCorner = Instance.new("UICorner", colorWheelOuter)
     wheelCorner.CornerRadius = UDim.new(1, 0)
