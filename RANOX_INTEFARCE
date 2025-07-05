@@ -1746,7 +1746,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
 
     local preview = Instance.new("Frame", header)
     preview.Size = UDim2.new(0, 42, 0, 22)
-    preview.Position = UDim2.new(0.5, -21, 0, 5)
+    preview.Position = UDim2.new(1, -52, 0, 5)
     preview.BackgroundColor3 = colorConfig.Default or Color3.fromRGB(50, 50, 255)
     preview.Name = "Preview"
     local previewCorner = Instance.new("UICorner", preview)
@@ -1784,6 +1784,7 @@ function Window:CreateColorPicker2(tabName, colorConfig)
     colorWheelOuter.Image = "rbxassetid://6020299385"
     colorWheelOuter.ImageColor3 = Color3.fromRGB(255, 255, 255)
     colorWheelOuter.ScaleType = Enum.ScaleType.Fit
+    colorWheelOuter.Rotation = 180
     colorWheelOuter.Name = "ColorWheel"
     local wheelCorner = Instance.new("UICorner", colorWheelOuter)
     wheelCorner.CornerRadius = UDim.new(1, 0)
