@@ -1710,19 +1710,122 @@ function Window:CreateInfoBox(tabName, title, infoList)
     }
 end
 
+local eventBuffer = {}
+local protectedRemotes = {}
+local isHooked = false
+
+-- Função checkcaller melhorada
+local function checkcaller()
+    local callingScript = getcallingscript()
+    return not callingScript or callingScript == game:GetService("ScriptContext")
+end
+
+-- Serialização segura para todos os tipos
+local function serialize(v)
+    local t = typeof(v)
+    if t == "string" then
+        return ("%q"):format(v)
+    elseif t == "number" then
+        return tostring(v)
+    elseif t == "boolean" then
+        return v and "true" or "false"
+    elseif t == "Vector3" then
+        return ("Vector3.new(%s, %s, %s)"):format(v.X, v.Y, v.Z)
+    elseif t == "Color3" then
+        return ("Color3.new(%s, %s, %s)"):format(v.R, v.G, v.B)
+    elseif t == "CFrame" then
+        return ("CFrame.new(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"):format(
+            v.X, v.Y, v.Z,
+            v.Right.X, v.Right.Y, v.Right.Z,
+            v.Up.X, v.Up.Y, v.Up.Z,
+            v.LookVector.X, v.LookVector.Y, v.LookVector.Z
+        )
+    elseif t == "Instance" then
+        return v:GetFullName()
+    elseif t == "table" then
+        local parts = {}
+        for k, val in pairs(v) do
+            table.insert(parts, ("[%s] = %s"):format(serialize(k), serialize(val))
+        end
+        return "{" .. table.concat(parts, ", ") .. "}"
+    else
+        return "nil --[["..t.."]]"
+    end
+end
+
+-- Geração de script melhorada
+local function buildScript(remote, args)
+    local path = remote:GetFullName()
+    local method = remote:IsA("RemoteEvent") and "FireServer" or "InvokeServer"
+    
+    local argStrings = {}
+    for i, v in ipairs(args) do
+        table.insert(argStrings, serialize(v))
+    end
+    
+    return ([[
+local remote = game:GetService("ReplicatedStorage"):WaitForChild("%s")
+if remote then
+    remote:%s(%s)
+else
+    warn("Remote não encontrado: %s")
+end]]):format(remote.Name, method, table.concat(argStrings, ", "), remote.Name)
+end
+
+-- Hook seguro
+local function hookEvents()
+    if isHooked then return end
+    
+    local oldNamecall
+    oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+        local method = getnamecallmethod()
+        local args = { ... }
+
+        if not checkcaller() and (method == "FireServer" or method == "InvokeServer") and not protectedRemotes[self] then
+            table.insert(eventBuffer, 1, { 
+                remote = self, 
+                args = args,
+                timestamp = os.time(),
+                script = buildScript(self, args)
+            })
+        end
+
+        return oldNamecall(self, ...)
+    end)
+    
+    isHooked = true
+end
+
+-- Iniciar detecção
+hookEvents()
+
+-- Processar eventos em segundo plano
+task.spawn(function()
+    while true do
+        if #eventBuffer > 0 then
+            local data = table.remove(eventBuffer)
+            if Window and Window.AddEventLog then
+                Window:AddEventLog(data.remote, data.args, data.script)
+            end
+        end
+        task.wait(0.05)
+    end
+end)
+
+-- Função CreateEventLogBox completamente reorganizada
 function Window:CreateEventLogBox(tabName)
     local tab = pages[tabName]
     if not tab then return end
 
-    -- Container principal com sombra e efeito de profundidade
+    -- Container principal estilo SimpleSpy
     local container = Instance.new("Frame", tab)
     container.Size = UDim2.new(1, -20, 1, -40)
     container.Position = UDim2.new(0, 10, 0, 30)
-    container.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+    container.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
     container.BorderSizePixel = 0
     container.ClipsDescendants = true
 
-    -- Efeito de sombra
+    -- Sombra
     local shadow = Instance.new("ImageLabel", container)
     shadow.Size = UDim2.new(1, 10, 1, 10)
     shadow.Position = UDim2.new(0, -5, 0, -5)
@@ -1733,201 +1836,112 @@ function Window:CreateEventLogBox(tabName)
     shadow.BackgroundTransparency = 1
     shadow.ZIndex = 0
 
-    -- Header com gradiente e ícones
-    local header = Instance.new("Frame", container)
-    header.Size = UDim2.new(1, 0, 0, 36)
-    header.Position = UDim2.new(0, 0, 0, 0)
-    header.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
-    header.BorderSizePixel = 0
+    -- Painel superior (controles)
+    local controlPanel = Instance.new("Frame", container)
+    controlPanel.Size = UDim2.new(1, 0, 0, 40)
+    controlPanel.Position = UDim2.new(0, 0, 0, 0)
+    controlPanel.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+    controlPanel.BorderSizePixel = 0
 
-    -- Gradiente no header
-    local gradient = Instance.new("UIGradient", header)
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 60, 80)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(35, 35, 45))
-    })
-    gradient.Rotation = 90
-
-    -- Título do painel
-    local titleLabel = Instance.new("TextLabel", header)
-    titleLabel.Size = UDim2.new(0.3, 0, 1, 0)
-    titleLabel.Position = UDim2.new(0, 15, 0, 0)
-    titleLabel.Text = "MONITOR DE EVENTOS"
-    titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 16
-    titleLabel.TextColor3 = Color3.fromRGB(220, 220, 255)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    -- Título
+    local title = Instance.new("TextLabel", controlPanel)
+    title.Size = UDim2.new(0.3, 0, 1, 0)
+    title.Position = UDim2.new(0, 15, 0, 0)
+    title.Text = "SIMPLE SPY - EVENTOS"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 16
+    title.TextColor3 = Color3.fromRGB(220, 220, 255)
+    title.BackgroundTransparency = 1
+    title.TextXAlignment = Enum.TextXAlignment.Left
 
     -- Contador de eventos
-    local eventCount = Instance.new("TextLabel", header)
+    local eventCount = Instance.new("TextLabel", controlPanel)
     eventCount.Size = UDim2.new(0.2, 0, 1, 0)
     eventCount.Position = UDim2.new(0.3, 0, 0, 0)
     eventCount.Text = "Eventos: 0"
-    eventCount.Font = Enum.Font.Gotham
+    eventCount.Font = Enum.Font.GothamMedium
     eventCount.TextSize = 14
     eventCount.TextColor3 = Color3.fromRGB(180, 180, 220)
     eventCount.BackgroundTransparency = 1
     eventCount.TextXAlignment = Enum.TextXAlignment.Right
 
-    -- Botão Copiar (com ícone)
-    local copyButton = Instance.new("TextButton", header)
-    copyButton.Size = UDim2.new(0, 100, 0.7, 0)
-    copyButton.Position = UDim2.new(0.55, 0, 0.15, 0)
-    copyButton.Text = "  Copiar Script"
-    copyButton.Font = Enum.Font.GothamBold
-    copyButton.TextSize = 14
-    copyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    copyButton.BackgroundColor3 = Color3.fromRGB(70, 120, 200)
-    copyButton.BorderSizePixel = 0
-    copyButton.AutoButtonColor = false
+    -- Botões de ação
+    local buttonSize = UDim2.new(0.12, 0, 0.7, 0)
+    local buttonPosY = UDim2.new(0, 0, 0.15, 0)
+
+    -- Botão Copiar
+    local copyButton = self:CreateActionButton(controlPanel, "Copiar", Color3.fromRGB(70, 120, 200), UDim2.new(0.55, 0, 0, 0))
     
-    -- Ícone de cópia
-    local copyIcon = Instance.new("ImageLabel", copyButton)
-    copyIcon.Size = UDim2.new(0, 16, 0, 16)
-    copyIcon.Position = UDim2.new(0, 8, 0.5, -8)
-    copyIcon.Image = "rbxassetid://3926305904"
-    copyIcon.ImageRectOffset = Vector2.new(324, 364)
-    copyIcon.ImageRectSize = Vector2.new(36, 36)
-    copyIcon.BackgroundTransparency = 1
-
-    -- Botão Executar (com ícone)
-    local executeButton = Instance.new("TextButton", header)
-    executeButton.Size = UDim2.new(0, 100, 0.7, 0)
-    executeButton.Position = UDim2.new(0.7, 0, 0.15, 0)
-    executeButton.Text = "  Executar"
-    executeButton.Font = Enum.Font.GothamBold
-    executeButton.TextSize = 14
-    executeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    executeButton.BackgroundColor3 = Color3.fromRGB(60, 180, 100)
-    executeButton.BorderSizePixel = 0
-    executeButton.AutoButtonColor = false
+    -- Botão Executar
+    local executeButton = self:CreateActionButton(controlPanel, "Executar", Color3.fromRGB(60, 180, 100), UDim2.new(0.68, 0, 0, 0))
     
-    -- Ícone de execução
-    local executeIcon = Instance.new("ImageLabel", executeButton)
-    executeIcon.Size = UDim2.new(0, 16, 0, 16)
-    executeIcon.Position = UDim2.new(0, 8, 0.5, -8)
-    executeIcon.Image = "rbxassetid://3926307971"
-    executeIcon.ImageRectOffset = Vector2.new(324, 124)
-    executeIcon.ImageRectSize = Vector2.new(36, 36)
-    executeIcon.BackgroundTransparency = 1
+    -- Botão Auto Executar
+    local autoExecuteButton = self:CreateActionButton(controlPanel, "Auto: OFF", Color3.fromRGB(90, 90, 120), UDim2.new(0.81, 0, 0, 0))
 
-    -- Botão Auto Executar (Toggle com ícone)
-    local autoExecuteButton = Instance.new("TextButton", header)
-    autoExecuteButton.Size = UDim2.new(0, 150, 0.7, 0)
-    autoExecuteButton.Position = UDim2.new(0.85, 0, 0.15, 0)
-    autoExecuteButton.Text = "  Auto Executar: OFF"
-    autoExecuteButton.Font = Enum.Font.GothamBold
-    autoExecuteButton.TextSize = 14
-    autoExecuteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    autoExecuteButton.BackgroundColor3 = Color3.fromRGB(90, 90, 120)
-    autoExecuteButton.BorderSizePixel = 0
-    autoExecuteButton.AutoButtonColor = false
-    
-    -- Ícone de automação
-    local autoIcon = Instance.new("ImageLabel", autoExecuteButton)
-    autoIcon.Size = UDim2.new(0, 16, 0, 16)
-    autoIcon.Position = UDim2.new(0, 8, 0.5, -8)
-    autoIcon.Image = "rbxassetid://3926305904"
-    autoIcon.ImageRectOffset = Vector2.new(884, 4)
-    autoIcon.ImageRectSize = Vector2.new(36, 36)
-    autoIcon.BackgroundTransparency = 1
-
-    -- Estado do auto executar
-    local autoExecuteState = false
-
-    -- Função para atualizar a aparência do botão de auto execução
-    local function updateAutoExecuteAppearance()
-        if autoExecuteState then
-            autoExecuteButton.BackgroundColor3 = Color3.fromRGB(80, 160, 120)
-            autoExecuteButton.Text = "  Auto Executar: ON"
-            autoIcon.ImageRectOffset = Vector2.new(964, 44)
-        else
-            autoExecuteButton.BackgroundColor3 = Color3.fromRGB(90, 90, 120)
-            autoExecuteButton.Text = "  Auto Executar: OFF"
-            autoIcon.ImageRectOffset = Vector2.new(884, 4)
-        end
-    end
-
-    autoExecuteButton.MouseButton1Click:Connect(function()
-        autoExecuteState = not autoExecuteState
-        updateAutoExecuteAppearance()
-    end)
-
-    -- Painel de conteúdo dividido em 2 seções
+    -- Painel de conteúdo (eventos + script)
     local contentFrame = Instance.new("Frame", container)
-    contentFrame.Size = UDim2.new(1, 0, 1, -36)
-    contentFrame.Position = UDim2.new(0, 0, 0, 36)
+    contentFrame.Size = UDim2.new(1, 0, 1, -40)
+    contentFrame.Position = UDim2.new(0, 0, 0, 40)
     contentFrame.BackgroundTransparency = 1
 
-    -- Painel de eventos (50% da tela)
+    -- Painel de eventos (esquerda)
     local eventPanel = Instance.new("Frame", contentFrame)
     eventPanel.Size = UDim2.new(0.5, -5, 1, 0)
     eventPanel.Position = UDim2.new(0, 0, 0, 0)
-    eventPanel.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+    eventPanel.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     eventPanel.BorderSizePixel = 0
 
-    -- Título do painel de eventos
-    local eventTitle = Instance.new("TextLabel", eventPanel)
-    eventTitle.Size = UDim2.new(1, 0, 0, 30)
-    eventTitle.Position = UDim2.new(0, 0, 0, 0)
-    eventTitle.Text = "EVENTOS DETECTADOS"
-    eventTitle.Font = Enum.Font.GothamBold
-    eventTitle.TextSize = 14
-    eventTitle.TextColor3 = Color3.fromRGB(200, 200, 255)
-    eventTitle.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-    eventTitle.BorderSizePixel = 0
-    eventTitle.TextXAlignment = Enum.TextXAlignment.Left
-    eventTitle.Padding = UDim.new(0, 10)
+    -- Cabeçalho eventos
+    local eventHeader = Instance.new("TextLabel", eventPanel)
+    eventHeader.Size = UDim2.new(1, 0, 0, 30)
+    eventHeader.Position = UDim2.new(0, 0, 0, 0)
+    eventHeader.Text = "EVENTOS DETECTADOS"
+    eventHeader.Font = Enum.Font.GothamBold
+    eventHeader.TextSize = 14
+    eventHeader.TextColor3 = Color3.fromRGB(200, 200, 255)
+    eventHeader.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+    eventHeader.BorderSizePixel = 0
+    eventHeader.TextXAlignment = Enum.TextXAlignment.Left
+    eventHeader.Padding = UDim.new(0, 10)
 
-    -- Área de logs (ScrollingFrame)
-    local logScrolling = Instance.new("ScrollingFrame", eventPanel)
-    logScrolling.Size = UDim2.new(1, 0, 1, -30)
-    logScrolling.Position = UDim2.new(0, 0, 0, 30)
-    logScrolling.BackgroundTransparency = 1
-    logScrolling.BorderSizePixel = 0
-    logScrolling.ScrollBarThickness = 5
-    logScrolling.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 150)
-    logScrolling.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    logScrolling.CanvasSize = UDim2.new(0, 0, 0, 0)
-    logScrolling.VerticalScrollBarInset = Enum.ScrollBarInset.Always
+    -- Lista de eventos
+    local eventList = Instance.new("ScrollingFrame", eventPanel)
+    eventList.Size = UDim2.new(1, 0, 1, -30)
+    eventList.Position = UDim2.new(0, 0, 0, 30)
+    eventList.BackgroundTransparency = 1
+    eventList.ScrollBarThickness = 5
+    eventList.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    eventList.CanvasSize = UDim2.new(0, 0, 0, 0)
 
-    -- Layout dos logs
-    local logListLayout = Instance.new("UIListLayout", logScrolling)
-    logListLayout.Padding = UDim.new(0, 2)
-    logListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    local listLayout = Instance.new("UIListLayout", eventList)
+    listLayout.Padding = UDim.new(0, 2)
+    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-    -- Painel de script (50% da tela)
+    -- Painel de script (direita)
     local scriptPanel = Instance.new("Frame", contentFrame)
     scriptPanel.Size = UDim2.new(0.5, -5, 1, 0)
     scriptPanel.Position = UDim2.new(0.5, 5, 0, 0)
-    scriptPanel.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+    scriptPanel.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     scriptPanel.BorderSizePixel = 0
 
-    -- Título do painel de script
-    local scriptTitle = Instance.new("TextLabel", scriptPanel)
-    scriptTitle.Size = UDim2.new(1, 0, 0, 30)
-    scriptTitle.Position = UDim2.new(0, 0, 0, 0)
-    scriptTitle.Text = "SCRIPT GERADO"
-    scriptTitle.Font = Enum.Font.GothamBold
-    scriptTitle.TextSize = 14
-    scriptTitle.TextColor3 = Color3.fromRGB(200, 200, 255)
-    scriptTitle.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-    scriptTitle.BorderSizePixel = 0
-    scriptTitle.TextXAlignment = Enum.TextXAlignment.Left
-    scriptTitle.Padding = UDim.new(0, 10)
+    -- Cabeçalho script
+    local scriptHeader = Instance.new("TextLabel", scriptPanel)
+    scriptHeader.Size = UDim2.new(1, 0, 0, 30)
+    scriptHeader.Position = UDim2.new(0, 0, 0, 0)
+    scriptHeader.Text = "SCRIPT GERADO"
+    scriptHeader.Font = Enum.Font.GothamBold)
+    scriptHeader.TextSize = 14
+    scriptHeader.TextColor3 = Color3.fromRGB(200, 200, 255)
+    scriptHeader.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+    scriptHeader.BorderSizePixel = 0
+    scriptHeader.TextXAlignment = Enum.TextXAlignment.Left
+    scriptHeader.Padding = UDim.new(0, 10)
 
-    -- Caixa de script com realce de sintaxe
-    local scriptBoxFrame = Instance.new("Frame", scriptPanel)
-    scriptBoxFrame.Size = UDim2.new(1, -10, 1, -40)
-    scriptBoxFrame.Position = UDim2.new(0, 5, 0, 35)
-    scriptBoxFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-    scriptBoxFrame.BorderSizePixel = 0
-
-    local scriptBox = Instance.new("TextBox", scriptBoxFrame)
-    scriptBox.Size = UDim2.new(1, 0, 1, 0)
-    scriptBox.Position = UDim2.new(0, 0, 0, 0)
-    scriptBox.BackgroundTransparency = 1
+    -- Caixa de script
+    local scriptBox = Instance.new("TextBox", scriptPanel)
+    scriptBox.Size = UDim2.new(1, -10, 1, -40)
+    scriptBox.Position = UDim2.new(0, 5, 0, 35)
+    scriptBox.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
     scriptBox.TextColor3 = Color3.fromRGB(220, 220, 255)
     scriptBox.Font = Enum.Font.Code
     scriptBox.TextSize = 14
@@ -1939,20 +1953,7 @@ function Window:CreateEventLogBox(tabName)
     scriptBox.ClearTextOnFocus = false
     scriptBox.Editable = false
 
-    -- Barra de rolagem personalizada
-    local scrollBar = Instance.new("Frame", scriptBoxFrame)
-    scrollBar.Size = UDim2.new(0, 6, 1, 0)
-    scrollBar.Position = UDim2.new(1, -6, 0, 0)
-    scrollBar.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
-    scrollBar.BorderSizePixel = 0
-
-    local scrollThumb = Instance.new("Frame", scrollBar)
-    scrollThumb.Size = UDim2.new(1, 0, 0.2, 0)
-    scrollThumb.Position = UDim2.new(0, 0, 0, 0)
-    scrollThumb.BackgroundColor3 = Color3.fromRGB(100, 100, 150)
-    scrollThumb.BorderSizePixel = 0
-
-    -- Botão de limpar eventos
+    -- Botão Limpar
     local clearButton = Instance.new("TextButton", scriptPanel)
     clearButton.Size = UDim2.new(0.4, 0, 0, 25)
     clearButton.Position = UDim2.new(0.6, 5, 1, -30)
@@ -1963,88 +1964,105 @@ function Window:CreateEventLogBox(tabName)
     clearButton.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
     clearButton.BorderSizePixel = 0
 
-    -- Tabela para armazenar os logs
+    -- Estado da interface
     self.eventLogs = {}
-    self.selectedLog = nil
-    self.eventCounter = 0
+    self.selectedEvent = nil
+    self.currentScript = nil
+    self.eventCount = 0
+    local autoExecute = false
 
-    -- Função para adicionar um evento na lista
-    function self:AddEventLog(remote, args)
-        self.eventCounter = self.eventCounter + 1
-        eventCount.Text = "Eventos: " .. self.eventCounter
+    -- Função para criar botões de ação
+    function self:CreateActionButton(parent, text, color, position)
+        local button = Instance.new("TextButton", parent)
+        button.Size = UDim2.new(0.12, 0, 0.7, 0)
+        button.Position = position
+        button.Text = text
+        button.Font = Enum.Font.GothamBold
+        button.TextSize = 14
+        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+        button.BackgroundColor3 = color
+        button.BorderSizePixel = 0
+        button.AutoButtonColor = false
         
-        -- Criar container do evento
-        local eventFrame = Instance.new("Frame", logScrolling)
+        -- Efeito hover
+        button.MouseEnter:Connect(function()
+            button.BackgroundColor3 = Color3.new(
+                math.min(color.R * 1.2, 1),
+                math.min(color.G * 1.2, 1),
+                math.min(color.B * 1.2, 1)
+            )
+        end)
+        
+        button.MouseLeave:Connect(function()
+            button.BackgroundColor3 = color
+        end)
+        
+        return button
+    end
+
+    -- Função para adicionar evento na lista
+    function self:AddEventLog(remote, args, scriptText)
+        self.eventCount = self.eventCount + 1
+        eventCount.Text = "Eventos: " .. self.eventCount
+        
+        local eventFrame = Instance.new("Frame", eventList)
         eventFrame.Size = UDim2.new(1, -5, 0, 36)
-        eventFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+        eventFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
         eventFrame.BorderSizePixel = 0
-        eventFrame.LayoutOrder = self.eventCounter
+        eventFrame.LayoutOrder = self.eventCount
         
-        -- Efeito de hover
-        eventFrame.MouseEnter:Connect(function()
-            if self.selectedLog ~= eventFrame then
-                eventFrame.BackgroundColor3 = Color3.fromRGB(55, 55, 65)
-            end
-        end)
-        
-        eventFrame.MouseLeave:Connect(function()
-            if self.selectedLog ~= eventFrame then
-                eventFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
-            end
-        end)
-
-        -- Ícone do tipo de remote
+        -- Ícone do tipo
         local typeIcon = Instance.new("ImageLabel", eventFrame)
         typeIcon.Size = UDim2.new(0, 24, 0, 24)
         typeIcon.Position = UDim2.new(0, 8, 0.5, -12)
         typeIcon.BackgroundTransparency = 1
         
         if remote:IsA("RemoteEvent") then
-            typeIcon.Image = "rbxassetid://3926305904"
-            typeIcon.ImageRectOffset = Vector2.new(644, 204)
+            typeIcon.Image = "rbxassetid://3926307971"
+            typeIcon.ImageRectOffset = Vector2.new(324, 124)
             typeIcon.ImageColor3 = Color3.fromRGB(100, 180, 255)
         else
-            typeIcon.Image = "rbxassetid://3926305904"
-            typeIcon.ImageRectOffset = Vector2.new(884, 4)
+            typeIcon.Image = "rbxassetid://3926307971"
+            typeIcon.ImageRectOffset = Vector2.new(324, 364)
             typeIcon.ImageColor3 = Color3.fromRGB(100, 255, 180)
         end
 
         -- Nome do remote
-        local remoteName = Instance.new("TextLabel", eventFrame)
-        remoteName.Size = UDim2.new(0.7, -40, 0.5, 0)
-        remoteName.Position = UDim2.new(0, 40, 0, 2)
-        remoteName.Text = remote.Name
-        remoteName.Font = Enum.Font.GothamMedium
-        remoteName.TextSize = 14
-        remoteName.TextColor3 = Color3.fromRGB(220, 220, 255)
-        remoteName.BackgroundTransparency = 1
-        remoteName.TextXAlignment = Enum.TextXAlignment.Left
-        remoteName.TextTruncate = Enum.TextTruncate.AtEnd
+        local nameLabel = Instance.new("TextLabel", eventFrame)
+        nameLabel.Size = UDim2.new(0.7, -40, 0.5, 0)
+        nameLabel.Position = UDim2.new(0, 40, 0, 2)
+        nameLabel.Text = remote.Name
+        nameLabel.Font = Enum.Font.GothamMedium
+        nameLabel.TextSize = 14
+        nameLabel.TextColor3 = Color3.fromRGB(220, 220, 255)
+        nameLabel.BackgroundTransparency = 1
+        nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+        nameLabel.TextTruncate = Enum.TextTruncate.AtEnd
 
-        -- Caminho completo (tooltip)
-        local fullPath = Instance.new("TextLabel", eventFrame)
-        fullPath.Size = UDim2.new(0.7, -40, 0.5, 0)
-        fullPath.Position = UDim2.new(0, 40, 0.5, -2)
-        fullPath.Text = remote:GetFullName()
-        fullPath.Font = Enum.Font.Gotham
-        fullPath.TextSize = 11
-        fullPath.TextColor3 = Color3.fromRGB(170, 170, 200)
-        fullPath.BackgroundTransparency = 1
-        fullPath.TextXAlignment = Enum.TextXAlignment.Left
-        fullPath.TextTruncate = Enum.TextTruncate.AtEnd
+        -- Caminho completo
+        local pathLabel = Instance.new("TextLabel", eventFrame)
+        pathLabel.Size = UDim2.new(0.7, -40, 0.5, 0)
+        pathLabel.Position = UDim2.new(0, 40, 0.5, -2)
+        pathLabel.Text = remote:GetFullName()
+        pathLabel.Font = Enum.Font.Gotham
+        pathLabel.TextSize = 11
+        pathLabel.TextColor3 = Color3.fromRGB(170, 170, 200)
+        pathLabel.BackgroundTransparency = 1
+        pathLabel.TextXAlignment = Enum.TextXAlignment.Left
+        pathLabel.TextTruncate = Enum.TextTruncate.AtEnd
 
-        -- Tipo de remote
-        local remoteType = Instance.new("TextLabel", eventFrame)
-        remoteType.Size = UDim2.new(0.25, 0, 0.5, 0)
-        remoteType.Position = UDim2.new(0.75, 0, 0.25, 0)
-        remoteType.Text = remote.ClassName:gsub("Remote", "")
-        remoteType.Font = Enum.Font.GothamBold
-        remoteType.TextSize = 12
-        remoteType.TextColor3 = Color3.fromRGB(180, 180, 220)
-        remoteType.BackgroundTransparency = 1
-        remoteType.TextXAlignment = Enum.TextXAlignment.Right
+        -- Tipo
+        local typeLabel = Instance.new("TextLabel", eventFrame)
+        typeLabel.Size = UDim2.new(0.25, 0, 0.5, 0)
+        typeLabel.Position = UDim2.new(0.75, 0, 0.25, 0)
+        typeLabel.Text = remote.ClassName:gsub("Remote", "")
+        typeLabel.Font = Enum.Font.GothamBold
+        typeLabel.TextSize = 12
+        typeLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
+        typeLabel.BackgroundTransparency = 1
+        typeLabel.TextXAlignment = Enum.TextXAlignment.Right
 
-        -- Timestamp
+        -- Hora
         local timeLabel = Instance.new("TextLabel", eventFrame)
         timeLabel.Size = UDim2.new(0.25, 0, 0.5, 0)
         timeLabel.Position = UDim2.new(0.75, 0, 0.5, -8)
@@ -2055,126 +2073,85 @@ function Window:CreateEventLogBox(tabName)
         timeLabel.BackgroundTransparency = 1
         timeLabel.TextXAlignment = Enum.TextXAlignment.Right
 
-        -- Armazenar o script gerado para este log
-        local scriptText = buildScript(remote, args)
-
-        -- Selecionar evento ao clicar
+        -- Seleção
         eventFrame.MouseButton1Click:Connect(function()
             -- Remover seleção anterior
-            if self.selectedLog then
-                self.selectedLog.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+            if self.selectedEvent then
+                self.selectedEvent.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
             end
             
-            -- Aplicar nova seleção
-            eventFrame.BackgroundColor3 = Color3.fromRGB(65, 65, 90)
-            self.selectedLog = eventFrame
-            
-            -- Exibir script
+            -- Selecionar novo
+            eventFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+            self.selectedEvent = eventFrame
             scriptBox.Text = scriptText
             self.currentScript = scriptText
         end)
 
-        -- Adicionar à tabela de logs
+        -- Adicionar à lista
         table.insert(self.eventLogs, {
-            Frame = eventFrame,
-            Remote = remote,
-            Args = args,
-            Script = scriptText,
-            Timestamp = os.time()
+            frame = eventFrame,
+            remote = remote,
+            args = args,
+            script = scriptText
         })
 
-        -- Auto-rolagem para o novo item
-        if #self.eventLogs == 1 then
-            eventFrame.MouseButton1Click:Wait()
-        end
+        -- Auto-rolagem
+        eventList.CanvasPosition = Vector2.new(0, eventList.CanvasPosition.Y + 50)
 
-        logScrolling.CanvasPosition = Vector2.new(0, 0)
-
-        -- Se o auto executar estiver ativo, executar o script
-        if autoExecuteState then
+        -- Auto-executar se ativado
+        if autoExecute then
             task.spawn(function()
                 local success, err = pcall(loadstring(scriptText))
                 if not success then
-                    warn("Erro ao executar: " .. err)
+                    warn("Erro ao executar:", err)
                 end
             end)
         end
     end
 
-    -- Configurar os botões de ação
+    -- Configurar botões
     copyButton.MouseButton1Click:Connect(function()
         if self.currentScript then
             setclipboard(self.currentScript)
-            
-            -- Efeito visual de cópia
-            local originalText = copyButton.Text
-            copyButton.Text = "  Copiado!"
-            copyButton.BackgroundColor3 = Color3.fromRGB(80, 150, 220)
-            
+            copyButton.Text = "Copiado!"
             task.wait(1)
-            
-            copyButton.Text = originalText
-            copyButton.BackgroundColor3 = Color3.fromRGB(70, 120, 200)
+            copyButton.Text = "Copiar"
         end
     end)
 
     executeButton.MouseButton1Click:Connect(function()
         if self.currentScript then
-            -- Efeito visual de execução
-            local originalText = executeButton.Text
-            executeButton.Text = "  Executando..."
-            executeButton.BackgroundColor3 = Color3.fromRGB(80, 200, 120)
-            
+            executeButton.Text = "Executando..."
             task.spawn(function()
                 local success, err = pcall(loadstring(self.currentScript))
                 if not success then
-                    warn("Erro ao executar: " .. err)
+                    warn("Erro ao executar:", err)
                 end
-                
                 task.wait(0.5)
-                executeButton.Text = originalText
-                executeButton.BackgroundColor3 = Color3.fromRGB(60, 180, 100)
+                executeButton.Text = "Executar"
             end)
         end
     end)
 
+    autoExecuteButton.MouseButton1Click:Connect(function()
+        autoExecute = not autoExecute
+        autoExecuteButton.Text = autoExecute and "Auto: ON" or "Auto: OFF"
+        autoExecuteButton.BackgroundColor3 = autoExecute and 
+            Color3.fromRGB(80, 160, 120) or 
+            Color3.fromRGB(90, 90, 120)
+    end)
+
     clearButton.MouseButton1Click:Connect(function()
-        -- Limpar todos os eventos
         for _, log in ipairs(self.eventLogs) do
-            log.Frame:Destroy()
+            log.frame:Destroy()
         end
-        
         self.eventLogs = {}
-        self.eventCounter = 0
+        self.eventCount = 0
         eventCount.Text = "Eventos: 0"
         scriptBox.Text = "-- Nenhum evento selecionado"
         self.currentScript = nil
-        self.selectedLog = nil
+        self.selectedEvent = nil
     end)
-
-    -- Configurar interação da barra de rolagem
-    local function updateScroll()
-        local visibleRatio = scriptBoxFrame.AbsoluteSize.Y / scriptBox.TextBounds.Y
-        local thumbSize = math.max(0.1, visibleRatio)
-        
-        scrollThumb.Size = UDim2.new(1, 0, thumbSize, 0)
-        
-        local maxScroll = scriptBox.TextBounds.Y - scriptBoxFrame.AbsoluteSize.Y
-        if maxScroll > 0 then
-            local scrollRatio = scriptBox.CanvasPosition.Y / maxScroll
-            scrollThumb.Position = UDim2.new(0, 0, scrollRatio * (1 - thumbSize), 0)
-        else
-            scrollThumb.Position = UDim2.new(0, 0, 0, 0)
-        end
-    end
-
-    scriptBox:GetPropertyChangedSignal("Text"):Connect(updateScroll)
-    scriptBoxFrame:GetPropertyChangedSignal("AbsoluteSize"):Connect(updateScroll)
-
-    -- Armazenar referências para uso externo
-    self.eventLogBox = container
-    self.logScrolling = logScrolling
-    self.scriptBox = scriptBox
 end
 
 local isHidden = false
