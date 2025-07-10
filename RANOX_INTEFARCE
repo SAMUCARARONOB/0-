@@ -773,6 +773,246 @@ function Window:CreateSlider(tabName, sliderConfig)
     updateSlider(bar.AbsolutePosition.X)
 end
 
+function Window:CreateSlider2(tabName, sliderConfig)
+    local tab = self.pages[tabName]
+    if not tab then return end
+
+    -- Configurações padrão
+    local config = {
+        Text = sliderConfig.Text or "Slider",
+        Description = sliderConfig.Description or "",
+        Min = sliderConfig.Min or 0,
+        Max = sliderConfig.Max or 100,
+        Default = sliderConfig.Default or sliderConfig.Min,
+        Decimals = sliderConfig.Decimals or 2,
+        Callback = sliderConfig.Callback or function() end,
+        ValueFormat = sliderConfig.ValueFormat or function(value) return tostring(value) end
+    }
+
+    -- Container principal
+    local sliderHolder = Instance.new("Frame")
+    sliderHolder.Size = UDim2.new(1, -20, 0, 0)
+    sliderHolder.Position = UDim2.new(0, 10, 0, 0)
+    sliderHolder.BackgroundTransparency = 1
+    sliderHolder.ZIndex = 2
+    sliderHolder.AutomaticSize = Enum.AutomaticSize.Y
+    sliderHolder.Parent = tab
+
+    local layout = Instance.new("UIListLayout", sliderHolder)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 5)
+
+    -- Background estilizado
+    local bg = Instance.new("Frame")
+    bg.Size = UDim2.new(1, 0, 0, config.Description == "" and 46 or 62)
+    bg.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    bg.BorderSizePixel = 0
+    bg.ZIndex = 2
+    bg.Parent = sliderHolder
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = bg
+
+    local border = Instance.new("UIStroke")
+    border.Color = Color3.fromRGB(60, 60, 60)
+    border.Thickness = 1
+    border.Transparency = 0.3
+    border.Parent = bg
+
+    -- Elementos de texto
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, -60, 0, 18)
+    title.Position = UDim2.new(0, 12, 0, 8)
+    title.Font = Enum.Font.GothamSemibold
+    title.Text = config.Text
+    title.TextColor3 = Color3.fromRGB(240, 240, 240)
+    title.TextSize = 14
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.BackgroundTransparency = 1
+    title.ZIndex = 3
+    title.Parent = bg
+
+    local desc
+    if config.Description ~= "" then
+        desc = Instance.new("TextLabel")
+        desc.Size = UDim2.new(1, -20, 0, 14)
+        desc.Position = UDim2.new(0, 12, 0, 30)
+        desc.Font = Enum.Font.Gotham
+        desc.Text = config.Description
+        desc.TextColor3 = Color3.fromRGB(180, 180, 180)
+        desc.TextSize = 12
+        desc.TextXAlignment = Enum.TextXAlignment.Left
+        desc.BackgroundTransparency = 1
+        desc.ZIndex = 3
+        desc.Parent = bg
+    end
+
+    local valueLabel = Instance.new("TextLabel")
+    valueLabel.Size = UDim2.new(0, 50, 0, 18)
+    valueLabel.Position = UDim2.new(1, -62, 0, 8)
+    valueLabel.Font = Enum.Font.GothamBold
+    valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    valueLabel.TextSize = 14
+    valueLabel.TextXAlignment = Enum.TextXAlignment.Right
+    valueLabel.BackgroundTransparency = 1
+    valueLabel.ZIndex = 3
+    valueLabel.Parent = bg
+
+    -- Barra de progresso
+    local barYPos = desc and 52 or 36
+    local bar = Instance.new("Frame")
+    bar.Size = UDim2.new(1, -20, 0, 6)
+    bar.Position = UDim2.new(0, 10, 0, barYPos)
+    bar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    bar.BorderSizePixel = 0
+    bar.ZIndex = 2
+    bar.Parent = bg
+
+    local barCorner = Instance.new("UICorner")
+    barCorner.CornerRadius = UDim.new(1, 0)
+    barCorner.Parent = bar
+
+    local fill = Instance.new("Frame")
+    fill.Size = UDim2.new(0, 0, 1, 0)
+    fill.BackgroundColor3 = Color3.fromRGB(0, 170, 255) -- Azul moderno
+    fill.BorderSizePixel = 0
+    fill.ZIndex = 3
+    fill.Parent = bar
+
+    local fillCorner = Instance.new("UICorner")
+    fillCorner.CornerRadius = UDim.new(1, 0)
+    fillCorner.Parent = fill
+
+    -- Efeito de brilho suave
+    local glow = Instance.new("UIGradient")
+    glow.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 200, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
+    })
+    glow.Rotation = 90
+    glow.Parent = fill
+
+    -- Botão deslizante
+    local knob = Instance.new("ImageButton") -- Melhor interação
+    knob.Size = UDim2.new(0, 20, 0, 20)
+    knob.AnchorPoint = Vector2.new(0.5, 0.5)
+    knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    knob.AutoButtonColor = false
+    knob.ZIndex = 4
+    knob.Parent = bar
+
+    local knobCorner = Instance.new("UICorner")
+    knobCorner.CornerRadius = UDim.new(1, 0)
+    knobCorner.Parent = knob
+
+    local knobShadow = Instance.new("UIStroke")
+    knobShadow.Color = Color3.fromRGB(0, 0, 0)
+    knobShadow.Thickness = 2
+    knobShadow.Transparency = 0.7
+    knobShadow.Parent = knob
+
+    -- Animação de hover
+    local hoverTween
+    knob.MouseEnter:Connect(function()
+        if hoverTween then hoverTween:Cancel() end
+        hoverTween = game:GetService("TweenService"):Create(knob, TweenInfo.new(0.2), {Size = UDim2.new(0,24,0,24)})
+        hoverTween:Play()
+    end)
+
+    knob.MouseLeave:Connect(function()
+        if hoverTween then hoverTween:Cancel() end
+        hoverTween = game:GetService("TweenService"):Create(knob, TweenInfo.new(0.2), {Size = UDim2.new(0,20,0,20)})
+        hoverTween:Play()
+    end)
+
+    -- Lógica do slider
+    local min = config.Min
+    local max = config.Max
+    local value = config.Default
+    local isDragging = false
+
+    local function roundToDecimals(num)
+        local mult = 10^(config.Decimals)
+        return math.floor(num * mult + 0.5) / mult
+    end
+
+    local function updateSlider(percent)
+        percent = math.clamp(percent, 0, 1)
+        value = min + (max - min) * percent
+        local displayValue = roundToDecimals(value)
+        
+        fill:TweenSize(UDim2.new(percent, 0, 1, 0), "Out", "Quad", 0.1, true)
+        knob:TweenPosition(UDim2.new(percent, 0, 0.5, 0), "Out", "Quad", 0.1, true)
+        valueLabel.Text = config.ValueFormat(displayValue)
+        config.Callback(displayValue)
+    end
+
+    -- Interatividade
+    local function updateFromInput(input)
+        local barAbsPos = bar.AbsolutePosition.X
+        local barSize = bar.AbsoluteSize.X
+        local percent = (input.Position.X - barAbsPos) / barSize
+        updateSlider(percent)
+    end
+
+    knob.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            isDragging = true
+        end
+    end)
+
+    game:GetService("UserInputService").InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            isDragging = false
+        end
+    end)
+
+    bar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            updateFromInput(input)
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if isDragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            updateFromInput(input)
+        end
+    end)
+
+    -- Teclas de seta para controle preciso
+    knob:SetAttribute("Focused", false)
+    
+    knob.Focused:Connect(function()
+        knob:SetAttribute("Focused", true)
+    end)
+
+    knob.FocusLost:Connect(function()
+        knob:SetAttribute("Focused", false)
+    end)
+
+    game:GetService("UserInputService").InputBegan:Connect(function(input)
+        if knob:GetAttribute("Focused") then
+            local step = (max - min) / 100
+            if input.KeyCode == Enum.KeyCode.Left then
+                updateSlider((value - step - min) / (max - min))
+            elseif input.KeyCode == Enum.KeyCode.Right then
+                updateSlider((value + step - min) / (max - min))
+            end
+        end
+    end)
+
+    -- Inicialização
+    updateSlider((config.Default - min) / (max - min))
+    
+    return {
+        SetValue = function(newValue)
+            local percent = (newValue - min) / (max - min)
+            updateSlider(percent)
+        end
+    }
+end
+
 function Window:CreateTextBox(tabName, placeholderText, callback)
     local tab = pages[tabName]
     if not tab then return end
