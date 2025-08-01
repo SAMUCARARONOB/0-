@@ -257,14 +257,14 @@
 
         .hero {
             text-align: center;
-            padding: 80px 20px 120px;
+            padding: 80px 20px 40px;
             max-width: 900px;
             margin: 0 auto;
             position: relative;
         }
 
         .hero-title {
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 800;
             margin-bottom: 20px;
             background: linear-gradient(90deg, var(--accent), var(--primary));
@@ -280,6 +280,46 @@
             margin-bottom: 40px;
             animation: fadeInUp 1s ease 0.2s forwards;
             opacity: 0;
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto 40px;
+            padding: 0 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        #searchInput {
+            flex: 1;
+            padding: 18px 25px;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        #searchButton {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0 30px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        #searchButton:hover {
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
         }
 
         .tabs {
@@ -370,19 +410,8 @@
             backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: cardAppear 0.6s ease forwards;
+            animation: fadeIn 0.6s ease forwards;
         }
-
-        .card:nth-child(1) { animation-delay: 0.1s; }
-        .card:nth-child(2) { animation-delay: 0.2s; }
-        .card:nth-child(3) { animation-delay: 0.3s; }
-        .card:nth-child(4) { animation-delay: 0.4s; }
-        .card:nth-child(5) { animation-delay: 0.5s; }
-        .card:nth-child(6) { animation-delay: 0.6s; }
-        .card:nth-child(7) { animation-delay: 0.7s; }
-        .card:nth-child(8) { animation-delay: 0.8s; }
 
         .card::before {
             content: "";
@@ -398,8 +427,8 @@
         }
 
         .card:hover {
-            transform: translateY(-15px) rotate(1deg);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
             border-color: rgba(138, 43, 226, 0.5);
         }
 
@@ -498,6 +527,14 @@
 
         .featured .card-title {
             color: var(--accent);
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
         }
 
         /* Modal de Script */
@@ -764,11 +801,6 @@
             to { transform: scaleX(1); }
         }
 
-        @keyframes cardAppear {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4); }
             70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
@@ -779,11 +811,6 @@
             0% { box-shadow: 0 0 20px rgba(0, 217, 255, 0.4); }
             50% { box-shadow: 0 0 40px rgba(0, 217, 255, 0.6); }
             100% { box-shadow: 0 0 20px rgba(0, 217, 255, 0.4); }
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
         }
 
         @media (max-width: 992px) {
@@ -874,6 +901,11 @@
             .section-title {
                 font-size: 1.8rem;
             }
+            
+            #searchInput {
+                padding: 15px 20px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -931,6 +963,15 @@
         <h1 class="hero-title">EXECUTORES & SCRIPTS PREMIUM</h1>
         <p class="hero-subtitle">Acesse a melhor coleção de executores e scripts atualizados para Roblox</p>
         
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Pesquisar scripts, executores...">
+                <button id="searchButton">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        
         <div class="tabs">
             <button class="tab-btn active" data-tab="executors">Executores</button>
             <button class="tab-btn" data-tab="universal">Scripts Universais</button>
@@ -943,341 +984,25 @@
         <!-- Executores Section -->
         <section id="executors" class="content-section active">
             <h2 class="section-title">Executores Premium</h2>
-            
-            <div class="cards-grid">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Delta-683</div>
-                        <div class="card-status status-updated">ATUALIZADO ✔</div>
-                    </div>
-                    <div class="card-description">
-                        Executor estável e confiável com suporte para a maioria dos scripts.
-                    </div>
-                    <a href="https://www.mediafire.com/file/scp0om4fyjwpbh8/Delta-2.683.775-01.apk/file" target="_blank" class="card-link">
-                        <i class="fas fa-download"></i> BAIXAR AGORA
-                    </a>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Cryptic-683</div>
-                        <div class="card-status status-updated">ATUALIZADO ✔</div>
-                    </div>
-                    <div class="card-description">
-                        Executor focado em segurança e privacidade.
-                    </div>
-                    <a href="https://www.mediafire.com/file/w4f7a2ezsa0sio3/Cryptic+2.683.775+APK.apk/file" target="_blank" class="card-link">
-                        <i class="fas fa-download"></i> BAIXAR AGORA
-                    </a>
-                </div>
-                
-                <div class="card featured">
-                    <div class="card-header">
-                        <div class="card-title">ArceusX:1,7.5</div>
-                        <div class="card-status status-featured">DESTAQUE ★</div>
-                    </div>
-                    <div class="card-description">
-                        Versão atualizada do popular executor ArceusX. Compatível com a maioria dos scripts.
-                    </div>
-                    <a href="https://www.mediafire.com/file/1t0fuzh63it641m/Roblox_Arceus_X_NEO_1.7.5.apk/file" target="_blank" class="card-link">
-                        <i class="fas fa-crown"></i> BAIXAR PREMIUM
-                    </a>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Codex-683</div>
-                        <div class="card-status status-updated">ATUALIZADO ✔</div>
-                    </div>
-                    <div class="card-description">
-                        Executor avançado com recursos de depuração integrados.
-                    </div>
-                    <a href="https://www.mediafire.com/file/nlm86ppvpds7yad/Codex__v2.680.apk/file" target="_blank" class="card-link">
-                        <i class="fas fa-download"></i> BAIXAR AGORA
-                    </a>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Trigon-679</div>
-                        <div class="card-status status-updated">ATUALIZADO ✔</div>
-                    </div>
-                    <div class="card-description">
-                        Executor poderoso com excelente compatibilidade e desempenho.
-                    </div>
-                    <a href="https://www.mediafire.com/file/gzf3ji8b6iewf3f/Trigon_2.679.apk/file" target="_blank" class="card-link">
-                        <i class="fas fa-download"></i> BAIXAR AGORA
-                    </a>
-                </div>
-            </div>
+            <div class="cards-grid" id="executors-grid"></div>
         </section>
         
         <!-- Universal Scripts Section -->
         <section id="universal" class="content-section">
             <h2 class="section-title">Scripts Universais</h2>
-            
-            <div class="cards-grid">
-                <div class="card featured">
-                    <div class="card-header">
-                        <div class="card-title">Infinite Yield</div>
-                        <div class="card-status status-featured">TOP 1 ★</div>
-                    </div>
-                    <div class="card-description">
-                        O script mais completo para administração e moderação em qualquer jogo.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/DarkNetworks/Infinite-Yield/main/latest.lua'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Orca</div>
-                        <div class="card-status status-updated">ATUALIZADO ✔</div>
-                    </div>
-                    <div class="card-description">
-                        Script universal com diversas ferramentas e utilitários para jogos.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/richie0866/orca/master/public/latest.lua'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">RANOX SPY🛸</div>
-                        <div class="card-status status-updated">ATUALIZADO ✔</div>
-                    </div>
-                    <div class="card-description">
-                        Script universal com função de captura Eventos.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/F%20%3D%20S%202%20%3D%5B9%5D'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Project Pastel</div>
-                        <div class="card-status status-updated">NOVO ✨</div>
-                    </div>
-                    <div class="card-description">
-                        Interface elegante com centenas de comandos para qualquer jogo Roblox.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/NUTellaVING/ProjectPastel/main/Loader.lua'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Dark Dex</div>
-                        <div class="card-status status-updated">PODEROSO ⚡</div>
-                    </div>
-                    <div class="card-description">
-                        Ferramenta avançada para explorar e manipular o ambiente do jogo.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://pastebin.com/raw/Abcd1234'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-            </div>
+            <div class="cards-grid" id="universal-grid"></div>
         </section>
         
         <!-- Game Scripts Section -->
         <section id="games" class="content-section">
             <h2 class="section-title">Scripts para Jogos</h2>
-
-            <div class="cards-grid">
-                <div class="card featured">
-                    <div class="card-header">
-                        <div class="card-title">GROW A GARDEN🥕</div>
-                        <div class="card-status status-featured">DESTAQUE ★</div>
-                    </div>
-                    <div class="card-description">
-                        AUTO FARM.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://lunor.dev/loader'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">BLADE BALL</div>
-                        <div class="card-status status-updated">AUTO PARRY🎖</div>
-                    </div>
-                    <div class="card-description">
-                        Auto farm, Auto parry.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/luascriptsROBLOX/BladeBallXera/main/XeraUltron'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Blox Fruits</div>
-                        <div class="card-status status-updated">FARM ⚡</div>
-                    </div>
-                    <div class="card-description">
-                        Auto farm, teleporte e outras vantagens para Blox Fruits.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/BasementHub/BH-Blox-fruit/main/W-Azure-V3'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">CLIMB AND JUMP TOWER</div>
-                        <div class="card-status status-updated">FARM MONEY ✨️</div>
-                    </div>
-                    <div class="card-description">
-                        AUTO FARM MONEY.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/gumanba/Scripts/main/ClimbandJump'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Arsenal</div>
-                        <div class="card-status status-updated">AIMBOT 🎯</div>
-                    </div>
-                    <div class="card-description">
-                        Aimbot, ESP, wallhack e outras vantagens para Arsenal.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/Theyfwdan/Theyfwdan/main/ExpressHubPaidVersion'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Pet Simulator</div>
-                        <div class="card-status status-updated">AUTO FARM 🤖</div>
-                    </div>
-                    <div class="card-description">
-                        Autofarm de moedas, ovos e outros recursos em Pet Simulator.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/RenceeeX/PetsGo/main/RenceeXHub'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Driving Empire</div>
-                        <div class="card-status status-updated">MOEDAS 💰</div>
-                    </div>
-                    <div class="card-description">
-                        Farm automático de moedas e recursos em Driving Empire.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/CasperFlyModz/discord.gg-rips/main/DrivingEmpire.lua'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Toilet Tower Defense</div>
-                        <div class="card-status status-updated">AUTO UPGRADE ⬆️</div>
-                    </div>
-                    <div class="card-description">
-                        Autoplay, auto upgrade e outras vantagens para TTD.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/LOLking123456/TTD/main/ToiletDefense'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-            </div>
+            <div class="cards-grid" id="games-grid"></div>
         </section>
         
         <!-- Event Scripts Section -->
         <section id="events" class="content-section">
             <h2 class="section-title">Scripts para Eventos</h2>
-            
-            <div class="cards-grid">
-                <div class="card featured">
-                    <div class="card-header">
-                        <div class="card-title">UGC Santa Suit</div>
-                        <div class="card-status status-featured">EXCLUSIVO 🎅</div>
-                    </div>
-                    <div class="card-description">
-                        Obtenha automaticamente todos os itens do evento de Natal UGC.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/SantaSuit'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-
-<div class="card">
-    <div class="card-header">
-        <div class="card-title">War Tycoon EVENT</div>
-        <div class="card-status status-updated">EVENTO ❄️</div>
-    </div>
-    <div class="card-description">
-        Complete o evento de inverno do War Tycoon.
-    </div>
-    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/WarTycoonWinter'))()">
-        <i class="fas fa-copy"></i> VER SCRIPT
-    </div>
-</div>
-
-<div class="card">
-    <div class="card-header">
-        <div class="card-title">Driving Empire EVENT</div>
-        <div class="card-status status-updated">EVENTO ❄️</div>
-    </div>
-    <div class="card-description">
-        Complete o evento de inverno do Driving Empire.
-    </div>
-    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/DrivingEmpireWinter'))()">
-        <i class="fas fa-copy"></i> VER SCRIPT
-    </div>
-</div>
-
-<div class="card">
-    <div class="card-header">
-        <div class="card-title">ELEMETAL DUN WINTER</div>
-        <div class="card-status status-updated">EVENTO ❄️</div>
-    </div>
-    <div class="card-description">
-        Evento de inverno do Elemental Dungeon.
-    </div>
-    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/ElementalDunWinter'))()">
-        <i class="fas fa-copy"></i> VER SCRIPT
-    </div>
-</div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Sonic Winter</div>
-                        <div class="card-status status-updated">EVENTO ❄️</div>
-                    </div>
-                    <div class="card-description">
-                        Complete automaticamente o evento de inverno do Sonic.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/SonicWinter'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Royale High Winter</div>
-                        <div class="card-status status-updated">RECOMPENSAS 🎁</div>
-                    </div>
-                    <div class="card-description">
-                        Farm automático de recompensas no evento de inverno do Royale High.
-                    </div>
-                    <div class="card-link" data-script="loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/RoyaleHighWinter'))()">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>
-                </div>
-            </div>
+            <div class="cards-grid" id="events-grid"></div>
         </section>
     </div>
 
@@ -1346,6 +1071,218 @@
     </footer>
 
     <script>
+        // Dados dos scripts organizados por categoria
+        const scriptsData = {
+            executors: [
+                {
+                    title: "Delta-683",
+                    status: "ATUALIZADO ✔",
+                    statusClass: "status-updated",
+                    description: "Executor estável e confiável com suporte para a maioria dos scripts.",
+                    link: "https://www.mediafire.com/file/scp0om4fyjwpbh8/Delta-2.683.775-01.apk/file",
+                    isDownload: true
+                },
+                {
+                    title: "Cryptic-683",
+                    status: "ATUALIZADO ✔",
+                    statusClass: "status-updated",
+                    description: "Executor focado em segurança e privacidade.",
+                    link: "https://www.mediafire.com/file/w4f7a2ezsa0sio3/Cryptic+2.683.775+APK.apk/file",
+                    isDownload: true
+                },
+                {
+                    title: "ArceusX:1,7.5",
+                    status: "DESTAQUE ★",
+                    statusClass: "status-featured",
+                    description: "Versão atualizada do popular executor ArceusX. Compatível com a maioria dos scripts.",
+                    link: "https://www.mediafire.com/file/1t0fuzh63it641m/Roblox_Arceus_X_NEO_1.7.5.apk/file",
+                    isDownload: true,
+                    featured: true
+                },
+                {
+                    title: "Codex-683",
+                    status: "ATUALIZADO ✔",
+                    statusClass: "status-updated",
+                    description: "Executor avançado com recursos de depuração integrados.",
+                    link: "https://www.mediafire.com/file/nlm86ppvpds7yad/Codex__v2.680.apk/file",
+                    isDownload: true
+                },
+                {
+                    title: "Trigon-679",
+                    status: "ATUALIZADO ✔",
+                    statusClass: "status-updated",
+                    description: "Executor poderoso com excelente compatibilidade e desempenho.",
+                    link: "https://www.mediafire.com/file/gzf3ji8b6iewf3f/Trigon_2.679.apk/file",
+                    isDownload: true
+                }
+            ],
+            universal: [
+                {
+                    title: "Rochips Universal",
+                    status: "NOVO ✨",
+                    statusClass: "status-updated",
+                    description: "Coleção de scripts para diversos jogos Roblox.",
+                    script: "loadstring(game:HttpGet('https://glot.io/snippets/gzrux646yj/raw/main.ts'))()"
+                },
+                {
+                    title: "GhostHub",
+                    status: "ATUALIZADO ✔",
+                    statusClass: "status-updated",
+                    description: "Hub universal com diversos scripts.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/GhostPlayer352/Test4/main/GhostHub'))()"
+                },
+                {
+                    title: "Zygarde",
+                    status: "PODEROSO ⚡",
+                    statusClass: "status-updated",
+                    description: "Hub com scripts premium para vários jogos.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/louismich4el/Zygarde/main/Protected%20zygarde.lua'))()"
+                },
+                {
+                    title: "Infinite Yield",
+                    status: "TOP 1 ★",
+                    statusClass: "status-featured",
+                    description: "O script mais completo para administração e moderação em qualquer jogo.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/DarkNetworks/Infinite-Yield/main/latest.lua'))()",
+                    featured: true
+                },
+                {
+                    title: "Orca",
+                    status: "ATUALIZADO ✔",
+                    statusClass: "status-updated",
+                    description: "Script universal com diversas ferramentas e utilitários para jogos.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/richie0866/orca/master/public/latest.lua'))()"
+                },
+                {
+                    title: "Project Pastel",
+                    status: "NOVO ✨",
+                    statusClass: "status-updated",
+                    description: "Interface elegante com centenas de comandos para qualquer jogo Roblox.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/NUTellaVING/ProjectPastel/main/Loader.lua'))()"
+                },
+                {
+                    title: "Dark Dex",
+                    status: "PODEROSO ⚡",
+                    statusClass: "status-updated",
+                    description: "Ferramenta avançada para explorar e manipular o ambiente do jogo.",
+                    script: "loadstring(game:HttpGet('https://pastebin.com/raw/Abcd1234'))()"
+                },
+                {
+                    title: "Pendulum Hub",
+                    status: "TOP 5 ★",
+                    statusClass: "status-featured",
+                    description: "Hub universal com interface moderna e recursos avançados.",
+                    script: "loadstring(game:HttpGet('https://scriptblox.com/raw/Universal-Script-Op-PENDULUM-HUB-Gui-R6-6490'))()",
+                    featured: true
+                },
+                {
+                    title: "SCRIPTHUBV3",
+                    status: "NOVO ✨",
+                    statusClass: "status-updated",
+                    description: "Versão atualizada do popular script hub.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/scripthubekitten/SCRIPTHUBV3/main/SCRIPTHUBV3'))()"
+                }
+            ],
+            games: [
+                {
+                    title: "Wrestling Legends",
+                    status: "EXCLUSIVO 🥊",
+                    statusClass: "status-updated",
+                    description: "Script completo para Wrestling Legends com vantagens exclusivas.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/WrestlingLegends'))()"
+                },
+                {
+                    title: "Blade Ball",
+                    status: "DESTAQUE ★",
+                    statusClass: "status-featured",
+                    description: "Autododge, autoparry e outras vantagens para dominar no Blade Ball.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/luascriptsROBLOX/BladeBallXera/main/XeraUltron'))()",
+                    featured: true
+                },
+                {
+                    title: "Blox Fruits",
+                    status: "FARM ⚡",
+                    statusClass: "status-updated",
+                    description: "Auto farm, teleporte e outras vantagens para Blox Fruits.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/BasementHub/BH-Blox-fruit/main/W-Azure-V3'))()"
+                },
+                {
+                    title: "Arsenal",
+                    status: "AIMBOT 🎯",
+                    statusClass: "status-updated",
+                    description: "Aimbot, ESP, wallhack e outras vantagens para Arsenal.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/Theyfwdan/Theyfwdan/main/ExpressHubPaidVersion'))()"
+                },
+                {
+                    title: "Pet Simulator",
+                    status: "AUTO FARM 🤖",
+                    statusClass: "status-updated",
+                    description: "Autofarm de moedas, ovos e outros recursos em Pet Simulator.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/RenceeeX/PetsGo/main/RenceeXHub'))()"
+                },
+                {
+                    title: "Driving Empire",
+                    status: "MOEDAS 💰",
+                    statusClass: "status-updated",
+                    description: "Farm automático de moedas e recursos em Driving Empire.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/CasperFlyModz/discord.gg-rips/main/DrivingEmpire.lua'))()"
+                },
+                {
+                    title: "Toilet Tower Defense",
+                    status: "AUTO UPGRADE ⬆️",
+                    statusClass: "status-updated",
+                    description: "Autoplay, auto upgrade e outras vantagens para TTD.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/LOLking123456/TTD/main/ToiletDefense'))()"
+                },
+                {
+                    title: "BROOKHAVEN",
+                    status: "POPULAR 🏠",
+                    statusClass: "status-updated",
+                    description: "Script completo para Brookhaven RP.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/AstroXTeam/AstroXHubNeta/refs/heads/main/%D9%87%D9%84%D9%88.lua'))()"
+                }
+            ],
+            events: [
+                {
+                    title: "UGC Santa Suit",
+                    status: "EXCLUSIVO 🎅",
+                    statusClass: "status-featured",
+                    description: "Obtenha automaticamente todos os itens do evento de Natal UGC.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/SantaSuit'))()",
+                    featured: true
+                },
+                {
+                    title: "Sonic Winter",
+                    status: "EVENTO ❄️",
+                    statusClass: "status-updated",
+                    description: "Complete automaticamente o evento de inverno do Sonic.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/SonicWinter'))()"
+                },
+                {
+                    title: "Royale High Winter",
+                    status: "RECOMPENSAS 🎁",
+                    statusClass: "status-updated",
+                    description: "Farm automático de recompensas no evento de inverno do Royale High.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/RoyaleHighWinter'))()"
+                },
+                {
+                    title: "War Tycoon EVENT",
+                    status: "EVENTO ❄️",
+                    statusClass: "status-updated",
+                    description: "Complete o evento de inverno do War Tycoon.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/WarTycoonWinter'))()"
+                },
+                {
+                    title: "ELEMETAL DUN WINTER",
+                    status: "EXCLUSIVO 🎅",
+                    statusClass: "status-featured",
+                    description: "Evento de inverno do Elemental Dungeon.",
+                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/ElementalDunWinter'))()",
+                    featured: true
+                }
+            ]
+        };
+
         // Criar partículas animadas
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
@@ -1378,6 +1315,111 @@
             }
         }
         
+        // Função para criar um card
+        function createCardElement(script) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            if (script.featured) card.classList.add('featured');
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-title">${script.title}</div>
+                    <div class="card-status ${script.statusClass}">${script.status}</div>
+                </div>
+                <div class="card-description">
+                    ${script.description}
+                </div>
+                ${script.isDownload ? 
+                    `<a href="${script.link}" target="_blank" class="card-link">
+                        <i class="fas fa-download"></i> BAIXAR AGORA
+                    </a>` : 
+                    `<div class="card-link" data-script="${script.script}">
+                        <i class="fas fa-copy"></i> VER SCRIPT
+                    </div>`
+                }
+            `;
+            
+            // Adicionar evento para abrir modal
+            if (!script.isDownload) {
+                const linkElement = card.querySelector('.card-link');
+                linkElement.addEventListener('click', function() {
+                    openModal(script.title, script.script);
+                });
+            }
+            
+            return card;
+        }
+        
+        // Função para abrir o modal
+        function openModal(title, content) {
+            const modalTitle = document.getElementById('modalScriptTitle');
+            const scriptContent = document.getElementById('scriptContent');
+            modalTitle.textContent = title;
+            scriptContent.textContent = content;
+            modal.classList.add('active');
+        }
+        
+        // Função para renderizar cards
+        function renderCards(category) {
+            const container = document.getElementById(`${category}-grid`);
+            container.innerHTML = '';
+            
+            scriptsData[category].forEach(script => {
+                const card = createCardElement(script);
+                container.appendChild(card);
+            });
+            
+            // Adicionar mensagem se não houver resultados
+            if (scriptsData[category].length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <p>Nenhum script encontrado nesta categoria</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Filtrar scripts pela pesquisa
+        function filterScripts(searchTerm) {
+            searchTerm = searchTerm.toLowerCase();
+            
+            // Se o termo estiver vazio, mostrar todos os itens
+            if (searchTerm.trim() === '') {
+                renderCards('executors');
+                renderCards('universal');
+                renderCards('games');
+                renderCards('events');
+                return;
+            }
+            
+            // Filtrar em todas as categorias
+            Object.keys(scriptsData).forEach(category => {
+                const container = document.getElementById(`${category}-grid`);
+                container.innerHTML = '';
+                
+                const filtered = scriptsData[category].filter(script => 
+                    script.title.toLowerCase().includes(searchTerm) || 
+                    script.description.toLowerCase().includes(searchTerm) ||
+                    script.status.toLowerCase().includes(searchTerm)
+                );
+                
+                filtered.forEach(script => {
+                    const card = createCardElement(script);
+                    container.appendChild(card);
+                });
+                
+                if (filtered.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-results">
+                            <i class="fas fa-search"></i>
+                            <p>Nenhum resultado encontrado para "${searchTerm}"</p>
+                        </div>
+                    `;
+                }
+            });
+        }
+        
         // Tab switching functionality
         document.querySelectorAll('.tab-btn').forEach(button => {
             button.addEventListener('click', () => {
@@ -1392,46 +1434,16 @@
                 const tabId = button.getAttribute('data-tab');
                 document.getElementById(tabId).classList.add('active');
                 
-                // Re-animate cards
-                document.querySelectorAll('.card').forEach(card => {
-                    card.style.animation = 'none';
-                    setTimeout(() => {
-                        card.style.animation = 'cardAppear 0.6s ease forwards';
-                    }, 10);
-                });
-            });
-        });
-        
-        // Card hover animations
-        document.querySelectorAll('.card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = 'translateY(-15px) rotate(1deg)';
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0) rotate(0)';
+                // Renderizar os cards da aba ativa
+                renderCards(tabId);
             });
         });
         
         // Modal functionality
         const modal = document.getElementById('scriptModal');
-        const modalTitle = document.getElementById('modalScriptTitle');
-        const scriptContent = document.getElementById('scriptContent');
         const closeModal = document.getElementById('closeModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
         const copyScriptBtn = document.getElementById('copyScript');
-        
-        // Abrir modal ao clicar em VER SCRIPT
-        document.querySelectorAll('.card-link[data-script]').forEach(link => {
-            link.addEventListener('click', function() {
-                const script = this.getAttribute('data-script');
-                const cardTitle = this.closest('.card').querySelector('.card-title').textContent;
-                
-                modalTitle.textContent = cardTitle;
-                scriptContent.textContent = script;
-                modal.classList.add('active');
-            });
-        });
         
         // Fechar modal
         closeModal.addEventListener('click', () => {
@@ -1451,6 +1463,7 @@
         
         // Copiar script
         copyScriptBtn.addEventListener('click', () => {
+            const scriptContent = document.getElementById('scriptContent');
             const textarea = document.createElement('textarea');
             textarea.value = scriptContent.textContent;
             document.body.appendChild(textarea);
@@ -1469,16 +1482,6 @@
         
         // Inicializar partículas
         createParticles();
-        
-        // Animação de rolagem suave
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
         
         // Seletor de temas
         const themeSelector = document.querySelector('.theme-selector');
@@ -1523,11 +1526,27 @@
             });
         });
         
-        // Forçar animação dos cards na primeira exibição
-        window.addEventListener('load', function() {
-            document.querySelectorAll('.content-section.active .card').forEach(card => {
-                card.style.animation = 'cardAppear 0.6s ease forwards';
-            });
+        // Barra de pesquisa
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        
+        searchButton.addEventListener('click', () => {
+            filterScripts(searchInput.value);
+        });
+        
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                filterScripts(searchInput.value);
+            }
+        });
+        
+        // Inicializar as categorias
+        document.addEventListener('DOMContentLoaded', function() {
+            // Renderizar todas as categorias
+            renderCards('executors');
+            renderCards('universal');
+            renderCards('games');
+            renderCards('events');
         });
     </script>
 </body>
