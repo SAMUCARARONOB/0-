@@ -1,979 +1,123 @@
--- Ranox UI Library v2.1
--- By: ChatGPT
--- Estilo: Rayfield Premium Modificado (REDZHUB DARK)
-
-local TweenService = game:GetService("TweenService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local HttpService = game:GetService("HttpService")
-local Players = game:GetService("Players")
 
-local RanoxUI = {}
-RanoxUI.__index = RanoxUI
+local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
 
--- Configurações padrão
-RanoxUI.DefaultConfig = {
-    ThemeColor = Color3.fromRGB(0, 170, 255),
-    BackgroundTransparency = 0.1,
-    ToggleAnimationSpeed = 0.3
+local Window = Rayfield:CreateWindow({
+    Name = "CLIMB AND SLIDE 🚤",
+    LoadingTitle = "Carregando...",
+    LoadingSubtitle = "by ChatGPT",
+    ConfigurationSaving = { Enabled = false }
+})
+
+local AutoFarm = Window:CreateTab("AUTO FARM", 4483362458)
+
+local RPets = ReplicatedStorage:WaitForChild("R_Pets")
+local RServer = ReplicatedStorage:WaitForChild("R_Server")
+local discovered = {}
+local activePets = {}
+local sliderActive = {false,false,false,false}
+local sliderMaps = {"Map_1","Map_2","Map_3","Map_4"}
+local sliderLastExec = {0,0,0,0}
+local tpCoords = {
+    Vector3.new(13.52, 3.96, -123.00),
+    Vector3.new(-13511.48, 4.87, -88.00),
+    Vector3.new(-27143.17, 228.89, -124.53),
+    Vector3.new(-39751.41, 111.39, -101.99)
 }
+local execSpeed = 0.5
 
--- Cores do tema
-RanoxUI.ThemeColors = {
-    Primary = Color3.fromRGB(0, 170, 255),
-    Secondary = Color3.fromRGB(100, 220, 255),
-    Background = Color3.fromRGB(15, 15, 20),
-    DarkBackground = Color3.fromRGB(10, 10, 15),
-    Text = Color3.fromRGB(240, 240, 240),
-    SubText = Color3.fromRGB(180, 180, 180),
-    Success = Color3.fromRGB(0, 200, 100),
-    Warning = Color3.fromRGB(255, 180, 0),
-    Error = Color3.fromRGB(255, 80, 80)
-}
+RunService.Heartbeat:Connect(function()
+    for petName, isActive in pairs(activePets) do
+        if isActive then
+            pcall(function()
+                RPets:FireServer("Give_Pet", petName)
+            end)
+        end
+    end
+    for i = 1,4 do
+        if sliderActive[i] and (tick() - sliderLastExec[i]) >= execSpeed then
+            sliderLastExec[i] = tick()
+            local args = {"Slide", workspace:WaitForChild("Maps"):WaitForChild(sliderMaps[i])}
+            RServer:FireServer(unpack(args))
+        end
+    end
+end)
 
--- Função para criar a biblioteca
-function RanoxUI.new()
-    local self = setmetatable({}, RanoxUI)
-    
-    self.Elements = {}
-    self.Windows = {}
-    self.CurrentWindow = nil
-    self.Config = table.clone(RanoxUI.DefaultConfig)
-    self.Saving = {
-        Enabled = false,
-        FolderName = "RanoxUIConfig",
-        FileName = "Settings"
-    }
-    
-    return self
+local function createToggle(name)
+    if discovered[name] then return end
+    discovered[name] = true
+    AutoFarm:CreateToggle({
+        Name = name,
+        CurrentValue = false,
+        Callback = function(state)
+            activePets[name] = state
+        end
+    })
 end
 
--- Função para carregar configurações salvas
-function RanoxUI:LoadConfiguration()
-    if not self.Saving.Enabled then return end
-    
-    local success, data = pcall(function()
-        return readfile(self.Saving.FolderName.."/"..self.Saving.FileName..".json")
-    end)
-    
-    if success and data then
-        local decoded = HttpService:JSONDecode(data)
-        if decoded then
-            for elementName, value in pairs(decoded) do
-                if self.Elements[elementName] then
-                    if self.Elements[elementName].Type == "Toggle" then
-                        self.Elements[elementName]:Set(value)
-                    elseif self.Elements[elementName].Type == "Slider" then
-                        self.Elements[elementName]:Set(value)
-                    elseif self.Elements[elementName].Type == "Dropdown" then
-                        self.Elements[elementName]:Set(value)
-                    end
-                end
+local function scanReplicatedStorageForPets()
+    for _, inst in ipairs(ReplicatedStorage:GetDescendants()) do
+        if inst.Name:match("^Pet[%w_]+") then
+            createToggle(inst.Name)
+        end
+        if inst:IsA("StringValue") and type(inst.Value) == "string" and inst.Value:match("^Pet[%w_]+") then
+            createToggle(inst.Value)
+        end
+    end
+    local candidates = {"Pets","PetList","AllPets","PetsFolder","Pet_Storage"}
+    for _, folderName in ipairs(candidates) do
+        local f = ReplicatedStorage:FindFirstChild(folderName)
+        if f then
+            for _, c in ipairs(f:GetChildren()) do
+                createToggle(c.Name)
             end
         end
     end
 end
 
--- Função para salvar configurações
-function RanoxUI:SaveConfiguration()
-    if not self.Saving.Enabled then return end
-    
-    local dataToSave = {}
-    for name, element in pairs(self.Elements) do
-        if element.Type == "Toggle" then
-            dataToSave[name] = element.Value
-        elseif element.Type == "Slider" then
-            dataToSave[name] = element.Value
-        elseif element.Type == "Dropdown" then
-            dataToSave[name] = element.Value
+for i=1,4 do
+    AutoFarm:CreateToggle({
+        Name = "SLIDER MAPA "..i,
+        CurrentValue = false,
+        Callback = function(state)
+            sliderActive[i] = state
         end
-    end
-    
-    if not isfolder(self.Saving.FolderName) then
-        makefolder(self.Saving.FolderName)
-    end
-    
-    local encoded = HttpService:JSONEncode(dataToSave)
-    writefile(self.Saving.FolderName.."/"..self.Saving.FileName..".json", encoded)
+    })
 end
 
--- Função para criar uma janela
-function RanoxUI:CreateWindow(options)
-    local window = {
-        Name = options.Name or "Ranox UI",
-        LoadingTitle = options.LoadingTitle or "Carregando...",
-        LoadingSubtitle = options.LoadingSubtitle or "Por favor aguarde",
-        ConfigurationSaving = options.ConfigurationSaving or {
-            Enabled = false,
-            FolderName = "RanoxUIConfig",
-            FileName = "Settings"
-        },
-        Tabs = {},
-        CurrentTab = nil
-    }
-    
-    self.Saving = window.ConfigurationSaving
-    self.CurrentWindow = window
-    table.insert(self.Windows, window)
-    
-    -- Criar interface da janela
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "RanoxUI_"..window.Name
-    screenGui.Parent = game:GetService("CoreGui")
-    screenGui.ResetOnSpawn = false
-    window.ScreenGui = screenGui
-    
-    -- Fundo escuro
-    local background = Instance.new("Frame")
-    background.Size = UDim2.new(1, 0, 1, 0)
-    background.BackgroundColor3 = Color3.new(0, 0, 0)
-    background.BackgroundTransparency = 0.7
-    background.BorderSizePixel = 0
-    background.ZIndex = 0
-    background.Parent = screenGui
-    
-    -- Janela principal
-    local mainFrame = Instance.new("Frame")
-    mainFrame.Size = UDim2.new(0, 500, 0, 450)
-    mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    mainFrame.BackgroundColor3 = self.ThemeColors.DarkBackground
-    mainFrame.BackgroundTransparency = self.Config.BackgroundTransparency
-    mainFrame.BorderSizePixel = 0
-    mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    mainFrame.ZIndex = 10
-    mainFrame.ClipsDescendants = true
-    mainFrame.Parent = screenGui
-    window.MainFrame = mainFrame
-    
-    -- Arredondamento
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 14)
-    corner.Parent = mainFrame
-    
-    -- Borda neon
-    local stroke = Instance.new("UIStroke")
-    stroke.Thickness = 2
-    stroke.Color = self.ThemeColors.Primary
-    stroke.Transparency = 0.2
-    stroke.Parent = mainFrame
-    
-    -- Animação de borda
-    task.spawn(function()
-        local time = 0
-        while screenGui and screenGui.Parent do
-            time = time + 0.02
-            local r = math.sin(time * 2) * 0.5 + 0.5
-            local g = math.sin(time * 2 + 2) * 0.5 + 0.5
-            local b = math.sin(time * 2 + 4) * 0.5 + 0.5
-            stroke.Color = Color3.new(r, g, b)
-            RunService.RenderStepped:Wait()
+AutoFarm:CreateSlider({
+    Name = "Velocidade Execução",
+    Range = {0.01, 1},
+    Increment = 0.01,
+    Suffix = "s",
+    CurrentValue = 0.5,
+    Callback = function(Value)
+        execSpeed = Value
+    end
+})
+
+AutoFarm:CreateLabel("TELEPORTE DE MAPA")
+for i=1,4 do
+    AutoFarm:CreateButton({
+        Name = "TP MAP "..i,
+        Callback = function()
+            local player = game.Players.LocalPlayer
+            if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                player.Character.HumanoidRootPart.CFrame = CFrame.new(tpCoords[i])
+            end
+            local args = {"Teleport_Map", sliderMaps[i]}
+            RServer:FireServer(unpack(args))
         end
-    end)
-    
-    -- Barra de título
-    local titleBar = Instance.new("Frame")
-    titleBar.Size = UDim2.new(1, 0, 0, 40)
-    titleBar.BackgroundColor3 = self.ThemeColors.Background
-    titleBar.BorderSizePixel = 0
-    titleBar.ZIndex = 20
-    titleBar.Parent = mainFrame
-    window.TitleBar = titleBar
-    
-    -- Título
-    local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(0, 0, 1, 0)
-    title.Position = UDim2.new(0, 20, 0, 0)
-    title.BackgroundTransparency = 1
-    title.Text = window.Name
-    title.TextColor3 = self.ThemeColors.Text
-    title.TextSize = 20
-    title.Font = Enum.Font.GothamBold
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.ZIndex = 20
-    title.Parent = titleBar
-    
-    -- Botões de controle
-    local closeButton = self:CreateControlButton(titleBar, "✕", 1, function()
-        screenGui:Destroy()
-    end, self.ThemeColors.Error)
-    
-    local minimizeButton = self:CreateControlButton(titleBar, "━", 2, function()
-        if window.Minimized then
-            -- Restaurar
-            TweenService:Create(mainFrame, TweenInfo.new(0.3), {
-                Size = UDim2.new(0, 500, 0, 450)
-            }):Play()
-            -- Mostrar conteúdo
-            window.ContentContainer.Visible = true
-        else
-            -- Minimizar
-            TweenService:Create(mainFrame, TweenInfo.new(0.3), {
-                Size = UDim2.new(0, 500, 0, 40)
-            }):Play()
-            -- Esconder conteúdo
-            window.ContentContainer.Visible = false
-        end
-        window.Minimized = not window.Minimized
-    end, self.ThemeColors.Warning)
-    
-    local settingsButton = self:CreateControlButton(titleBar, "⚙", 3, function()
-        self:ShowNotification("Configurações", "Menu de configurações aberto")
-    end, self.ThemeColors.Primary)
-    
-    -- Container de abas e conteúdo (agrupado para facilitar a ocultação)
-    local contentContainer = Instance.new("Frame")
-    contentContainer.Size = UDim2.new(1, 0, 1, -40)
-    contentContainer.Position = UDim2.new(0, 0, 0, 40)
-    contentContainer.BackgroundTransparency = 1
-    contentContainer.Visible = true
-    contentContainer.Parent = mainFrame
-    window.ContentContainer = contentContainer
-    
-    -- Container de abas
-    local tabContainer = Instance.new("Frame")
-    tabContainer.Size = UDim2.new(1, -40, 0, 36)
-    tabContainer.Position = UDim2.new(0, 20, 0, 5)
-    tabContainer.BackgroundTransparency = 1
-    tabContainer.ZIndex = 20
-    tabContainer.Parent = contentContainer
-    window.TabContainer = tabContainer
-    
-    -- Container de conteúdo
-    local contentFrame = Instance.new("Frame")
-    contentFrame.Size = UDim2.new(1, -40, 1, -50)
-    contentFrame.Position = UDim2.new(0, 20, 0, 45)
-    contentFrame.BackgroundTransparency = 1
-    contentFrame.ZIndex = 20
-    contentFrame.Parent = contentContainer
-    window.ContentFrame = contentFrame
-    
-    -- Rodapé
-    local footer = Instance.new("Frame")
-    footer.Size = UDim2.new(1, 0, 0, 30)
-    footer.Position = UDim2.new(0, 0, 1, -30)
-    footer.BackgroundColor3 = self.ThemeColors.Background
-    footer.BorderSizePixel = 0
-    footer.ZIndex = 20
-    footer.Parent = contentContainer
-    
-    local playerName = Players.LocalPlayer.Name
-    local statusLabel = Instance.new("TextLabel")
-    statusLabel.Size = UDim2.new(0.5, -10, 1, 0)
-    statusLabel.Position = UDim2.new(0, 15, 0, 0)
-    statusLabel.BackgroundTransparency = 1
-    statusLabel.Text = "Status: Conectado como "..playerName
-    statusLabel.TextColor3 = self.ThemeColors.SubText
-    statusLabel.Font = Enum.Font.Gotham
-    statusLabel.TextSize = 12
-    statusLabel.TextXAlignment = Enum.TextXAlignment.Left
-    statusLabel.ZIndex = 20
-    statusLabel.Parent = footer
-    
-    local versionLabel = Instance.new("TextLabel")
-    versionLabel.Size = UDim2.new(0.5, -10, 1, 0)
-    versionLabel.Position = UDim2.new(0.5, 0, 0, 0)
-    versionLabel.BackgroundTransparency = 1
-    versionLabel.Text = "Ranox UI v2.1"
-    versionLabel.TextColor3 = self.ThemeColors.SubText
-    versionLabel.Font = Enum.Font.Gotham
-    versionLabel.TextSize = 12
-    versionLabel.TextXAlignment = Enum.TextXAlignment.Right
-    versionLabel.ZIndex = 20
-    versionLabel.Parent = footer
-    
-    -- Animação de entrada
-    mainFrame.Size = UDim2.new(0, 0, 0, 0)
-    TweenService:Create(mainFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {
-        Size = UDim2.new(0, 500, 0, 450)
-    }):Play()
-    
-    -- Adicionar funcionalidade de arrastar
-    local dragging
-    local dragInput
-    local dragStart
-    local startPos
-    
-    titleBar.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            dragStart = input.Position
-            startPos = mainFrame.Position
-            
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-    
-    titleBar.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput = input
-        end
-    end)
-    
-    UserInputService.InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
-            local delta = input.Position - dragStart
-            mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-    end)
-    
-    -- Carregar configurações
-    self:LoadConfiguration()
-    
-    return window
+    })
 end
 
--- Função auxiliar para criar botões de controle
-function RanoxUI:CreateControlButton(parent, symbol, index, callback, hoverColor)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0, 32, 0, 32)
-    button.Position = UDim2.new(1, -40 * index, 0.5, -16)
-    button.Text = symbol
-    button.TextColor3 = self.ThemeColors.Text
-    button.BackgroundTransparency = 1
-    button.Font = Enum.Font.GothamBold
-    button.TextSize = 18
-    button.ZIndex = 20
-    button.Parent = parent
-    
-    button.MouseEnter:Connect(function()
-        TweenService:Create(button, TweenInfo.new(0.2), {
-            TextColor3 = hoverColor,
-            Rotation = 15
-        }):Play()
-    end)
-    
-    button.MouseLeave:Connect(function()
-        TweenService:Create(button, TweenInfo.new(0.3), {
-            TextColor3 = self.ThemeColors.Text,
-            Rotation = 0
-        }):Play()
-    end)
-    
-    button.MouseButton1Click:Connect(callback)
-    
-    return button
-end
+AutoFarm:CreateLabel("ÁREA DE PETS")
+AutoFarm:CreateButton({
+    Name = "Atualizar lista de Pets",
+    Callback = function()
+        scanReplicatedStorageForPets()
+    end
+})
 
--- Função para criar uma aba
-function RanoxUI:CreateTab(window, name)
-    local tab = {
-        Name = name,
-        Elements = {}
-    }
-    
-    -- Botão da aba
-    local tabButton = Instance.new("TextButton")
-    tabButton.Size = UDim2.new(0.2, -5, 1, 0)
-    tabButton.Position = UDim2.new(0.2 * (#window.Tabs), 0, 0, 0)
-    tabButton.BackgroundColor3 = self.ThemeColors.Background
-    tabButton.BackgroundTransparency = 0.5
-    tabButton.Text = name
-    tabButton.TextColor3 = self.ThemeColors.SubText
-    tabButton.Font = Enum.Font.GothamSemibold
-    tabButton.TextSize = 14
-    tabButton.ZIndex = 20
-    tabButton.Parent = window.TabContainer
-    tab.Button = tabButton
-    
-    -- Arredondar apenas a parte superior do botão
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 6)
-    corner.Parent = tabButton
-    
-    -- Frame de conteúdo da aba
-    local contentFrame = Instance.new("ScrollingFrame")
-    contentFrame.Size = UDim2.new(1, 0, 1, 0)
-    contentFrame.Position = UDim2.new(0, 0, 0, 0)
-    contentFrame.BackgroundTransparency = 1
-    contentFrame.BorderSizePixel = 0
-    contentFrame.ScrollBarThickness = 4
-    contentFrame.ScrollBarImageColor3 = self.ThemeColors.Primary
-    contentFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-    contentFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    contentFrame.Visible = false
-    contentFrame.ZIndex = 20
-    contentFrame.Parent = window.ContentFrame
-    tab.Content = contentFrame
-    
-    local layout = Instance.new("UIListLayout")
-    layout.Padding = UDim.new(0, 10)
-    layout.Parent = contentFrame
-    
-    layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        contentFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y)
-    end)
-    
-    -- Ativar/desativar aba
-    tabButton.MouseButton1Click:Connect(function()
-        self:SetActiveTab(window, tab)
-    end)
-    
-    -- Definir como primeira aba ativa
-    if #window.Tabs == 0 then
-        self:SetActiveTab(window, tab)
-    end
-    
-    table.insert(window.Tabs, tab)
-    return tab
-end
-
--- Definir aba ativa
-function RanoxUI:SetActiveTab(window, tab)
-    for _, t in ipairs(window.Tabs) do
-        if t == tab then
-            -- Ativar
-            TweenService:Create(t.Button, TweenInfo.new(0.3), {
-                BackgroundTransparency = 0,
-                TextColor3 = self.ThemeColors.Text,
-                BackgroundColor3 = self.ThemeColors.Primary
-            }):Play()
-            
-            -- Mostrar conteúdo
-            t.Content.Visible = true
-        else
-            -- Desativar
-            TweenService:Create(t.Button, TweenInfo.new(0.3), {
-                BackgroundTransparency = 0.5,
-                TextColor3 = self.ThemeColors.SubText,
-                BackgroundColor3 = self.ThemeColors.Background
-            }):Play()
-            
-            -- Esconder conteúdo
-            t.Content.Visible = false
-        end
-    end
-    
-    window.CurrentTab = tab
-end
-
--- Função para criar um toggle
-function RanoxUI:CreateToggle(tab, options)
-    local toggle = {
-        Type = "Toggle",
-        Name = options.Name or "Toggle",
-        Description = options.Description or "",
-        Default = options.Default or false,
-        Callback = options.Callback or function() end,
-        Flag = options.Flag or nil,
-        Value = options.Default or false
-    }
-    
-    if toggle.Flag then
-        self.Elements[toggle.Flag] = toggle
-    end
-    
-    -- Frame do toggle
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 70)
-    frame.BackgroundColor3 = self.ThemeColors.Background
-    frame.BackgroundTransparency = 0.3
-    frame.BorderSizePixel = 0
-    frame.ZIndex = 20
-    frame.Parent = tab.Content
-    toggle.Frame = frame
-    
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 12)
-    corner.Parent = frame
-    
-    -- Header
-    local header = Instance.new("Frame")
-    header.Size = UDim2.new(1, 0, 0, 30)
-    header.BackgroundTransparency = 1
-    header.Parent = frame
-    
-    local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(0.7, 0, 1, 0)
-    title.Position = UDim2.new(0, 10, 0, 0)
-    title.BackgroundTransparency = 1
-    title.Text = toggle.Name
-    title.TextColor3 = self.ThemeColors.Text
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 16
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.ZIndex = 20
-    title.Parent = header
-    
-    -- Botão do toggle
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0, 60, 0, 30)
-    button.Position = UDim2.new(1, -70, 0.5, -15)
-    button.BackgroundColor3 = self.ThemeColors.Background
-    button.AutoButtonColor = false
-    button.Text = ""
-    button.ZIndex = 20
-    button.Parent = header
-    
-    local buttonCorner = Instance.new("UICorner")
-    buttonCorner.CornerRadius = UDim.new(1, 0)
-    buttonCorner.Parent = button
-    
-    -- Bola do toggle
-    local ball = Instance.new("Frame")
-    ball.Size = UDim2.new(0, 26, 0, 26)
-    ball.Position = UDim2.new(0, 2, 0.5, -13)
-    ball.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
-    ball.ZIndex = 20
-    ball.Parent = button
-    
-    local ballCorner = Instance.new("UICorner")
-    ballCorner.CornerRadius = UDim.new(1, 0)
-    ballCorner.Parent = ball
-    
-    -- Efeito de brilho na bola (quando ligado)
-    local ballGlow = Instance.new("ImageLabel")
-    ballGlow.Size = UDim2.new(1, 6, 1, 6)
-    ballGlow.Position = UDim2.new(0, -3, 0, -3)
-    ballGlow.BackgroundTransparency = 1
-    ballGlow.Image = "rbxassetid://5028857084"
-    ballGlow.ImageColor3 = self.ThemeColors.Primary
-    ballGlow.ScaleType = Enum.ScaleType.Slice
-    ballGlow.SliceCenter = Rect.new(24, 24, 24, 24)
-    ballGlow.ImageTransparency = 1
-    ballGlow.ZIndex = 19
-    ballGlow.Parent = ball
-    
-    -- Descrição
-    local desc = Instance.new("TextLabel")
-    desc.Size = UDim2.new(1, -20, 0, 30)
-    desc.Position = UDim2.new(0, 10, 0, 35)
-    desc.BackgroundTransparency = 1
-    desc.Text = toggle.Description
-    desc.TextColor3 = self.ThemeColors.SubText
-    desc.Font = Enum.Font.Gotham
-    desc.TextSize = 13
-    desc.TextXAlignment = Enum.TextXAlignment.Left
-    desc.TextYAlignment = Enum.TextYAlignment.Top
-    desc.ZIndex = 20
-    desc.Parent = frame
-    
-    -- Função para atualizar o toggle
-    function toggle:Set(value)
-        self.Value = value
-        
-        if value then
-            TweenService:Create(ball, TweenInfo.new(self.Config.ToggleAnimationSpeed), {
-                Position = UDim2.new(1, -28, 0.5, -13),
-                BackgroundColor3 = self.ThemeColors.Primary
-            }):Play()
-            
-            TweenService:Create(ballGlow, TweenInfo.new(self.Config.ToggleAnimationSpeed), {
-                ImageTransparency = 0
-            }):Play()
-            
-            TweenService:Create(button, TweenInfo.new(self.Config.ToggleAnimationSpeed), {
-                BackgroundColor3 = Color3.fromRGB(0, 80, 120)
-            }):Play()
-        else
-            TweenService:Create(ball, TweenInfo.new(self.Config.ToggleAnimationSpeed), {
-                Position = UDim2.new(0, 2, 0.5, -13),
-                BackgroundColor3 = Color3.fromRGB(150, 150, 150)
-            }):Play()
-            
-            TweenService:Create(ballGlow, TweenInfo.new(self.Config.ToggleAnimationSpeed), {
-                ImageTransparency = 1
-            }):Play()
-            
-            TweenService:Create(button, TweenInfo.new(self.Config.ToggleAnimationSpeed), {
-                BackgroundColor3 = self.ThemeColors.Background
-            }):Play()
-        end
-        
-        self.Callback(value)
-        if self.Saving.Enabled then
-            self:SaveConfiguration()
-        end
-    end
-    
-    -- Configurar estado inicial
-    toggle:Set(toggle.Default)
-    
-    -- Interação
-    button.MouseButton1Click:Connect(function()
-        toggle:Set(not toggle.Value)
-    end)
-    
-    -- Efeito de hover no frame
-    frame.MouseEnter:Connect(function()
-        TweenService:Create(frame, TweenInfo.new(0.2), {
-            BackgroundColor3 = Color3.new(
-                self.ThemeColors.Background.R * 1.2,
-                self.ThemeColors.Background.G * 1.2,
-                self.ThemeColors.Background.B * 1.2
-            )
-        }):Play()
-    end)
-    
-    frame.MouseLeave:Connect(function()
-        TweenService:Create(frame, TweenInfo.new(0.3), {
-            BackgroundColor3 = self.ThemeColors.Background
-        }):Play()
-    end)
-    
-    table.insert(tab.Elements, toggle)
-    return toggle
-end
-
--- Função para mostrar notificação
-function RanoxUI:ShowNotification(title, content)
-    local screenGui = self.CurrentWindow.ScreenGui
-    
-    local notification = Instance.new("Frame")
-    notification.Size = UDim2.new(0, 300, 0, 80)
-    notification.Position = UDim2.new(1, -310, 1, -90)
-    notification.BackgroundColor3 = self.ThemeColors.Background
-    notification.BackgroundTransparency = 0.1
-    notification.BorderSizePixel = 0
-    notification.ZIndex = 50
-    notification.Parent = screenGui
-    
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 12)
-    corner.Parent = notification
-    
-    local stroke = Instance.new("UIStroke")
-    stroke.Thickness = 1
-    stroke.Color = self.ThemeColors.Primary
-    stroke.Parent = notification
-    
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, -20, 0, 25)
-    titleLabel.Position = UDim2.new(0, 10, 0, 10)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = title
-    titleLabel.TextColor3 = self.ThemeColors.Primary
-    titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 16
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    titleLabel.ZIndex = 50
-    titleLabel.Parent = notification
-    
-    local contentLabel = Instance.new("TextLabel")
-    contentLabel.Size = UDim2.new(1, -20, 1, -40)
-    contentLabel.Position = UDim2.new(0, 10, 0, 35)
-    contentLabel.BackgroundTransparency = 1
-    contentLabel.Text = content
-    contentLabel.TextColor3 = self.ThemeColors.Text
-    contentLabel.Font = Enum.Font.Gotham
-    contentLabel.TextSize = 14
-    contentLabel.TextXAlignment = Enum.TextXAlignment.Left
-    contentLabel.ZIndex = 50
-    contentLabel.Parent = notification
-    
-    -- Animação de entrada
-    notification.Position = UDim2.new(1, 310, 1, -90)
-    TweenService:Create(notification, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {
-        Position = UDim2.new(1, -310, 1, -90)
-    }):Play()
-    
-    -- Animação de saída
-    delay(5, function()
-        TweenService:Create(notification, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {
-            Position = UDim2.new(1, 10, 1, -90)
-        }):Play()
-        wait(0.5)
-        notification:Destroy()
-    end)
-end
-
--- Função para criar um botão
-function RanoxUI:CreateButton(tab, options)
-    local button = {
-        Type = "Button",
-        Name = options.Name or "Button",
-        Description = options.Description or "",
-        Callback = options.Callback or function() end
-    }
-    
-    -- Frame do botão
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 60)
-    frame.BackgroundColor3 = self.ThemeColors.Background
-    frame.BackgroundTransparency = 0.3
-    frame.BorderSizePixel = 0
-    frame.ZIndex = 20
-    frame.Parent = tab.Content
-    
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 12)
-    corner.Parent = frame
-    
-    -- Botão interativo
-    local buttonElement = Instance.new("TextButton")
-    buttonElement.Size = UDim2.new(1, -20, 1, -20)
-    buttonElement.Position = UDim2.new(0, 10, 0, 10)
-    buttonElement.BackgroundColor3 = self.ThemeColors.Background
-    buttonElement.BackgroundTransparency = 0.5
-    buttonElement.Text = button.Name
-    buttonElement.TextColor3 = self.ThemeColors.Text
-    buttonElement.Font = Enum.Font.GothamBold
-    buttonElement.TextSize = 16
-    buttonElement.ZIndex = 20
-    buttonElement.Parent = frame
-    
-    local buttonCorner = Instance.new("UICorner")
-    buttonCorner.CornerRadius = UDim.new(0, 8)
-    buttonCorner.Parent = buttonElement
-    
-    -- Descrição
-    if button.Description ~= "" then
-        local desc = Instance.new("TextLabel")
-        desc.Size = UDim2.new(1, -20, 0, 20)
-        desc.Position = UDim2.new(0, 10, 0, 40)
-        desc.BackgroundTransparency = 1
-        desc.Text = button.Description
-        desc.TextColor3 = self.ThemeColors.SubText
-        desc.Font = Enum.Font.Gotham
-        desc.TextSize = 13
-        desc.TextXAlignment = Enum.TextXAlignment.Left
-        desc.ZIndex = 20
-        desc.Parent = frame
-    end
-    
-    -- Interação
-    buttonElement.MouseEnter:Connect(function()
-        TweenService:Create(buttonElement, TweenInfo.new(0.2), {
-            BackgroundColor3 = self.ThemeColors.Primary,
-            TextColor3 = Color3.new(1, 1, 1)
-        }):Play()
-    end)
-    
-    buttonElement.MouseLeave:Connect(function()
-        TweenService:Create(buttonElement, TweenInfo.new(0.3), {
-            BackgroundColor3 = self.ThemeColors.Background,
-            TextColor3 = self.ThemeColors.Text
-        }):Play()
-    end)
-    
-    buttonElement.MouseButton1Click:Connect(function()
-        button.Callback()
-    end)
-    
-    -- Efeito de hover no frame
-    frame.MouseEnter:Connect(function()
-        TweenService:Create(frame, TweenInfo.new(0.2), {
-            BackgroundColor3 = Color3.new(
-                self.ThemeColors.Background.R * 1.2,
-                self.ThemeColors.Background.G * 1.2,
-                self.ThemeColors.Background.B * 1.2
-            )
-        }):Play()
-    end)
-    
-    frame.MouseLeave:Connect(function()
-        TweenService:Create(frame, TweenInfo.new(0.3), {
-            BackgroundColor3 = self.ThemeColors.Background
-        }):Play()
-    end)
-    
-    table.insert(tab.Elements, button)
-    return button
-end
-
--- Função para criar um slider
-function RanoxUI:CreateSlider(tab, options)
-    local slider = {
-        Type = "Slider",
-        Name = options.Name or "Slider",
-        Description = options.Description or "",
-        Min = options.Min or 0,
-        Max = options.Max or 100,
-        Default = options.Default or 50,
-        Callback = options.Callback or function() end,
-        Flag = options.Flag or nil,
-        Value = options.Default or 50
-    }
-    
-    if slider.Flag then
-        self.Elements[slider.Flag] = slider
-    end
-    
-    -- Frame do slider
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 90)
-    frame.BackgroundColor3 = self.ThemeColors.Background
-    frame.BackgroundTransparency = 0.3
-    frame.BorderSizePixel = 0
-    frame.ZIndex = 20
-    frame.Parent = tab.Content
-    slider.Frame = frame
-    
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 12)
-    corner.Parent = frame
-    
-    -- Header
-    local header = Instance.new("Frame")
-    header.Size = UDim2.new(1, 0, 0, 30)
-    header.BackgroundTransparency = 1
-    header.Parent = frame
-    
-    local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(0.7, 0, 1, 0)
-    title.Position = UDim2.new(0, 10, 0, 0)
-    title.BackgroundTransparency = 1
-    title.Text = slider.Name
-    title.TextColor3 = self.ThemeColors.Text
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 16
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.ZIndex = 20
-    title.Parent = header
-    
-    local value = Instance.new("TextLabel")
-    value.Size = UDim2.new(0.3, -10, 1, 0)
-    value.Position = UDim2.new(0.7, 0, 0, 0)
-    value.BackgroundTransparency = 1
-    value.Text = tostring(slider.Value)
-    value.TextColor3 = self.ThemeColors.Primary
-    value.Font = Enum.Font.GothamBold
-    value.TextSize = 16
-    value.TextXAlignment = Enum.TextXAlignment.Right
-    value.ZIndex = 20
-    value.Parent = header
-    
-    -- Descrição
-    if slider.Description ~= "" then
-        local desc = Instance.new("TextLabel")
-        desc.Size = UDim2.new(1, -20, 0, 20)
-        desc.Position = UDim2.new(0, 10, 0, 30)
-        desc.BackgroundTransparency = 1
-        desc.Text = slider.Description
-        desc.TextColor3 = self.ThemeColors.SubText
-        desc.Font = Enum.Font.Gotham
-        desc.TextSize = 13
-        desc.TextXAlignment = Enum.TextXAlignment.Left
-        desc.ZIndex = 20
-        desc.Parent = frame
-    end
-    
-    -- Track do slider
-    local track = Instance.new("Frame")
-    track.Size = UDim2.new(1, -40, 0, 6)
-    track.Position = UDim2.new(0, 20, 1, -25)
-    track.BackgroundColor3 = self.ThemeColors.Background
-    track.BorderSizePixel = 0
-    track.ZIndex = 20
-    track.Parent = frame
-    
-    local trackCorner = Instance.new("UICorner")
-    trackCorner.CornerRadius = UDim.new(1, 0)
-    trackCorner.Parent = track
-    
-    -- Progresso
-    local progress = Instance.new("Frame")
-    progress.Size = UDim2.new((slider.Value - slider.Min) / (slider.Max - slider.Min), 0, 1, 0)
-    progress.BackgroundColor3 = self.ThemeColors.Primary
-    progress.BorderSizePixel = 0
-    progress.ZIndex = 20
-    progress.Parent = track
-    
-    local progressCorner = Instance.new("UICorner")
-    progressCorner.CornerRadius = UDim.new(1, 0)
-    progressCorner.Parent = progress
-    
-    -- Handle
-    local handle = Instance.new("Frame")
-    handle.Size = UDim2.new(0, 20, 0, 20)
-    handle.Position = UDim2.new((slider.Value - slider.Min) / (slider.Max - slider.Min), -10, 0.5, -10)
-    handle.BackgroundColor3 = Color3.new(1, 1, 1)
-    handle.BorderSizePixel = 0
-    handle.ZIndex = 20
-    handle.Parent = track
-    
-    local handleCorner = Instance.new("UICorner")
-    handleCorner.CornerRadius = UDim.new(1, 0)
-    handleCorner.Parent = handle
-    
-    -- Efeito de brilho no handle
-    local handleGlow = Instance.new("ImageLabel")
-    handleGlow.Size = UDim2.new(1, 6, 1, 6)
-    handleGlow.Position = UDim2.new(0, -3, 0, -3)
-    handleGlow.BackgroundTransparency = 1
-    handleGlow.Image = "rbxassetid://5028857084"
-    handleGlow.ImageColor3 = self.ThemeColors.Primary
-    handleGlow.ScaleType = Enum.ScaleType.Slice
-    handleGlow.SliceCenter = Rect.new(24, 24, 24, 24)
-    handleGlow.ImageTransparency = 0.7
-    handleGlow.ZIndex = 19
-    handleGlow.Parent = handle
-    
-    -- Função para atualizar o slider
-    function slider:Set(newValue)
-        self.Value = math.clamp(newValue, self.Min, self.Max)
-        value.Text = tostring(math.floor(self.Value))
-        
-        local percent = (self.Value - self.Min) / (self.Max - self.Min)
-        progress.Size = UDim2.new(percent, 0, 1, 0)
-        handle.Position = UDim2.new(percent, -10, 0.5, -10)
-        
-        self.Callback(self.Value)
-        if self.Saving.Enabled then
-            self:SaveConfiguration()
-        end
-    end
-    
-    -- Interação
-    local dragging = false
-    
-    track.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            local mousePos = game:GetService("UserInputService"):GetMouseLocation()
-            local trackPos = track.AbsolutePosition
-            local trackSize = track.AbsoluteSize
-            
-            local relativeX = math.clamp(mousePos.X - trackPos.X, 0, trackSize.X)
-            local percent = relativeX / trackSize.X
-            local newValue = slider.Min + (slider.Max - slider.Min) * percent
-            
-            slider:Set(newValue)
-        end
-    end)
-    
-    track.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-    
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local mousePos = input.Position
-            local trackPos = track.AbsolutePosition
-            local trackSize = track.AbsoluteSize
-            
-            local relativeX = math.clamp(mousePos.X - trackPos.X, 0, trackSize.X)
-            local percent = relativeX / trackSize.X
-            local newValue = slider.Min + (slider.Max - slider.Min) * percent
-            
-            slider:Set(newValue)
-        end
-    end)
-    
-    -- Efeito de hover no frame
-    frame.MouseEnter:Connect(function()
-        TweenService:Create(frame, TweenInfo.new(0.2), {
-            BackgroundColor3 = Color3.new(
-                self.ThemeColors.Background.R * 1.2,
-                self.ThemeColors.Background.G * 1.2,
-                self.ThemeColors.Background.B * 1.2
-            )
-        }):Play()
-    end)
-    
-    frame.MouseLeave:Connect(function()
-        TweenService:Create(frame, TweenInfo.new(0.3), {
-            BackgroundColor3 = self.ThemeColors.Background
-        }):Play()
-    end)
-    
-    table.insert(tab.Elements, slider)
-    return slider
-end
-
-return RanoxUI
+scanReplicatedStorageForPets()
