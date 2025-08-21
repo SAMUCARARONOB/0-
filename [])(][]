@@ -1,0 +1,177 @@
+local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
+
+local Window = Rayfield:CreateWindow({
+    Name = "The $1M Jump Rope | IQ 0 glass bridge 🧠",
+    LoadingTitle = "Carregando...",
+    LoadingSubtitle = "By ChatGPT"
+})
+
+---------------------------------------------------------------------
+-- ABA 1 - EVENTOS
+---------------------------------------------------------------------
+local MainTab = Window:CreateTab("EVENTOS", 4483362458)
+
+-- Lista de itens
+local itens = {
+    {-50000,"SuperCoil"},
+    {-150000,"DragonCarpet"},
+    {-25000,"SlapGlove"},
+    {-50000,"GoldenGlove"},
+    {-100000,"RainbowGlove"},
+    {-150000,"Overkill"},
+    {-250000,"Frontman"},
+    {-25000,"VoidCoil"},
+    {-10000,"GoldCoil"},
+    {-5000,"FireCoil"},
+    {-100000,"DiamondCarpet"},
+    {-50000,"GoldenCarpet"},
+    {-200000,"Admin"}
+}
+
+-- Botão para coletar todos os itens
+MainTab:CreateButton({
+    Name = "PEGAR TODOS OS ITENS",
+    Callback = function()
+        local r = game:GetService("ReplicatedStorage"):WaitForChild("Gamepasses_Remotes"):WaitForChild("PurchaseShop")
+        for _,v in ipairs(itens) do
+            r:FireServer(unpack(v))
+        end
+    end
+})
+
+-- Toggles para cada item
+for _,v in ipairs(itens) do
+    MainTab:CreateToggle({
+        Name = v[2],
+        CurrentValue = false,
+        Callback = function(state)
+            getgenv()[v[2].."Ativo"] = state
+            task.spawn(function()
+                while getgenv()[v[2].."Ativo"] do
+                    game:GetService("ReplicatedStorage"):WaitForChild("Gamepasses_Remotes"):WaitForChild("PurchaseShop"):FireServer(unpack(v))
+                    task.wait(0.01)
+                end
+            end)
+        end
+    })
+end
+
+-- Lista de eventos
+local eventos = {
+    {nome = "FreeGearEvent", caminho = {"ReplicatedStorage","FreeGear_Remotes","FreeGearEvent"}},
+    {nome = "Wear", caminho = {"ReplicatedStorage","Random_Remotes","Wear"}},
+    {nome = "PARAR CORDA | MOSTRAR CAMINHO", caminho = {"ReplicatedStorage","Frontman_Remotes","green"}},
+    {nome = "Morph", caminho = {"ReplicatedStorage","Frontman_Remotes","morph"}},
+    {nome = "ELIMINAR TODOS", caminho = {"ReplicatedStorage","Frontman_Remotes","red"}},
+    {nome = "QuintoPremio", caminho = {"ReplicatedStorage","Spin_Remotes","QuintoPremio"}},
+}
+
+-- Toggles para cada evento
+for _, ev in ipairs(eventos) do
+    MainTab:CreateToggle({
+        Name = ev.nome,
+        CurrentValue = false,
+        Callback = function(state)
+            getgenv()[ev.nome.."Ativo"] = state
+            task.spawn(function()
+                while getgenv()[ev.nome.."Ativo"] do
+                    local remote = game
+                    for _, parte in ipairs(ev.caminho) do
+                        remote = remote:WaitForChild(parte)
+                    end
+                    if remote:IsA("RemoteEvent") then
+                        remote:FireServer()
+                    elseif remote:IsA("RemoteFunction") then
+                        remote:InvokeServer()
+                    end
+                    task.wait(0.01)
+                end
+            end)
+        end,
+    })
+end
+
+-- SlapTroll (todos exceto eu)
+MainTab:CreateToggle({
+    Name = "SlapTroll (Todos exceto eu)",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().SlapTrollAtivo = state
+        task.spawn(function()
+            while getgenv().SlapTrollAtivo do
+                local remote = game:GetService("ReplicatedStorage"):WaitForChild("PushPlayer"):WaitForChild("SlapTroll")
+                for _, player in ipairs(game.Players:GetPlayers()) do
+                    if player ~= game.Players.LocalPlayer then
+                        remote:FireServer(player)
+                    end
+                end
+                task.wait(0.01)
+            end
+        end)
+    end,
+})
+
+-- Dropdown de prêmios
+local premios = {
+    "PrimeiroPremio","SegundoPremio","TerceiroPremio","QuartoPremio",
+    "QuintoPremio","SextoPremio","SetimoPremio","OitavoPremio"
+}
+getgenv().PremioSelecionado = premios[1]
+
+MainTab:CreateDropdown({
+    Name = "Selecionar Prêmio",
+    Options = premios,
+    CurrentOption = premios[1],
+    Callback = function(opt)
+        getgenv().PremioSelecionado = opt
+    end
+})
+
+MainTab:CreateToggle({
+    Name = "Ativar Prêmio Selecionado",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().PremioAtivo = state
+        task.spawn(function()
+            while getgenv().PremioAtivo do
+                local remote = game:GetService("ReplicatedStorage"):WaitForChild("Spin_Remotes"):WaitForChild(getgenv().PremioSelecionado)
+                remote:FireServer()
+                task.wait(0.01)
+            end
+        end)
+    end
+})
+
+---------------------------------------------------------------------
+-- ABA 2 - FARM MONEY
+---------------------------------------------------------------------
+local FarmTab = Window:CreateTab("FARM MONEY", 4483362458)
+getgenv().FarmDelay = 0.01
+
+FarmTab:CreateSlider({
+    Name = "Velocidade",
+    Range = {0.01, 1},
+    Increment = 0.01,
+    CurrentValue = 0.01,
+    Callback = function(v)
+        getgenv().FarmDelay = v
+    end
+})
+
+for i = 1, 100 do
+    local valor = 100000 * (10^(i-1))
+    FarmTab:CreateToggle({
+        Name = "RECEBER "..valor.." de dinheiro💰",
+        CurrentValue = false,
+        Callback = function(state)
+            getgenv()["Farm"..i] = state
+            task.spawn(function()
+                while getgenv()["Farm"..i] do
+                    local args = {tostring(valor)}
+                    game:GetService("ReplicatedStorage"):WaitForChild("CratesUtilities"):WaitForChild("Remotes"):WaitForChild("GiveReward"):FireServer(unpack(args))
+                    task.wait(getgenv().FarmDelay)
+                end
+            end)
+        end
+    })
+end
