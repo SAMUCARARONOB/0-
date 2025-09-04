@@ -6,7 +6,7 @@ local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/Siri
 local Window = Rayfield:CreateWindow({
     Name = "CLIMB AND SLIDE 🚤",
     LoadingTitle = "Carregando...",
-    LoadingSubtitle = "by ChatGPT",
+    LoadingSubtitle = "RANOX SCRIPTS",
     ConfigurationSaving = { Enabled = false }
 })
 
@@ -16,14 +16,15 @@ local RPets = ReplicatedStorage:WaitForChild("R_Pets")
 local RServer = ReplicatedStorage:WaitForChild("R_Server")
 local discovered = {}
 local activePets = {}
-local sliderActive = {false,false,false,false}
-local sliderMaps = {"Map_1","Map_2","Map_3","Map_4"}
-local sliderLastExec = {0,0,0,0}
+local sliderActive = {false,false,false,false,false}
+local sliderMaps = {"Map_1","Map_2","Map_3","Map_4","Map_5"}
+local sliderLastExec = {0,0,0,0,0}
 local tpCoords = {
     Vector3.new(13.52, 3.96, -123.00),
     Vector3.new(-13511.48, 4.87, -88.00),
     Vector3.new(-27143.17, 228.89, -124.53),
-    Vector3.new(-39751.41, 111.39, -101.99)
+    Vector3.new(-39751.41, 111.39, -101.99),
+    Vector3.new(6656.92, 50.70, 195.14)
 }
 local execSpeed = 0.5
 
@@ -35,7 +36,7 @@ RunService.Heartbeat:Connect(function()
             end)
         end
     end
-    for i = 1,4 do
+    for i = 1,5 do
         if sliderActive[i] and (tick() - sliderLastExec[i]) >= execSpeed then
             sliderLastExec[i] = tick()
             local args = {"Slide", workspace:WaitForChild("Maps"):WaitForChild(sliderMaps[i])}
@@ -76,7 +77,7 @@ local function scanReplicatedStorageForPets()
     end
 end
 
-for i=1,4 do
+for i=1,5 do
     AutoFarm:CreateToggle({
         Name = "SLIDER MAPA "..i,
         CurrentValue = false,
@@ -98,7 +99,7 @@ AutoFarm:CreateSlider({
 })
 
 AutoFarm:CreateLabel("TELEPORTE DE MAPA")
-for i=1,4 do
+for i=1,5 do
     AutoFarm:CreateButton({
         Name = "TP MAP "..i,
         Callback = function()
@@ -113,6 +114,16 @@ for i=1,4 do
 end
 
 AutoFarm:CreateLabel("ÁREA DE PETS")
+AutoFarm:CreateButton({
+    Name = "Executar TODOS os Pets",
+    Callback = function()
+        for petName, _ in pairs(discovered) do
+            pcall(function()
+                RPets:FireServer("Give_Pet", petName)
+            end)
+        end
+    end
+})
 AutoFarm:CreateButton({
     Name = "Atualizar lista de Pets",
     Callback = function()
