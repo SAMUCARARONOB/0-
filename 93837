@@ -1,0 +1,756 @@
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+-- Cache de serviços para melhor performance
+local Services = {
+    TweenService = TweenService,
+    UserInputService = UserInputService,
+    RunService = RunService
+}
+
+local RANOX = {
+    Themes = {
+        Default = {
+            Primary = Color3.fromRGB(170, 20, 20),
+            Secondary = Color3.fromRGB(40, 40, 40),
+            Text = Color3.fromRGB(255, 255, 255),
+            Subtext = Color3.fromRGB(180, 180, 180),
+            Background = Color3.fromRGB(25, 25, 25),
+            Stroke = Color3.fromRGB(60, 60, 60)
+        },
+        Dark = {
+            Primary = Color3.fromRGB(30, 30, 40),
+            Secondary = Color3.fromRGB(20, 20, 30),
+            Text = Color3.fromRGB(240, 240, 240),
+            Subtext = Color3.fromRGB(160, 160, 160),
+            Background = Color3.fromRGB(15, 15, 25),
+            Stroke = Color3.fromRGB(50, 50, 60)
+        },
+        Light = {
+            Primary = Color3.fromRGB(70, 130, 200),
+            Secondary = Color3.fromRGB(240, 240, 240),
+            Text = Color3.fromRGB(30, 30, 30),
+            Subtext = Color3.fromRGB(100, 100, 100),
+            Background = Color3.fromRGB(250, 250, 250),
+            Stroke = Color3.fromRGB(200, 200, 200)
+        }
+    },
+    CurrentTheme = "Default"
+}
+
+-- Função auxiliar para criar elementos com propriedades padrão
+function RANOX:CreateElement(className, properties)
+    local element = Instance.new(className)
+    for property, value in pairs(properties) do
+        element[property] = value
+    end
+    return element
+end
+
+-- Sistema de gradientes otimizado
+function RANOX:CreateGradient(parent, colors, rotation)
+    local gradient = self:CreateElement("UIGradient", {
+        Color = ColorSequence.new(colors),
+        Rotation = rotation or 0,
+        Parent = parent
+    })
+    return gradient
+end
+
+-- Sistema de temas centralizado
+function RANOX:ApplyTheme(themeName)
+    self.CurrentTheme = themeName
+    local theme = self.Themes[themeName]
+    
+    -- Esta função será implementada na Window para atualizar todos os elementos
+    if self.CurrentWindow then
+        self.CurrentWindow:UpdateTheme(theme)
+    end
+end
+
+function RANOX:CreateWindow(config)
+    local Window = {}
+    RANOX.CurrentWindow = Window
+    
+    -- Configurações padrão
+    config = config or {}
+    config.Title = config.Title or "RANOX Hub"
+    config.Subtitle = config.Subtitle or "v2.0"
+    config.Size = config.Size or UDim2.new(0, 600, 0, 400)
+    config.Theme = config.Theme or "Default"
+    
+    -- Aplicar tema
+    RANOX:ApplyTheme(config.Theme)
+    local theme = RANOX.Themes[RANOX.CurrentTheme]
+    
+    -- Criar interface principal
+    local screenGui = self:CreateElement("ScreenGui", {
+        Name = "RANOX_UI",
+        ResetOnSpawn = false,
+        IgnoreGuiInset = true,
+        ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+        DisplayOrder = 999,
+        Parent = game:GetService("CoreGui")
+    })
+    
+    local mainFrame = self:CreateElement("TextButton", {
+        Size = config.Size,
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundColor3 = theme.Background,
+        BackgroundTransparency = 0.05,
+        Text = "",
+        AutoButtonColor = false,
+        ClipsDescendants = true,
+        Draggable = true,
+        Active = true,
+        Parent = screenGui
+    })
+    
+    self:CreateElement("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = mainFrame
+    })
+    
+    local stroke = self:CreateElement("UIStroke", {
+        Thickness = 1.5,
+        Color = theme.Primary,
+        Transparency = 0.3,
+        Parent = mainFrame
+    })
+    
+    -- Cabeçalho
+    local header = self:CreateElement("Frame", {
+        Size = UDim2.new(1, 0, 0, 30),
+        BackgroundTransparency = 1,
+        Parent = mainFrame
+    })
+    
+    local title = self:CreateElement("TextLabel", {
+        Size = UDim2.new(1, -50, 1, 0),
+        Position = UDim2.new(0, 10, 0, 0),
+        BackgroundTransparency = 1,
+        Text = config.Title,
+        TextColor3 = theme.Text,
+        Font = Enum.Font.GothamSemibold,
+        TextSize = 16,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextYAlignment = Enum.TextYAlignment.Center,
+        Parent = header
+    })
+    
+    local subtitle = self:CreateElement("TextLabel", {
+        BackgroundTransparency = 1,
+        Text = config.Subtitle,
+        TextColor3 = theme.Subtext,
+        Font = Enum.Font.Gotham,
+        TextSize = 10,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextYAlignment = Enum.TextYAlignment.Center,
+        Size = UDim2.new(0, 100, 1, 0),
+        Parent = header
+    })
+    
+    -- Posicionar subtítulo após calcular a largura do título
+    task.defer(function()
+        subtitle.Position = UDim2.new(0, 10 + title.TextBounds.X + 6, 0, 0)
+    end)
+    
+    local closeButton = self:CreateElement("ImageButton", {
+        Size = UDim2.new(0, 25, 0, 25),
+        Position = UDim2.new(1, -30, 0, 0),
+        Image = "rbxassetid://6035047409",
+        BackgroundTransparency = 1,
+        AutoButtonColor = false,
+        Parent = header
+    })
+    
+    local headerDivider = self:CreateElement("Frame", {
+        Size = UDim2.new(1, 0, 0, 1),
+        Position = UDim2.new(0, 0, 1, 0),
+        BackgroundColor3 = theme.Primary,
+        BorderSizePixel = 0,
+        Parent = header
+    })
+    
+    -- Sidebar para abas
+    local sidebar = self:CreateElement("ScrollingFrame", {
+        Size = UDim2.new(0.25, 0, 1, -30),
+        Position = UDim2.new(0, 0, 0, 30),
+        BackgroundTransparency = 1,
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        ScrollBarThickness = 4,
+        BorderSizePixel = 0,
+        AutomaticCanvasSize = Enum.AutomaticSize.Y,
+        ScrollingDirection = Enum.ScrollingDirection.Y,
+        Parent = mainFrame
+    })
+    
+    self:CreateElement("UICorner", {
+        CornerRadius = UDim.new(0, 4),
+        Parent = sidebar
+    })
+    
+    local sidebarLayout = self:CreateElement("UIListLayout", {
+        SortOrder = Enum.SortOrder.LayoutOrder,
+        Padding = UDim.new(0, 2),
+        Parent = sidebar
+    })
+    
+    -- Área de conteúdo
+    local contentArea = self:CreateElement("ScrollingFrame", {
+        Position = UDim2.new(0.25, 8, 0, 38),
+        Size = UDim2.new(0.75, -12, 1, -42),
+        BackgroundTransparency = 1,
+        BorderSizePixel = 0,
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        ScrollBarThickness = 6,
+        AutomaticCanvasSize = Enum.AutomaticSize.Y,
+        Parent = mainFrame
+    })
+    
+    -- Botão de minimizar (substitui a bola anterior)
+    local minimizeButton = self:CreateElement("ImageButton", {
+        Size = UDim2.new(0, 20, 0, 20),
+        Position = UDim2.new(1, -25, 0, 5),
+        Image = "rbxassetid://6031090990",
+        BackgroundTransparency = 1,
+        Parent = header
+    })
+    
+    -- Variáveis de estado
+    local tabButtons = {}
+    local pages = {}
+    local selectedTab = nil
+    local isMinimized = false
+    
+    -- Função para trocar de aba (otimizada)
+    local function switchTab(name)
+        for tabName, frame in pairs(pages) do
+            frame.Visible = (tabName == name)
+        end
+        
+        for tabName, btn in pairs(tabButtons) do
+            local marker = btn:FindFirstChild("TabMarker")
+            if marker then
+                marker.Visible = (tabName == name)
+            end
+            
+            if tabName == name then
+                TweenService:Create(btn, TweenInfo.new(0.15), {
+                    BackgroundColor3 = theme.Secondary
+                }):Play()
+            else
+                TweenService:Create(btn, TweenInfo.new(0.15), {
+                    BackgroundColor3 = theme.Background
+                }):Play()
+            end
+        end
+        
+        selectedTab = name
+    end
+    
+    -- Função para minimizar/restaurar a janela
+    local function toggleMinimize()
+        isMinimized = not isMinimized
+        
+        if isMinimized then
+            TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {
+                Size = UDim2.new(0, 0, 0, 0)
+            }):Play()
+            minimizeButton.Image = "rbxassetid://6031090984" -- Ícone de maximizar
+        else
+            TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {
+                Size = config.Size
+            }):Play()
+            minimizeButton.Image = "rbxassetid://6031090990" -- Ícone de minimizar
+        end
+    end
+    
+    -- Eventos dos botões
+    minimizeButton.MouseButton1Click:Connect(toggleMinimize)
+    
+        closeButton.MouseButton1Click:Connect(function()
+        screenGui:Destroy()
+    end)
+
+    -- Função para criar abas com design aprimorado
+    function Window:CreateTab(tabName, iconId)
+        local tabBtn = self:CreateElement("TextButton", {
+            Size = UDim2.new(1, -4, 0, 36),
+            Text = "",
+            Font = Enum.Font.Gotham,
+            TextSize = 12,
+            TextColor3 = theme.Text,
+            BackgroundColor3 = theme.Background,
+            AutoButtonColor = false,
+            ClipsDescendants = true,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Parent = sidebar
+        })
+
+        self:CreateElement("UICorner", {
+            CornerRadius = UDim.new(0, 6),
+            Parent = tabBtn
+        })
+
+        local marker = self:CreateElement("Frame", {
+            Name = "TabMarker",
+            Size = UDim2.new(0, 4, 0, 20),
+            Position = UDim2.new(0, 4, 0.5, -10),
+            BackgroundColor3 = theme.Primary,
+            BorderSizePixel = 0,
+            Visible = false,
+            Parent = tabBtn
+        })
+
+        self:CreateElement("UICorner", {
+            CornerRadius = UDim.new(0, 2),
+            Parent = marker
+        })
+
+        local content = self:CreateElement("Frame", {
+            Size = UDim2.new(1, -12, 1, 0),
+            Position = UDim2.new(0, 12, 0, 0),
+            BackgroundTransparency = 1,
+            Parent = tabBtn
+        })
+
+        if iconId then
+            local icon = self:CreateElement("ImageLabel", {
+                Size = UDim2.new(0, 18, 0, 18),
+                Position = UDim2.new(0, 0, 0.5, -9),
+                BackgroundTransparency = 1,
+                Image = "rbxassetid://" .. tostring(iconId),
+                ImageColor3 = theme.Text,
+                Parent = content
+            })
+        end
+
+        local label = self:CreateElement("TextLabel", {
+            BackgroundTransparency = 1,
+            Text = tabName,
+            Font = Enum.Font.Gotham,
+            TextSize = 12,
+            TextColor3 = theme.Text,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            TextWrapped = true,
+            Size = UDim2.new(1, -24, 1, 0),
+            Position = UDim2.new(0, 24, 0, 0),
+            Parent = content
+        })
+
+        tabButtons[tabName] = tabBtn
+
+        -- Criar página da aba
+        local tabPage = self:CreateElement("Frame", {
+            Name = tabName,
+            Size = UDim2.new(1, 0, 0, 0),
+            BackgroundTransparency = 1,
+            Visible = false,
+            Parent = contentArea
+        })
+
+        local layout = self:CreateElement("UIListLayout", {
+            SortOrder = Enum.SortOrder.LayoutOrder,
+            Padding = UDim.new(0, 10),
+            Parent = tabPage
+        })
+
+        layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            tabPage.Size = UDim2.new(1, 0, 0, layout.AbsoluteContentSize.Y + 10)
+        end)
+
+        pages[tabName] = tabPage
+
+        -- Interações da aba
+        tabBtn.MouseEnter:Connect(function()
+            if selectedTab ~= tabName then
+                TweenService:Create(tabBtn, TweenInfo.new(0.2), {
+                    BackgroundColor3 = theme.Secondary
+                }):Play()
+            end
+        end)
+
+        tabBtn.MouseLeave:Connect(function()
+            if selectedTab ~= tabName then
+                TweenService:Create(tabBtn, TweenInfo.new(0.2), {
+                    BackgroundColor3 = theme.Background
+                }):Play()
+            end
+        end)
+
+        tabBtn.MouseButton1Click:Connect(function()
+            switchTab(tabName)
+        end)
+
+        -- Selecionar primeira aba criada
+        if not selectedTab then
+            switchTab(tabName)
+        end
+
+        return {
+            Button = tabBtn,
+            Page = tabPage
+        }
+    end
+
+    -- Sistema de elementos da UI (versões melhoradas)
+    function Window:CreateButton(tabName, text, callback)
+        local tab = pages[tabName]
+        if not tab then return end
+
+        local button = self:CreateElement("TextButton", {
+            Size = UDim2.new(1, -20, 0, 32),
+            Text = text,
+            Font = Enum.Font.Gotham,
+            TextSize = 14,
+            TextColor3 = theme.Text,
+            BackgroundColor3 = theme.Secondary,
+            AutoButtonColor = false,
+            ClipsDescendants = true,
+            TextWrapped = true,
+            Parent = tab
+        })
+
+        self:CreateElement("UICorner", {
+            CornerRadius = UDim.new(0, 6),
+            Parent = button
+        })
+
+        local stroke = self:CreateElement("UIStroke", {
+            Color = theme.Primary,
+            Thickness = 1,
+            Transparency = 0.8,
+            Parent = button
+        })
+
+        -- Efeitos de hover
+        button.MouseEnter:Connect(function()
+            TweenService:Create(button, TweenInfo.new(0.2), {
+                BackgroundColor3 = theme.Primary,
+                TextColor3 = Color3.fromRGB(255, 255, 255)
+            }):Play()
+        end)
+
+        button.MouseLeave:Connect(function()
+            TweenService:Create(button, TweenInfo.new(0.2), {
+                BackgroundColor3 = theme.Secondary,
+                TextColor3 = theme.Text
+            }):Play()
+        end)
+
+        -- Efeito de clique
+        button.MouseButton1Click:Connect(function()
+            TweenService:Create(button, TweenInfo.new(0.1), {
+                Size = UDim2.new(1, -25, 0, 28)
+            }):Play()
+            TweenService:Create(button, TweenInfo.new(0.1), {
+                Size = UDim2.new(1, -20, 0, 32)
+            }):Play()
+            pcall(callback)
+        end)
+
+        return button
+    end
+
+    function Window:CreateToggle(tabName, config)
+        local tab = pages[tabName]
+        if not tab then return end
+
+        config = config or {}
+        local toggleFrame = self:CreateElement("Frame", {
+            Size = UDim2.new(1, -20, 0, 50),
+            BackgroundColor3 = theme.Secondary,
+            BackgroundTransparency = 0,
+            ClipsDescendants = true,
+            Parent = tab
+        })
+
+        self:CreateElement("UICorner", {
+            CornerRadius = UDim.new(0, 8),
+            Parent = toggleFrame
+        })
+
+        local title = self:CreateElement("TextLabel", {
+            Text = config.Text or "Toggle",
+            TextColor3 = theme.Text,
+            Font = Enum.Font.GothamMedium,
+            TextSize = 14,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            BackgroundTransparency = 1,
+            Size = UDim2.new(0.7, 0, 0, 20),
+            Position = UDim2.new(0, 12, 0, 5),
+            Parent = toggleFrame
+        })
+
+        local description = self:CreateElement("TextLabel", {
+            Text = config.Description or "",
+            TextColor3 = theme.Subtext,
+            Font = Enum.Font.Gotham,
+            TextSize = 12,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            BackgroundTransparency = 1,
+            Size = UDim2.new(0.7, 0, 0, 15),
+            Position = UDim2.new(0, 12, 0, 25),
+            Parent = toggleFrame
+        })
+
+        local toggle = self:CreateElement("Frame", {
+            Size = UDim2.new(0, 40, 0, 20),
+            Position = UDim2.new(1, -50, 0.5, -10),
+            BackgroundColor3 = theme.Background,
+            Parent = toggleFrame
+        })
+
+        self:CreateElement("UICorner", {
+            CornerRadius = UDim.new(1, 0),
+            Parent = toggle
+        })
+
+        local toggleButton = self:CreateElement("TextButton", {
+            Size = UDim2.new(1, 0, 1, 0),
+            BackgroundTransparency = 1,
+            Text = "",
+            Parent = toggle
+        })
+
+        local knob = self:CreateElement("Frame", {
+            Size = UDim2.new(0, 16, 0, 16),
+            Position = UDim2.new(0, 2, 0.5, -8),
+            BackgroundColor3 = Color3.fromRGB(200, 200, 200),
+            Parent = toggle
+        })
+
+        self:CreateElement("UICorner", {
+            CornerRadius = UDim.new(1, 0),
+            Parent = knob
+        })
+
+        local isToggled = config.Default or false
+        local tweenService = game:GetService("TweenService")
+
+        local function updateToggle(state)
+            isToggled = state
+            local goalPos = state and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
+            local goalColor = state and theme.Primary or theme.Background
+            local knobColor = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 200)
+            
+            tweenService:Create(toggle, TweenInfo.new(0.2), {
+                BackgroundColor3 = goalColor
+            }):Play()
+            
+            tweenService:Create(knob, TweenInfo.new(0.2), {
+                Position = goalPos,
+                BackgroundColor3 = knobColor
+            }):Play()
+            
+            if config.Callback then
+                config.Callback(isToggled)
+            end
+        end
+
+        toggleButton.MouseButton1Click:Connect(function()
+            updateToggle(not isToggled)
+        end)
+
+        -- Inicializar estado
+        updateToggle(isToggled)
+
+        return {
+            Frame = toggleFrame,
+            SetState = updateToggle,
+            GetState = function() return isToggled end
+        }
+    end
+
+    function Window:CreateSlider(tabName, config)
+        local tab = pages[tabName]
+        if not tab then return end
+
+        config = config or {}
+        local min = config.Min or 0
+        local max = config.Max or 100
+        local defaultValue = config.Default or min
+        
+        local sliderFrame = self:CreateElement("Frame", {
+            Size = UDim2.new(1, -20, 0, 70),
+            BackgroundTransparency = 1,
+            Parent = tab
+        })
+
+        local title = self:CreateElement("TextLabel", {
+            Text = config.Text or "Slider",
+            TextColor3 = theme.Text,
+            Font = Enum.Font.GothamMedium,
+            TextSize = 14,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 20),
+            Position = UDim2.new(0, 0, 0, 0),
+            Parent = sliderFrame
+        })
+
+        local valueDisplay = self:CreateElement("TextLabel", {
+            Text = tostring(defaultValue),
+            TextColor3 = theme.Text,
+            Font = Enum.Font.GothamBold,
+            TextSize = 14,
+            TextXAlignment = Enum.TextXAlignment.Right,
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 20),
+            Position = UDim2.new(0, 0, 0, 0),
+            Parent = sliderFrame
+        })
+
+        local sliderBar = self:CreateElement("Frame", {
+            Size = UDim2.new(1, 0, 0, 6),
+            Position = UDim2.new(0, 0, 0, 30),
+            BackgroundColor3 = theme.Secondary,
+            Parent = sliderFrame
+        })
+
+        self:CreateElement("UICorner", {
+            CornerRadius = UDim.new(1, 0),
+            Parent = sliderBar
+        })
+
+        local fill = self:CreateElement("Frame", {
+            Size = UDim2.new((defaultValue - min) / (max - min), 0, 1, 0),
+            BackgroundColor3 = theme.Primary,
+            Parent = sliderBar
+        })
+
+        self:CreateElement("UICorner", {
+            CornerRadius = UDim.new(1, 0),
+            Parent = fill
+        })
+
+        local knob = self:CreateElement("Frame", {
+            Size = UDim2.new(0, 16, 0, 16),
+            Position = UDim2.new((defaultValue - min) / (max - min), -8, 0.5, -8),
+            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+            Parent = sliderBar
+        })
+
+        self:CreateElement("UICorner", {
+            CornerRadius = UDim.new(1, 0),
+            Parent = knob
+        })
+
+        local stroke = self:CreateElement("UIStroke", {
+            Color = theme.Primary,
+            Thickness = 2,
+            Parent = knob
+        })
+
+        local isDragging = false
+        local currentValue = defaultValue
+
+        local function updateValue(value)
+            currentValue = math.clamp(value, min, max)
+            local percent = (currentValue - min) / (max - min)
+            
+            fill.Size = UDim2.new(percent, 0, 1, 0)
+            knob.Position = UDim2.new(percent, -8, 0.5, -8)
+            valueDisplay.Text = string.format("%.2f", currentValue)
+            
+            if config.Callback then
+                config.Callback(currentValue)
+            end
+        end
+
+        sliderBar.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                isDragging = true
+                local xOffset = input.Position.X - sliderBar.AbsolutePosition.X
+                local percent = math.clamp(xOffset / sliderBar.AbsoluteSize.X, 0, 1)
+                updateValue(min + (max - min) * percent)
+            end
+        end)
+
+        sliderBar.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                isDragging = false
+            end
+        end)
+
+        UserInputService.InputChanged:Connect(function(input)
+            if isDragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                local xOffset = input.Position.X - sliderBar.AbsolutePosition.X
+                local percent = math.clamp(xOffset / sliderBar.AbsoluteSize.X, 0, 1)
+                updateValue(min + (max - min) * percent)
+            end
+        end)
+
+        return {
+            Frame = sliderFrame,
+            SetValue = updateValue,
+            GetValue = function() return currentValue end
+        }
+    end
+
+    -- Função para atualizar o tema
+    function Window:UpdateTheme(newTheme)
+        theme = newTheme
+        
+        -- Atualizar cores dos elementos existentes
+        mainFrame.BackgroundColor3 = theme.Background
+        stroke.Color = theme.Primary
+        title.TextColor3 = theme.Text
+        subtitle.TextColor3 = theme.Subtext
+        headerDivider.BackgroundColor3 = theme.Primary
+        
+        -- Atualizar abas
+        for _, tabBtn in pairs(tabButtons) do
+            tabBtn.BackgroundColor3 = theme.Background
+            tabBtn.TextColor3 = theme.Text
+            
+            local marker = tabBtn:FindFirstChild("TabMarker")
+            if marker then
+                marker.BackgroundColor3 = theme.Primary
+            end
+        end
+    end
+
+    -- Adicionar atalhos de teclado
+    UserInputService.InputBegan:Connect(function(input)
+        if input.KeyCode == Enum.KeyCode.RightShift then
+            toggleMinimize()
+        end
+    end)
+
+    -- Sistema de arrastar suavizado
+    local dragStartPos, frameStartPos
+    mainFrame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragStartPos = Vector2.new(input.Position.X, input.Position.Y)
+            frameStartPos = mainFrame.Position
+        end
+    end)
+
+    mainFrame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement and dragStartPos then
+            local delta = Vector2.new(input.Position.X, input.Position.Y) - dragStartPos
+            mainFrame.Position = UDim2.new(
+                frameStartPos.X.Scale, 
+                frameStartPos.X.Offset + delta.X,
+                frameStartPos.Y.Scale, 
+                frameStartPos.Y.Offset + delta.Y
+            )
+        end
+    end)
+
+    mainFrame.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragStartPos = nil
+        end
+    end)
+
+    return Window
+end
+
+return RANOX
