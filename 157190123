@@ -1,3 +1,4 @@
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
@@ -11,22 +12,42 @@ local Window = Rayfield:CreateWindow({
 })
 
 local AutoFarm = Window:CreateTab("AUTO FARM", 4483362458)
+local Extra = Window:CreateTab("EXTRA", 4483362458)
 
 local RPets = ReplicatedStorage:WaitForChild("R_Pets")
 local RServer = ReplicatedStorage:WaitForChild("R_Server")
 local discovered = {}
 local activePets = {}
-local sliderActive = {false,false,false,false,false}
-local sliderMaps = {"Map_1","Map_2","Map_3","Map_4","Map_5"}
-local sliderLastExec = {0,0,0,0,0}
+local sliderActive = {false,false,false,false,false,false}
+local sliderMaps = {"Map_1","Map_2","Map_3","Map_4","Map_5","Map_6"}
+local sliderLastExec = {0,0,0,0,0,0}
 local tpCoords = {
     Vector3.new(13.52, 3.96, -123.00),
     Vector3.new(-13511.48, 4.87, -88.00),
     Vector3.new(-27143.17, 228.89, -124.53),
     Vector3.new(-39751.41, 111.39, -101.99),
-    Vector3.new(6656.92, 50.70, 195.14)
+    Vector3.new(6656.92, 50.70, 195.14),
+    Vector3.new(-7123.66, 59.72, -24.61)
 }
 local execSpeed = 0.5
+
+local infAmuletosActive = false
+local infAmuletosLast = 0
+local infAmuletosInterval = 0.1
+
+local boostToggles = {}
+local base = 2
+for i = 1,25 do
+    local amount = base * (1000 ^ (i-1))
+    table.insert(boostToggles, {name = "Receber "..tostring(amount).." Tokens", index = 2, amount = amount, active = false})
+end
+
+local potions = {
+    {RewardName = "Stamina Potion", Type = "P_Stamina_1.5", Image = "rbxassetid://90611268879173", Amount = 1, Active = false},
+    {RewardName = "Trophy Potion", Type = "P_Trophy_1.5", Image = "rbxassetid://90611268879173", Amount = 1, Active = false},
+    {RewardName = "Speed Potion", Type = "P_Speed_1.5", Image = "rbxassetid://90611268879173", Amount = 1, Active = false},
+    {RewardName = "Coins Potion", Type = "P_Coins_1.5", Image = "rbxassetid://90611268879173", Amount = 1, Active = false}
+}
 
 RunService.Heartbeat:Connect(function()
     for petName, isActive in pairs(activePets) do
@@ -36,16 +57,61 @@ RunService.Heartbeat:Connect(function()
             end)
         end
     end
-    for i = 1,5 do
+    for i = 1,#sliderMaps do
         if sliderActive[i] and (tick() - sliderLastExec[i]) >= execSpeed then
             sliderLastExec[i] = tick()
-            local args = {"Slide", workspace:WaitForChild("Maps"):WaitForChild(sliderMaps[i])}
-            RServer:FireServer(unpack(args))
+            pcall(function()
+                local args = {"Slide", workspace:WaitForChild("Maps"):WaitForChild(sliderMaps[i])}
+                RServer:FireServer(unpack(args))
+            end)
+        end
+    end
+    if infAmuletosActive and (tick() - infAmuletosLast) >= infAmuletosInterval then
+        infAmuletosLast = tick()
+        pcall(function()
+            local args = {false}
+            ReplicatedStorage:WaitForChild("F_RollRune"):InvokeServer(unpack(args))
+        end)
+    end
+    for _,b in ipairs(boostToggles) do
+        if b.active then
+            pcall(function()
+                local args = {
+                    "Claim_Season_Reward",
+                    "FreePass",
+                    b.index,
+                    {
+                        RewardName = "+" .. tostring(b.amount) .. " Tokens",
+                        Image = "rbxassetid://108388010695878",
+                        Type = "Token",
+                        Amount = b.amount
+                    }
+                }
+                RServer:FireServer(unpack(args))
+            end)
+        end
+    end
+    for _,p in ipairs(potions) do
+        if p.Active then
+            pcall(function()
+                local args = {
+                    "Claim_Season_Reward",
+                    "FreePass",
+                    3,
+                    {
+                        RewardName = p.RewardName,
+                        Image = p.Image,
+                        Type = p.Type,
+                        Amount = p.Amount
+                    }
+                }
+                RServer:FireServer(unpack(args))
+            end)
         end
     end
 end)
 
-local function createToggle(name)
+local function createPetToggle(name)
     if discovered[name] then return end
     discovered[name] = true
     AutoFarm:CreateToggle({
@@ -60,10 +126,10 @@ end
 local function scanReplicatedStorageForPets()
     for _, inst in ipairs(ReplicatedStorage:GetDescendants()) do
         if inst.Name:match("^Pet[%w_]+") then
-            createToggle(inst.Name)
+            createPetToggle(inst.Name)
         end
         if inst:IsA("StringValue") and type(inst.Value) == "string" and inst.Value:match("^Pet[%w_]+") then
-            createToggle(inst.Value)
+            createPetToggle(inst.Value)
         end
     end
     local candidates = {"Pets","PetList","AllPets","PetsFolder","Pet_Storage"}
@@ -71,13 +137,13 @@ local function scanReplicatedStorageForPets()
         local f = ReplicatedStorage:FindFirstChild(folderName)
         if f then
             for _, c in ipairs(f:GetChildren()) do
-                createToggle(c.Name)
+                createPetToggle(c.Name)
             end
         end
     end
 end
 
-for i=1,5 do
+for i=1,6 do
     AutoFarm:CreateToggle({
         Name = "SLIDER MAPA "..i,
         CurrentValue = false,
@@ -99,7 +165,7 @@ AutoFarm:CreateSlider({
 })
 
 AutoFarm:CreateLabel("TELEPORTE DE MAPA")
-for i=1,5 do
+for i=1,6 do
     AutoFarm:CreateButton({
         Name = "TP MAP "..i,
         Callback = function()
@@ -107,8 +173,10 @@ for i=1,5 do
             if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
                 player.Character.HumanoidRootPart.CFrame = CFrame.new(tpCoords[i])
             end
-            local args = {"Teleport_Map", sliderMaps[i]}
-            RServer:FireServer(unpack(args))
+            pcall(function()
+                local args = {"Teleport_Map", sliderMaps[i]}
+                RServer:FireServer(unpack(args))
+            end)
         end
     })
 end
@@ -132,3 +200,46 @@ AutoFarm:CreateButton({
 })
 
 scanReplicatedStorageForPets()
+
+Extra:CreateLabel("INF AMULETOS")
+Extra:CreateToggle({
+    Name = "INF AMULETOS",
+    CurrentValue = false,
+    Callback = function(state)
+        infAmuletosActive = state
+    end
+})
+
+Extra:CreateLabel("SPAM BOOST")
+for i,bt in ipairs(boostToggles) do
+    local idx = i
+    Extra:CreateToggle({
+        Name = bt.name,
+        CurrentValue = bt.active,
+        Callback = function(state)
+            boostToggles[idx].active = state
+        end
+    })
+end
+
+Extra:CreateLabel("SPAM POÇÕES")
+for i,p in ipairs(potions) do
+    Extra:CreateToggle({
+        Name = p.RewardName,
+        CurrentValue = false,
+        Callback = function(state)
+            p.Active = state
+        end
+    })
+    Extra:CreateInput({
+        Name = "Quantidade "..p.RewardName,
+        PlaceholderText = tostring(p.Amount),
+        RemoveTextAfterFocusLost = false,
+        Callback = function(text)
+            local num = tonumber(text)
+            if num then
+                p.Amount = num
+            end
+        end
+    })
+end
