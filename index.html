@@ -1,107 +1,752 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RANOX SCRIPTS - Executores e Scripts</title>
+    <title>Roblox Scripts Hub | Milhares de Scripts e Executores</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #8a2be2;
-            --secondary: #5e17eb;
-            --accent: #00d9ff;
-            --dark: #0f0c24;
-            --darker: #080616;
-            --card-bg: rgba(30, 25, 60, 0.6);
-            --card-border: rgba(138, 43, 226, 0.3);
-            --text: #f0f0f5;
-            --text-secondary: #b0b0d0;
-            --modal-bg: rgba(15, 10, 35, 0.95);
-            --header-bg: rgba(15, 10, 35, 0.7);
-            --footer-bg: rgba(10, 5, 25, 0.8);
-        }
-
-        /* Tema Claro */
-        [data-theme="light"] {
-            --primary: #6a0dad;
-            --secondary: #4a0d9d;
-            --accent: #00a8cc;
-            --dark: #f0f0f5;
-            --darker: #e0e0ea;
-            --card-bg: rgba(255, 255, 255, 0.8);
-            --card-border: rgba(106, 13, 173, 0.3);
-            --text: #333;
-            --text-secondary: #666;
-            --modal-bg: rgba(255, 255, 255, 0.95);
-            --header-bg: rgba(255, 255, 255, 0.8);
-            --footer-bg: rgba(245, 245, 255, 0.8);
-        }
-
-        /* Tema Verde */
-        [data-theme="green"] {
-            --primary: #2ecc71;
-            --secondary: #27ae60;
-            --accent: #ffcc00;
-            --dark: #0c2418;
-            --darker: #06160e;
-            --card-bg: rgba(30, 60, 40, 0.6);
-            --card-border: rgba(46, 204, 113, 0.3);
-        }
-
-        /* Tema Vermelho */
-        [data-theme="red"] {
-            --primary: #e74c3c;
-            --secondary: #c0392b;
-            --accent: #f1c40f;
-            --dark: #240c0c;
-            --darker: #160606;
-            --card-bg: rgba(60, 30, 30, 0.6);
-            --card-border: rgba(231, 76, 60, 0.3);
-        }
-
-        /* Tema Azul */
-        [data-theme="blue"] {
-            --primary: #3498db;
-            --secondary: #2980b9;
-            --accent: #ff9f43;
-            --dark: #0c1824;
-            --darker: #060e16;
-            --card-bg: rgba(30, 40, 60, 0.6);
-            --card-border: rgba(52, 152, 219, 0.3);
+            --primary: #7289da;
+            --primary-dark: #5b73c4;
+            --secondary: #9b59b6;
+            --dark: #1a1d23;
+            --darker: #121417;
+            --dark-card: #23272a;
+            --light: #ffffff;
+            --gray: #99aab5;
+            --gray-dark: #4f545c;
+            --success: #43b581;
+            --danger: #f04747;
+            --warning: #faa61a;
+            --info: #00b0f4;
+            --transition: all 0.3s ease;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.2);
+            --border-radius: 10px;
+            --border-radius-sm: 5px;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, var(--darker), var(--dark));
-            color: var(--text);
-            min-height: 100vh;
+            background-color: var(--darker);
+            color: var(--light);
+            line-height: 1.6;
             overflow-x: hidden;
-            position: relative;
+            min-width: 1200px;
         }
 
-        body::before {
-            content: "";
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        header {
+            background-color: var(--dark);
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--light);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            color: var(--primary);
+            font-size: 2.2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after, nav a.active::after {
+            width: 100%;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            padding: 5rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(0, 217, 255, 0.15) 0%, transparent 40%);
-            z-index: -1;
-            animation: bgPulse 20s infinite alternate;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" opacity="0.05"><polygon fill="%237289da" points="0,1000 1000,0 1000,1000"/></svg>');
+            background-size: cover;
         }
 
-        /* Partículas animadas */
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--gray);
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.08);
+            color: var(--light);
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(114, 137, 218, 0.3);
+        }
+
+        .search-bar button {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            bottom: 5px;
+            padding: 0 1.8rem;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--light);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .search-bar button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .stats {
+            background-color: var(--dark);
+            padding: 2rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--dark-card);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .categories {
+            padding: 3rem 0;
+            background-color: var(--darker);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: var(--light);
+        }
+
+        .section-header p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .category-filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            border: none;
+            background-color: var(--dark-card);
+            color: var(--light);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .category-btn:hover::before {
+            left: 100%;
+        }
+
+        .category-btn.active, .category-btn:hover {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .category-btn i {
+            font-size: 1.1rem;
+        }
+
+        .scripts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .script-card {
+            background-color: var(--dark-card);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .script-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(114, 137, 218, 0.1), rgba(155, 89, 182, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 0;
+        }
+
+        .script-card:hover::before {
+            opacity: 1;
+        }
+
+        .script-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(114, 137, 218, 0.3);
+        }
+
+        .script-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(114, 137, 218, 0.1), rgba(155, 89, 182, 0.1));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            z-index: 1;
+        }
+
+        .script-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .script-badge {
+            background-color: var(--primary);
+            color: var(--light);
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .script-badge.universal {
+            background-color: var(--success);
+        }
+
+        .script-badge.game {
+            background-color: var(--info);
+        }
+
+        .script-badge.event {
+            background-color: var(--warning);
+        }
+
+        .script-badge.executors {
+            background: linear-gradient(135deg, var(--warning), #ff6b00);
+        }
+
+        .script-game {
+            color: var(--gray);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .script-actions-header {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .icon-btn:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .script-description {
+            padding: 1.5rem;
+            flex-grow: 1;
+            color: var(--gray);
+            position: relative;
+            z-index: 1;
+        }
+
+        .script-code {
+            background-color: var(--darker);
+            padding: 1.2rem;
+            margin: 0 1.5rem;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            white-space: nowrap;
+            color: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .copy-btn-overlay {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition);
+            border-radius: var(--border-radius-sm);
+        }
+
+        .script-code:hover .copy-btn-overlay {
+            opacity: 1;
+        }
+
+        .script-actions {
+            padding: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius-sm);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--light);
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--gray);
+            border: 1px solid var(--gray-dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--light);
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, var(--success), #2ecc71);
+            color: var(--light);
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .download-btn:hover {
+            background: linear-gradient(135deg, #2ecc71, var(--success));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+
+        .status-updated {
+            background: linear-gradient(135deg, var(--success), #2ecc71);
+            color: var(--light);
+        }
+
+        .status-featured {
+            background: linear-gradient(135deg, var(--warning), #ff6b00);
+            color: var(--light);
+        }
+
+        .executor-stats {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 1.5rem 0;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--gray);
+            text-align: center;
+        }
+
+        .executor-card {
+            background: linear-gradient(135deg, var(--dark-card) 0%, rgba(114, 137, 218, 0.1) 100%);
+            border: 1px solid rgba(114, 137, 218, 0.2);
+        }
+
+        .executor-card.featured {
+            background: linear-gradient(135deg, var(--dark-card) 0%, rgba(155, 89, 182, 0.15) 100%);
+            border: 1px solid rgba(155, 89, 182, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .executor-card.featured::before {
+            content: '★ DESTAQUE';
+            position: absolute;
+            top: 10px;
+            right: -30px;
+            background: linear-gradient(135deg, var(--warning), #ff6b00);
+            color: var(--light);
+            padding: 5px 40px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            transform: rotate(45deg);
+            box-shadow: var(--shadow);
+        }
+
+        footer {
+            background-color: var(--dark);
+            padding: 4rem 0 2rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--light);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--gray);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success);
+            color: var(--light);
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background-color: var(--danger);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .script-card:nth-child(1) { animation-delay: 0.1s; }
+        .script-card:nth-child(2) { animation-delay: 0.2s; }
+        .script-card:nth-child(3) { animation-delay: 0.3s; }
+        .script-card:nth-child(4) { animation-delay: 0.4s; }
+        .script-card:nth-child(5) { animation-delay: 0.5s; }
+        .script-card:nth-child(6) { animation-delay: 0.6s; }
+
         .particles {
             position: fixed;
             top: 0;
@@ -114,1790 +759,846 @@
 
         .particle {
             position: absolute;
+            background: rgba(114, 137, 218, 0.3);
             border-radius: 50%;
-            background: rgba(138, 43, 226, 0.5);
             animation: float 15s infinite linear;
         }
 
-        /* Header com efeito de vidro */
-        header {
-            background: var(--header-bg);
-            backdrop-filter: blur(10px);
-            padding: 20px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        .glow {
+            position: absolute;
             top: 0;
-            z-index: 100;
-            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            animation: fadeInDown 1s ease;
-        }
-
-        .logo-icon {
-            font-size: 2.5rem;
-            color: var(--accent);
-        }
-
-        .logo-text {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(90deg, var(--accent), var(--primary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            align-items: center;
-        }
-
-        .nav-link {
-            position: relative;
-            padding: 10px 0;
-            font-weight: 500;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link:hover {
-            color: var(--text);
-        }
-
-        .nav-link::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
             left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent);
-            transition: width 0.3s ease;
-        }
-
-        .nav-link:hover::after {
             width: 100%;
-        }
-
-        .theme-selector {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .theme-button {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: var(--text);
-            transition: all 0.3s ease;
-        }
-
-        .theme-button:hover {
-            transform: rotate(30deg);
-            background: rgba(138, 43, 226, 0.3);
-        }
-
-        .theme-menu {
-            position: absolute;
-            top: 50px;
-            right: 0;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-            padding: 10px;
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            min-width: 120px;
-            z-index: 10;
-        }
-
-        .theme-option {
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .theme-option:hover {
-            background: rgba(138, 43, 226, 0.2);
-        }
-
-        .theme-color {
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-        }
-
-        .theme-dark .theme-color { background: linear-gradient(135deg, #080616, #0f0c24); }
-        .theme-light .theme-color { background: linear-gradient(135deg, #e0e0ea, #f0f0f5); }
-        .theme-green .theme-color { background: linear-gradient(135deg, #06160e, #0c2418); }
-        .theme-red .theme-color { background: linear-gradient(135deg, #160606, #240c0c); }
-        .theme-blue .theme-color { background: linear-gradient(135deg, #060e16, #0c1824); }
-
-        .hero {
-            text-align: center;
-            padding: 80px 20px 40px;
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            background: linear-gradient(90deg, var(--accent), var(--primary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: fadeInUp 1s ease, textGlow 3s infinite alternate;
-        }
-
-        .hero-subtitle {
-            font-size: 1.4rem;
-            color: var(--text-secondary);
-            margin-bottom: 40px;
-            animation: fadeInUp 1s ease 0.2s forwards;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(114, 137, 218, 0.1) 0%, transparent 70%);
             opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 0;
         }
 
-        .search-container {
-            max-width: 800px;
-            margin: 0 auto 40px;
-            padding: 0 20px;
+        .script-card:hover .glow {
+            opacity: 1;
         }
 
-        .search-bar {
-            display: flex;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 50px;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        #searchInput {
-            flex: 1;
-            padding: 18px 25px;
-            border: none;
-            background: transparent;
-            color: var(--text);
-            font-size: 1.1rem;
-            outline: none;
-        }
-
-        #searchButton {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 0 30px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-        }
-
-        #searchButton:hover {
-            background: linear-gradient(90deg, var(--secondary), var(--primary));
-        }
-
-        .tabs {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 50px;
-            flex-wrap: wrap;
-            animation: fadeInUp 1s ease 0.4s forwards;
-            opacity: 0;
-        }
-
-        .tab-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 15px 30px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            font-size: 1.1rem;
-            color: var(--text);
-        }
-
-        .tab-btn:hover {
-            background: rgba(138, 43, 226, 0.3);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
-            transform: translateY(-3px);
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .content-section {
-            display: none;
-            animation: fadeIn 0.8s ease;
-        }
-
-        .content-section.active {
-            display: block;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            margin: 40px 0 30px;
-            position: relative;
+        .counter {
             display: inline-block;
-            padding-bottom: 10px;
         }
 
-        .section-title::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent), var(--primary));
-            border-radius: 2px;
-            transform: scaleX(0);
-            transform-origin: left;
-            animation: titleUnderline 1s ease 0.5s forwards;
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
         }
 
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
-            margin-bottom: 80px;
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 25px;
-            transition: all 0.4s ease;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            animation: fadeIn 0.6s ease forwards;
-        }
-
-        .card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, var(--accent), var(--primary));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.5s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-            border-color: rgba(138, 43, 226, 0.5);
-        }
-
-        .card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text);
-        }
-
-        .card-status {
-            font-size: 0.9rem;
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-weight: 600;
-        }
-
-        .status-updated {
-            background: rgba(0, 200, 83, 0.2);
-            color: #00c853;
-            box-shadow: 0 0 10px rgba(0, 200, 83, 0.3);
-        }
-
-        .status-outdated {
-            background: rgba(255, 82, 82, 0.2);
-            color: #ff5252;
-        }
-
-        .status-featured {
-            background: rgba(255, 193, 7, 0.2);
-            color: #ffc107;
-            box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
-            animation: pulse 2s infinite;
-        }
-
-        .card-description {
-            margin-bottom: 25px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            min-height: 80px;
-        }
-
-        .card-link {
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--light);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: white;
-            text-align: center;
-            padding: 14px 0;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            font-size: 1.2rem;
             cursor: pointer;
+            transition: var(--transition);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 999;
+            box-shadow: var(--shadow);
         }
 
-        .card-link:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.5);
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
         }
 
-        .card-link::after {
-            content: "";
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .typing-effect {
+            overflow: hidden;
+            border-right: 2px solid var(--primary);
+            white-space: nowrap;
+            margin: 0 auto;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--primary) }
+        }
+
+        .btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 2px solid transparent;
+            border-top-color: var(--light);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .shimmer {
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: 0.6s;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 2s infinite;
         }
 
-        .card-link:hover::after {
-            left: 100%;
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
-        .featured {
-            border: 2px solid var(--accent);
-            box-shadow: 0 0 30px rgba(0, 217, 255, 0.4);
-            animation: featuredPulse 3s infinite;
-        }
-
-        .featured .card-title {
-            color: var(--accent);
-        }
-
-        .no-results {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 40px;
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-        }
-
-        /* Modal de Script */
-        .modal {
-            display: none;
+        .animated-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            z-index: -2;
+            background: linear-gradient(-45deg, #121417, #1a1d23, #23272a, #2c2f33);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
         }
 
-        .modal.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background: var(--modal-bg);
-            border-radius: 20px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow: hidden;
-            box-shadow: 0 0 50px rgba(138, 43, 226, 0.5);
-            transform: translateY(50px);
-            transition: transform 0.4s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .modal.active .modal-content {
-            transform: translateY(0);
-        }
-
-        .modal-header {
-            padding: 20px;
-            background: rgba(30, 25, 60, 0.8);
-            border-bottom: 1px solid var(--card-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, var(--accent), var(--primary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .close-modal:hover {
-            color: var(--accent);
-            transform: rotate(90deg);
-        }
-
-        .modal-body {
-            padding: 25px;
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .script-content {
-            background: rgba(10, 5, 25, 0.7);
-            border-radius: 10px;
-            padding: 20px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 25px;
-            color: var(--text);
-        }
-
-        .script-actions {
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn {
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: white;
-            flex: 1;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        footer {
-            background: var(--footer-bg);
-            backdrop-filter: blur(10px);
-            padding: 60px 20px 30px;
-            margin-top: 80px;
-            border-top: 1px solid rgba(138, 43, 226, 0.2);
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-        }
-
-        .footer-section h3 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .footer-section h3::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: var(--accent);
-        }
-
-        .footer-links {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .footer-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .footer-link:hover {
-            color: var(--accent);
-            transform: translateX(5px);
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .social-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--card-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            transition: all 0.3s ease;
-            color: var(--text);
-        }
-
-        .social-icon:hover {
-            background: var(--primary);
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 40px;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 40px;
-        }
-
-        /* Menu responsivo para mobile */
-        .menu-toggle {
-            display: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: var(--text);
-            background: none;
-            border: none;
-        }
-
-        /* Animações */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes textGlow {
-            0% { text-shadow: 0 0 10px rgba(138, 43, 226, 0.5); }
-            100% { text-shadow: 0 0 20px rgba(138, 43, 226, 0.8), 0 0 30px rgba(0, 217, 255, 0.6); }
-        }
-
-        @keyframes bgPulse {
-            0% { background-size: 100% 100%; }
-            100% { background-size: 150% 150%; }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
-        }
-
-        @keyframes titleUnderline {
-            from { transform: scaleX(0); }
-            to { transform: scaleX(1); }
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
-        }
-
-        @keyframes featuredPulse {
-            0% { box-shadow: 0 0 20px rgba(0, 217, 255, 0.4); }
-            50% { box-shadow: 0 0 40px rgba(0, 217, 255, 0.6); }
-            100% { box-shadow: 0 0 20px rgba(0, 217, 255, 0.4); }
-        }
-
-        @media (max-width: 992px) {
-            .hero-title {
-                font-size: 3.2rem;
-            }
-            
-            .cards-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            }
-            
-            .section-title {
-                font-size: 2.2rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .menu-toggle {
-                display: block;
-            }
-            
-            .nav-links {
-                position: fixed;
-                top: 80px;
-                left: -100%;
-                width: 80%;
-                height: calc(100vh - 80px);
-                background: var(--header-bg);
-                backdrop-filter: blur(10px);
-                flex-direction: column;
-                padding: 20px;
-                transition: all 0.5s ease;
-                box-shadow: 5px 0 15px rgba(0,0,0,0.3);
-                z-index: 100;
-            }
-            
-            .nav-links.active {
-                left: 0;
-            }
-            
-            .theme-selector {
-                margin-top: 20px;
-            }
-            
-            .theme-menu {
-                top: auto;
-                bottom: 100%;
-                right: auto;
-                left: 0;
-            }
-            
-            .modal-content {
-                width: 95%;
-            }
-            
-            .script-actions {
-                flex-direction: column;
-            }
-            
-            .tab-btn {
-                padding: 12px 20px;
-                font-size: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero-title {
-                font-size: 2rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.1rem;
-            }
-            
-            .tab-btn {
-                padding: 10px 16px;
-                font-size: 0.9rem;
-            }
-            
-            .section-title {
-                font-size: 1.8rem;
-            }
-            
-            #searchInput {
-                padding: 15px 20px;
-                font-size: 1rem;
-            }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
     </style>
 </head>
-<body data-theme="dark">
-    <!-- Partículas animadas -->
+<body>
+    <div class="animated-bg"></div>
     <div class="particles" id="particles"></div>
-    
+
     <header>
-        <div class="logo">
-            <i class="fas fa-robot logo-icon"></i>
-            <div class="logo-text">RANOX SCRIPTS</div>
-        </div>
-        
-        <button class="menu-toggle" id="menuToggle">
-            <i class="fas fa-bars"></i>
-        </button>
-        
-        <div class="nav-links" id="navLinks">
-            <a href="#" class="nav-link">Home</a>
-            <a href="#" class="nav-link">Executores</a>
-            <a href="#" class="nav-link">Scripts</a>
-            <a href="#" class="nav-link">Tutoriais</a>
-            <a href="#" class="nav-link">Contato</a>
-            <div class="theme-selector">
-                <div class="theme-button">
-                    <i class="fas fa-palette"></i>
-                </div>
-                <div class="theme-menu">
-                    <div class="theme-option theme-dark" data-theme="dark">
-                        <div class="theme-color"></div>
-                        <span>Escuro</span>
-                    </div>
-                    <div class="theme-option theme-light" data-theme="light">
-                        <div class="theme-color"></div>
-                        <span>Claro</span>
-                    </div>
-                    <div class="theme-option theme-green" data-theme="green">
-                        <div class="theme-color"></div>
-                        <span>Verde</span>
-                    </div>
-                    <div class="theme-option theme-red" data-theme="red">
-                        <div class="theme-color"></div>
-                        <span>Vermelho</span>
-                    </div>
-                    <div class="theme-option theme-blue" data-theme="blue">
-                        <div class="theme-color"></div>
-                        <span>Azul</span>
-                    </div>
-                </div>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">
+                    <i class="fas fa-code logo-icon"></i>
+                    <span>Roblox Scripts Hub</span>
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active">Início</a></li>
+                        <li><a href="#">Scripts</a></li>
+                        <li><a href="#">Categorias</a></li>
+                        <li><a href="#">Executores</a></li>
+                        <li><a href="#">Novos</a></li>
+                        <li><a href="#">Populares</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </header>
 
-    <div class="hero">
-        <h1 class="hero-title">EXECUTORES & SCRIPTS</h1>
-        <p class="hero-subtitle">Acesse a melhor coleção de executores e scripts atualizados para Roblox</p>
-        
-        <div class="search-container">
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Pesquisar scripts, executores...">
-                <button id="searchButton">
-                    <i class="fas fa-search"></i>
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="typing-effect">Milhares de Scripts e Executores para Roblox</h1>
+                <p>Encontre os melhores scripts e executores para seus jogos favoritos do Roblox. Tudo organizado, testado e atualizado regularmente.</p>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Pesquisar scripts por nome, jogo ou categoria...">
+                    <button id="searchBtn">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">
+                        <span class="counter" id="totalScripts">0</span>
+                    </div>
+                    <div class="stat-label">Total de Itens</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">
+                        <span class="counter" id="universalScripts">0</span>
+                    </div>
+                    <div class="stat-label">Scripts Universais</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">
+                        <span class="counter" id="gameScripts">0</span>
+                    </div>
+                    <div class="stat-label">Scripts de Jogos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">
+                        <span class="counter" id="eventScripts">0</span>
+                    </div>
+                    <div class="stat-label">Scripts de Eventos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">
+                        <span class="counter" id="executorsScripts">0</span>
+                    </div>
+                    <div class="stat-label">Executores</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="categories">
+        <div class="container">
+            <div class="section-header">
+                <h2>Explorar por Categoria</h2>
+                <p>Encontre scripts e executores específicos para suas necessidades filtrando por categoria</p>
+            </div>
+            <div class="category-filters">
+                <button class="category-btn active" data-category="all">
+                    <i class="fas fa-layer-group"></i> Todos
+                </button>
+                <button class="category-btn" data-category="universal">
+                    <i class="fas fa-globe"></i> Universal
+                </button>
+                <button class="category-btn" data-category="game">
+                    <i class="fas fa-gamepad"></i> Jogos
+                </button>
+                <button class="category-btn" data-category="event">
+                    <i class="fas fa-calendar-alt"></i> Eventos
+                </button>
+                <button class="category-btn" data-category="executors">
+                    <i class="fas fa-rocket"></i> Executores
                 </button>
             </div>
         </div>
-        
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="executors">Executores</button>
-            <button class="tab-btn" data-tab="universal">Scripts Universais</button>
-            <button class="tab-btn" data-tab="games">Scripts para Jogos</button>
-            <button class="tab-btn" data-tab="events">Scripts para Eventos</button>
-        </div>
-    </div>
+    </section>
 
-    <div class="container">
-        <!-- Executores Section -->
-        <section id="executors" class="content-section active">
-            <h2 class="section-title">Executores</h2>
-            <div class="cards-grid" id="executors-grid"></div>
-        </section>
-        
-        <!-- Universal Scripts Section -->
-        <section id="universal" class="content-section">
-            <h2 class="section-title">Scripts Universais</h2>
-            <div class="cards-grid" id="universal-grid"></div>
-        </section>
-        
-        <!-- Game Scripts Section -->
-        <section id="games" class="content-section">
-            <h2 class="section-title">Scripts para Jogos</h2>
-            <div class="cards-grid" id="games-grid"></div>
-        </section>
-        
-        <!-- Event Scripts Section -->
-        <section id="events" class="content-section">
-            <h2 class="section-title">Scripts para Eventos</h2>
-            <div class="cards-grid" id="events-grid"></div>
-        </section>
-    </div>
-
-    <!-- Modal para exibir scripts -->
-    <div class="modal" id="scriptModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modalScriptTitle">Nome do Script</h3>
-                <button class="close-modal" id="closeModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="script-content" id="scriptContent">
-                    Carregando script...
-                </div>
-                <div class="script-actions">
-                    <button class="btn btn-primary" id="copyScript">
-                        <i class="fas fa-copy"></i> Copiar Script
-                    </button>
-                    <button class="btn btn-secondary" id="closeModalBtn">
-                        <i class="fas fa-times"></i> Fechar
-                    </button>
-                </div>
-            </div>
+    <main class="container">
+        <div class="scripts-grid" id="scriptsContainer">
+            <!-- Scripts serão carregados via JavaScript -->
         </div>
-    </div>
+    </main>
 
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>RANOX SCRIPTS</h3>
-                <p>Sua fonte de executores e scripts para Roblox. Atualizado diariamente.</p>
-                <div class="social-icons">
-                    <a href="https://discord.gg" target="_blank" class="social-icon"><i class="fab fa-discord"></i></a>
-                    <a href="https://www.youtube.com/@RNOX_OFC123" target="_blank" class="social-icon"><i class="fab fa-youtube"></i></a>
-                    <a href="https://twitter.com" target="_blank" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    <a href="https://tiktok.com" target="_blank" class="social-icon"><i class="fab fa-tiktok"></i></a>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Roblox Scripts Hub</h3>
+                    <p>O maior repositório de scripts e executores para Roblox, com milhares de opções organizadas e testadas para melhor experiência.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Links Rápidos</h3>
+                    <div class="footer-links">
+                        <a href="#"><i class="fas fa-chevron-right"></i> Início</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Scripts</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Categorias</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Executores</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Novos</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Recursos</h3>
+                    <div class="footer-links">
+                        <a href="#"><i class="fas fa-chevron-right"></i> Como Usar</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Executores</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Tutoriais</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> FAQ</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Contato</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <div class="footer-links">
+                        <a href="#"><i class="fas fa-chevron-right"></i> Termos de Uso</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Política de Privacidade</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> DMCA</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Isenção de Responsabilidade</a>
+                    </div>
                 </div>
             </div>
-            
-            <div class="footer-section">
-                <h3>Links Rápidos</h3>
-                <div class="footer-links">
-                    <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Executores</a>
-                    <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Scripts</a>
-                    <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Atualizações</a>
-                </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Roblox Scripts Hub. Todos os direitos reservados. Roblox é uma marca registrada da Roblox Corporation.</p>
             </div>
-            
-            <div class="footer-section">
-                <h3>Recursos</h3>
-                <div class="footer-links">
-                    <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Como Instalar</a>
-                    <a href="https://discord.gg" target="_blank" class="footer-link"><i class="fas fa-chevron-right"></i> Discord</a>
-                    <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Termos de Uso</a>
-                    <a href="#" class="footer-link"><i class="fas fa-chevron-right"></i> Política de Privacidade</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="copyright">
-            © 2025 RANOX SCRIPTS. Todos os direitos reservados. Este site não é afiliado à Roblox Corporation.
         </div>
     </footer>
 
-    <script>
-        // Dados dos scripts organizados por categoria
-        const scriptsData = {
-            executors: [
-                {
-                    title: "Delta-Executor",
-                    status: "ATUALIZADO ✔",
-                    statusClass: "status-updated",
-                    description: "Executor estável e confiável com suporte para a maioria dos scripts.",
-                    link: "https://deltaexploits.gg/delta-executor-android",
-                    isDownload: true
-                },
-                {
-                    title: "Fluxus-Executor",
-                    status: "ATUALIZADO ✔",
-                    statusClass: "status-updated",
-                    description: "Executor poderoso com excelente compatibilidade e desempenho.",
-                    link: "https://fluxus.team/",
-                    isDownload: true
-                },
-                {
-                    title: "KRNL-Executor",
-                    status: "ATUALIZADO ✔",
-                    statusClass: "status-updated",
-                    description: "Executor focado em segurança e privacidade.",
-                    link: "https://krnl.vip/download/",
-                    isDownload: true
-                },
-                {
-                    title: "ArceusX-Executor",
-                    status: "DESTAQUE ★",
-                    statusClass: "status-featured",
-                    description: "Versão atualizada do popular executor ArceusX. Compatível com a maioria dos scripts.",
-                    link: "https://arceusx.com/#google_vignette",
-                    isDownload: true,
-                    featured: true
-                },
-                {
-                    title: "Vegax-Executor",
-                    status: "ATUALIZADO ✔",
-                    statusClass: "status-updated",
-                    description: "Executor avançado com recursos de depuração integrados.",
-                    link: "https://www.vegax.gg/",
-                    isDownload: true
-                },
-    {
-        title: "Synapse X",
-        status: "ATUALIZADO ✔",
-        statusClass: "status-updated",
-        description: "Executor famoso por desempenho e compatibilidade com muitos scripts.",
-        link: "https://synapsex.co/download/",
-        isDownload: true
-    },
-    {
-        title: "Solara",
-        status: "ATUALIZADO ✔",
-        statusClass: "status-updated",
-        description: "Executor/keyless popular hospedado na WeAreDevs; usado como hub de scripts.",
-        link: "https://wearedevs.net/d/Solara",
-        isDownload: true
-    },
-    {
-        title: "Script-Ware",
-        status: "ATUALIZADO ✔",
-        statusClass: "status-updated",
-        description: "Script-Ware — executor key-free amplamente divulgado em sites de downloads.",
-        link: "https://playsdone.com/script-ware/",
-        isDownload: true
-    },
-    {
-        title: "JJSploit",
-        status: "ATUALIZADO ✔",
-        statusClass: "status-updated",
-        description: "Executor/kit tudo-em-um com várias funcionalidades (ESP, fly, teleport etc.).",
-        link: "https://wearedevs.net/d/JJSploit",
-        isDownload: true
-    },
-    {
-        title: "Celery",
-        status: "ATUALIZADO ✔",
-        statusClass: "status-updated",
-        description: "Celery — executor moderno documentado em sites como Hydrogen Executor.",
-        link: "https://hydrogenexecutor.com/celery-executor/",
-        isDownload: true
-    },
-    {
-        title: "Wave Executor",
-        status: "ATUALIZADO ✔",
-        statusClass: "status-updated",
-        description: "Wave — executor recente com guia de download e suporte a várias plataformas.",
-        link: "https://waveexecutor.io/download/",
-        isDownload: true
-    },
-    {
-        title: "Sentinel Executor",
-        status: "ATUALIZADO ✔",
-        statusClass: "status-updated",
-        description: "Executor gratuito e popular, compatível com PC e mobile; interface simples e foco em usabilidade.",
-        link: "https://sentinel-executor.carrd.co/",
-        isDownload: true
-    },
-    {
-        title: "Electron Executor",
-        status: "ATUALIZADO ✔",
-        statusClass: "status-updated",
-        description: "Executor moderno com builds para várias plataformas (Windows/macOS/Android/iOS) e amplo suporte a scripts Lua.",
-        link: "https://electronexecutor.com/",
-        isDownload: true
-    },
-    {
-        title: "SirHurt",
-        status: "ATUALIZADO ✔",
-        statusClass: "status-updated",
-        description: "Executor comercial com painel/serviços pagos (chaves/whitelist), conhecido por histórico desde 2015.",
-        link: "https://www.sirhurt.net",
-        isDownload: true
-    },
-                {
-    title: "eSynapseX",
-    status: "ATUALIZADO ✔",
-    statusClass: "status-updated",
-    description: "Artigo / coletânea sobre executors e exploits para Roblox — referência com recomendações e histórico.",
-    link: "https://medium.com/@esynapsex/best-roblox-script-executor-and-roblox-exploits-of-2021-691aa9d4384b",
-    isDownload: false
-                }
-            ],
-            universal: [
-                {
-                    title: "Rochips Universal",
-                    status: "MUITO BOM ✨",
-                    statusClass: "status-featured",
-                    description: "Coleção de scripts para diversos jogos Roblox.",
-                    script: "loadstring(game:HttpGet('https://glot.io/snippets/gzrux646yj/raw/main.ts'))()",
-                    featured: true
-                },
-                {
-                    title: "GhostHub",
-                    status: "ATUALIZADO ✔",
-                    statusClass: "status-updated",
-                    description: "Hub universal com diversos scripts.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/GhostPlayer352/Test4/main/GhostHub'))()"
-                },
-                {
-    title: "EatWorld Script",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Script universal para diversos jogos Roblox.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/EatWorld'))()"
-},
-{
-    title: "Universal Loader",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Carregador universal para scripts Roblox.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/Janorax/UniversalLoader/main/Main'))()"
-},
-{
-    title: "Zap Hub",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Hub premium com recursos avançados.",
-    script: "loadstring(game:HttpGet('https://zaphub.xyz/Exec'))()"
-},
-{
-    title: "Rybowe Scripts",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Coleção de scripts para vários jogos.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/rybowe/rybowescripts/main/release.lua'))()"
-},
-{
-    title: "Neox Hub Fisch",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Hub universal com interface intuitiva.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/hassanxzayn-lua/neoxhubfisch1.3/main/script'))()"
-},
-{
-    title: "Fazium Loader",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Loader para scripts Fazium.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ZaRdoOx/Fazium-files/main/Loader'))()"
-},
-{
-    title: "Script Luarmor",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Ferramenta avançada de proteção e execução.",
-    script: "loadstring(game:HttpGet('https://api.luarmor.net/files/v3/loaders/dc6d28652ef8e1fb0520e3ebbe8367f8.lua'))()"
-},
-{
-    title: "Script KaosX",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Hub premium com suporte múltiplo.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/KaosX-Scripts/Loader/main/Key-yAdQ8gjds/mDuh309nvc'))()"
-},
-{
-    title: "Script Mars",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Hub universal com recursos exclusivos.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/1st-Mars/Annie/main/1st.lua'))()"
-},
-{
-    title: "Script Speed Hub X",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Otimização e recursos para qualquer jogo.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua'))()"
-},
-{
-    title: "Script Saint",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Hub completo para diversos jogos.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/Saintdadz7/EoSaintHub/main/Saintt.lua'))()"
-},
-{
-    title: "FLEX YOUR FPS SCRIPT",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Otimizador de performance para Roblox.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/v-oidd/flex-your-fps-script/main/script'))()"
-},
-{
-    title: "RENZXW-SCRIPTS",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Coleção de scripts atualizados.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/RENZXW/RENZXW-SCRIPTS/main/renz%20hub.txt'))()"
-},
-                {
-                    title: "Zygarde",
-                    status: "PODEROSO ⚡",
-                    statusClass: "status-updated",
-                    description: "Hub com scripts premium para vários jogos.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/louismich4el/Zygarde/main/Protected%20zygarde.lua'))()"
-                },
-                {
-                    title: "Infinite Yield",
-                    status: "TOP 1 ★",
-                    statusClass: "status-featured",
-                    description: "O script mais completo para administração e moderação em qualquer jogo.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/DarkNetworks/Infinite-Yield/main/latest.lua'))()",
-                    featured: true
-                },
-                {
-                    title: "Orca",
-                    status: "ATUALIZADO ✔",
-                    statusClass: "status-updated",
-                    description: "Script universal com diversas ferramentas e utilitários para jogos.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/richie0866/orca/master/public/latest.lua'))()"
-                },
-                {
-                    title: "Project Pastel",
-                    status: "NOVO ✨",
-                    statusClass: "status-updated",
-                    description: "Interface elegante com centenas de comandos para qualquer jogo Roblox.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/NUTellaVING/ProjectPastel/main/Loader.lua'))()"
-                },
-                {
-                    title: "Dark Dex",
-                    status: "PODEROSO ⚡",
-                    statusClass: "status-updated",
-                    description: "Ferramenta avançada para explorar e manipular o ambiente do jogo.",
-                    script: "loadstring(game:HttpGet('https://pastebin.com/raw/Abcd1234'))()"
-                },
-                {
-                    title: "Pendulum Hub",
-                    status: "BOM CLASSIFICADOR",
-                    statusClass: "status-updated",
-                    description: "Hub universal com interface moderna e recursos avançados.",
-                    script: "loadstring(game:HttpGet('https://scriptblox.com/raw/Universal-Script-Op-PENDULUM-HUB-Gui-R6-6490'))()",
-                },
-                {
-                    title: "SCRIPTHUBV3",
-                    status: "NOVO ✨",
-                    statusClass: "status-updated",
-                    description: "Versão atualizada do popular script hub.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/scripthubekitten/SCRIPTHUBV3/main/SCRIPTHUBV3'))()"
-                }
-            ],
-            games: [
-                {
-                    title: "Wrestling Legends",
-                    status: "EXCLUSIVO 🥊",
-                    statusClass: "status-updated",
-                    description: "Script completo para Wrestling Legends com vantagens exclusivas.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/WrestlingLegends'))()"
-                },
-                {
-                    title: "Blade Ball",
-                    status: "DESTAQUE ★",
-                    statusClass: "status-featured",
-                    description: "Autododge, autoparry e outras vantagens para dominar no Blade Ball.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/luascriptsROBLOX/BladeBallXera/main/XeraUltron'))()",
-                    featured: true
-                },
-                {
-    title: "Horse Race",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Automatização completa para Horse Race.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/HorseRace'))()"
-},
-{
-    title: "Anime RNG TD",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Farm automático para Anime RNG TD.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/AnimeRNGTD'))()"
-},
-{
-    title: "Legends of Speed",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Speedrun e autofarm para Legends of Speed.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/WhackyCode/SPEEDDEVIL/main/legendsofspeed.lua'))()"
-},
-{
-    title: "Block Tales Auto Guard",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Proteção automática em Block Tales.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/TexRBLX/Roblox-stuff/main/block%20tales/Block-Tales-Auto-Guard.lua'))()"
-},
-{
-    title: "HADE'S RNG",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Farm automático para Hade's RNG.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/HadesRNG'))()"
-},
-{
-    title: "RIVALS",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Vantagens competitivas para Rivals.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/SkibidiCen/MainMenu/main/Code'))()"
-},
-{
-    title: "TITAN CLASH ONLINE",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Dominando Titan Clash Online.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/SAMUCARARONOB/Keykeykeykey939393---oq8IVS8uV8VUriVu/main/FgDIBTViVdKCKbYjcTg'))()"
-},
-{
-    title: "BLADE SLAYER",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Farm automático para Blade Slayer.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/1BladeSlayer'))()"
-},
-{
-    title: "JULES RNG",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Automação completa para Jules RNG.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/wasduiop/JUULScript/main/JUUL%20SPullaSword'))()"
-},
-{
-    title: "My Restaurante",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Gerenciamento automático para My Restaurant.",
-    script: "loadstring(game:HttpGet('https://gist.githubusercontent.com/SpencerDevv/4127570215e413bf8ab4e074791bcf45/raw/78b977974b36e2d5cde7a28dab7f9a464dd1a2c1/betaV5'))()"
-},
-{
-    title: "PullaSword",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Estratégias automáticas para PullaSword.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/PullaSword'))()"
-},
-{
-    title: "Assassinos Vs Xerifes",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Vantagens táticas para Murderers vs Sheriffs.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/Sheeshablee73/Scriptss/main/MVSD%20UPD2.lua'))()"
-},
-{
-    title: "Every Clicker +1 JUMP",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Autoclicker avançado para Every Clicker.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/SAMUCARARONOB/Key2/main/Key'))()"
-},
-{
-    title: "Race Clicker",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Automação para Race Clicker.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/SAMUCARARONOB/0-/main/2.0'))()"
-},
-{
-    title: "Vehicle Legends",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Farm de recursos para Vehicle Legends.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/Marco8642/science/main/Vehicle%20legends'))()"
-},
-{
-    title: "PONTE DE VIDRO 2",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Automação para Ponte de Vidro 2.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/SAMUCARARONOB/0-/main/00wuua'))()"
-},
-{
-    title: "MILLIONAIRE EMPIRE",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Dominando Millionaire Empire Tycoon.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/SAMUCARARONOB/0-/main/MILLIONAIRE'))()"
-},
-{
-    title: "FINISH TREINING",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Automação para Fish Training.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/gumanba/Scripts/main/FishTraining'))()"
-},
-{
-    title: "DrillDigging",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Otimização para Drill Digging Simulator.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/gumanba/Scripts/main/DrillDigging'))()"
-},
-{
-    title: "Suviver The Killer",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Vantagens para Survivor The Killer.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/Milan08Studio/ChairWare/main/main.lua'))()"
-},
-{
-    title: "Math Murder",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Autoresolução para Math Murder.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/gumanba/Scripts/main/MathMurder'))()"
-},
-{
-    title: "DOGS OFF WAR (WW2)",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Estratégias para Dogs Off War.",
-    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/SAMUCARARONOB/0-/main/JOGO%20DE%20GUERRA'))()"
-},
-                {
-                    title: "Blox Fruits",
-                    status: "FARM ⚡",
-                    statusClass: "status-updated",
-                    description: "Auto farm, teleporte e outras vantagens para Blox Fruits.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/BasementHub/BH-Blox-fruit/main/W-Azure-V3'))()"
-                },
-                {
-                    title: "Arsenal",
-                    status: "AIMBOT 🎯",
-                    statusClass: "status-updated",
-                    description: "Aimbot, ESP, wallhack e outras vantagens para Arsenal.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/Theyfwdan/Theyfwdan/main/ExpressHubPaidVersion'))()"
-                },
-                {
-                    title: "Pet Simulator",
-                    status: "AUTO FARM 🤖",
-                    statusClass: "status-updated",
-                    description: "Autofarm de moedas, ovos e outros recursos em Pet Simulator.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/RenceeeX/PetsGo/main/RenceeXHub'))()"
-                },
-                {
-                    title: "Driving Empire",
-                    status: "MOEDAS 💰",
-                    statusClass: "status-updated",
-                    description: "Farm automático de moedas e recursos em Driving Empire.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/CasperFlyModz/discord.gg-rips/main/DrivingEmpire.lua'))()"
-                },
-                {
-                    title: "Toilet Tower Defense",
-                    status: "AUTO UPGRADE ⬆️",
-                    statusClass: "status-updated",
-                    description: "Autoplay, auto upgrade e outras vantagens para TTD.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/LOLking123456/TTD/main/ToiletDefense'))()"
-                },
-                {
-                    title: "BROOKHAVEN",
-                    status: "POPULAR 🏠",
-                    statusClass: "status-updated",
-                    description: "Script completo para Brookhaven RP.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/AstroXTeam/AstroXHubNeta/refs/heads/main/%D9%87%D9%84%D9%88.lua'))()"
-                },
-                {
-    title: "ROUBE UM BRAINROT",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Script para Roube um Brainrot (pastefy).",
-    script: "loadstring(game:HttpGet(\"https://pastefy.app/ebI6lwxc/raw\"))()"
-},
-{
-    title: "99 Nights In Forest",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Script para 99 Nights In Forest (Blessed Hub X).",
-    script: "loadstring(game:HttpGet(\"https://raw.githubusercontent.com/mynamewendel-ctrl/Blessed-Hub-X-/refs/heads/main/99-Nights-In-Forest.lua\"))()"
-},
-{
-    title: "Plants vs Brainrots",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Loader para Plants vs Brainrots.",
-    script: "loadstring(game:HttpGet(\"https://rifton.top/loader.lua\"))()"
-},
-{
-    title: "Blox Fruits (Styxz)",
-    status: "NOVO ✨",
-    statusClass: "status-updated",
-    description: "Styxz Hub para Blox Fruits.",
-    script: "loadstring(game:HttpGet(\"https://raw.githubusercontent.com/ToshyWare/StyxzHub/main/Styxz.lua\"))()"
-}
-            ],
-            events: [
-                {
-                    title: "UGC Santa Suit",
-                    status: "EXCLUSIVO 🎅",
-                    statusClass: "status-featured",
-                    description: "Obtenha automaticamente todos os itens do evento de Natal UGC.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/SantaSuit'))()",
-                    featured: true
-                },
-                {
-                    title: "Sonic Winter",
-                    status: "EVENTO ❄️",
-                    statusClass: "status-updated",
-                    description: "Complete automaticamente o evento de inverno do Sonic.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/SonicWinter'))()"
-                },
-                {
-                    title: "Royale High Winter",
-                    status: "RECOMPENSAS 🎁",
-                    statusClass: "status-updated",
-                    description: "Farm automático de recompensas no evento de inverno do Royale High.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/RoyaleHighWinter'))()"
-                },
-                {
-                    title: "War Tycoon EVENT",
-                    status: "EVENTO ❄️",
-                    statusClass: "status-updated",
-                    description: "Complete o evento de inverno do War Tycoon.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/WarTycoonWinter'))()"
-                },
-                {
-                    title: "ELEMETAL DUN WINTER",
-                    status: "EXCLUSIVO 🎅",
-                    statusClass: "status-featured",
-                    description: "Evento de inverno do Elemental Dungeon.",
-                    script: "loadstring(game:HttpGet('https://raw.githubusercontent.com/ToraScript/Script/main/ElementalDunWinter'))()",
-                    featured: true
-                }
-            ]
-        };
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>Script copiado com sucesso!</span>
+    </div>
 
-        // Criar partículas animadas
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script>
+        // Dados dos scripts e executores
+        const scriptsData = [
+            // Scripts Universais
+            {"id": 1, "title": "Rochips Universal", "game": "Universal", "description": "Script universal com diversas funcionalidades para vários jogos.", "code": 'loadstring(game:HttpGet("https://glot.io/snippets/gzrux646yj/raw/main.ts"))()', "category": "universal"},
+            {"id": 2, "title": "GhostHub", "game": "Universal", "description": "Hub universal com interface moderna e diversas opções de scripts.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostPlayer352/Test4/main/GhostHub"))()', "category": "universal"},
+            {"id": 3, "title": "Zygarde", "game": "Universal", "description": "Script protegido com funcionalidades avançadas para diversos jogos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/louismich4el/Zygarde/main/Protected%20zygarde.lua"))()', "category": "universal"},
+            {"id": 4, "title": "MainMenu", "game": "Universal", "description": "Menu principal com diversos scripts organizados por categoria.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SkibidiCen/MainMenu/main/Code"))()', "category": "universal"},
+            {"id": 5, "title": "Infinite Yield (Universal)", "game": "Universal", "description": "Comandos administrativos avançados com interface intuitiva.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/DarkNetworks/Infinite-Yield/main/latest.lua"))()', "category": "universal"},
+            {"id": 6, "title": "Orca (Universal)", "game": "Universal", "description": "Script universal com foco em utilidades e comandos administrativos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/richie0866/orca/master/public/latest.lua"))()', "category": "universal"},
+            {"id": 7, "title": "ProjectPastel (Universal)", "game": "Universal", "description": "Hub universal com design colorido e diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/NUTellaVING/ProjectPastel/main/Loader.lua"))()', "category": "universal"},
+            {"id": 8, "title": "Pendulum Hub (Universal)", "game": "Universal", "description": "Hub universal com interface moderna e scripts organizados.", "code": 'loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Op-PENDULUM-HUB-Gui-R6-6490"))()', "category": "universal"},
+            {"id": 9, "title": "SCRIPTHUBV3 (Universal)", "game": "Universal", "description": "Versão atualizada do ScriptHub com novas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/scripthubekitten/SCRIPTHUBV3/main/SCRIPTHUBV3"))()', "category": "universal"},
+            {"id": 10, "title": "UTG V3 (Universal)", "game": "Universal", "description": "Universal Trolling GUI com diversas opções para trollar amigos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Blukez/Scripts/main/UTG%20V3%20RAW"))()', "category": "universal"},
+            {"id": 11, "title": "Noname Hub (Universal)", "game": "Universal", "description": "Hub universal com interface limpa e scripts organizados.", "code": 'loadstring(game:HttpGet("https://noname-hub.fun/loader.lua"))()', "category": "universal"},
+            {"id": 12, "title": "InfiniteWare (Universal)", "game": "Universal", "description": "Script universal com diversas funcionalidades e interface moderna.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Kitler69/InfiniteWare/refs/heads/main/Launcher"))()', "category": "universal"},
+            {"id": 13, "title": "Zen Hub (Universal)", "game": "Universal", "description": "Hub zen com interface limpa e scripts organizados.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Zenhubtop/zen_hub_pr/main/zennewwwwui.lua"))()', "category": "universal"},
+            {"id": 14, "title": "Hub Manager", "game": "Universal", "description": "Gerenciador de hubs para organizar e executar scripts facilmente.", "code": 'loadstring(game:HttpGet("https://github.com/Project-Evolution/Hub-Manager/raw/main/MainModule.lua"))()', "category": "universal"},
+            {"id": 15, "title": "Rekt Sky Hub", "game": "Universal", "description": "Hub com interface moderna e diversos scripts organizados.", "code": 'loadstring(game:HttpGet("https://github.com/KrackaYT/Rekt/raw/main/skyhubhub.lua"))()', "category": "universal"},
+            {"id": 16, "title": "Ez Hub", "game": "Universal", "description": "Hub simples e fácil de usar com scripts organizados.", "code": 'loadstring(game:HttpGet("https://github.com/KrackaYT/Ez/raw/main/EzHubHub.lua"))()', "category": "universal"},
+            {"id": 17, "title": "Dark Hub", "game": "Universal", "description": "Hub com tema escuro e diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://github.com/GalaxySpaceX9/Script/raw/main/DarkHub.lua"))()', "category": "universal"},
+            {"id": 18, "title": "Project Evolution", "game": "Universal", "description": "Hub em evolução constante com novas funcionalidades.", "code": 'loadstring(game:HttpGet("https://github.com/Project-Evolution/Project/raw/main/MainModule.lua"))()', "category": "universal"},
+            {"id": 19, "title": "KIWI X", "game": "Universal", "description": "Hub com interface moderna e scripts organizados.", "code": 'loadstring(game:HttpGet("https://github.com/AltsegoD/BasicHub/raw/main/Loader.lua"))()', "category": "universal"},
+            {"id": 20, "title": "Hydrogen Hub", "game": "Universal", "description": "Hub leve com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://github.com/7Hydrogen/Hub/raw/main/MainLoader.lua"))()', "category": "universal"},
+            {"id": 21, "title": "Fluxus Hub", "game": "Universal", "description": "Hub oficial do executor Fluxus com scripts organizados.", "code": 'loadstring(game:HttpGet("https://github.com/fluxteam/fluxus-hub/raw/main/MainLoader.lua"))()', "category": "universal"},
+            {"id": 22, "title": "Arceus X Hub", "game": "Universal", "description": "Hub oficial do executor Arceus X.", "code": 'loadstring(game:HttpGet("https://github.com/TANZ0X/Arceus-X/raw/main/MainLoader.lua"))()', "category": "universal"},
+            {"id": 23, "title": "Synapse X Hub", "game": "Universal", "description": "Hub oficial do executor Synapse X.", "code": 'loadstring(game:HttpGet("https://github.com/synapsehub/Synapse-X/raw/main/MainLoader.lua"))()', "category": "universal"},
+            {"id": 24, "title": "Dark Dex", "game": "Universal", "description": "Ferramenta para explorar e modificar jogos do Roblox.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Abcd1234"))()', "category": "universal"},
+            {"id": 25, "title": "Infinity Yield", "game": "Universal", "description": "Comandos administrativos avançados com interface moderna.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Xyz5678"))()', "category": "universal"},
+            {"id": 26, "title": "CMD-X", "game": "Universal", "description": "Comandos administrativos com interface limpa e fácil de usar.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Qwerty9876"))()', "category": "universal"},
+            {"id": 27, "title": "Universal Loader", "game": "Universal", "description": "Carregador universal para scripts de diversos tipos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Janorax/UniversalLoader/main/Main"))()', "category": "universal"},
+            {"id": 28, "title": "Zap Hub", "game": "Universal", "description": "Hub rápido com interface moderna e scripts organizados.", "code": 'loadstring(game:HttpGet("https://zaphub.xyz/Exec"))()', "category": "universal"},
+            {"id": 29, "title": "Rybowe Scripts", "game": "Universal", "description": "Coleção de scripts organizados por categoria.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/rybowe/rybowescripts/main/release.lua"))()', "category": "universal"},
+            {"id": 30, "title": "Fazium Loader", "game": "Universal", "description": "Carregador para scripts com interface moderna.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ZaRdoOx/Fazium-files/main/Loader"))()', "category": "universal"},
+            {"id": 31, "title": "Script Luarmor", "game": "Universal", "description": "Script protegido com Luarmor para segurança adicional.", "code": 'loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/dc6d28652ef8e1fb0520e3ebbe8367f8.lua"))()', "category": "universal"},
+            {"id": 32, "title": "Script KaosX", "game": "Universal", "description": "Script com diversas funcionalidades e interface moderna.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/KaosX-Scripts/Loader/refs/heads/main/Key-yAdQ8gjds/mDuh309nvc"))()', "category": "universal"},
+            {"id": 33, "title": "Script Mars", "game": "Universal", "description": "Hub com interface moderna e scripts organizados.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/1st-Mars/Annie/main/1st.lua"))()', "category": "universal"},
+            {"id": 34, "title": "Script Speed Hub X", "game": "Universal", "description": "Hub rápido com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua"))()', "category": "universal"},
+            {"id": 35, "title": "Script Saint", "game": "Universal", "description": "Hub com interface limpa e scripts organizados.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Saintdadz7/EoSaintHub/main/Saintt.lua"))()', "category": "universal"},
+            {"id": 36, "title": "Script Rybowe", "game": "Universal", "description": "Coleção de scripts organizados por categoria.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/rybowe/rybowescripts/main/release.lua"))()', "category": "universal"},
+            {"id": 37, "title": "Script Tbao", "game": "Universal", "description": "Hub com interface moderna e scripts organizados.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/tbao143/thaibao/main/TbaoHubRivals"))()', "category": "universal"},
+
+            // Scripts de Jogos
+            {"id": 38, "title": "Wrestling Legends", "game": "Wrestling Legends", "description": "Script para Wrestling Legends com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/WrestlingLegends"))()', "category": "game"},
+            {"id": 39, "title": "MurderersVsSheriffs", "game": "Murderers Vs Sheriffs", "description": "Script para Murderers Vs Sheriffs com vantagens para ambos os lados.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/RenceeeX/MVSD/refs/heads/main/MurderersVsSheriffs"))()', "category": "game"},
+            {"id": 40, "title": "BROOKHAVEN", "game": "Brookhaven", "description": "Script para Brookhaven RP com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/AstroXTeam/AstroXHubNeta/refs/heads/main/%D9%87%D9%84%D9%88.lua"))()', "category": "game"},
+            {"id": 41, "title": "Speed-Hub (Blade Ball)", "game": "Blade Ball", "description": "Hub para Blade Ball com autofarm e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Speed-Hub-Main-Releases-B-Y-R-E-N/refs/heads/main/Speed-Hub-Bladeball-Update-Lite-V2.txt"))()', "category": "game"},
+            {"id": 42, "title": "R6 Animations for R15", "game": "Universal", "description": "Animações R6 para avatares R15 em qualquer jogo.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Imagnir/r6_anims_for_r15/main/r6_anims.lua"))()', "category": "game"},
+            {"id": 43, "title": "Fe Bypass", "game": "Universal", "description": "Bypass para filtros em diversos jogos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/g00lXploiter/g00lXploiter/main/Fe%20bypass"))()', "category": "game"},
+            {"id": 44, "title": "Azure V3 (Blox Fruit)", "game": "Blox Fruits", "description": "Script avançado para Blox Fruits com autofarm e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/BasementHub/BH-Blox-fruit/main/W-Azure-V3"))()', "category": "game"},
+            {"id": 45, "title": "Baldy To Sorcerer", "game": "Baldy's Basics", "description": "Script para Baldy's Basics com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/skibiditoiletfan2007/BaldyToSorcerer/refs/heads/main/LatestV2.lua"))()', "category": "game"},
+            {"id": 46, "title": "Skibidi Toilet War", "game": "Skibidi Toilet", "description": "Script para Skibidi Toilet War com vantagens e funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ExploiterGuy/Scriptblox-ExploitFin/refs/heads/main/Skibidi%20Toilet%20War"))()', "category": "game"},
+            {"id": 47, "title": "TOILET TOWER", "game": "Toilet Tower Defense", "description": "Script para Toilet Tower Defense com autofarm e upgrades automáticos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/LOLking123456/TTD/main/ToiletDefense"))()', "category": "game"},
+            {"id": 48, "title": "Zenith Hub Knight Demons", "game": "Knight Demons", "description": "Hub para Knight Demons com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/LookP/Roblox/refs/heads/main/ZenithHub%20Knight%20Demons.lua"))()', "category": "game"},
+            {"id": 49, "title": "Classic Nations OBF", "game": "Nations", "description": "Script para Nations com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Gamer-3/ClassicNationsOBF/refs/heads/main/latest_version.lua"))()', "category": "game"},
+            {"id": 50, "title": "BOLA DA MORTE", "game": "Bola da Morte", "description": "Script para Bola da Morte com vantagens e funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/kiciahook/kiciahook/refs/heads/main/loader.lua"))()', "category": "game"},
+            {"id": 51, "title": "Burgeria Tycoon", "game": "Burgeria Tycoon", "description": "Script para Burgeria Tycoon com autofarm e upgrades automáticos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ExploiterGuy/Scriptblox-ExploitFin/refs/heads/main/Burgeria%20Tycoon.txt"))()', "category": "game"},
+            {"id": 52, "title": "DungeonRNG", "game": "Dungeon RNG", "description": "Script para Dungeon RNG com autofarm e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ProjectpopCat/ywxoscripts/main/DungeonRNG231.lua"))()', "category": "game"},
+            {"id": 53, "title": "XeraUltron (Blade Ball)", "game": "Blade Ball", "description": "Script avançado para Blade Ball com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/luascriptsROBLOX/BladeBallXera/main/XeraUltron"))()', "category": "game"},
+            {"id": 54, "title": "Anime", "game": "Anime Games", "description": "Script para diversos jogos de anime com funcionalidades específicas.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/LHking123456/nsX94GqZju2km/refs/heads/main/Anime"))()', "category": "game"},
+            {"id": 55, "title": "Fish Release", "game": "Fishing Games", "description": "Script para jogos de pesca com autofish e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/yolobradda/fischjvrre/refs/heads/main/fishrelease"))()', "category": "game"},
+            {"id": 56, "title": "Block Tales Auto Guard (Block Tales)", "game": "Block Tales", "description": "Script para Block Tales com auto guard e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/TexRBLX/Roblox-stuff/refs/heads/main/block%20tales/Block-Tales-Auto-Guard.lua"))()', "category": "game"},
+            {"id": 57, "title": "Damonvip", "game": "Various Games", "description": "Script VIP para diversos jogos com funcionalidades exclusivas.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/seagame/main/Damonvip.lua"))()', "category": "game"},
+            {"id": 58, "title": "TOILET BATTLE", "game": "Toilet Battle", "description": "Script para Toilet Battle com vantagens e funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/SkibidiToiletBattle"))()', "category": "game"},
+            {"id": 59, "title": "Skinwalker Hub", "game": "Various Games", "description": "Hub para diversos jogos com interface moderna.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/lucas021ajds/theskinwalkerhub/main/script"))()', "category": "game"},
+            {"id": 60, "title": "X Script", "game": "Various Games", "description": "Script para diversos jogos com funcionalidades variadas.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/NICKISBAD/RM/main/xscript.lua"))()', "category": "game"},
+            {"id": 61, "title": "PizzeriaTycoon", "game": "Pizzeria Tycoon", "description": "Script para Pizzeria Tycoon com autofarm e upgrades automáticos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/PizzeriaTycoon"))()', "category": "game"},
+            {"id": 62, "title": "NovBoatR1", "game": "Boat Games", "description": "Script para jogos de barco com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/novakoolhub/Scripts/main/Scripts/NovBoatR1"))()', "category": "game"},
+            {"id": 63, "title": "Vapa v2 Arsenal (Roblox Arsenal)", "game": "Arsenal", "description": "Script para Arsenal com aimbot, ESP e outras vantagens.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Nickyangtpe/Vapa-v2/refs/heads/main/Vapav2-Arsenal.lua"))()', "category": "game"},
+            {"id": 64, "title": "PetsGo (Pet Simulator)", "game": "Pet Simulator", "description": "Script para Pet Simulator com autofarm e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/RenceeeX/PetsGo/refs/heads/main/RenceeXHub"))()', "category": "game"},
+            {"id": 65, "title": "SCRIPTS BROOKHAVEN", "game": "Brookhaven", "description": "Scripts diversos para Brookhaven RP.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/FLY/refs/heads/main/%40yahoo.com"))()', "category": "game"},
+            {"id": 66, "title": "RNG SCRIPTS", "game": "RNG Games", "description": "Scripts para diversos jogos RNG.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/Inf/refs/heads/main/Samuel"))()', "category": "game"},
+            {"id": 67, "title": "BLOX FRUITS SCRIPTS", "game": "Blox Fruits", "description": "Scripts diversos para Blox Fruits.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/NOCLIP/refs/heads/main/Slk"))()', "category": "game"},
+            {"id": 68, "title": "PETS GO! SCRIPTS", "game": "Pets Go", "description": "Scripts diversos para Pets Go.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/-829-1-9IWN1O/refs/heads/main/Saia%20e%20n%C3%A3o%20roube%20minha%20URL"))()', "category": "game"},
+            {"id": 69, "title": "BLADE BALL SCRIPTS", "game": "Blade Ball", "description": "Scripts diversos para Blade Ball.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/SUPER-OP/refs/heads/main/AOPA%20D%20BOA%20MEU%20CHAPA"))()', "category": "game"},
+            {"id": 70, "title": "Aimbot", "game": "FPS Games", "description": "Aimbot para diversos jogos FPS.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Zxcv5432"))()', "category": "game"},
+            {"id": 71, "title": "ESP Script", "game": "FPS Games", "description": "ESP para ver jogadores através das paredes.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Lkjhg0987"))()', "category": "game"},
+            {"id": 72, "title": "Fly Script", "game": "Various Games", "description": "Script para voar em diversos jogos.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Jhgf7654"))()', "category": "game"},
+            {"id": 73, "title": "Wallhack Script", "game": "FPS Games", "description": "Wallhack para ver através das paredes.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Nbvcx4321"))()', "category": "game"},
+            {"id": 74, "title": "Speed Script", "game": "Various Games", "description": "Script para aumentar a velocidade do personagem.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Mnbv0987"))()', "category": "game"},
+            {"id": 75, "title": "Btools Script", "game": "Building Games", "description": "Ferramentas de construção para diversos jogos.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Plok1234"))()', "category": "game"},
+            {"id": 76, "title": "Noclip Script", "game": "Various Games", "description": "Script para atravessar paredes e objetos.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Qwas5678"))()', "category": "game"},
+            {"id": 77, "title": "Teleport Script", "game": "Various Games", "description": "Script para teletransporte em diversos jogos.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Uioz4321"))()', "category": "game"},
+            {"id": 78, "title": "Super Jump Script", "game": "Various Games", "description": "Script para pulo aumentado em diversos jogos.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Edrf0987"))()', "category": "game"},
+            {"id": 79, "title": "EatWorld Script", "game": "Eat World", "description": "Script para Eat World com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/EatWorld"))()', "category": "game"},
+            {"id": 80, "title": "Eat the World Script", "game": "Eat the World", "description": "Script para Eat the World com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Kenniel123/Eat-the-World-script/main/Eat%20the%20world%20Script"))()', "category": "game"},
+            {"id": 81, "title": "Horse Race Script", "game": "Horse Race", "description": "Script para Horse Race com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/HorseRace"))()', "category": "game"},
+            {"id": 82, "title": "Anime RNG TD", "game": "Anime RNG TD", "description": "Script para Anime RNG TD com autofarm e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/AnimeRNGTD"))()', "category": "game"},
+            {"id": 83, "title": "Legends of Speed", "game": "Legends of Speed", "description": "Script para Legends of Speed com autofarm e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/WhackyCode/SPEEDDEVIL/main/legendsofspeed.lua"))()', "category": "game"},
+            {"id": 84, "title": "Block Tales Auto Guard", "game": "Block Tales", "description": "Script para Block Tales com auto guard e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/TexRBLX/Roblox-stuff/refs/heads/main/block%20tales/Block-Tales-Auto-Guard.lua"))()', "category": "game"},
+            {"id": 85, "title": "Neox Hub Fisch", "game": "Fishing Games", "description": "Hub para jogos de pesca com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/hassanxzayn-lua/neoxhubfisch1.3/refs/heads/main/script"))()', "category": "game"},
+            {"id": 86, "title": "HADE'S RNG", "game": "Hade's RNG", "description": "Script para Hade's RNG com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/HadesRNG"))()', "category": "game"},
+            {"id": 87, "title": "ExploiterGuy Script", "game": "Various Games", "description": "Script para diversos jogos com funcionalidades variadas.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ExploiterGuy/FBC/refs/heads/main/Protected_4190755030019270.txt"))()', "category": "game"},
+            {"id": 88, "title": "LHking Script", "game": "Various Games", "description": "Script para diversos jogos com funcionalidades variadas.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/LHking123456/n4dgW8TF7rNyL/refs/heads/main/Sols"))()', "category": "game"},
+            {"id": 89, "title": "RIVALS", "game": "Rivals", "description": "Script para Rivals com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SkibidiCen/MainMenu/main/Code"))()', "category": "game"},
+            {"id": 90, "title": "TITAN CLASH ONLINE", "game": "Titan Clash Online", "description": "Script para Titan Clash Online com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/Keykeykeykey939393---oq8IVS8uV8VUriVu/refs/heads/main/FgDIBTViVdKCKbYjcTg"))()', "category": "game"},
+            {"id": 91, "title": "BLADE SLAYER", "game": "Blade Slayer", "description": "Script para Blade Slayer com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/1BladeSlayer"))()', "category": "game"},
+            {"id": 92, "title": "MUSCLE-LEGENDS 2024", "game": "Muscle Legends", "description": "Script para Muscle Legends 2024 com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua"))()', "category": "game"},
+            {"id": 93, "title": "JULES RNG", "game": "Jules RNG", "description": "Script para Jules RNG com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/wasduiop/JUULScript/refs/heads/main/JUUL%20SPullaSword"))()', "category": "game"},
+            {"id": 94, "title": "My Restaurante", "game": "My Restaurante", "description": "Script para My Restaurante com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://gist.githubusercontent.com/SpencerDevv/4127570215e413bf8ab4e074791bcf45/raw/78b977974b36e2d5cde7a28dab7f9a464dd1a2c1/betaV5"))()', "category": "game"},
+            {"id": 95, "title": "PullaSword", "game": "Pulla Sword", "description": "Script para Pulla Sword com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/PullaSword"))()', "category": "game"},
+            {"id": 96, "title": "Arsenal", "game": "Arsenal", "description": "Script para Arsenal com aimbot, ESP e outras vantagens.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Theyfwdan/Theyfwdan/refs/heads/main/ExpressHubPaidVersion"))()', "category": "game"},
+            {"id": 97, "title": "Assassinos Vs Xerifes", "game": "Assassinos Vs Xerifes", "description": "Script para Assassinos Vs Xerifes com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Sheeshablee73/Scriptss/main/MVSD%20UPD2.lua"))()', "category": "game"},
+            {"id": 98, "title": "FLEX YOUR FPS SCRIPT", "game": "Various Games", "description": "Script para melhorar FPS em diversos jogos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/v-oidd/flex-your-fps-script/main/script"))()', "category": "game"},
+            {"id": 99, "title": "RENZXW-SCRIPTS", "game": "Various Games", "description": "Scripts diversos para vários jogos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/RENZXW/RENZXW-SCRIPTS/refs/heads/main/renz%20hub.txt"))()', "category": "game"},
+            {"id": 100, "title": "Every Clicker +1 JUMP", "game": "Clicker Games", "description": "Script para clicker games com pulo automático.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/Key2/refs/heads/main/Key"))()', "category": "game"},
+            {"id": 101, "title": "Race Clicker", "game": "Race Clicker", "description": "Script para Race Clicker com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/2.0"))()', "category": "game"},
+            {"id": 102, "title": "DRIVING EMPIRE", "game": "Driving Empire", "description": "Script para Driving Empire com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/CasperFlyModz/discord.gg-rips/main/DrivingEmpire.lua"))()', "category": "game"},
+            {"id": 103, "title": "Vehicle Legends", "game": "Vehicle Legends", "description": "Script para Vehicle Legends com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Marco8642/science/main/Vehicle%20legends"))()', "category": "game"},
+            {"id": 104, "title": "Vehicle Legends 2", "game": "Vehicle Legends", "description": "Script atualizado para Vehicle Legends.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/KeySystem/refs/heads/main/123"))()', "category": "game"},
+            {"id": 105, "title": "PONTE DE VIDRO 2 impossível SQUID", "game": "Ponte de Vidro", "description": "Script para Ponte de Vidro 2 com vantagens.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/00wuua"))()', "category": "game"},
+            {"id": 106, "title": "MILLIONAIRE-EMPIRE-TYCOON💯", "game": "Millionaire Empire Tycoon", "description": "Script para Millionaire Empire Tycoon com autofarm.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/MILLIONAIRE"))()', "category": "game"},
+            {"id": 107, "title": "PONTE DE VIDRO 1M", "game": "Ponte de Vidro", "description": "Script para Ponte de Vidro 1M com vantagens.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/Ponte%20de%20vidro%202%20flopada"))()', "category": "game"},
+            {"id": 108, "title": "FINISH TREINING", "game": "Fish Training", "description": "Script para Fish Training com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/gumanba/Scripts/main/FishTraining"))()', "category": "game"},
+            {"id": 109, "title": "DrillDigging", "game": "Drill Digging", "description": "Script para Drill Digging com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/gumanba/Scripts/main/DrillDigging"))()', "category": "game"},
+            {"id": 110, "title": "DeadRails", "game": "Dead Rails", "description": "Script para Dead Rails com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/gumanba/Scripts/main/DeadRails"))()', "category": "game"},
+            {"id": 111, "title": "MurderersVsSheriffs", "game": "Murderers Vs Sheriffs", "description": "Script para Murderers Vs Sheriffs com vantagens.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/FabsKebabs/mvss/refs/heads/main/mvss"))()', "category": "game"},
+            {"id": 112, "title": "MurderersVsSheriffs", "game": "Murderers Vs Sheriffs", "description": "Outro script para Murderers Vs Sheriffs.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SHipRoX/ALL-SCRIPT/refs/heads/main/SHipRoXScript%20Obfuscated"))()', "category": "game"},
+            {"id": 113, "title": "DEAD RAILS", "game": "Dead Rails", "description": "Script para Dead Rails com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/%22%2C%204483362458"))()', "category": "game"},
+            {"id": 114, "title": "Suviver The Killer", "game": "Survivor The Killer", "description": "Script para Survivor The Killer com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Milan08Studio/ChairWare/main/main.lua"))()', "category": "game"},
+            {"id": 115, "title": "Math Murder", "game": "Math Murder", "description": "Script para Math Murder com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/gumanba/Scripts/main/MathMurder"))()', "category": "game"},
+            {"id": 116, "title": "RANOX: FFA - Everyone Against Everyone", "game": "Ranox FFA", "description": "Script para Ranox FFA com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/PYRO0%251%2519157190"))()', "category": "game"},
+            {"id": 117, "title": "DOGS OFF WAR (WW2)", "game": "Dogs of War", "description": "Script para Dogs of War com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/JOGO%20DE%20GUERRA"))()', "category": "game"},
+            {"id": 118, "title": "PONTE DE VIDRO impossível (JOGO DE LULA)", "game": "Ponte de Vidro", "description": "Script para Ponte de Vidro impossível.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/RANOX"))()', "category": "game"},
+            {"id": 119, "title": "PONTE DE VIDRO (PRO)", "game": "Ponte de Vidro", "description": "Script profissional para Ponte de Vidro.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/INTERFACE-RNOX-HUB"))()', "category": "game"},
+            {"id": 120, "title": "CROSSOVER SCRIPT (1)", "game": "Crossover", "description": "Script para Crossover com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/defnotry/devry-hub/main/arise-crossover/main.lua"))()', "category": "game"},
+            {"id": 121, "title": "CROSSOVER SCRIPT (2)", "game": "Crossover", "description": "Outro script para Crossover.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/perfectusmim1/script/refs/heads/main/crossover"))()', "category": "game"},
+            {"id": 122, "title": "RANOXSPY🛰", "game": "Ranox Spy", "description": "Script para Ranox Spy com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/F%20%3D%20S%202%20%3D%5B9%5D"))()', "category": "game"},
+            {"id": 123, "title": "CLIMB AND JUMP TOWER🪂 v1.0", "game": "Climb and Jump Tower", "description": "Script para Climb and Jump Tower.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/gumanba/Scripts/main/ClimbandJump"))()', "category": "game"},
+            {"id": 124, "title": "GROW A GARDEN🌟", "game": "Grow a Garden", "description": "Script para Grow a Garden com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://lunor.dev/loader"))()', "category": "game"},
+            {"id": 125, "title": "LOCAL OBJETOS DETECTO 🏠", "game": "Various Games", "description": "Script para detectar objetos em diversos jogos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/Library"))()', "category": "game"},
+            {"id": 126, "title": "CHEAT X v1.0✨️", "game": "Various Games", "description": "Cheat X para diversos jogos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/I2i8288"))()', "category": "game"},
+            {"id": 127, "title": "QUANTUM SPY🛸", "game": "Various Games", "description": "Quantum Spy para diversos jogos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/HttpGet"))()', "category": "game"},
+            {"id": 128, "title": "Hypershot⚡️ (Luta de armas)", "game": "Hypershot", "description": "Script para Hypershot com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/.lua/refs/heads/main/index.lua"))()', "category": "game"},
+            {"id": 129, "title": "CLIMB AND SLIDE 🛥", "game": "Climb and Slide", "description": "Script para Climb and Slide.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/157190123"))()', "category": "game"},
+            {"id": 130, "title": "The $1.000.000 Jump Rope 💰", "game": "Jump Rope", "description": "Script para The $1.000.000 Jump Rope.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/%5B%5D)(%5D%5B%5D"))()', "category": "game"},
+            {"id": 131, "title": "COLONY SURVIVAL 🧟", "game": "Colony Survival", "description": "Script para Colony Survival.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/f.1.b3.lua"))()', "category": "game"},
+            {"id": 132, "title": "ROUBE UM BRAINROT ✨", "game": "Roube um Brainrot", "description": "Script para Roube um Brainrot.", "code": 'loadstring(game:HttpGet("https://pastefy.app/ebI6lwxc/raw"))()', "category": "game"},
+            {"id": 133, "title": "99 Nights In Forest 🌲", "game": "99 Nights In Forest", "description": "Script para 99 Nights In Forest.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/mynamewendel-ctrl/Blessed-Hub-X-/refs/heads/main/99-Nights-In-Forest.lua"))()', "category": "game"},
+            {"id": 134, "title": "Plants vs Brainrots 🧠", "game": "Plants vs Brainrots", "description": "Script para Plants vs Brainrots.", "code": 'loadstring(game:HttpGet("https://rifton.top/loader.lua"))()', "category": "game"},
+            {"id": 135, "title": "Blox Fruits (Styxz) ⚡", "game": "Blox Fruits", "description": "Script Styxz para Blox Fruits.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToshyWare/StyxzHub/main/Styxz.lua"))()', "category": "game"},
+
+            // Scripts de Eventos
+            {"id": 136, "title": "🎁UGC SANTA SUIT", "game": "Evento de Natal", "description": "Script para obter a roupa de Santa no UGC.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/SantaSuit"))()', "category": "event"},
+            {"id": 137, "title": "Sonic EVENT🎅", "game": "Evento de Inverno Sonic", "description": "Script para o evento de inverno do Sonic.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/SonicWinter"))()', "category": "event"},
+            {"id": 138, "title": "Royale EVENT🎅", "game": "Evento de Inverno Royale High", "description": "Script para o evento de inverno do Royale High.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/RoyaleHighWinter"))()', "category": "event"},
+            {"id": 139, "title": "War Tycoon EVENT🎅", "game": "Evento de Inverno War Tycoon", "description": "Script para o evento de inverno do War Tycoon.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/WarTycoonWinter"))()', "category": "event"},
+            {"id": 140, "title": "Driving Empire EVENT🎅", "game": "Evento de Inverno Driving Empire", "description": "Script para o evento de inverno do Driving Empire.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/DrivingEmpireWinter"))()', "category": "event"},
+            {"id": 141, "title": "Greenville EVENT🎅", "game": "Evento de Inverno Greenville", "description": "Script para o evento de inverno do Greenville.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/GreenvilleWinter"))()', "category": "event"},
+            {"id": 142, "title": "DressToImpress EVENT🎅", "game": "Evento de Inverno DressToImpress", "description": "Script para o evento de inverno do DressToImpress.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/DressToImpressWinter"))()', "category": "event"},
+            {"id": 143, "title": "Warrior Cat EVENT🎅", "game": "Evento de Inverno Warrior Cat", "description": "Script para o evento de inverno do Warrior Cat.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/WarriorCatsWinter"))()', "category": "event"},
+            {"id": 144, "title": "ELEMETAL DUN WINTER EVENT🎅", "game": "Evento de Inverno Elemental Dungeon", "description": "Script para o evento de inverno do Elemental Dungeon.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/ElementalDunWinter"))()', "category": "event"},
+
+            // Executores
+            {"id": 145, "title": "Delta Executor", "game": "Android/PC", "description": "Executor estável e confiável com suporte para a maioria dos scripts. Interface intuitiva e atualizações frequentes.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://deltaexploits.gg/delta-executor-android", "isDownload": true, "stats": {"stability": "95%", "speed": "Rápido", "support": "Alta"}},
+            {"id": 146, "title": "Fluxus Executor", "game": "Android/PC", "description": "Executor poderoso com excelente compatibilidade e desempenho. Suporte a scripts complexos.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://fluxus.team/", "isDownload": true, "stats": {"stability": "92%", "speed": "Muito Rápido", "support": "Média"}},
+            {"id": 147, "title": "KRNL Executor", "game": "PC", "description": "Executor focado em segurança e privacidade. Um dos mais confiáveis do mercado.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://krnl.vip/download/", "isDownload": true, "stats": {"stability": "90%", "speed": "Rápido", "support": "Alta"}},
+            {"id": 148, "title": "Arceus X Executor", "game": "Android", "description": "Versão atualizada do popular executor Arceus X. Compatível com a maioria dos scripts Android.", "code": "// Download disponível no site oficial", "category": "executors", "status": "DESTAQUE ★", "statusClass": "status-featured", "link": "https://arceusx.com/#google_vignette", "isDownload": true, "featured": true, "stats": {"stability": "88%", "speed": "Médio", "support": "Alta"}},
+            {"id": 149, "title": "Vega X Executor", "game": "Android/PC", "description": "Executor avançado com recursos de depuração integrados. Ideal para desenvolvedores.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://www.vegax.gg/", "isDownload": true, "stats": {"stability": "91%", "speed": "Rápido", "support": "Média"}},
+            {"id": 150, "title": "Synapse X", "game": "PC", "description": "Executor famoso por desempenho e compatibilidade com muitos scripts. Um dos mais potentes.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://synapsex.co/download/", "isDownload": true, "stats": {"stability": "97%", "speed": "Muito Rápido", "support": "Alta"}},
+            {"id": 151, "title": "Solara", "game": "PC", "description": "Executor/keyless popular hospedado na WeAreDevs; usado como hub de scripts.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://wearedevs.net/d/Solara", "isDownload": true, "stats": {"stability": "89%", "speed": "Rápido", "support": "Média"}},
+            {"id": 152, "title": "Script-Ware", "game": "PC", "description": "Script-Ware — executor key-free amplamente divulgado em sites de downloads.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://playsdone.com/script-ware/", "isDownload": true, "stats": {"stability": "90%", "speed": "Rápido", "support": "Alta"}},
+            {"id": 153, "title": "JJSploit", "game": "PC", "description": "Executor/kit tudo-em-um com várias funcionalidades (ESP, fly, teleport etc.).", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://wearedevs.net/d/JJSploit", "isDownload": true, "stats": {"stability": "85%", "speed": "Médio", "support": "Baixa"}},
+            {"id": 154, "title": "Celery", "game": "Multiplataforma", "description": "Celery — executor moderno documentado em sites como Hydrogen Executor.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://hydrogenexecutor.com/celery-executor/", "isDownload": true, "stats": {"stability": "87%", "speed": "Rápido", "support": "Média"}},
+            {"id": 155, "title": "Wave Executor", "game": "Multiplataforma", "description": "Wave — executor recente com guia de download e suporte a várias plataformas.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://waveexecutor.io/download/", "isDownload": true, "stats": {"stability": "86%", "speed": "Médio", "support": "Média"}},
+            {"id": 156, "title": "Sentinel Executor", "game": "PC/Mobile", "description": "Executor gratuito e popular, compatível com PC e mobile; interface simples e foco em usabilidade.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://sentinel-executor.carrd.co/", "isDownload": true, "stats": {"stability": "88%", "speed": "Rápido", "support": "Alta"}},
+            {"id": 157, "title": "Electron Executor", "game": "Multiplataforma", "description": "Executor moderno com builds para várias plataformas e amplo suporte a scripts Lua.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://electronexecutor.com/", "isDownload": true, "stats": {"stability": "89%", "speed": "Rápido", "support": "Alta"}},
+            {"id": 158, "title": "SirHurt", "game": "PC", "description": "Executor comercial com painel/serviços pagos, conhecido por histórico desde 2015.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://www.sirhurt.net", "isDownload": true, "stats": {"stability": "94%", "speed": "Muito Rápido", "support": "Alta"}},
+            {"id": 159, "title": "eSynapseX", "game": "Referência", "description": "Artigo / coletânea sobre executors e exploits para Roblox — referência com recomendações.", "code": "// Artigo informativo", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://medium.com/@esynapsex/best-roblox-script-executor-and-roblox-exploits-of-2021-691aa9d4384b", "isDownload": false, "stats": {"stability": "N/A", "speed": "N/A", "support": "Informativo"}}
+        ];
+
+        // Elementos DOM
+        const scriptsContainer = document.getElementById('scriptsContainer');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const notification = document.getElementById('notification');
+        const totalScripts = document.getElementById('totalScripts');
+        const universalScripts = document.getElementById('universalScripts');
+        const gameScripts = document.getElementById('gameScripts');
+        const eventScripts = document.getElementById('eventScripts');
+        const executorsScripts = document.getElementById('executorsScripts');
+        const backToTop = document.getElementById('backToTop');
+
+        // Estatísticas com contador animado
+        function updateStats() {
+            const total = scriptsData.length;
+            const universal = scriptsData.filter(s => s.category === 'universal').length;
+            const game = scriptsData.filter(s => s.category === 'game').length;
+            const event = scriptsData.filter(s => s.category === 'event').length;
+            const executors = scriptsData.filter(s => s.category === 'executors').length;
+            
+            animateCounter(totalScripts, total);
+            animateCounter(universalScripts, universal);
+            animateCounter(gameScripts, game);
+            animateCounter(eventScripts, event);
+            animateCounter(executorsScripts, executors);
+        }
+
+        // Animação de contador
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 30);
+        }
+
+        // Função para renderizar scripts
+        function renderScripts(scripts) {
+            scriptsContainer.innerHTML = '';
+            
+            if (scripts.length === 0) {
+                scriptsContainer.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--gray);">
+                        <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h3>Nenhum item encontrado</h3>
+                        <p>Tente usar outros termos de pesquisa ou verificar outra categoria.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            scripts.forEach((script, index) => {
+                const scriptCard = document.createElement('div');
+                scriptCard.className = `script-card ${script.category === 'executors' ? 'executor-card' : ''} ${script.featured ? 'featured' : ''}`;
+                scriptCard.style.animationDelay = `${index * 0.1}s`;
+                
+                // Determinar a classe do badge com base na categoria
+                let badgeClass = '';
+                if (script.category === 'universal') badgeClass = 'universal';
+                else if (script.category === 'game') badgeClass = 'game';
+                else if (script.category === 'event') badgeClass = 'event';
+                else if (script.category === 'executors') badgeClass = 'executors';
+                
+                // Template para executores
+                if (script.category === 'executors') {
+                    scriptCard.innerHTML = `
+                        <div class="glow"></div>
+                        <div class="shimmer"></div>
+                        <div class="script-header">
+                            <div>
+                                <h3 class="script-title">
+                                    ${script.title}
+                                    <span class="script-badge ${badgeClass}">EXECUTOR</span>
+                                    ${script.status ? `<span class="status-badge ${script.statusClass}">${script.status}</span>` : ''}
+                                </h3>
+                                <p class="script-game">
+                                    <i class="fas fa-rocket"></i> ${script.game}
+                                </p>
+                            </div>
+                            <div class="script-actions-header">
+                                <button class="icon-btn favorite-btn" title="Adicionar aos favoritos">
+                                    <i class="far fa-star"></i>
+                                </button>
+                                <button class="icon-btn share-btn" title="Compartilhar">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="script-description">${script.description}</p>
+                        
+                        ${script.stats ? `
+                        <div class="executor-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">${script.stats.stability}</div>
+                                <div class="stat-label">Estabilidade</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">${script.stats.speed}</div>
+                                <div class="stat-label">Velocidade</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">${script.stats.support}</div>
+                                <div class="stat-label">Suporte</div>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="script-actions">
+                            <a href="${script.link}" target="_blank" class="btn ${script.isDownload ? 'download-btn' : 'btn-primary'}">
+                                <i class="${script.isDownload ? 'fas fa-download' : 'fas fa-external-link-alt'}"></i> 
+                                ${script.isDownload ? 'Download' : 'Abrir Site'}
+                            </a>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-info-circle"></i> Detalhes
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    // Template normal para scripts
+                    scriptCard.innerHTML = `
+                        <div class="glow"></div>
+                        <div class="shimmer"></div>
+                        <div class="script-header">
+                            <div>
+                                <h3 class="script-title">
+                                    ${script.title}
+                                    <span class="script-badge ${badgeClass}">${script.category.toUpperCase()}</span>
+                                </h3>
+                                <p class="script-game">
+                                    <i class="fas fa-gamepad"></i> ${script.game}
+                                </p>
+                            </div>
+                            <div class="script-actions-header">
+                                <button class="icon-btn favorite-btn" title="Adicionar aos favoritos">
+                                    <i class="far fa-star"></i>
+                                </button>
+                                <button class="icon-btn share-btn" title="Compartilhar">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="script-description">${script.description}</p>
+                        <div class="script-code">
+                            ${script.code}
+                            <div class="copy-btn-overlay">
+                                <button class="btn btn-primary copy-btn" data-script="${script.code.replace(/"/g, '&quot;')}">
+                                    <i class="fas fa-copy"></i> Copiar Script
+                                </button>
+                            </div>
+                        </div>
+                        <div class="script-actions">
+                            <button class="btn btn-primary copy-btn" data-script="${script.code.replace(/"/g, '&quot;')}">
+                                <i class="fas fa-copy"></i> Copiar
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-info-circle"></i> Detalhes
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                scriptsContainer.appendChild(scriptCard);
+            });
+            
+            // Adicionar eventos aos botões de cópia (apenas para scripts normais)
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const scriptCode = this.getAttribute('data-script');
+                    copyToClipboard(scriptCode);
+                    showNotification('Script copiado com sucesso!', 'success');
+                });
+            });
+
+            // Adicionar eventos aos botões de favorito
+            document.querySelectorAll('.favorite-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    if (icon.classList.contains('far')) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        showNotification('Adicionado aos favoritos!', 'success');
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        showNotification('Removido dos favoritos!', 'error');
+                    }
+                });
+            });
+        }
+
+        // Função para copiar texto para a área de transferência
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+
+        // Função para mostrar notificação
+        function showNotification(message, type = 'success') {
+            notification.querySelector('span').textContent = message;
+            notification.className = 'notification';
+            
+            if (type === 'error') {
+                notification.classList.add('error');
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Filtragem por categoria
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remover classe active de todos os botões
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Adicionar classe active ao botão clicado
+                this.classList.add('active');
+                
+                const category = this.getAttribute('data-category');
+                filterScripts(category, searchInput.value);
+            });
+        });
+
+        // Função para filtrar scripts
+        function filterScripts(category, searchTerm = '') {
+            let filteredScripts = scriptsData;
+            
+            // Filtrar por categoria
+            if (category !== 'all') {
+                filteredScripts = filteredScripts.filter(script => script.category === category);
+            }
+            
+            // Filtrar por termo de pesquisa
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                filteredScripts = filteredScripts.filter(script => 
+                    script.title.toLowerCase().includes(term) ||
+                    script.game.toLowerCase().includes(term) ||
+                    script.description.toLowerCase().includes(term) ||
+                    script.category.toLowerCase().includes(term)
+                );
+            }
+            
+            renderScripts(filteredScripts);
+        }
+
+        // Pesquisa em tempo real
+        searchInput.addEventListener('input', function() {
+            const activeCategory = document.querySelector('.category-btn.active').getAttribute('data-category');
+            filterScripts(activeCategory, this.value);
+        });
+
+        // Botão de pesquisa
+        searchBtn.addEventListener('click', function() {
+            const activeCategory = document.querySelector('.category-btn.active').getAttribute('data-category');
+            filterScripts(activeCategory, searchInput.value);
+        });
+
+        // Criar partículas para o efeito de fundo
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
             const particleCount = 30;
             
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
-                particle.classList.add('particle');
+                particle.className = 'particle';
                 
-                // Tamanho e posição aleatórios
-                const size = Math.random() * 10 + 5;
-                const posX = Math.random() * 100;
-                const posY = Math.random() * 100;
-                const delay = Math.random() * 15;
-                const duration = 10 + Math.random() * 20;
-                
+                // Tamanho aleatório entre 2px e 6px
+                const size = Math.random() * 4 + 2;
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
-                particle.style.left = `${posX}%`;
-                particle.style.top = `${posY}%`;
-                particle.style.animationDelay = `${delay}s`;
-                particle.style.animationDuration = `${duration}s`;
                 
-                // Cor aleatória
-                const colors = ['#8a2be2', '#5e17eb', '#00d9ff', '#00c853', '#ffc107'];
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.background = color;
+                // Posição inicial aleatória
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.top = `${Math.random() * 100}vh`;
+                
+                // Atraso de animação aleatório
+                particle.style.animationDelay = `${Math.random() * 15}s`;
                 
                 particlesContainer.appendChild(particle);
             }
         }
-        
-        // Função para criar um card
-        function createCardElement(script) {
-            const card = document.createElement('div');
-            card.className = 'card';
-            if (script.featured) card.classList.add('featured');
+
+        // Botão voltar ao topo
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+
+        backToTop.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Animação de entrada para seções
+        function observeSections() {
+            const sections = document.querySelectorAll('.fade-in-section');
             
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="card-title">${script.title}</div>
-                    <div class="card-status ${script.statusClass}">${script.status}</div>
-                </div>
-                <div class="card-description">
-                    ${script.description}
-                </div>
-                ${script.isDownload ? 
-                    `<a href="${script.link}" target="_blank" class="card-link">
-                        <i class="fas fa-download"></i> BAIXAR AGORA
-                    </a>` : 
-                    `<div class="card-link" data-script="${script.script}">
-                        <i class="fas fa-copy"></i> VER SCRIPT
-                    </div>`
-                }
-            `;
-            
-            // Adicionar evento para abrir modal
-            if (!script.isDownload) {
-                const linkElement = card.querySelector('.card-link');
-                linkElement.addEventListener('click', function() {
-                    openModal(script.title, script.script);
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
                 });
-            }
+            }, { threshold: 0.1 });
             
-            return card;
-        }
-        
-        // Função para abrir o modal
-        function openModal(title, content) {
-            const modalTitle = document.getElementById('modalScriptTitle');
-            const scriptContent = document.getElementById('scriptContent');
-            modalTitle.textContent = title;
-            scriptContent.textContent = content;
-            modal.classList.add('active');
-        }
-        
-        // Função para renderizar cards
-        function renderCards(category) {
-            const container = document.getElementById(`${category}-grid`);
-            container.innerHTML = '';
-            
-            scriptsData[category].forEach(script => {
-                const card = createCardElement(script);
-                container.appendChild(card);
-            });
-            
-            // Adicionar mensagem se não houver resultados
-            if (scriptsData[category].length === 0) {
-                container.innerHTML = `
-                    <div class="no-results">
-                        <i class="fas fa-search"></i>
-                        <p>Nenhum script encontrado nesta categoria</p>
-                    </div>
-                `;
-            }
-        }
-        
-        // Filtrar scripts pela pesquisa
-        function filterScripts(searchTerm) {
-            searchTerm = searchTerm.toLowerCase();
-            
-            // Se o termo estiver vazio, mostrar todos os itens
-            if (searchTerm.trim() === '') {
-                renderCards('executors');
-                renderCards('universal');
-                renderCards('games');
-                renderCards('events');
-                return;
-            }
-            
-            // Filtrar em todas as categorias
-            Object.keys(scriptsData).forEach(category => {
-                const container = document.getElementById(`${category}-grid`);
-                container.innerHTML = '';
-                
-                const filtered = scriptsData[category].filter(script => 
-                    script.title.toLowerCase().includes(searchTerm) || 
-                    script.description.toLowerCase().includes(searchTerm) ||
-                    script.status.toLowerCase().includes(searchTerm)
-                );
-                
-                filtered.forEach(script => {
-                    const card = createCardElement(script);
-                    container.appendChild(card);
-                });
-                
-                if (filtered.length === 0) {
-                    container.innerHTML = `
-                        <div class="no-results">
-                            <i class="fas fa-search"></i>
-                            <p>Nenhum resultado encontrado para "${searchTerm}"</p>
-                        </div>
-                    `;
-                }
+            sections.forEach(section => {
+                observer.observe(section);
             });
         }
-        
-        // Tab switching functionality
-        document.querySelectorAll('.tab-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                // Remove active class from all buttons and sections
-                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
-                
-                // Add active class to clicked button
-                button.classList.add('active');
-                
-                // Show corresponding section
-                const tabId = button.getAttribute('data-tab');
-                document.getElementById(tabId).classList.add('active');
-                
-                // Renderizar os cards da aba ativa
-                renderCards(tabId);
-            });
-        });
-        
-        // Modal functionality
-        const modal = document.getElementById('scriptModal');
-        const closeModal = document.getElementById('closeModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const copyScriptBtn = document.getElementById('copyScript');
-        
-        // Fechar modal
-        closeModal.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-        
-        closeModalBtn.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-        
-        // Fechar modal ao clicar fora do conteúdo
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
-            }
-        });
-        
-        // Copiar script
-        copyScriptBtn.addEventListener('click', () => {
-            const scriptContent = document.getElementById('scriptContent');
-            const textarea = document.createElement('textarea');
-            textarea.value = scriptContent.textContent;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
+
+        // Inicialização - AGORA COM A ABA "TODOS" JÁ ABERTA
+        function init() {
+            updateStats();
             
-            // Feedback visual
-            const originalText = copyScriptBtn.innerHTML;
-            copyScriptBtn.innerHTML = '<i class="fas fa-check"></i> Script Copiado!';
+            // Garantir que a aba "Todos" esteja ativa e os scripts sejam exibidos
+            const allButton = document.querySelector('.category-btn[data-category="all"]');
+            if (allButton) {
+                allButton.classList.add('active');
+                filterScripts('all', '');
+            }
             
-            setTimeout(() => {
-                copyScriptBtn.innerHTML = originalText;
-            }, 2000);
-        });
-        
-        // Inicializar partículas
-        createParticles();
-        
-        // Seletor de temas
-        const themeSelector = document.querySelector('.theme-selector');
-        const themeButton = document.querySelector('.theme-button');
-        const themeMenu = document.querySelector('.theme-menu');
-        const themeOptions = document.querySelectorAll('.theme-option');
-        
-        // Alternar menu de temas
-        themeButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            themeMenu.style.display = themeMenu.style.display === 'flex' ? 'none' : 'flex';
-        });
-        
-        // Fechar menu ao clicar fora
-        document.addEventListener('click', (e) => {
-            if (!themeSelector.contains(e.target)) {
-                themeMenu.style.display = 'none';
-            }
-        });
-        
-        // Mudar tema
-        themeOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                const theme = option.getAttribute('data-theme');
-                document.body.setAttribute('data-theme', theme);
-                themeMenu.style.display = 'none';
-            });
-        });
-        
-        // Menu responsivo para mobile
-        const menuToggle = document.getElementById('menuToggle');
-        const navLinks = document.getElementById('navLinks');
-        
-        menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-        
-        // Fechar menu ao clicar em um link
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-            });
-        });
-        
-        // Barra de pesquisa
-        const searchInput = document.getElementById('searchInput');
-        const searchButton = document.getElementById('searchButton');
-        
-        searchButton.addEventListener('click', () => {
-            filterScripts(searchInput.value);
-        });
-        
-        searchInput.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') {
-                filterScripts(searchInput.value);
-            }
-        });
-        
-        // Inicializar as categorias
-        document.addEventListener('DOMContentLoaded', function() {
-            // Renderizar todas as categorias
-            renderCards('executors');
-            renderCards('universal');
-            renderCards('games');
-            renderCards('events');
-        });
+            createParticles();
+            observeSections();
+        }
+
+        // Iniciar quando o DOM estiver carregado
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
-                                                                              </html>
+</html>
