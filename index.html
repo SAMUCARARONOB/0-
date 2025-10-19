@@ -85,6 +85,39 @@
             --card-border: rgba(255, 215, 0, 0.4);
         }
 
+        /* Tema Laranja */
+        [data-theme="orange"] {
+            --primary: #ff7b25;
+            --secondary: #ff5722;
+            --accent: #00b8ff;
+            --dark: #1a1208;
+            --darker: #0f0904;
+            --card-bg: rgba(50, 30, 15, 0.8);
+            --card-border: rgba(255, 123, 37, 0.4);
+        }
+
+        /* Tema Rosa */
+        [data-theme="pink"] {
+            --primary: #e91e63;
+            --secondary: #c2185b;
+            --accent: #00e5ff;
+            --dark: #240c14;
+            --darker: #16060c;
+            --card-bg: rgba(50, 15, 30, 0.8);
+            --card-border: rgba(233, 30, 99, 0.4);
+        }
+
+        /* Tema Ciano */
+        [data-theme="cyan"] {
+            --primary: #00bcd4;
+            --secondary: #0097a7;
+            --accent: #ff4081;
+            --dark: #0c1f24;
+            --darker: #061216;
+            --card-bg: rgba(15, 35, 40, 0.8);
+            --card-border: rgba(0, 188, 212, 0.4);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -279,6 +312,9 @@
         .theme-red .theme-color { background: linear-gradient(135deg, #160606, #240c0c); }
         .theme-blue .theme-color { background: linear-gradient(135deg, #060e16, #0c1824); }
         .theme-gold .theme-color { background: linear-gradient(135deg, #1a1a1a, #0d0d0d); }
+        .theme-orange .theme-color { background: linear-gradient(135deg, #0f0904, #1a1208); }
+        .theme-pink .theme-color { background: linear-gradient(135deg, #16060c, #240c14); }
+        .theme-cyan .theme-color { background: linear-gradient(135deg, #061216, #0c1f24); }
 
         .hero {
             text-align: center;
@@ -1172,6 +1208,18 @@
                         <div class="theme-color"></div>
                         <span>Dourado</span>
                     </div>
+                    <div class="theme-option theme-orange" data-theme="orange">
+                        <div class="theme-color"></div>
+                        <span>Laranja</span>
+                    </div>
+                    <div class="theme-option theme-pink" data-theme="pink">
+                        <div class="theme-color"></div>
+                        <span>Rosa</span>
+                    </div>
+                    <div class="theme-option theme-cyan" data-theme="cyan">
+                        <div class="theme-color"></div>
+                        <span>Ciano</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1191,7 +1239,8 @@
         </div>
         
         <div class="tabs">
-            <button class="tab-btn active" data-tab="executors"><i class="fas fa-rocket"></i> Executores</button>
+            <button class="tab-btn active" data-tab="all"><i class="fas fa-layer-group"></i> Todos</button>
+            <button class="tab-btn" data-tab="executors"><i class="fas fa-rocket"></i> Executores</button>
             <button class="tab-btn" data-tab="universal"><i class="fas fa-globe"></i> Scripts Universais</button>
             <button class="tab-btn" data-tab="games"><i class="fas fa-gamepad"></i> Scripts para Jogos</button>
             <button class="tab-btn" data-tab="events"><i class="fas fa-calendar-alt"></i> Scripts para Eventos</button>
@@ -1223,17 +1272,15 @@
                     <div class="stat-number" id="totalUsers">15K+</div>
                     <div class="stat-label">Usuários Ativos</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-sync-alt"></i>
-                    </div>
-                    <div class="stat-number" id="updatedCount">0</div>
-                    <div class="stat-label">Scripts Atualizados</div>
-                </div>
             </div>
         </section>
 
-        <section id="executors" class="content-section active">
+        <section id="all" class="content-section active">
+            <h2 class="section-title">Todos os Scripts</h2>
+            <div class="cards-grid" id="all-grid"></div>
+        </section>
+
+        <section id="executors" class="content-section">
             <h2 class="section-title">Executores Premium</h2>
             <div class="cards-grid" id="executors-grid"></div>
         </section>
@@ -1635,7 +1682,13 @@
             const container = document.getElementById(`${category}-grid`);
             container.innerHTML = '';
             
-            const filteredScripts = scriptsData.filter(script => script.category === category);
+            let filteredScripts;
+            
+            if (category === 'all') {
+                filteredScripts = scriptsData;
+            } else {
+                filteredScripts = scriptsData.filter(script => script.category === category);
+            }
             
             filteredScripts.forEach(script => {
                 const card = createCardElement(script);
@@ -1657,26 +1710,34 @@
             searchTerm = searchTerm.toLowerCase();
             
             if (searchTerm.trim() === '') {
-                renderCards('executors');
-                renderCards('universal');
-                renderCards('games');
-                renderCards('events');
+                const activeTab = document.querySelector('.tab-btn.active').getAttribute('data-tab');
+                renderCards(activeTab);
                 return;
             }
             
-            const categories = ['executors', 'universal', 'games', 'events'];
+            const categories = ['all', 'executors', 'universal', 'games', 'events'];
             
             categories.forEach(category => {
                 const container = document.getElementById(`${category}-grid`);
                 container.innerHTML = '';
                 
-                const filtered = scriptsData.filter(script => 
-                    script.category === category && (
+                let filtered;
+                
+                if (category === 'all') {
+                    filtered = scriptsData.filter(script => 
                         script.title.toLowerCase().includes(searchTerm) || 
                         script.description.toLowerCase().includes(searchTerm) ||
                         (script.status && script.status.toLowerCase().includes(searchTerm))
-                    )
-                );
+                    );
+                } else {
+                    filtered = scriptsData.filter(script => 
+                        script.category === category && (
+                            script.title.toLowerCase().includes(searchTerm) || 
+                            script.description.toLowerCase().includes(searchTerm) ||
+                            (script.status && script.status.toLowerCase().includes(searchTerm))
+                        )
+                    );
+                }
                 
                 filtered.forEach(script => {
                     const card = createCardElement(script);
@@ -1698,17 +1759,12 @@
         function updateStats() {
             const totalScripts = scriptsData.length;
             const totalExecutors = scriptsData.filter(script => script.category === 'executors').length;
-            const updatedCount = scriptsData.filter(script => 
-                script.status && (script.status.includes('ATUALIZADO') || script.status.includes('DESTAQUE'))
-            ).length;
             
             document.getElementById('totalScripts').textContent = totalScripts;
             document.getElementById('totalExecutors').textContent = totalExecutors;
-            document.getElementById('updatedCount').textContent = updatedCount;
             
             animateCounter('totalScripts', totalScripts);
             animateCounter('totalExecutors', totalExecutors);
-            animateCounter('updatedCount', updatedCount);
         }
         
         // Animação de contador
@@ -1884,6 +1940,7 @@
         
         // Inicializar as categorias
         document.addEventListener('DOMContentLoaded', function() {
+            renderCards('all');
             renderCards('executors');
             renderCards('universal');
             renderCards('games');
@@ -1899,4 +1956,4 @@
         });
     </script>
 </body>
-    </html>
+                    </html>
