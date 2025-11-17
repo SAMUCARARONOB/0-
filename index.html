@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Imagens por Site</title>
+    <title>Visualizador de Imagens de Sites</title>
     <style>
         * {
             margin: 0;
@@ -13,32 +13,31 @@
         }
         
         body {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 2rem;
-            color: #333;
+            color: white;
         }
         
         header {
             text-align: center;
             margin-bottom: 2rem;
             width: 100%;
-            color: white;
         }
         
         h1 {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
         
         .subtitle {
             font-size: 1.2rem;
             opacity: 0.9;
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
         }
         
@@ -47,11 +46,12 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 900px;
-            background: rgba(255, 255, 255, 0.95);
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         
         .url-input {
@@ -74,44 +74,52 @@
         .input-group input {
             flex: 1;
             padding: 12px 15px;
-            border: 2px solid #ddd;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 10px;
             font-size: 1rem;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
         }
         
         .input-group input:focus {
-            border-color: #6e8efb;
+            border-color: #4cc9f0;
             outline: none;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
         }
         
         .input-group button {
             padding: 12px 20px;
-            background: #6e8efb;
+            background: #4cc9f0;
             color: white;
             border: none;
             border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            transition: background 0.3s;
+            transition: all 0.3s;
         }
         
         .input-group button:hover {
-            background: #5a7dfa;
+            background: #3aa8d8;
+            transform: translateY(-2px);
         }
         
         .image-container {
             width: 100%;
-            height: 500px;
+            min-height: 500px;
             border-radius: 15px;
             overflow: hidden;
             margin-bottom: 2rem;
             position: relative;
-            background: #f5f5f5;
+            background: rgba(0, 0, 0, 0.2);
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 2px dashed #ddd;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
         }
         
         .image-container img {
@@ -119,7 +127,7 @@
             max-height: 100%;
             object-fit: contain;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s ease;
         }
         
@@ -129,7 +137,9 @@
         
         .loading {
             font-size: 1.5rem;
-            color: #777;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            padding: 2rem;
         }
         
         .controls {
@@ -152,7 +162,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
         
         .primary-btn {
@@ -175,23 +185,32 @@
             transform: translateY(-2px);
         }
         
+        .danger-btn {
+            background: #f44336;
+            color: white;
+        }
+        
+        .danger-btn:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+        
         .image-info {
             margin-top: 1rem;
             text-align: center;
             width: 100%;
             padding: 1rem;
-            background: #f9f9f9;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            border-left: 4px solid #6e8efb;
         }
         
         .image-info h3 {
             margin-bottom: 0.5rem;
-            color: #444;
+            color: #4cc9f0;
         }
         
         .image-info p {
-            color: #666;
+            opacity: 0.8;
         }
         
         .example-sites {
@@ -204,7 +223,7 @@
         
         .site-tag {
             padding: 5px 12px;
-            background: #e9ecef;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 20px;
             font-size: 0.9rem;
             cursor: pointer;
@@ -212,16 +231,25 @@
         }
         
         .site-tag:hover {
-            background: #6e8efb;
+            background: #4cc9f0;
             color: white;
         }
         
         footer {
             margin-top: 2rem;
             text-align: center;
-            color: white;
             opacity: 0.7;
             font-size: 0.9rem;
+            max-width: 800px;
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
         }
         
         @media (max-width: 768px) {
@@ -230,7 +258,7 @@
             }
             
             .image-container {
-                height: 350px;
+                min-height: 350px;
             }
             
             h1 {
@@ -244,7 +272,7 @@
             }
             
             .image-container {
-                height: 250px;
+                min-height: 250px;
             }
             
             button {
@@ -260,29 +288,33 @@
 </head>
 <body>
     <header>
-        <h1>Gerador de Imagens por Site</h1>
-        <p class="subtitle">Digite a URL de um site para ver imagens relacionadas ao seu tema</p>
+        <h1>Visualizador de Imagens de Sites</h1>
+        <p class="subtitle">Digite a URL de qualquer site para ver imagens aleatórias dele. Clique no botão para ver uma nova imagem a cada vez.</p>
     </header>
     
     <main class="container">
         <div class="url-input">
             <label for="siteUrl">Digite a URL do site:</label>
             <div class="input-group">
-                <input type="text" id="siteUrl" placeholder="Exemplo: Roblox.com, GitHub.com, etc.">
-                <button id="setSiteBtn">Buscar Imagens</button>
+                <input type="text" id="siteUrl" placeholder="Exemplo: https://github.com, https://unsplash.com, etc.">
+                <button id="setSiteBtn">Carregar Imagens</button>
             </div>
             <div class="example-sites">
-                <div class="site-tag" data-site="Roblox.com">Roblox</div>
-                <div class="site-tag" data-site="br.freepik.com">Freepik</div>
-                <div class="site-tag" data-site="GitHub.com">GitHub</div>
-                <div class="site-tag" data-site="Netflix.com">Netflix</div>
-                <div class="site-tag" data-site="Minecraft.net">Minecraft</div>
+                <div class="site-tag" data-site="https://github.com">GitHub</div>
+                <div class="site-tag" data-site="https://unsplash.com">Unsplash</div>
+                <div class="site-tag" data-site="https://pinterest.com">Pinterest</div>
+                <div class="site-tag" data-site="https://br.freepik.com">Freepik</div>
+                <div class="site-tag" data-site="https://www.nasa.gov">NASA</div>
             </div>
         </div>
         
+        <div class="error-message" id="errorMessage">
+            Não foi possível carregar imagens deste site. Tente outro site.
+        </div>
+        
         <div class="image-container">
-            <div class="loading" id="loadingMessage">Digite uma URL e clique em "Buscar Imagens"</div>
-            <img id="randomImage" style="display: none;" alt="Imagem aleatória">
+            <div class="loading" id="loadingMessage">Digite uma URL e clique em "Carregar Imagens"</div>
+            <img id="randomImage" style="display: none;" alt="Imagem do site">
         </div>
         
         <div class="controls">
@@ -309,7 +341,7 @@
     </main>
     
     <footer>
-        <p>Nota: As imagens são obtidas de APIs gratuitas baseadas no tema do site informado.</p>
+        <p>Nota: Devido a restrições de segurança (CORS), algumas imagens podem não carregar. Este site usa um proxy para tentar acessar imagens de outros domínios, mas alguns sites bloqueiam esse acesso.</p>
     </footer>
 
     <script>
@@ -321,75 +353,75 @@
             const siteUrlInput = document.getElementById('siteUrl');
             const loadingMessage = document.getElementById('loadingMessage');
             const imageDetails = document.getElementById('imageDetails');
+            const errorMessage = document.getElementById('errorMessage');
             const siteTags = document.querySelectorAll('.site-tag');
             
-            // Mapeamento de sites para temas de busca - muito mais específico
-            const siteThemes = {
-                'br.freepik.com': ['design', 'graphic', 'vector', 'illustration', 'logo', 'background'],
-                'freepik.com': ['design', 'graphic', 'vector', 'illustration', 'logo', 'background'],
-                'github.com': ['code', 'programming', 'technology', 'developer', 'computer', 'software'],
-                'roblox.com': ['game', 'gaming', 'video game', '3d', 'virtual world', 'avatar', 'roblox'],
-                'netflix.com': ['movie', 'film', 'tv', 'entertainment', 'cinema', 'netflix'],
-                'minecraft.net': ['minecraft', 'game', 'gaming', 'pixel', 'block', 'sandbox'],
-                'youtube.com': ['video', 'youtube', 'entertainment', 'media', 'streaming'],
-                'facebook.com': ['social media', 'facebook', 'network', 'community'],
-                'instagram.com': ['instagram', 'social media', 'photo', 'photography', 'filter'],
-                'twitter.com': ['twitter', 'social media', 'news', 'tweet'],
-                'amazon.com': ['shopping', 'ecommerce', 'amazon', 'product', 'delivery'],
-                'google.com': ['search', 'google', 'technology', 'internet', 'browser'],
-                'whatsapp.com': ['whatsapp', 'message', 'chat', 'communication'],
-                'tiktok.com': ['tiktok', 'video', 'social media', 'dance', 'entertainment'],
-                'spotify.com': ['music', 'spotify', 'audio', 'playlist', 'concert'],
-                'discord.com': ['discord', 'chat', 'gaming', 'community', 'voice'],
-                'twitch.tv': ['twitch', 'streaming', 'gaming', 'live', 'esports'],
-                'reddit.com': ['reddit', 'discussion', 'community', 'forum', 'thread'],
-                'linkedin.com': ['linkedin', 'business', 'professional', 'career', 'network'],
-                'pinterest.com': ['pinterest', 'idea', 'craft', 'diy', 'inspiration'],
-                'wikipedia.org': ['wikipedia', 'knowledge', 'information', 'education'],
-                'apple.com': ['apple', 'technology', 'iphone', 'mac', 'design'],
-                'microsoft.com': ['microsoft', 'technology', 'windows', 'software', 'computer']
-            };
-            
             let currentSite = '';
-            let currentThemes = [];
+            let currentImages = [];
+            let currentImageIndex = 0;
             let autoMode = false;
             let autoInterval;
             
-            // Função para extrair o domínio de uma URL
-            function extractDomain(url) {
-                // Remove protocolo e caminho, mantendo apenas o domínio
-                let domain = url.replace(/^(https?:\/\/)?(www\.)?/, '');
-                domain = domain.split('/')[0];
-                return domain.toLowerCase(); // Converter para minúsculas para evitar problemas de case
+            // Função para validar e normalizar URL
+            function normalizeUrl(url) {
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    return 'https://' + url;
+                }
+                return url;
             }
             
-            // Função para obter temas baseados no site
-            function getThemesForSite(site) {
-                const domain = extractDomain(site);
+            // Função para extrair imagens de um site usando um proxy CORS
+            async function fetchImagesFromSite(siteUrl) {
+                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const targetUrl = encodeURIComponent(siteUrl);
                 
-                // Verificar se temos mapeamento direto
-                if (siteThemes[domain]) {
-                    return siteThemes[domain];
-                }
-                
-                // Tentar encontrar correspondência parcial
-                for (const key in siteThemes) {
-                    if (domain.includes(key) || key.includes(domain)) {
-                        return siteThemes[key];
+                try {
+                    const response = await fetch(proxyUrl + targetUrl);
+                    if (!response.ok) {
+                        throw new Error('Falha ao carregar o site');
                     }
+                    
+                    const html = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    // Extrair todas as tags img
+                    const imgTags = doc.querySelectorAll('img');
+                    const imageUrls = [];
+                    
+                    imgTags.forEach(img => {
+                        let src = img.getAttribute('src');
+                        if (src) {
+                            // Converter URLs relativas em absolutas
+                            if (src.startsWith('//')) {
+                                src = 'https:' + src;
+                            } else if (src.startsWith('/')) {
+                                src = siteUrl + src;
+                            } else if (!src.startsWith('http')) {
+                                src = siteUrl + '/' + src;
+                            }
+                            
+                            // Adicionar à lista se for uma URL válida
+                            if (src.startsWith('http')) {
+                                imageUrls.push(src);
+                            }
+                        }
+                    });
+                    
+                    return imageUrls;
+                } catch (error) {
+                    console.error('Erro ao buscar imagens:', error);
+                    throw error;
                 }
-                
-                // Se não encontrou, usar o nome do domínio sem extensão como tema
-                const domainName = domain.split('.')[0];
-                return [domainName, 'website', 'internet'];
             }
             
-            // Função para gerar uma imagem baseada no site
-            function generateSiteImage() {
-                if (!currentSite) {
-                    loadingMessage.textContent = 'Primeiro digite uma URL de site';
+            // Função para carregar uma imagem aleatória
+            function loadRandomImage() {
+                if (currentImages.length === 0) {
+                    loadingMessage.textContent = 'Nenhuma imagem encontrada neste site';
                     loadingMessage.style.display = 'block';
                     imageElement.style.display = 'none';
+                    errorMessage.style.display = 'block';
                     return;
                 }
                 
@@ -397,40 +429,38 @@
                 loadingMessage.textContent = 'Carregando imagem...';
                 loadingMessage.style.display = 'block';
                 imageElement.style.display = 'none';
+                errorMessage.style.display = 'none';
                 
-                // Escolher um tema aleatório
-                const randomTheme = currentThemes[Math.floor(Math.random() * currentThemes.length)];
-                
-                // Dimensões aleatórias para a imagem
-                const width = Math.floor(Math.random() * 300) + 600;
-                const height = Math.floor(Math.random() * 300) + 400;
-                
-                // Usando a API do Unsplash para imagens aleatórias baseadas no tema
-                const imageUrl = `https://source.unsplash.com/featured/${width}x${height}/?${randomTheme}&${Date.now()}`;
+                // Selecionar uma imagem aleatória
+                currentImageIndex = Math.floor(Math.random() * currentImages.length);
+                const imageUrl = currentImages[currentImageIndex];
                 
                 // Criar uma nova imagem para pré-carregar
                 const img = new Image();
                 img.onload = function() {
                     // Quando a imagem estiver carregada, exibi-la
                     imageElement.src = imageUrl;
-                    imageElement.alt = `Imagem relacionada a ${currentSite}`;
+                    imageElement.alt = `Imagem de ${currentSite}`;
                     imageElement.style.display = 'block';
                     loadingMessage.style.display = 'none';
                     
                     // Atualizar informações da imagem
-                    imageDetails.textContent = `Site: ${currentSite} | Tema: ${randomTheme} | Dimensões: ${width}x${height}px`;
+                    imageDetails.textContent = `Site: ${currentSite} | Imagem ${currentImageIndex + 1} de ${currentImages.length}`;
                 };
                 
                 img.onerror = function() {
-                    // Em caso de erro, tentar com uma API alternativa
-                    const alternativeUrl = `https://picsum.photos/${width}/${height}?random=${Date.now()}`;
-                    imageElement.src = alternativeUrl;
-                    imageElement.alt = 'Imagem aleatória alternativa';
-                    imageElement.style.display = 'block';
-                    loadingMessage.style.display = 'none';
+                    // Em caso de erro, tentar a próxima imagem
+                    console.warn(`Falha ao carregar imagem: ${imageUrl}`);
+                    currentImages.splice(currentImageIndex, 1); // Remover imagem com problema
                     
-                    // Atualizar informações da imagem
-                    imageDetails.textContent = `Site: ${currentSite} | Tema: ${randomTheme} | Dimensões: ${width}x${height}px (Fallback)`;
+                    if (currentImages.length > 0) {
+                        loadRandomImage(); // Tentar a próxima imagem
+                    } else {
+                        loadingMessage.textContent = 'Não foi possível carregar nenhuma imagem deste site';
+                        loadingMessage.style.display = 'block';
+                        imageElement.style.display = 'none';
+                        errorMessage.style.display = 'block';
+                    }
                 };
                 
                 // Iniciar o carregamento da imagem
@@ -438,17 +468,37 @@
             }
             
             // Evento para o botão de definir site
-            setSiteBtn.addEventListener('click', function() {
+            setSiteBtn.addEventListener('click', async function() {
                 const site = siteUrlInput.value.trim();
                 if (site) {
-                    currentSite = site;
-                    currentThemes = getThemesForSite(site);
+                    currentSite = normalizeUrl(site);
                     
-                    // Gerar uma imagem baseada no site
-                    generateSiteImage();
+                    // Mostrar estado de carregamento
+                    loadingMessage.textContent = 'Buscando imagens do site...';
+                    loadingMessage.style.display = 'block';
+                    imageElement.style.display = 'none';
+                    errorMessage.style.display = 'none';
                     
-                    // Atualizar a mensagem de carregamento
-                    loadingMessage.textContent = `Buscando imagens relacionadas a ${site}...`;
+                    try {
+                        // Buscar imagens do site
+                        currentImages = await fetchImagesFromSite(currentSite);
+                        
+                        if (currentImages.length > 0) {
+                            // Carregar uma imagem aleatória
+                            loadRandomImage();
+                        } else {
+                            loadingMessage.textContent = 'Nenhuma imagem encontrada neste site';
+                            loadingMessage.style.display = 'block';
+                            imageElement.style.display = 'none';
+                            errorMessage.style.display = 'block';
+                        }
+                    } catch (error) {
+                        console.error('Erro ao carregar site:', error);
+                        loadingMessage.textContent = 'Erro ao carregar o site. Tente novamente.';
+                        loadingMessage.style.display = 'block';
+                        imageElement.style.display = 'none';
+                        errorMessage.style.display = 'block';
+                    }
                 } else {
                     alert('Por favor, digite uma URL de site');
                 }
@@ -472,13 +522,17 @@
             
             // Evento para o botão de gerar nova imagem
             generateBtn.addEventListener('click', function() {
-                generateSiteImage();
+                if (currentImages.length > 0) {
+                    loadRandomImage();
+                } else {
+                    alert('Primeiro carregue um site');
+                }
             });
             
             // Evento para o botão de modo automático
             autoBtn.addEventListener('click', function() {
-                if (!currentSite) {
-                    alert('Primeiro defina um site');
+                if (currentImages.length === 0) {
+                    alert('Primeiro carregue um site com imagens');
                     return;
                 }
                 
@@ -492,10 +546,10 @@
                         Parar Automático
                     `;
                     autoBtn.classList.remove('secondary-btn');
-                    autoBtn.classList.add('primary-btn');
+                    autoBtn.classList.add('danger-btn');
                     
                     // Iniciar o intervalo para trocar imagens automaticamente
-                    autoInterval = setInterval(generateSiteImage, 5000);
+                    autoInterval = setInterval(loadRandomImage, 3000);
                 } else {
                     autoBtn.innerHTML = `
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -504,7 +558,7 @@
                         </svg>
                         Modo Automático
                     `;
-                    autoBtn.classList.remove('primary-btn');
+                    autoBtn.classList.remove('danger-btn');
                     autoBtn.classList.add('secondary-btn');
                     
                     // Parar o intervalo
@@ -513,8 +567,7 @@
             });
             
             // Inicializar com um site de exemplo
-            siteUrlInput.value = 'Roblox.com';
-            setSiteBtn.click();
+            siteUrlInput.value = 'https://github.com';
         });
     </script>
 </body>
