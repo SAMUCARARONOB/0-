@@ -268,15 +268,15 @@
         <div class="url-input">
             <label for="siteUrl">Digite a URL do site:</label>
             <div class="input-group">
-                <input type="text" id="siteUrl" placeholder="Exemplo: br.freepik.com, github.com, etc.">
+                <input type="text" id="siteUrl" placeholder="Exemplo: Roblox.com, GitHub.com, etc.">
                 <button id="setSiteBtn">Buscar Imagens</button>
             </div>
             <div class="example-sites">
+                <div class="site-tag" data-site="Roblox.com">Roblox</div>
                 <div class="site-tag" data-site="br.freepik.com">Freepik</div>
-                <div class="site-tag" data-site="github.com">GitHub</div>
-                <div class="site-tag" data-site="unsplash.com">Unsplash</div>
-                <div class="site-tag" data-site="pinterest.com">Pinterest</div>
-                <div class="site-tag" data-site="dribbble.com">Dribbble</div>
+                <div class="site-tag" data-site="GitHub.com">GitHub</div>
+                <div class="site-tag" data-site="Netflix.com">Netflix</div>
+                <div class="site-tag" data-site="Minecraft.net">Minecraft</div>
             </div>
         </div>
         
@@ -309,7 +309,7 @@
     </main>
     
     <footer>
-        <p>Nota: Por limitações de segurança, as imagens são obtidas de APIs gratuitas baseadas no tema do site informado.</p>
+        <p>Nota: As imagens são obtidas de APIs gratuitas baseadas no tema do site informado.</p>
     </footer>
 
     <script>
@@ -323,13 +323,31 @@
             const imageDetails = document.getElementById('imageDetails');
             const siteTags = document.querySelectorAll('.site-tag');
             
-            // Mapeamento de sites para temas de busca
+            // Mapeamento de sites para temas de busca - muito mais específico
             const siteThemes = {
-                'br.freepik.com': ['design', 'graphic', 'vector', 'illustration'],
-                'github.com': ['code', 'programming', 'technology', 'developer'],
-                'unsplash.com': ['photography', 'nature', 'art', 'landscape'],
-                'pinterest.com': ['craft', 'diy', 'design', 'art'],
-                'dribbble.com': ['design', 'ui', 'ux', 'graphic design']
+                'br.freepik.com': ['design', 'graphic', 'vector', 'illustration', 'logo', 'background'],
+                'freepik.com': ['design', 'graphic', 'vector', 'illustration', 'logo', 'background'],
+                'github.com': ['code', 'programming', 'technology', 'developer', 'computer', 'software'],
+                'roblox.com': ['game', 'gaming', 'video game', '3d', 'virtual world', 'avatar', 'roblox'],
+                'netflix.com': ['movie', 'film', 'tv', 'entertainment', 'cinema', 'netflix'],
+                'minecraft.net': ['minecraft', 'game', 'gaming', 'pixel', 'block', 'sandbox'],
+                'youtube.com': ['video', 'youtube', 'entertainment', 'media', 'streaming'],
+                'facebook.com': ['social media', 'facebook', 'network', 'community'],
+                'instagram.com': ['instagram', 'social media', 'photo', 'photography', 'filter'],
+                'twitter.com': ['twitter', 'social media', 'news', 'tweet'],
+                'amazon.com': ['shopping', 'ecommerce', 'amazon', 'product', 'delivery'],
+                'google.com': ['search', 'google', 'technology', 'internet', 'browser'],
+                'whatsapp.com': ['whatsapp', 'message', 'chat', 'communication'],
+                'tiktok.com': ['tiktok', 'video', 'social media', 'dance', 'entertainment'],
+                'spotify.com': ['music', 'spotify', 'audio', 'playlist', 'concert'],
+                'discord.com': ['discord', 'chat', 'gaming', 'community', 'voice'],
+                'twitch.tv': ['twitch', 'streaming', 'gaming', 'live', 'esports'],
+                'reddit.com': ['reddit', 'discussion', 'community', 'forum', 'thread'],
+                'linkedin.com': ['linkedin', 'business', 'professional', 'career', 'network'],
+                'pinterest.com': ['pinterest', 'idea', 'craft', 'diy', 'inspiration'],
+                'wikipedia.org': ['wikipedia', 'knowledge', 'information', 'education'],
+                'apple.com': ['apple', 'technology', 'iphone', 'mac', 'design'],
+                'microsoft.com': ['microsoft', 'technology', 'windows', 'software', 'computer']
             };
             
             let currentSite = '';
@@ -342,13 +360,28 @@
                 // Remove protocolo e caminho, mantendo apenas o domínio
                 let domain = url.replace(/^(https?:\/\/)?(www\.)?/, '');
                 domain = domain.split('/')[0];
-                return domain;
+                return domain.toLowerCase(); // Converter para minúsculas para evitar problemas de case
             }
             
             // Função para obter temas baseados no site
             function getThemesForSite(site) {
                 const domain = extractDomain(site);
-                return siteThemes[domain] || ['random'];
+                
+                // Verificar se temos mapeamento direto
+                if (siteThemes[domain]) {
+                    return siteThemes[domain];
+                }
+                
+                // Tentar encontrar correspondência parcial
+                for (const key in siteThemes) {
+                    if (domain.includes(key) || key.includes(domain)) {
+                        return siteThemes[key];
+                    }
+                }
+                
+                // Se não encontrou, usar o nome do domínio sem extensão como tema
+                const domainName = domain.split('.')[0];
+                return [domainName, 'website', 'internet'];
             }
             
             // Função para gerar uma imagem baseada no site
@@ -373,7 +406,7 @@
                 const height = Math.floor(Math.random() * 300) + 400;
                 
                 // Usando a API do Unsplash para imagens aleatórias baseadas no tema
-                const imageUrl = `https://source.unsplash.com/random/${width}x${height}/?${randomTheme}&${Date.now()}`;
+                const imageUrl = `https://source.unsplash.com/featured/${width}x${height}/?${randomTheme}&${Date.now()}`;
                 
                 // Criar uma nova imagem para pré-carregar
                 const img = new Image();
@@ -389,8 +422,9 @@
                 };
                 
                 img.onerror = function() {
-                    // Em caso de erro, usar uma imagem de fallback
-                    imageElement.src = `https://picsum.photos/${width}/${height}?random=${Date.now()}`;
+                    // Em caso de erro, tentar com uma API alternativa
+                    const alternativeUrl = `https://picsum.photos/${width}/${height}?random=${Date.now()}`;
+                    imageElement.src = alternativeUrl;
                     imageElement.alt = 'Imagem aleatória alternativa';
                     imageElement.style.display = 'block';
                     loadingMessage.style.display = 'none';
@@ -479,7 +513,7 @@
             });
             
             // Inicializar com um site de exemplo
-            siteUrlInput.value = 'br.freepik.com';
+            siteUrlInput.value = 'Roblox.com';
             setSiteBtn.click();
         });
     </script>
