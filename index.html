@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador de Imagens de Sites</title>
+    <title>Extrator de Imagens de Sites</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -46,7 +46,7 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 1000px;
+            max-width: 1100px;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -195,6 +195,16 @@
             transform: translateY(-2px);
         }
         
+        .info-btn {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .info-btn:hover {
+            background: #0b7dda;
+            transform: translateY(-2px);
+        }
+        
         .image-info {
             margin-top: 1rem;
             text-align: center;
@@ -252,6 +262,42 @@
             display: none;
         }
         
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4cc9f0;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .pagination {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .pagination button {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 padding: 1.5rem;
@@ -263,6 +309,11 @@
             
             h1 {
                 font-size: 2rem;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 1rem;
             }
         }
         
@@ -288,21 +339,21 @@
 </head>
 <body>
     <header>
-        <h1>Visualizador de Imagens de Sites</h1>
-        <p class="subtitle">Digite a URL de qualquer site para ver imagens aleatórias dele. Clique no botão para ver uma nova imagem a cada vez.</p>
+        <h1>Extrator de Imagens de Sites</h1>
+        <p class="subtitle">Digite a URL de qualquer site para ver TODAS as suas imagens - recentes, antigas, banners, ícones, etc.</p>
     </header>
     
     <main class="container">
         <div class="url-input">
             <label for="siteUrl">Digite a URL do site:</label>
             <div class="input-group">
-                <input type="text" id="siteUrl" placeholder="Exemplo: https://github.com, https://unsplash.com, etc.">
-                <button id="setSiteBtn">Carregar Imagens</button>
+                <input type="text" id="siteUrl" placeholder="Exemplo: https://g1.globo.com, https://github.com, etc.">
+                <button id="setSiteBtn">Extrair Imagens</button>
             </div>
             <div class="example-sites">
+                <div class="site-tag" data-site="https://g1.globo.com">G1 Globo</div>
                 <div class="site-tag" data-site="https://github.com">GitHub</div>
                 <div class="site-tag" data-site="https://unsplash.com">Unsplash</div>
-                <div class="site-tag" data-site="https://pinterest.com">Pinterest</div>
                 <div class="site-tag" data-site="https://br.freepik.com">Freepik</div>
                 <div class="site-tag" data-site="https://www.nasa.gov">NASA</div>
             </div>
@@ -312,26 +363,58 @@
             Não foi possível carregar imagens deste site. Tente outro site.
         </div>
         
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-item">
+                <div class="stat-value" id="totalImages">0</div>
+                <div class="stat-label">Total de Imagens</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="currentImage">0</div>
+                <div class="stat-label">Imagem Atual</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="loadedImages">0</div>
+                <div class="stat-label">Carregadas</div>
+            </div>
+        </div>
+        
         <div class="image-container">
-            <div class="loading" id="loadingMessage">Digite uma URL e clique em "Carregar Imagens"</div>
+            <div class="loading" id="loadingMessage">Digite uma URL e clique em "Extrair Imagens"</div>
             <img id="randomImage" style="display: none;" alt="Imagem do site">
         </div>
         
         <div class="controls">
-            <button class="primary-btn" id="generateBtn">
+            <button class="primary-btn" id="prevBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                </svg>
+                Anterior
+            </button>
+            <button class="secondary-btn" id="generateBtn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
                     <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
                 </svg>
-                Nova Imagem
+                Aleatória
             </button>
-            <button class="secondary-btn" id="autoBtn">
+            <button class="primary-btn" id="nextBtn">
+                Próxima
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                </svg>
+            </button>
+            <button class="info-btn" id="autoBtn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                     <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
                 </svg>
                 Modo Automático
             </button>
+        </div>
+        
+        <div class="pagination">
+            <button class="secondary-btn" id="firstBtn">Primeira</button>
+            <button class="secondary-btn" id="lastBtn">Última</button>
         </div>
         
         <div class="image-info">
@@ -341,7 +424,7 @@
     </main>
     
     <footer>
-        <p>Nota: Devido a restrições de segurança (CORS), algumas imagens podem não carregar. Este site usa um proxy para tentar acessar imagens de outros domínios, mas alguns sites bloqueiam esse acesso.</p>
+        <p>Nota: Este site extrai TODAS as imagens disponíveis no site informado, incluindo banners, ícones, imagens de conteúdo, etc.</p>
     </footer>
 
     <script>
@@ -355,12 +438,21 @@
             const imageDetails = document.getElementById('imageDetails');
             const errorMessage = document.getElementById('errorMessage');
             const siteTags = document.querySelectorAll('.site-tag');
+            const stats = document.getElementById('stats');
+            const totalImagesEl = document.getElementById('totalImages');
+            const currentImageEl = document.getElementById('currentImage');
+            const loadedImagesEl = document.getElementById('loadedImages');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const firstBtn = document.getElementById('firstBtn');
+            const lastBtn = document.getElementById('lastBtn');
             
             let currentSite = '';
             let currentImages = [];
             let currentImageIndex = 0;
             let autoMode = false;
             let autoInterval;
+            let loadedImagesCount = 0;
             
             // Função para validar e normalizar URL
             function normalizeUrl(url) {
@@ -370,27 +462,37 @@
                 return url;
             }
             
-            // Função para extrair imagens de um site usando um proxy CORS
+            // Função para extrair imagens de um site
             async function fetchImagesFromSite(siteUrl) {
+                // Usando um proxy CORS para contornar restrições
                 const proxyUrl = 'https://api.allorigins.win/raw?url=';
                 const targetUrl = encodeURIComponent(siteUrl);
                 
                 try {
+                    loadingMessage.textContent = 'Conectando ao site...';
+                    
                     const response = await fetch(proxyUrl + targetUrl);
                     if (!response.ok) {
                         throw new Error('Falha ao carregar o site');
                     }
+                    
+                    loadingMessage.textContent = 'Extraindo imagens...';
                     
                     const html = await response.text();
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
                     
                     // Extrair todas as tags img
-                    const imgTags = doc.querySelectorAll('img');
+                    const imgTags = Array.from(doc.querySelectorAll('img'));
                     const imageUrls = [];
                     
-                    imgTags.forEach(img => {
+                    loadingMessage.textContent = `Encontradas ${imgTags.length} imagens. Processando...`;
+                    
+                    // Processar cada imagem
+                    for (let i = 0; i < imgTags.length; i++) {
+                        const img = imgTags[i];
                         let src = img.getAttribute('src');
+                        
                         if (src) {
                             // Converter URLs relativas em absolutas
                             if (src.startsWith('//')) {
@@ -402,11 +504,16 @@
                             }
                             
                             // Adicionar à lista se for uma URL válida
-                            if (src.startsWith('http')) {
+                            if (src.startsWith('http') && !imageUrls.includes(src)) {
                                 imageUrls.push(src);
                             }
                         }
-                    });
+                        
+                        // Atualizar progresso a cada 10 imagens
+                        if (i % 10 === 0) {
+                            loadingMessage.textContent = `Processando imagens: ${i}/${imgTags.length}`;
+                        }
+                    }
                     
                     return imageUrls;
                 } catch (error) {
@@ -415,15 +522,13 @@
                 }
             }
             
-            // Função para carregar uma imagem aleatória
-            function loadRandomImage() {
-                if (currentImages.length === 0) {
-                    loadingMessage.textContent = 'Nenhuma imagem encontrada neste site';
-                    loadingMessage.style.display = 'block';
-                    imageElement.style.display = 'none';
-                    errorMessage.style.display = 'block';
+            // Função para carregar uma imagem específica
+            function loadImage(index) {
+                if (currentImages.length === 0 || index < 0 || index >= currentImages.length) {
                     return;
                 }
+                
+                currentImageIndex = index;
                 
                 // Mostrar estado de carregamento
                 loadingMessage.textContent = 'Carregando imagem...';
@@ -431,8 +536,6 @@
                 imageElement.style.display = 'none';
                 errorMessage.style.display = 'none';
                 
-                // Selecionar uma imagem aleatória
-                currentImageIndex = Math.floor(Math.random() * currentImages.length);
                 const imageUrl = currentImages[currentImageIndex];
                 
                 // Criar uma nova imagem para pré-carregar
@@ -444,27 +547,74 @@
                     imageElement.style.display = 'block';
                     loadingMessage.style.display = 'none';
                     
+                    // Atualizar contador de imagens carregadas
+                    loadedImagesCount++;
+                    loadedImagesEl.textContent = loadedImagesCount;
+                    
                     // Atualizar informações da imagem
-                    imageDetails.textContent = `Site: ${currentSite} | Imagem ${currentImageIndex + 1} de ${currentImages.length}`;
+                    imageDetails.textContent = `Site: ${currentSite} | Imagem ${currentImageIndex + 1} de ${currentImages.length} | URL: ${imageUrl.substring(0, 50)}...`;
+                    
+                    // Atualizar estatísticas
+                    currentImageEl.textContent = currentImageIndex + 1;
+                    
+                    // Atualizar estado dos botões
+                    updateButtonStates();
                 };
                 
                 img.onerror = function() {
                     // Em caso de erro, tentar a próxima imagem
                     console.warn(`Falha ao carregar imagem: ${imageUrl}`);
-                    currentImages.splice(currentImageIndex, 1); // Remover imagem com problema
+                    
+                    // Remover imagem com problema
+                    currentImages.splice(currentImageIndex, 1);
                     
                     if (currentImages.length > 0) {
-                        loadRandomImage(); // Tentar a próxima imagem
+                        // Ajustar índice se necessário
+                        if (currentImageIndex >= currentImages.length) {
+                            currentImageIndex = currentImages.length - 1;
+                        }
+                        loadImage(currentImageIndex); // Tentar a próxima imagem
                     } else {
                         loadingMessage.textContent = 'Não foi possível carregar nenhuma imagem deste site';
                         loadingMessage.style.display = 'block';
                         imageElement.style.display = 'none';
                         errorMessage.style.display = 'block';
                     }
+                    
+                    // Atualizar estatísticas
+                    totalImagesEl.textContent = currentImages.length;
+                    updateButtonStates();
                 };
                 
                 // Iniciar o carregamento da imagem
                 img.src = imageUrl;
+            }
+            
+            // Função para carregar uma imagem aleatória
+            function loadRandomImage() {
+                if (currentImages.length === 0) return;
+                
+                const randomIndex = Math.floor(Math.random() * currentImages.length);
+                loadImage(randomIndex);
+            }
+            
+            // Função para atualizar estado dos botões
+            function updateButtonStates() {
+                prevBtn.disabled = currentImageIndex === 0;
+                nextBtn.disabled = currentImageIndex === currentImages.length - 1;
+                firstBtn.disabled = currentImageIndex === 0;
+                lastBtn.disabled = currentImageIndex === currentImages.length - 1;
+                
+                // Aplicar estilo visual para botões desabilitados
+                [prevBtn, nextBtn, firstBtn, lastBtn].forEach(btn => {
+                    if (btn.disabled) {
+                        btn.style.opacity = '0.5';
+                        btn.style.cursor = 'not-allowed';
+                    } else {
+                        btn.style.opacity = '1';
+                        btn.style.cursor = 'pointer';
+                    }
+                });
             }
             
             // Evento para o botão de definir site
@@ -474,18 +624,25 @@
                     currentSite = normalizeUrl(site);
                     
                     // Mostrar estado de carregamento
-                    loadingMessage.textContent = 'Buscando imagens do site...';
+                    loadingMessage.textContent = 'Conectando ao site...';
                     loadingMessage.style.display = 'block';
                     imageElement.style.display = 'none';
                     errorMessage.style.display = 'none';
+                    stats.style.display = 'none';
                     
                     try {
                         // Buscar imagens do site
                         currentImages = await fetchImagesFromSite(currentSite);
+                        loadedImagesCount = 0;
                         
                         if (currentImages.length > 0) {
-                            // Carregar uma imagem aleatória
-                            loadRandomImage();
+                            // Mostrar estatísticas
+                            stats.style.display = 'flex';
+                            totalImagesEl.textContent = currentImages.length;
+                            loadedImagesEl.textContent = '0';
+                            
+                            // Carregar a primeira imagem
+                            loadImage(0);
                         } else {
                             loadingMessage.textContent = 'Nenhuma imagem encontrada neste site';
                             loadingMessage.style.display = 'block';
@@ -520,12 +677,40 @@
                 });
             });
             
-            // Evento para o botão de gerar nova imagem
+            // Evento para o botão de imagem aleatória
             generateBtn.addEventListener('click', function() {
                 if (currentImages.length > 0) {
                     loadRandomImage();
                 } else {
                     alert('Primeiro carregue um site');
+                }
+            });
+            
+            // Evento para o botão anterior
+            prevBtn.addEventListener('click', function() {
+                if (currentImageIndex > 0) {
+                    loadImage(currentImageIndex - 1);
+                }
+            });
+            
+            // Evento para o botão próximo
+            nextBtn.addEventListener('click', function() {
+                if (currentImageIndex < currentImages.length - 1) {
+                    loadImage(currentImageIndex + 1);
+                }
+            });
+            
+            // Evento para o botão primeira imagem
+            firstBtn.addEventListener('click', function() {
+                if (currentImages.length > 0) {
+                    loadImage(0);
+                }
+            });
+            
+            // Evento para o botão última imagem
+            lastBtn.addEventListener('click', function() {
+                if (currentImages.length > 0) {
+                    loadImage(currentImages.length - 1);
                 }
             });
             
@@ -545,11 +730,13 @@
                         </svg>
                         Parar Automático
                     `;
-                    autoBtn.classList.remove('secondary-btn');
+                    autoBtn.classList.remove('info-btn');
                     autoBtn.classList.add('danger-btn');
                     
                     // Iniciar o intervalo para trocar imagens automaticamente
-                    autoInterval = setInterval(loadRandomImage, 3000);
+                    autoInterval = setInterval(() => {
+                        loadRandomImage();
+                    }, 3000);
                 } else {
                     autoBtn.innerHTML = `
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -559,7 +746,7 @@
                         Modo Automático
                     `;
                     autoBtn.classList.remove('danger-btn');
-                    autoBtn.classList.add('secondary-btn');
+                    autoBtn.classList.add('info-btn');
                     
                     // Parar o intervalo
                     clearInterval(autoInterval);
@@ -567,7 +754,7 @@
             });
             
             // Inicializar com um site de exemplo
-            siteUrlInput.value = 'https://github.com';
+            siteUrlInput.value = 'https://g1.globo.com';
         });
     </script>
 </body>
