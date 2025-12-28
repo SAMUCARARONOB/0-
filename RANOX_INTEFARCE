@@ -614,243 +614,163 @@ function Window:CreateSlider(tabName, sliderConfig)
     local tab = pages[tabName]
     if not tab then return end
 
-    local TweenService = game:GetService("TweenService")
-    local UserInputService = game:GetService("UserInputService")
-    local RunService = game:GetService("RunService")
-
-    -- Configurações de Design Premium
-    local ACCENT_COLOR = sliderConfig.Color or Color3.fromRGB(255, 45, 45)
-    local ACCENT_GRADIENT = Color3.fromRGB(255, 100, 100)
-    local BG_DARK = Color3.fromRGB(13, 13, 15)
-    local BG_LIGHT = Color3.fromRGB(22, 22, 25)
-    local BORDER_COLOR = Color3.fromRGB(45, 45, 50)
-    local TEXT_MAIN = Color3.fromRGB(255, 255, 255)
-    local TEXT_DESC = Color3.fromRGB(160, 160, 165)
-
-    -- Container Principal (Aumentado para melhor ergonomia touch)
     local sliderHolder = Instance.new("Frame", tab)
-    sliderHolder.Name = "EliteSlider_" .. (sliderConfig.Text or "Input")
-    sliderHolder.Size = UDim2.new(1, -20, 0, 90)
+    sliderHolder.Size = UDim2.new(1, -20, 0, 0)
+    sliderHolder.Position = UDim2.new(0, 10, 0, 0)
     sliderHolder.BackgroundTransparency = 1
-    sliderHolder.BorderSizePixel = 0
+    sliderHolder.ZIndex = 2
+    sliderHolder.AutomaticSize = Enum.AutomaticSize.Y
 
-    -- Background com profundidade
+    local layout = Instance.new("UIListLayout", sliderHolder)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+
     local bg = Instance.new("Frame", sliderHolder)
-    bg.Size = UDim2.new(1, 0, 1, -5)
-    bg.Position = UDim2.new(0, 0, 0, 0)
-    bg.BackgroundColor3 = BG_LIGHT
+    bg.Size = UDim2.new(1, 0, 0, 56)
+    bg.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     bg.BorderSizePixel = 0
     bg.ZIndex = 2
-    
-    local corner = Instance.new("UICorner", bg)
-    corner.CornerRadius = UDim.new(0, 12)
+    Instance.new("UICorner", bg).CornerRadius = UDim.new(0, 8)
 
     local border = Instance.new("UIStroke", bg)
-    border.Color = BORDER_COLOR
-    border.Thickness = 1.5
-    border.Transparency = 0.5
-    border.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    border.Color = Color3.fromRGB(50, 50, 50)
+    border.Thickness = 1
+    border.Transparency = 0.6
 
-    -- Gradiente no fundo para dar aspecto curvo
-    local bgGradient = Instance.new("UIGradient", bg)
-    bgGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 200, 200))
-    })
-    bgGradient.Rotation = 45
-
-    -- Título e Descrição
     local title = Instance.new("TextLabel", bg)
-    title.Size = UDim2.new(1, -120, 0, 22)
-    title.Position = UDim2.new(0, 18, 0, 14)
-    title.Text = sliderConfig.Text or "Elite Slider"
-    title.TextColor3 = TEXT_MAIN
-    title.TextSize = 16
-    title.Font = Enum.Font.GothamBold
+    title.Size = UDim2.new(1, -60, 0, 16)
+    title.Position = UDim2.new(0, 10, 0, 4)
+    title.Text = sliderConfig.Text or "Slider"
+    title.TextColor3 = Color3.fromRGB(220, 220, 220)
+    title.TextSize = 14
+    title.Font = Enum.Font.GothamMedium
     title.BackgroundTransparency = 1
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.ZIndex = 3
+    title.TextYAlignment = Enum.TextYAlignment.Center
 
     local desc = Instance.new("TextLabel", bg)
-    desc.Size = UDim2.new(1, -120, 0, 16)
-    desc.Position = UDim2.new(0, 18, 0, 34)
-    desc.Text = sliderConfig.Description or "Ajuste fino de precisão"
-    desc.TextColor3 = TEXT_DESC
+    desc.Size = UDim2.new(1, -20, 0, 11)
+    desc.Position = UDim2.new(0, 10, 0, 22)
+    desc.Text = sliderConfig.Description or "Descrição do slider"
+    desc.TextColor3 = Color3.fromRGB(170, 170, 170)
     desc.TextSize = 12
     desc.Font = Enum.Font.Gotham
     desc.BackgroundTransparency = 1
     desc.TextXAlignment = Enum.TextXAlignment.Left
     desc.ZIndex = 3
+    desc.TextYAlignment = Enum.TextYAlignment.Center
 
-    -- Display de Valor (Moderno)
-    local valContainer = Instance.new("Frame", bg)
-    valContainer.Size = UDim2.new(0, 65, 0, 28)
-    valContainer.Position = UDim2.new(1, -83, 0, 18)
-    valContainer.BackgroundColor3 = BG_DARK
-    valContainer.ZIndex = 3
-    Instance.new("UICorner", valContainer).CornerRadius = UDim.new(0, 8)
-    Instance.new("UIStroke", valContainer).Color = BORDER_COLOR
-
-    local valueLabel = Instance.new("TextLabel", valContainer)
-    valueLabel.Size = UDim2.new(1, 0, 1, 0)
-    valueLabel.TextColor3 = ACCENT_COLOR
+    local valueLabel = Instance.new("TextLabel", bg)
+    valueLabel.Size = UDim2.new(0, 50, 0, 16)
+    valueLabel.Position = UDim2.new(1, -60, 0, 4)
+    valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     valueLabel.TextSize = 14
     valueLabel.Font = Enum.Font.GothamBold
     valueLabel.BackgroundTransparency = 1
-    valueLabel.Text = "0"
-    valueLabel.ZIndex = 4
+    valueLabel.TextXAlignment = Enum.TextXAlignment.Right
+    valueLabel.ZIndex = 3
+    valueLabel.TextYAlignment = Enum.TextYAlignment.Center
 
-    -- Área Interativa Ampliada (Touch Hitbox)
-    local touchArea = Instance.new("TextButton", bg)
-    touchArea.Name = "TouchArea"
-    touchArea.Size = UDim2.new(1, 0, 0, 35)
-    touchArea.Position = UDim2.new(0, 0, 1, -40)
-    touchArea.BackgroundTransparency = 1
-    touchArea.Text = ""
-    touchArea.ZIndex = 10
-
-    -- Trilha do Slider
     local bar = Instance.new("Frame", bg)
-    bar.Size = UDim2.new(1, -36, 0, 8)
-    bar.Position = UDim2.new(0, 18, 1, -25)
-    bar.BackgroundColor3 = BG_DARK
+    bar.Size = UDim2.new(1, -20, 0, 8)
+    bar.Position = UDim2.new(0, 10, 0, 45)
+    bar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     bar.BorderSizePixel = 0
-    bar.ZIndex = 3
+    bar.ZIndex = 2
     Instance.new("UICorner", bar).CornerRadius = UDim.new(1, 0)
 
-    -- Fill com Gradiente e Glow
     local fill = Instance.new("Frame", bar)
     fill.Size = UDim2.new(0, 0, 1, 0)
-    fill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    fill.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
     fill.BorderSizePixel = 0
-    fill.ZIndex = 4
+    fill.ZIndex = 3
     Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
 
-    local fillGradient = Instance.new("UIGradient", fill)
-    fillGradient.Color = ColorSequence.new(ACCENT_COLOR, ACCENT_GRADIENT)
+    local neonStroke = Instance.new("UIStroke", fill)
+    neonStroke.Thickness = 3
+    neonStroke.Transparency = 0.2
+    neonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    neonStroke.Color = fill.BackgroundColor3
 
-    -- Camadas de Brilho (Neon Multi-layer)
-    local function createGlow(size, transparency)
-        local g = Instance.new("ImageLabel", fill)
-        g.BackgroundTransparency = 1
-        g.AnchorPoint = Vector2.new(0.5, 0.5)
-        g.Position = UDim2.new(0.5, 0, 0.5, 0)
-        g.Size = size
-        g.Image = "rbxassetid://6014455443" -- Soft Glow
-        g.ImageColor3 = ACCENT_COLOR
-        g.ImageTransparency = transparency
-        g.ZIndex = 3
-        return g
-    end
+    task.spawn(function()
+        local TweenService = game:GetService("TweenService")
+        local state = true
+        while fill.Parent do
+            local goal = { BackgroundColor3 = state and Color3.fromRGB(195, 20, 20) or Color3.fromRGB(255, 0, 0) }
+            local tween = TweenService:Create(fill, TweenInfo.new(1.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), goal)
+            tween:Play()
+            neonStroke.Color = goal.BackgroundColor3
+            state = not state
+            tween.Completed:Wait()
+        end
+    end)
 
-    local glow1 = createGlow(UDim2.new(1, 60, 1, 60), 0.7)
-    local glow2 = createGlow(UDim2.new(1, 30, 1, 30), 0.5)
-
-    -- Knob Customizado
     local knob = Instance.new("Frame", bar)
-    knob.Size = UDim2.new(0, 20, 0, 20)
-    knob.AnchorPoint = Vector2.new(0.5, 0.5)
-    knob.Position = UDim2.new(0, 0, 0.5, 0)
+    knob.Size = UDim2.new(0, 16, 0, 16)
+    knob.Position = UDim2.new(0, -8, 0.5, -8)
     knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    knob.ZIndex = 6
+    knob.BorderSizePixel = 0
+    knob.ZIndex = 4
     Instance.new("UICorner", knob).CornerRadius = UDim.new(1, 0)
-    
-    local knobStroke = Instance.new("UIStroke", knob)
-    knobStroke.Thickness = 3
-    knobStroke.Color = ACCENT_COLOR
+    local knobShadow = Instance.new("UIStroke", knob)
+    knobShadow.Color = Color3.fromRGB(100, 100, 100)
+    knobShadow.Transparency = 0.3
+    knobShadow.Thickness = 1
 
-    local knobInner = Instance.new("Frame", knob)
-    knobInner.Size = UDim2.new(0, 8, 0, 8)
-    knobInner.AnchorPoint = Vector2.new(0.5, 0.5)
-    knobInner.Position = UDim2.new(0.5, 0, 0.5, 0)
-    knobInner.BackgroundColor3 = ACCENT_COLOR
-    knobInner.ZIndex = 7
-    Instance.new("UICorner", knobInner).CornerRadius = UDim.new(1, 0)
-
-    -- Lógica de Dados
     local min = sliderConfig.Min or 0
     local max = sliderConfig.Max or 100
-    local def = math.clamp(sliderConfig.Default or min, min, max)
-    local dragging = false
+    local value = sliderConfig.Default or min
 
-    local function updateSlider(input)
-        -- Correção crucial para Touch: usar o AbsolutePosition da Barra
-        local inputPos = input.Position.X
+    local function roundToDecimals(num, decimals)
+        local mult = 10 ^ decimals
+        return math.floor(num * mult + 0.5) / mult
+    end
+
+    local function updateSlider(inputX)
         local barAbsPos = bar.AbsolutePosition.X
         local barWidth = bar.AbsoluteSize.X
-        
-        local percentage = math.clamp((inputPos - barAbsPos) / barWidth, 0, 1)
-        local rawValue = min + (max - min) * percentage
-        
-        -- Arredondamento inteligente (inteiro ou decimal baseado no config)
-        local roundedValue = sliderConfig.Precise and (math.floor(rawValue * 100) / 100) or math.floor(rawValue + 0.5)
-
-        -- Animação Suave com Elasticidade no Knob
-        TweenService:Create(fill, TweenInfo.new(0.2, Enum.EasingStyle.OutQuad), {
-            Size = UDim2.new(percentage, 0, 1, 0)
-        }):Play()
-
-        TweenService:Create(knob, TweenInfo.new(0.2, Enum.EasingStyle.BackOut), {
-            Position = UDim2.new(percentage, 0, 0.5, 0)
-        }):Play()
-
+        local clamped = math.clamp((inputX - barAbsPos) / barWidth, 0, 1)
+        local rawValue = min + (max - min) * clamped
+        local roundedValue = roundToDecimals(rawValue, 2)
+        fill:TweenSize(UDim2.new(clamped, 0, 1, 0), "Out", "Quad", 0.1, true)
+        knob:TweenPosition(UDim2.new(clamped, -8, 0.5, -8), "Out", "Quad", 0.1, true)
         valueLabel.Text = tostring(roundedValue)
-        
         if sliderConfig.Callback then
             sliderConfig.Callback(roundedValue)
         end
     end
 
-    -- Input Handling (Suporte Robusto para Mobile e Desktop)
-    touchArea.InputBegan:Connect(function(input)
+    local dragging = false
+    local userInput = game:GetService("UserInputService")
+
+    local function beginDrag(input)
+        dragging = true
+        updateSlider(input.Position.X)
+    end
+
+    local function endDrag()
+        dragging = false
+    end
+
+    bar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            updateSlider(input)
-            
-            -- Feedback de Ativação
-            TweenService:Create(knob, TweenInfo.new(0.3, Enum.EasingStyle.BackOut), {Size = UDim2.new(0, 26, 0, 26)}):Play()
-            TweenService:Create(border, TweenInfo.new(0.3), {Transparency = 0, Color = ACCENT_COLOR}):Play()
-            TweenService:Create(glow1, TweenInfo.new(0.3), {ImageTransparency = 0.4}):Play()
+            beginDrag(input)
         end
     end)
 
-    UserInputService.InputChanged:Connect(function(input)
+    userInput.InputChanged:Connect(function(input)
         if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-            updateSlider(input)
+            updateSlider(input.Position.X)
         end
     end)
 
-    UserInputService.InputEnded:Connect(function(input)
+    userInput.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragging = false
-            
-            -- Reset Visual
-            TweenService:Create(knob, TweenInfo.new(0.3, Enum.EasingStyle.BackOut), {Size = UDim2.new(0, 20, 0, 20)}):Play()
-            TweenService:Create(border, TweenInfo.new(0.3), {Transparency = 0.5, Color = BORDER_COLOR}):Play()
-            TweenService:Create(glow1, TweenInfo.new(0.3), {ImageTransparency = 0.7}):Play()
+            endDrag()
         end
     end)
 
-    -- Efeito de Partícula/Glow Dinâmico (Loop de Estética)
-    task.spawn(function()
-        local count = 0
-        while sliderHolder.Parent do
-            count = count + 0.05
-            local pulse = (math.sin(count) * 0.1) + 0.6
-            glow2.ImageTransparency = pulse
-            
-            -- Movimento sutil do gradiente para parecer metalizado
-            fillGradient.Offset = Vector2.new(math.sin(count*0.5)*0.2, 0)
-            
-            RunService.RenderStepped:Wait()
-        end
-    end)
-
-    -- Configuração Inicial
-    local initPercentage = (def - min) / (max - min)
-    fill.Size = UDim2.new(initPercentage, 0, 1, 0)
-    knob.Position = UDim2.new(initPercentage, 0, 0.5, 0)
-    valueLabel.Text = tostring(def)
+    updateSlider(bar.AbsolutePosition.X)
 end
 
 function Window:CreateTextBox(tabName, placeholderText, callback)
