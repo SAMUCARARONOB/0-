@@ -250,9 +250,9 @@
             
             // Render Estruturas (5x Escala)
             let passHtml = "";
-            for(let i=0; i<12; i++) {
+            for(let i=0; i<30; i++) {
                 const lvl = state.passiveUps[i] || 0;
-                const cost = 50 * Math.pow(5, i) * Math.pow(1.50, lvl);
+                const cost = 50 * Math.pow(5, i) * Math.pow(1.15, lvl);
                 passHtml += `
                     <div class="card ${state.money >= cost ? 'affordable' : ''}" onclick="buyUpgrade('passive', ${i}, ${cost})">
                         <div class="card-icon">🏗️</div>
@@ -267,9 +267,9 @@
 
             // Render Cliques
             let actHtml = "";
-            for(let i=0; i<12; i++) {
+            for(let i=0; i<30; i++) {
                 const lvl = state.activeUps[i] || 0;
-                const cost = 50 * Math.pow(5, i) * Math.pow(1.100, lvl) * 2;
+                const cost = 50 * Math.pow(5, i) * Math.pow(1.25, lvl) * 2;
                 actHtml += `
                     <div class="card ${state.money >= cost ? 'affordable' : ''}" onclick="buyUpgrade('active', ${i}, ${cost})">
                         <div class="card-icon">⚡</div>
@@ -430,3 +430,4 @@
     </script>
 </body>
 </html>
+
