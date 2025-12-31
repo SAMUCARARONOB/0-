@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pyro City: Ultra Visual v29</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@400;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --neon: #00f2ff; }
+        body { background: #00020a; margin: 0; overflow: hidden; font-family: 'Inter', sans-serif; color: white; }
+        canvas { display: block; touch-action: none; }
+        .font-game { font-family: 'Orbitron', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .glass { background: rgba(0, 5, 20, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); }
+        .price-tag { font-size: 8px; font-weight: 900; background: rgba(0,0,0,0.8); padding: 1px 4px; border-radius: 4px; color: #4ade80; }
+        @keyframes pulse-glow { 0% { box-shadow: 0 0 5px var(--neon); } 50% { box-shadow: 0 0 20px var(--neon); } 100% { box-shadow: 0 0 5px var(--neon); } }
+        .selected-firework { border-color: var(--neon) !important; animation: pulse-glow 2s infinite; }
+    </style>
+</head>
+<body>
+
+    <!-- INTERFACE DE JOGO -->
+    <div class="fixed inset-0 pointer-events-none z-50 flex flex-col justify-between p-4 sm:p-6">
+        
+        <!-- TOP BAR -->
+        <div class="flex justify-between items-start w-full">
+            <div class="pointer-events-auto">
+                <div class="glass p-3 rounded-2xl">
+                    <h1 class="font-game text-[10px] text-cyan-400 tracking-[0.2em] mb-1">PYRO CITY <span class="text-white">V29</span></h1>
+                    <div id="rebirth-badge" class="bg-cyan-500/20 text-cyan-400 text-[9px] font-black px-2 py-0.5 rounded border border-cyan-500/30 uppercase">Rebirth 0</div>
+                </div>
+                <div id="combo-ui" class="mt-3 opacity-0 transform -translate-x-10 transition-all duration-300">
+                    <div class="bg-gradient-to-r from-red-600 to-orange-500 px-4 py-1 rounded-full shadow-lg border border-white/20">
+                        <span id="combo-num" class="font-game text-xs italic">COMBO X0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 pointer-events-auto">
+                <div class="glass h-14 px-6 flex flex-col justify-center rounded-2xl border-b-2 border-green-500/50">
+                    <span class="text-[9px] font-bold text-white/40 uppercase tracking-tighter">Balanço Total</span>
+                    <span id="money-txt" class="font-game text-xl text-green-400 tabular-nums">$0</span>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <button onclick="openMenu('rebirth')" class="glass p-3 rounded-xl hover:bg-white/10 transition-all active:scale-90">🚀</button>
+                    <button onclick="openMenu('config')" class="glass p-3 rounded-xl hover:bg-white/10 transition-all active:scale-90">⚙️</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FIREWORK SELECTOR -->
+        <div class="w-full pointer-events-auto mb-2">
+            <div id="shop-container" class="flex gap-3 overflow-x-auto no-scrollbar py-4 px-2">
+                <!-- Injetado via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAIS -->
+    <div id="modal-bg" class="fixed inset-0 bg-black/90 backdrop-blur-xl z-[100] hidden items-center justify-center p-6">
+        <div id="modal-rebirth" class="hidden glass p-8 rounded-[40px] max-w-sm w-full text-center">
+            <h2 class="font-game text-2xl text-cyan-400 mb-2 uppercase">Ascensão Cósmica</h2>
+            <p class="text-white/40 text-[10px] mb-8 font-bold tracking-widest uppercase">Multiplica ganhos em 2x</p>
+            <div class="bg-white/5 p-6 rounded-3xl mb-8">
+                <p class="text-[9px] font-black text-white/40 uppercase mb-1">Custo Necessário</p>
+                <p id="rebirth-cost-txt" class="font-game text-2xl text-green-400">$1.0M</p>
+            </div>
+            <button id="rebirth-btn" onclick="executeRebirth()" class="w-full py-5 rounded-2xl font-game text-[10px] uppercase tracking-widest transition-all">Realizar Rebirth</button>
+            <button onclick="closeMenu()" class="mt-6 text-white/20 font-bold text-[10px] uppercase">Fechar</button>
+        </div>
+
+        <div id="modal-config" class="hidden glass p-8 rounded-[40px] max-w-sm w-full">
+            <h2 class="font-game text-xl text-white mb-8 uppercase">Painel de Controlo</h2>
+            <div class="space-y-8">
+                <div>
+                    <label class="text-[9px] font-black text-white/40 uppercase tracking-widest">Efeitos Visuais</label>
+                    <div class="grid grid-cols-2 gap-2 mt-3">
+                        <button onclick="setQuality('Leve')" class="q-btn p-3 rounded-xl text-[10px] font-bold border border-white/5 bg-white/5">Leve</button>
+                        <button onclick="setQuality('Ultra')" class="q-btn p-3 rounded-xl text-[10px] font-bold border border-cyan-500 bg-cyan-500/20">Ultra</button>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="text-[9px] font-black text-white/40 uppercase tracking-widest">Volume Master</label>
+                        <span id="vol-val" class="text-[10px] font-game">50%</span>
+                    </div>
+                    <input type="range" id="vol-slider" min="0" max="100" value="50" class="w-full h-1 appearance-none bg-white/10 rounded-full accent-cyan-400">
+                </div>
+            </div>
+            <button onclick="closeMenu()" class="mt-10 w-full py-4 bg-white/5 rounded-2xl text-[10px] font-black uppercase">Voltar ao Jogo</button>
+        </div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        // --- DATA ---
+        let money = 0;
+        let rebirths = 0;
+        let unlocked = [0];
+        let selectedIdx = 0;
+        let combo = 0;
+        let comboTimer = 0;
+        let quality = 'Ultra';
+        let volume = 0.5;
+
+        const FIREWORKS = [
+            { id: 0, name: "Sputter", price: 0, reward: 20, color: "#ffffff", icon: "🧨", effect: "basic" },
+            { id: 1, name: "Vênus", price: 5000, reward: 180, color: "#ff3366", icon: "❤️", effect: "venus" },
+            { id: 2, name: "Matrix", price: 50000, reward: 1200, color: "#00ff41", icon: "📟", effect: "matrix" },
+            { id: 3, name: "Portal", price: 500000, reward: 8500, color: "#bc00ff", icon: "💠", effect: "portal" },
+            { id: 4, name: "Atómico", price: 5000000, reward: 60000, color: "#7dff00", icon: "☢️", effect: "atomic" },
+            { id: 5, name: "Galáxia", price: 25000000, reward: 450000, color: "#4cc9f0", icon: "🌌", effect: "galaxy" },
+            { id: 6, name: "Multiverso", price: 100000000, reward: 2500000, color: "rainbow", icon: "🌀", effect: "multiverse" }
+        ];
+
+        // --- ENGINE ---
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d', { alpha: false });
+        const audio = new (window.AudioContext || window.webkitAudioContext)();
+
+        let rockets = [];
+        let particles = [];
+        let debris = [];
+        let city = [];
+        let stars = [];
+        let flash = 0;
+
+        function playSfx(type) {
+            if (volume <= 0) return;
+            const osc = audio.createOscillator();
+            const gain = audio.createGain();
+            osc.connect(gain); gain.connect(audio.destination);
+            const now = audio.currentTime;
+            
+            if (type === 'launch') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(50 + Math.random()*50, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.4);
+                gain.gain.setValueAtTime(volume * 0.1, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.4);
+                osc.start(); osc.stop(now + 0.4);
+            } else {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(100, now);
+                osc.frequency.exponentialRampToValueAtTime(20, now + 0.8);
+                gain.gain.setValueAtTime(volume * 0.5, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.8);
+                osc.start(); osc.stop(now + 0.8);
+            }
+        }
+
+        class Particle {
+            constructor(o) {
+                this.x = o.x; this.y = o.y;
+                this.vx = o.vx; this.vy = o.vy;
+                this.color = o.color;
+                this.size = o.size || 2;
+                this.life = 1.0;
+                this.decay = o.decay || 0.02;
+                this.gravity = o.gravity || 0.05;
+                this.friction = o.friction || 0.95;
+                this.glow = o.glow || false;
+            }
+            update() {
+                this.vx *= this.friction; this.vy *= this.friction;
+                this.vy += this.gravity;
+                this.x += this.vx; this.y += this.vy;
+                this.life -= this.decay;
+                return this.life > 0;
+            }
+            draw() {
+                ctx.globalAlpha = this.life;
+                ctx.fillStyle = this.color;
+                if (this.glow && quality === 'Ultra') {
+                    ctx.shadowBlur = 10; ctx.shadowColor = this.color;
+                }
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        function createExplosion(x, y, cfg) {
+            playSfx('boom');
+            const boost = Math.pow(2, rebirths) * (1 + (combo*0.1));
+            const reward = cfg.reward * boost;
+            money += reward;
+            combo++; comboTimer = 120;
+            updateUI();
+
+            const pCount = quality === 'Ultra' ? 400 : 120;
+
+            if (cfg.effect === 'atomic') {
+                flash = 0.8;
+                // Cogumelo Atomico
+                for(let i=0; i<pCount*1.5; i++) {
+                    const ang = Math.random()*Math.PI*2;
+                    const spd = Math.random()*25;
+                    particles.push(new Particle({
+                        x, y, color: i%8===0?"#fff":"#7dff00",
+                        vx: Math.cos(ang)*spd, vy: Math.sin(ang)*(spd*0.3) - (Math.random()*15),
+                        gravity: -0.05, decay: 0.005, size: 4, glow: true
+                    }));
+                }
+                // Anéis de Radiação
+                for(let r=1; r<=3; r++) {
+                    for(let i=0; i<60; i++) {
+                        const a = (i/60)*Math.PI*2;
+                        particles.push(new Particle({
+                            x, y, color: "#fff", vx: Math.cos(a)*(r*12), vy: Math.sin(a)*(r*2),
+                            friction: 0.98, decay: 0.02, size: 1
+                        }));
+                    }
+                }
+            } else if (cfg.effect === 'multiverse') {
+                flash = 1.0;
+                // 3 Buracos Negros centrais
+                for(let b=0; b<3; b++) {
+                    const offX = (b-1)*80;
+                    for(let i=0; i<100; i++) {
+                        const a = Math.random()*Math.PI*2;
+                        const r = Math.random()*100;
+                        particles.push(new Particle({
+                            x: x + offX + Math.cos(a)*r, y: y + Math.sin(a)*r,
+                            color: i%2?"#000":"#fff", vx: -Math.cos(a)*5, vy: -Math.sin(a)*5,
+                            friction: 1.0, decay: 0.008, size: 5, glow: true
+                        }));
+                    }
+                }
+                // Espirais Galácticas
+                for(let arm=0; arm<4; arm++) {
+                    for(let i=0; i<50; i++) {
+                        const r = i*4;
+                        const a = i*0.2 + (arm * Math.PI/2);
+                        particles.push(new Particle({
+                            x: x+Math.cos(a)*r, y: y+Math.sin(a)*r,
+                            color: `hsl(${Math.random()*360},100%,50%)`,
+                            vx: Math.cos(a)*2, vy: Math.sin(a)*2, decay: 0.005, size: 3, glow: true
+                        }));
+                    }
+                }
+            } else if (cfg.effect === 'portal') {
+                for(let i=0; i<pCount; i++) {
+                    const a = Math.random()*Math.PI*2;
+                    const r = 300;
+                    particles.push(new Particle({
+                        x: x + Math.cos(a)*r, y: y + Math.sin(a)*r,
+                        color: "#bc00ff", vx: -Math.cos(a)*12, vy: -Math.sin(a)*12,
+                        friction: 0.98, decay: 0.015, size: 4, glow: true
+                    }));
+                }
+            } else if (cfg.effect === 'venus') {
+                for(let i=0; i<pCount; i++) {
+                    const t = (i/pCount)*Math.PI*2;
+                    const vx = 16 * Math.pow(Math.sin(t), 3);
+                    const vy = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                    particles.push(new Particle({ x, y, color: "#ff3366", vx: vx*0.7, vy: vy*0.7, decay: 0.015, size: 4, glow: true }));
+                }
+            } else {
+                for(let i=0; i<pCount; i++) {
+                    const a = Math.random()*Math.PI*2;
+                    const s = Math.random()*18;
+                    particles.push(new Particle({
+                        x, y, color: cfg.color === "rainbow" ? `hsl(${Math.random()*360},100%,70%)` : cfg.color,
+                        vx: Math.cos(a)*s, vy: Math.sin(a)*s, decay: 0.02, size: 3
+                    }));
+                }
+            }
+        }
+
+        // --- CORE LOOP ---
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            // Gerar Cidade
+            city = [];
+            const n = 12;
+            for(let i=0; i<n; i++) {
+                city.push({
+                    x: (canvas.width/n)*i + 2,
+                    w: (canvas.width/n)*0.85,
+                    h: 150 + Math.random()*400,
+                    hue: 220 + Math.random()*40,
+                    windows: Array.from({length: 40}, () => Math.random() > 0.7)
+                });
+            }
+
+            // Estrelas
+            stars = [];
+            for(let i=0; i<200; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2, o: Math.random()});
+        }
+
+        function draw() {
+            // Fundo
+            const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            grad.addColorStop(0, '#00020a'); grad.addColorStop(1, '#050a20');
+            ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Estrelas
+            ctx.fillStyle = "#fff";
+            stars.forEach(s => { ctx.globalAlpha = s.o * Math.abs(Math.sin(Date.now()*0.001 + s.x)); ctx.fillRect(s.x, s.y, s.s, s.s); });
+
+            // Cidade
+            city.forEach(b => {
+                ctx.globalAlpha = 1;
+                // Fachada
+                const bGrad = ctx.createLinearGradient(b.x, canvas.height-b.h, b.x, canvas.height);
+                bGrad.addColorStop(0, `hsl(${b.hue}, 40%, 15%)`); bGrad.addColorStop(1, '#000');
+                ctx.fillStyle = bGrad;
+                ctx.fillRect(b.x, canvas.height-b.h, b.w, b.h);
+                
+                // Luzes
+                ctx.fillStyle = `hsla(${b.hue}, 100%, 70%, 0.4)`;
+                b.windows.forEach((w, idx) => {
+                    if(w) {
+                        const wx = b.x + (idx%4)*(b.w/5)+5;
+                        const wy = canvas.height-b.h + Math.floor(idx/4)*35+10;
+                        if(wy < canvas.height-5) ctx.fillRect(wx, wy, b.w/8, 15);
+                    }
+                });
+
+                // Topo / Antena
+                ctx.fillStyle = "#fff"; ctx.globalAlpha = Math.sin(Date.now()*0.005)>0?1:0.2;
+                ctx.fillRect(b.x + b.w/2, canvas.height-b.h-10, 2, 10);
+            });
+
+            // Foguetes
+            rockets = rockets.filter(r => {
+                const dx = r.tx - r.x, dy = r.ty - r.y;
+                const d = Math.sqrt(dx*dx + dy*dy);
+                if (d < 20) { createExplosion(r.x, r.y, r.cfg); return false; }
+                r.x += (dx/d)*22; r.y += (dy/d)*22;
+                ctx.globalAlpha = 1;
+                ctx.fillStyle = r.cfg.color === 'rainbow' ? '#fff' : r.cfg.color;
+                ctx.beginPath(); ctx.arc(r.x, r.y, 4, 0, Math.PI*2); ctx.fill();
+                // Rasto
+                particles.push(new Particle({x: r.x, y: r.y, vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2, color: r.cfg.color==='rainbow'?'#fff':r.cfg.color, decay: 0.05, size: 1.5}));
+                return true;
+            });
+
+            // Particulas
+            ctx.globalCompositeOperation = 'lighter';
+            particles = particles.filter(p => {
+                if(!p.update()) return false;
+                p.draw(); return true;
+            });
+            ctx.globalCompositeOperation = 'source-over';
+
+            // Flash & Combo
+            if(flash > 0) { ctx.globalAlpha = flash; ctx.fillStyle="#fff"; ctx.fillRect(0,0,canvas.width,canvas.height); flash -= 0.06; }
+            if(comboTimer > 0) { 
+                comboTimer--; 
+                document.getElementById('combo-ui').style.opacity = 1;
+                document.getElementById('combo-ui').style.transform = 'translateX(0)';
+                document.getElementById('combo-num').innerText = `COMBO X${combo}`;
+            } else { 
+                combo = 0; 
+                document.getElementById('combo-ui').style.opacity = 0;
+                document.getElementById('combo-ui').style.transform = 'translateX(-20px)';
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        // --- UI & LOGIC ---
+        function format(n) {
+            if (n < 1e3) return n.toFixed(0);
+            const s = [{v: 1e3, l: "K"}, {v: 1e6, l: "M"}, {v: 1e9, l: "B"}, {v: 1e12, l: "T"}];
+            let b = s[0]; for(let i of s) if(n >= i.v) b = i;
+            return (n/b.v).toFixed(1) + b.l;
+        }
+
+        function updateUI() {
+            document.getElementById('money-txt').innerText = '$' + format(money);
+            document.getElementById('rebirth-badge').innerText = `Rebirth ${rebirths}`;
+            renderShop();
+        }
+
+        function renderShop() {
+            const container = document.getElementById('shop-container');
+            container.innerHTML = FIREWORKS.map((f, i) => {
+                const isU = unlocked.includes(f.id);
+                const isS = selectedIdx === f.id;
+                return `
+                    <div onclick="buyOrSelect(${f.id})" class="flex-shrink-0 w-20 h-28 rounded-3xl glass transition-all flex flex-col items-center justify-center relative border-2 ${isS ? 'selected-firework' : 'border-white/5'} ${!isU ? 'opacity-60 grayscale' : ''}">
+                        <span class="text-3xl mb-2">${f.icon}</span>
+                        <span class="text-[8px] font-black uppercase text-white/60">${f.name}</span>
+                        ${!isU ? `<div class="price-tag mt-2">$${format(f.price)}</div>` : `<div class="text-[7px] text-cyan-400 font-bold mt-2 tracking-widest">PRONTO</div>`}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function buyOrSelect(id) {
+            const f = FIREWORKS.find(x => x.id === id);
+            if(unlocked.includes(id)) { selectedIdx = id; }
+            else if(money >= f.price) {
+                money -= f.price; unlocked.push(id); selectedIdx = id;
+                playSfx('launch'); updateUI();
+            }
+            renderShop();
+        }
+
+        function openMenu(m) {
+            document.getElementById('modal-bg').classList.remove('hidden');
+            document.getElementById('modal-bg').classList.add('flex');
+            document.getElementById('modal-rebirth').classList.toggle('hidden', m !== 'rebirth');
+            document.getElementById('modal-config').classList.toggle('hidden', m !== 'config');
+            if(m === 'rebirth') {
+                const cost = 1000000 * Math.pow(10, rebirths);
+                document.getElementById('rebirth-cost-txt').innerText = '$' + format(cost);
+                const btn = document.getElementById('rebirth-btn');
+                btn.disabled = money < cost;
+                btn.className = `w-full py-5 rounded-2xl font-game text-[10px] uppercase tracking-widest transition-all ${money >= cost ? 'bg-cyan-500 text-black shadow-lg shadow-cyan-500/40' : 'bg-white/5 text-white/20'}`;
+            }
+        }
+
+        function closeMenu() { document.getElementById('modal-bg').classList.add('hidden'); }
+
+        function executeRebirth() {
+            const cost = 1000000 * Math.pow(10, rebirths);
+            if(money >= cost) {
+                rebirths++; money = 0; unlocked = [0]; selectedIdx = 0;
+                updateUI(); closeMenu();
+            }
+        }
+
+        function setQuality(q) {
+            quality = q;
+            document.querySelectorAll('.q-btn').forEach(b => {
+                b.className = `q-btn p-3 rounded-xl text-[10px] font-bold border ${b.innerText === q ? 'border-cyan-500 bg-cyan-500/20' : 'border-white/5 bg-white/5'}`;
+            });
+        }
+
+        // --- HANDLERS ---
+        canvas.addEventListener('mousedown', e => {
+            if(e.clientY < window.innerHeight - 150) {
+                playSfx('launch');
+                rockets.push({x: canvas.width/2, y: canvas.height, tx: e.clientX, ty: e.clientY, cfg: FIREWORKS[selectedIdx]});
+            }
+        });
+
+        document.getElementById('vol-slider').addEventListener('input', e => {
+            volume = e.target.value / 100;
+            document.getElementById('vol-val').innerText = e.target.value + '%';
+        });
+
+        window.onload = () => { init(); updateUI(); draw(); };
+        window.onresize = init;
+    </script>
+</body>
+</html>
+
