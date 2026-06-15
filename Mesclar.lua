@@ -961,9 +961,9 @@ ConfigTab:CreateButton({
 CreditsTab:CreateSection("Comunidade")
 
 CreditsTab:CreateButton({
-    Name = "Copiar Discord",
+    Name = "Copiar YouTube",
     Callback = function()
-        setclipboard("https://discord.gg/gcHGgT3nfp")
+        setclipboard("https://youtube.com/@rnox_ofc123?si=K9qUjgf5XzMgwU_9")
         Rayfield:Notify({
             Title = "Sucesso",
             Content = "Link do Discord copiado!",
