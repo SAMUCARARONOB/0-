@@ -106,6 +106,91 @@ Main:CreateButton({
             _G.GuerraCooldown = false
         end)
     end
+}) -- ==================== SEÇÃO DE ATAQUE A COORDENADA ====================
+Main:CreateSection("Ataque a Coordenada Específica")
+
+Main:CreateButton({
+    Name = "Marcar Posição",
+    Callback = function()
+        local char = LocalPlayer.Character
+        local root = char and char:FindFirstChild("HumanoidRootPart")
+        if root then
+            _G.MarkedCoord = root.Position
+            Rayfield:Notify({
+                Title = "Posição Marcada",
+                Content = string.format("%.1f, %.1f, %.1f", _G.MarkedCoord.X, _G.MarkedCoord.Y, _G.MarkedCoord.Z),
+                Duration = 2,
+                Image = 4483362458,
+            })
+        else
+            Rayfield:Notify({
+                Title = "Erro",
+                Content = "Personagem não encontrado.",
+                Duration = 2,
+                Image = 4483362458,
+            })
+        end
+    end
+})
+
+Main:CreateToggle({
+    Name = "Lançar Nuke na Coordenada",
+    CurrentValue = false,
+    Flag = "ToggleLaunchAtCoord",
+    Callback = function(Value)
+        _G.LaunchAtCoord = Value
+        if not Value then return end
+
+        task.spawn(function()
+            while _G.LaunchAtCoord do
+                if not _G.MarkedCoord then
+                    Rayfield:Notify({
+                        Title = "Ataque Coordenada",
+                        Content = "Nenhuma coordenada definida! Use 'Marcar Posição' primeiro.",
+                        Duration = 3,
+                        Image = 4483362458,
+                    })
+                    task.wait(2)
+                else
+                    local myBase = GetPlayerBase()
+                    if myBase and myBase:FindFirstChild("Nukes") then
+                        local nukes = {}
+                        for _, nuke in ipairs(myBase.Nukes:GetChildren()) do
+                            if nuke.Name == "Nuke" and nuke.Parent then
+                                table.insert(nukes, nuke)
+                            end
+                        end
+                        if #nukes > 0 then
+                            local char = LocalPlayer.Character
+                            local root = char and char:FindFirstChild("HumanoidRootPart")
+                            if root then
+                                local chosenNuke = nukes[math.random(1, #nukes)]
+                                local oldPos = root.CFrame
+
+                                TeleportTo(chosenNuke)
+                                task.wait(0.05)
+                                ReplicatedStorage.NukeRemotes.PickUp:FireServer(chosenNuke)
+                                task.wait(0.05)
+                                local args = { _G.MarkedCoord }
+                                ReplicatedStorage.NukeRemotes.LaunchConfirm:FireServer(unpack(args))
+
+                                if oldPos then root.CFrame = oldPos end
+                            end
+                        else
+                            Rayfield:Notify({
+                                Title = "Sem Nukes",
+                                Content = "Não há nukes disponíveis na sua base!",
+                                Duration = 2,
+                                Image = 4483362458,
+                            })
+                            task.wait(2)
+                        end
+                    end
+                    task.wait(0.5)
+                end
+            end
+        end)
+    end
 })
 Main:CreateLabel("FUNÇÕES GERAIS")
 -- ==================== AUTO FUSÃO (ORIGINAL) ====================
