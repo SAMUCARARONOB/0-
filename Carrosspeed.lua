@@ -167,7 +167,7 @@ Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.Parent = Header
 
 local originalTitleSize = Title.Size
-local originalTitleText = "⚡ CAR WHEEL BOOST"
+local originalTitleText = "⚡️CAR Dealership Tycoon WHEEL BOOST"
 
 local StatusBadge = Instance.new("TextLabel")
 StatusBadge.Size = UDim2.new(0, 30, 0, 20)
