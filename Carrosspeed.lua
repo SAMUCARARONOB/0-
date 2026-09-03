@@ -1,7 +1,10 @@
 --[[
-    CAR WHEEL BOOST DETECTOR - v4.1 (ONLY_FORWARD corrigido)
-    - Boost apenas para frente com margem para aceleração inicial
+    CAR WHEEL BOOST DETECTOR - v5.0 (Tema Roxo/Dourado)
+    - Interface premium com visual distinto
+    - Boost apenas para frente (ONLY_FORWARD)
     - Destaque especial no carro do jogador (⭐ VOCÊ)
+    - Remoção automática de carros órfãos
+    - Contador reposicionado
 ]]
 
 -- ============================================
@@ -38,21 +41,21 @@ _G.CarWheelBoostConfig = _G.CarWheelBoostConfig or {
 }
 
 -- ============================================
--- Tema
+-- Tema Roxo/Dourado (diferente do Driving Empire)
 -- ============================================
 local theme = {
-    background = Color3.fromRGB(12, 12, 20),
-    surface = Color3.fromRGB(18, 18, 28),
-    surface2 = Color3.fromRGB(25, 25, 38),
-    surface3 = Color3.fromRGB(32, 32, 48),
-    accent = Color3.fromRGB(255, 60, 60),
-    accent2 = Color3.fromRGB(255, 150, 0),
-    text = Color3.fromRGB(230, 230, 240),
-    textDim = Color3.fromRGB(160, 160, 180),
-    border = Color3.fromRGB(40, 40, 55),
+    background = Color3.fromRGB(15, 10, 20),
+    surface = Color3.fromRGB(22, 16, 30),
+    surface2 = Color3.fromRGB(30, 22, 42),
+    surface3 = Color3.fromRGB(38, 28, 54),
+    accent = Color3.fromRGB(180, 80, 255),      -- roxo
+    accent2 = Color3.fromRGB(255, 180, 50),     -- dourado
+    text = Color3.fromRGB(240, 235, 250),
+    textDim = Color3.fromRGB(170, 160, 190),
+    border = Color3.fromRGB(60, 40, 80),
     green = Color3.fromRGB(80, 200, 120),
     red = Color3.fromRGB(255, 80, 80),
-    blue = Color3.fromRGB(100, 150, 255),
+    blue = Color3.fromRGB(120, 140, 255),
     gold = Color3.fromRGB(255, 215, 0)
 }
 
@@ -150,28 +153,29 @@ HeaderCorner.Parent = Header
 
 local HeaderGradient = Instance.new("UIGradient")
 HeaderGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 45)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 15, 25))
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(35, 25, 50)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(18, 12, 28))
 })
 HeaderGradient.Parent = Header
 
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(0.6, 0, 1, 0)
 Title.Position = UDim2.new(0, 16, 0, 0)
-Title.Text = "⚡ CAR WHEEL BOOST"
+Title.Text = "🚗 CAR DEALERSHIP TYCOON BOOST"
 Title.TextColor3 = theme.accent
 Title.BackgroundTransparency = 1
 Title.Font = Enum.Font.GothamBold
-Title.TextSize = 20
+Title.TextSize = 18
 Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.Parent = Header
 
 local originalTitleSize = Title.Size
-local originalTitleText = "⚡️CAR Dealership Tycoon WHEEL BOOST"
+local originalTitleText = "🚗 CAR DEALERSHIP TYCOON BOOST"
 
+-- Contador reposicionado (à direita, antes dos botões)
 local StatusBadge = Instance.new("TextLabel")
 StatusBadge.Size = UDim2.new(0, 30, 0, 20)
-StatusBadge.Position = UDim2.new(0, 220, 0.5, -10)
+StatusBadge.Position = UDim2.new(1, -130, 0.5, -10)
 StatusBadge.Text = "0"
 StatusBadge.TextColor3 = Color3.new(1, 1, 1)
 StatusBadge.BackgroundColor3 = theme.accent
@@ -661,7 +665,6 @@ local function addCar(car)
     local wheelParts = getWheelParts(car)
     if #wheelParts > 0 then
         local mainPart = nil
-        -- Tenta achar uma parte principal do carro (não roda) para referência de direção
         if car:IsA("Model") and car.PrimaryPart then
             mainPart = car.PrimaryPart
         else
@@ -671,7 +674,6 @@ local function addCar(car)
                     break
                 end
             end
-            -- Se não achou, tenta a primeira roda como mainPart
             if not mainPart and #wheelParts > 0 then
                 mainPart = wheelParts[1]
             end
@@ -695,8 +697,12 @@ end
 
 local function removeCar(car)
     if activeCars[car] then
-        activeCars[car] = nil
+        local data = activeCars[car]
+        if data and data.boostEnabled then
+            data.boostEnabled = false
+        end
         boostTimers[car] = nil
+        activeCars[car] = nil
         for i, c in ipairs(carListOrder) do
             if c == car then
                 table.remove(carListOrder, i)
@@ -1052,7 +1058,6 @@ RunService.Heartbeat:Connect(function(dt)
                     local forward = data.mainPart.CFrame.LookVector
                     if velocity and forward then
                         local dot = velocity:Dot(forward)
-                        -- Se estiver claramente andando de ré (dot < -5), bloqueia
                         if dot < -5 then
                             canBoost = false
                         end
@@ -1107,6 +1112,20 @@ local function loadSavedCars()
 end
 
 -- ============================================
+-- Verificação periódica de carros órfãos
+-- ============================================
+task.spawn(function()
+    while true do
+        task.wait(5)
+        for car, data in pairs(activeCars) do
+            if not car:IsDescendantOf(workspace) then
+                removeCar(car)
+            end
+        end
+    end
+end)
+
+-- ============================================
 -- Inicialização
 -- ============================================
 MainFrame.Size = UDim2.new(0, 0, 0, 0)
@@ -1129,5 +1148,5 @@ task.spawn(function()
     end
 end)
 
-print("✅ Car Wheel Boost Detector v4.1 ativado com sucesso!")
+print("✅ Car Dealership Tycoon Wheel Boost ativado com sucesso!")
 print("📁 Pastas monitoradas:", #foldersToWatch)
