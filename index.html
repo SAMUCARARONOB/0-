@@ -4,625 +4,299 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#8a2be2">
-<meta name="description" content="RANOX SCRIPTS — Executores e Scripts Premium para Roblox. Atualizados diariamente.">
+<meta name="description" content="RANOX SCRIPTS — Executores e Scripts Premium para Roblox.">
 <title>RANOX SCRIPTS — Executores & Scripts Premium</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-/* ============ DESIGN TOKENS ============ */
 :root{
-  --bg-0:#07060f; --bg-1:#0d0b1e; --bg-2:#131028;
-  --panel:rgba(23,20,45,.72);
-  --panel-solid:#171429;
-  --border:rgba(138,43,226,.22);
-  --border-hi:rgba(138,43,226,.55);
-  --text:#f2f1fa; --text-dim:#a8a4c4; --text-mute:#6e6a8a;
-  --primary:#8a2be2; --primary-2:#5e17eb;
-  --accent:#00d9ff; --accent-2:#00ffb2;
-  --success:#00e08a; --warn:#ffb43a; --danger:#ff4d6d;
-  --gold:#ffd76a;
-  --grad-1:linear-gradient(135deg,#8a2be2 0%,#00d9ff 100%);
-  --grad-2:linear-gradient(135deg,#5e17eb 0%,#8a2be2 60%,#00d9ff 100%);
-  --grad-text:linear-gradient(120deg,#c7a3ff 0%,#7dd4ff 50%,#a3ffe0 100%);
-  --shadow-sm:0 2px 8px rgba(0,0,0,.35);
-  --shadow-md:0 8px 24px rgba(0,0,0,.45);
-  --shadow-lg:0 20px 50px rgba(0,0,0,.55);
+  --bg-0:#07060f;--bg-1:#0d0b1e;--panel:rgba(23,20,45,.72);
+  --panel-solid:#171429;--border:rgba(138,43,226,.22);--border-hi:rgba(138,43,226,.55);
+  --text:#f2f1fa;--text-dim:#a8a4c4;--text-mute:#6e6a8a;
+  --primary:#8a2be2;--primary-2:#5e17eb;--accent:#00d9ff;--accent-2:#00ffb2;
+  --success:#00e08a;--warn:#ffb43a;--danger:#ff4d6d;--gold:#ffd76a;
+  --grad-1:linear-gradient(135deg,#8a2be2,#00d9ff);
+  --grad-2:linear-gradient(135deg,#5e17eb,#8a2be2 60%,#00d9ff);
+  --grad-text:linear-gradient(120deg,#c7a3ff,#7dd4ff 50%,#a3ffe0);
+  --shadow-md:0 8px 24px rgba(0,0,0,.45);--shadow-lg:0 20px 50px rgba(0,0,0,.55);
   --glow-primary:0 0 40px rgba(138,43,226,.35);
-  --glow-accent:0 0 40px rgba(0,217,255,.35);
-  --radius-sm:10px; --radius:14px; --radius-lg:20px; --radius-xl:28px;
-  --ease:cubic-bezier(.22,.61,.36,1);
-  --ease-out:cubic-bezier(.16,1,.3,1);
+  --radius:14px;--radius-lg:20px;--radius-xl:28px;
+  --ease:cubic-bezier(.22,.61,.36,1);--ease-out:cubic-bezier(.16,1,.3,1);
   --ease-bounce:cubic-bezier(.34,1.56,.64,1);
-  --dur-fast:.18s; --dur:.32s; --dur-slow:.6s;
 }
-[data-theme="light"]{
-  --bg-0:#f4f3fb; --bg-1:#eeecf8; --bg-2:#e6e2f5;
-  --panel:rgba(255,255,255,.78);
-  --panel-solid:#ffffff;
-  --border:rgba(106,13,173,.15);
-  --border-hi:rgba(106,13,173,.45);
-  --text:#1a1832; --text-dim:#4a4766; --text-mute:#8a87a4;
-  --primary:#7a1fd1; --primary-2:#5e17eb;
-  --accent:#0093c4; --accent-2:#00b894;
-  --shadow-sm:0 2px 8px rgba(60,50,120,.08);
-  --shadow-md:0 8px 24px rgba(60,50,120,.12);
-  --shadow-lg:0 20px 50px rgba(60,50,120,.18);
-}
-[data-theme="green"]{--primary:#22c55e;--primary-2:#16a34a;--accent:#00ffe0;--bg-0:#04140b;--bg-1:#082014;--bg-2:#0e2c1a;--panel:rgba(15,40,25,.72);--panel-solid:#0f2819;--border:rgba(34,197,94,.25);--border-hi:rgba(34,197,94,.55);}
-[data-theme="red"]{--primary:#ef4444;--primary-2:#dc2626;--accent:#ffb800;--bg-0:#1a0606;--bg-1:#240a0a;--bg-2:#2e0e0e;--panel:rgba(50,15,15,.72);--panel-solid:#2a0e0e;--border:rgba(239,68,68,.25);--border-hi:rgba(239,68,68,.55);}
-[data-theme="blue"]{--primary:#3b82f6;--primary-2:#2563eb;--accent:#ff9f43;--bg-0:#050c1a;--bg-1:#08152a;--bg-2:#0e1f3d;--panel:rgba(15,30,60,.72);--panel-solid:#0d1e3a;--border:rgba(59,130,246,.25);--border-hi:rgba(59,130,246,.55);}
-[data-theme="gold"]{--primary:#f5c518;--primary-2:#d4a017;--accent:#ff6b6b;--bg-0:#12100a;--bg-1:#1a170e;--bg-2:#241f14;--panel:rgba(40,35,20,.75);--panel-solid:#1f1a10;--border:rgba(245,197,24,.25);--border-hi:rgba(245,197,24,.55);}
-[data-theme="orange"]{--primary:#ff7b25;--primary-2:#ff5722;--accent:#00e0ff;--bg-0:#140b04;--bg-1:#1f1208;--bg-2:#2c1a0c;--panel:rgba(50,30,15,.72);--panel-solid:#26170c;--border:rgba(255,123,37,.25);--border-hi:rgba(255,123,37,.55);}
-[data-theme="pink"]{--primary:#ec4899;--primary-2:#db2777;--accent:#22d3ee;--bg-0:#1a0612;--bg-1:#250a1a;--bg-2:#310e24;--panel:rgba(50,15,32,.72);--panel-solid:#2a0c1e;--border:rgba(236,72,153,.25);--border-hi:rgba(236,72,153,.55);}
-[data-theme="cyan"]{--primary:#06b6d4;--primary-2:#0891b2;--accent:#f472b6;--bg-0:#04161a;--bg-1:#082228;--bg-2:#0e2f38;--panel:rgba(15,40,48,.72);--panel-solid:#0c2a33;--border:rgba(6,182,212,.25);--border-hi:rgba(6,182,212,.55);}
+[data-theme="light"]{--bg-0:#f4f3fb;--bg-1:#eeecf8;--panel:rgba(255,255,255,.78);--panel-solid:#fff;--border:rgba(106,13,173,.15);--border-hi:rgba(106,13,173,.45);--text:#1a1832;--text-dim:#4a4766;--text-mute:#8a87a4;--primary:#7a1fd1}
+[data-theme="green"]{--primary:#22c55e;--primary-2:#16a34a;--accent:#00ffe0;--bg-0:#04140b;--bg-1:#082014;--panel:rgba(15,40,25,.72);--panel-solid:#0f2819;--border:rgba(34,197,94,.25);--border-hi:rgba(34,197,94,.55)}
+[data-theme="red"]{--primary:#ef4444;--primary-2:#dc2626;--accent:#ffb800;--bg-0:#1a0606;--bg-1:#240a0a;--panel:rgba(50,15,15,.72);--panel-solid:#2a0e0e;--border:rgba(239,68,68,.25);--border-hi:rgba(239,68,68,.55)}
+[data-theme="blue"]{--primary:#3b82f6;--primary-2:#2563eb;--accent:#ff9f43;--bg-0:#050c1a;--bg-1:#08152a;--panel:rgba(15,30,60,.72);--panel-solid:#0d1e3a;--border:rgba(59,130,246,.25);--border-hi:rgba(59,130,246,.55)}
+[data-theme="gold"]{--primary:#f5c518;--primary-2:#d4a017;--accent:#ff6b6b;--bg-0:#12100a;--bg-1:#1a170e;--panel:rgba(40,35,20,.75);--panel-solid:#1f1a10;--border:rgba(245,197,24,.25);--border-hi:rgba(245,197,24,.55)}
+[data-theme="pink"]{--primary:#ec4899;--primary-2:#db2777;--accent:#22d3ee;--bg-0:#1a0612;--bg-1:#250a1a;--panel:rgba(50,15,32,.72);--panel-solid:#2a0c1e;--border:rgba(236,72,153,.25);--border-hi:rgba(236,72,153,.55)}
+[data-theme="cyan"]{--primary:#06b6d4;--primary-2:#0891b2;--accent:#f472b6;--bg-0:#04161a;--bg-1:#082228;--panel:rgba(15,40,48,.72);--panel-solid:#0c2a33;--border:rgba(6,182,212,.25);--border-hi:rgba(6,182,212,.55)}
+[data-theme="orange"]{--primary:#ff7b25;--primary-2:#ff5722;--accent:#00e0ff;--bg-0:#140b04;--bg-1:#1f1208;--panel:rgba(50,30,15,.72);--panel-solid:#26170c;--border:rgba(255,123,37,.25);--border-hi:rgba(255,123,37,.55)}
 
-/* ============ RESET ============ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{
-  font-family:'Inter',system-ui,-apple-system,sans-serif;
-  background:var(--bg-0);color:var(--text);
-  min-height:100vh;overflow-x:hidden;
-  line-height:1.6;font-size:15px;
-  transition:background-color .4s var(--ease),color .4s var(--ease);
-  -webkit-font-smoothing:antialiased;
-}
-img{display:block;max-width:100%}
-button,input,select{font:inherit;color:inherit}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-0);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6;font-size:15px;transition:background-color .4s var(--ease),color .4s var(--ease);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer;background:none;border:none}
 a{color:inherit;text-decoration:none}
 ::selection{background:var(--primary);color:#fff}
-
-/* Scrollbar */
 ::-webkit-scrollbar{width:10px;height:10px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:10px;border:2px solid var(--bg-0)}
-::-webkit-scrollbar-thumb:hover{background:var(--primary)}
-
-/* Focus */
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
 
-/* ============ BACKGROUND FX ============ */
 .bg-fx{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
 .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.35;animation:orb 22s ease-in-out infinite}
 .orb.o1{width:520px;height:520px;background:var(--primary);top:-10%;left:-10%}
 .orb.o2{width:480px;height:480px;background:var(--accent);bottom:-15%;right:-10%;animation-delay:-7s}
 .orb.o3{width:380px;height:380px;background:var(--accent-2);top:40%;left:55%;animation-delay:-14s;opacity:.2}
 @keyframes orb{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,-40px) scale(1.1)}66%{transform:translate(-50px,50px) scale(.95)}}
-.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(138,43,226,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(138,43,226,.04) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse at center,#000 20%,transparent 75%)}
 
-/* Scroll Progress */
-#scrollProgress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--grad-1);z-index:9999;transition:width .1s linear;box-shadow:0 0 12px var(--primary)}
+#scrollProgress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--grad-1);z-index:9999;transition:width .1s linear}
 
-/* ============ HEADER ============ */
-header.site-header{
-  position:sticky;top:0;z-index:1000;
-  background:color-mix(in srgb,var(--bg-1) 78%,transparent);
-  backdrop-filter:blur(20px) saturate(180%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);
-  border-bottom:1px solid var(--border);
-  padding:14px clamp(16px,3vw,40px);
-  display:flex;align-items:center;gap:24px;
-}
-.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.25rem;letter-spacing:-.02em;flex-shrink:0}
-.logo-mark{
-  width:42px;height:42px;border-radius:14px;
-  background:var(--grad-2);
-  display:grid;place-items:center;color:#fff;font-size:1.15rem;
-  box-shadow:var(--glow-primary);
-  animation:logoPulse 4s ease-in-out infinite;
-}
-@keyframes logoPulse{0%,100%{box-shadow:0 0 30px rgba(138,43,226,.35)}50%{box-shadow:0 0 50px rgba(138,43,226,.6),0 0 80px rgba(0,217,255,.3)}}
+.install-banner{position:fixed;bottom:20px;right:20px;z-index:1500;background:var(--panel-solid);border:1px solid var(--border);border-radius:16px;padding:16px 20px;box-shadow:var(--shadow-lg);display:none;gap:14px;align-items:center;max-width:380px;animation:slideUp .4s var(--ease-bounce)}
+.install-banner.show{display:flex}
+.install-banner .ib-icon{width:44px;height:44px;border-radius:12px;background:var(--grad-2);display:grid;place-items:center;color:#fff;font-size:1.1rem;flex-shrink:0}
+.install-banner .ib-body{flex:1;min-width:0}
+.install-banner .ib-body b{display:block;font-size:.9rem;font-weight:700}
+.install-banner .ib-body small{color:var(--text-mute);font-size:.75rem}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+header.site-header{position:sticky;top:0;z-index:1000;background:color-mix(in srgb,var(--bg-1) 78%,transparent);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);padding:14px clamp(16px,3vw,40px);display:flex;align-items:center;gap:24px}
+.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.25rem;flex-shrink:0}
+.logo-mark{width:42px;height:42px;border-radius:14px;background:var(--grad-2);display:grid;place-items:center;color:#fff;font-size:1.15rem;box-shadow:var(--glow-primary)}
 .logo-text{background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900}
 .logo-text small{display:block;font-size:.6rem;letter-spacing:.3em;color:var(--text-mute);-webkit-text-fill-color:var(--text-mute);font-weight:600;margin-top:-2px}
-
 .nav-desktop{display:flex;gap:4px;margin-left:auto}
-.nav-desktop a{
-  padding:10px 16px;border-radius:12px;font-weight:600;font-size:.9rem;
-  color:var(--text-dim);transition:all var(--dur) var(--ease);position:relative;
-}
+.nav-desktop a{padding:10px 16px;border-radius:12px;font-weight:600;font-size:.9rem;color:var(--text-dim);transition:all .3s var(--ease)}
 .nav-desktop a:hover{color:var(--text);background:var(--panel)}
 .nav-desktop a.active{color:var(--text);background:var(--panel);box-shadow:inset 0 0 0 1px var(--border)}
-
 .header-actions{display:flex;gap:8px;align-items:center}
-.icon-btn{
-  width:44px;height:44px;border-radius:12px;
-  display:grid;place-items:center;font-size:1rem;
-  background:var(--panel);border:1px solid var(--border);
-  color:var(--text-dim);transition:all var(--dur) var(--ease);
-}
+.icon-btn{position:relative;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1rem;background:var(--panel);border:1px solid var(--border);color:var(--text-dim);transition:all .3s var(--ease)}
 .icon-btn:hover{color:var(--text);border-color:var(--border-hi);transform:translateY(-2px);box-shadow:var(--shadow-md)}
-.icon-btn .badge{
-  position:absolute;top:-4px;right:-4px;
-  min-width:18px;height:18px;padding:0 5px;border-radius:9px;
-  background:var(--grad-1);color:#fff;font-size:.65rem;font-weight:800;
-  display:grid;place-items:center;box-shadow:0 0 10px var(--primary);
-}
-.icon-btn{position:relative}
-
+.icon-btn .badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--grad-1);color:#fff;font-size:.65rem;font-weight:800;display:grid;place-items:center}
+.icon-btn .avatar{width:32px;height:32px;border-radius:50%;background:var(--grad-2);display:grid;place-items:center;color:#fff;font-weight:800;font-size:.85rem}
+.kbd{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;padding:3px 7px;border-radius:6px;background:var(--panel);border:1px solid var(--border);color:var(--text-mute)}
 .menu-toggle{display:none}
-.kbd{
-  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;
-  padding:3px 7px;border-radius:6px;background:var(--panel);
-  border:1px solid var(--border);color:var(--text-mute);
-}
 
-/* ============ HERO ============ */
-.hero{
-  padding:clamp(48px,7vw,90px) clamp(16px,3vw,40px) clamp(32px,4vw,50px);
-  text-align:center;position:relative;
-}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:7px 14px;border-radius:99px;
-  background:var(--panel);border:1px solid var(--border);
-  font-size:.78rem;font-weight:600;color:var(--text-dim);
-  margin-bottom:24px;animation:fadeUp .6s var(--ease-out) both;
-  backdrop-filter:blur(10px);
-}
+.hero{padding:clamp(48px,7vw,90px) clamp(16px,3vw,40px) clamp(32px,4vw,50px);text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:99px;background:var(--panel);border:1px solid var(--border);font-size:.78rem;font-weight:600;color:var(--text-dim);margin-bottom:24px;backdrop-filter:blur(10px)}
 .hero-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 8px var(--success);animation:dot 2s infinite}
 @keyframes dot{0%,100%{opacity:1}50%{opacity:.35}}
-.hero h1{
-  font-size:clamp(2rem,5.5vw,4rem);font-weight:900;line-height:1.05;letter-spacing:-.03em;
-  margin-bottom:18px;animation:fadeUp .6s .05s var(--ease-out) both;
-}
+.hero h1{font-size:clamp(2rem,5.5vw,4rem);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:18px}
 .hero h1 .grad{background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p{
-  font-size:clamp(1rem,1.5vw,1.15rem);color:var(--text-dim);max-width:640px;
-  margin:0 auto 36px;animation:fadeUp .6s .1s var(--ease-out) both;
-}
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-
-.search-wrap{
-  max-width:720px;margin:0 auto;animation:fadeUp .6s .15s var(--ease-out) both;
-}
-.search-bar{
-  display:flex;align-items:center;gap:8px;
-  background:var(--panel);backdrop-filter:blur(20px) saturate(180%);
-  border:1.5px solid var(--border);border-radius:18px;
-  padding:8px 8px 8px 20px;
-  transition:all var(--dur) var(--ease);
-  box-shadow:var(--shadow-md);
-}
-.search-bar:focus-within{border-color:var(--primary);box-shadow:var(--shadow-lg),var(--glow-primary);transform:translateY(-2px)}
-.search-bar i.fa-magnifying-glass{color:var(--text-mute);font-size:1.05rem}
-.search-bar input{
-  flex:1;background:none;border:none;outline:none;
-  padding:14px 0;font-size:1rem;font-weight:500;color:var(--text);
-}
-.search-bar input::placeholder{color:var(--text-mute)}
-.search-bar kbd{display:none}
-@media(min-width:640px){.search-bar kbd{display:inline-flex}}
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  padding:12px 22px;border-radius:12px;font-weight:700;font-size:.92rem;
-  transition:all var(--dur) var(--ease);white-space:nowrap;cursor:pointer;
-  border:1px solid transparent;
-}
-.btn-primary{background:var(--grad-2);color:#fff;box-shadow:var(--shadow-sm),0 0 0 0 var(--primary)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:var(--shadow-md),0 0 30px rgba(138,43,226,.5)}
-.btn-primary:active{transform:translateY(0)}
-.btn-ghost{background:var(--panel);border-color:var(--border);color:var(--text-dim)}
-.btn-ghost:hover{color:var(--text);border-color:var(--border-hi);background:color-mix(in srgb,var(--panel) 80%,var(--primary) 20%)}
-.btn-sm{padding:9px 14px;font-size:.82rem;border-radius:10px}
-.btn-icon{padding:11px;width:42px;height:42px}
-
-.hero-stats{
-  display:flex;justify-content:center;gap:clamp(20px,4vw,52px);flex-wrap:wrap;
-  margin-top:44px;animation:fadeUp .6s .2s var(--ease-out) both;
-}
+.hero p{font-size:clamp(1rem,1.5vw,1.15rem);color:var(--text-dim);max-width:640px;margin:0 auto 36px}
+.hero-stats{display:flex;justify-content:center;gap:clamp(20px,4vw,52px);flex-wrap:wrap;margin-top:44px}
 .hero-stat{text-align:center}
 .hero-stat b{display:block;font-size:clamp(1.4rem,3vw,2rem);font-weight:900;background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
 .hero-stat span{font-size:.75rem;color:var(--text-mute);font-weight:600;text-transform:uppercase;letter-spacing:.1em}
 
-/* ============ MAIN ============ */
+.search-wrap{max-width:720px;margin:0 auto}
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--panel);backdrop-filter:blur(20px) saturate(180%);border:1.5px solid var(--border);border-radius:18px;padding:8px 8px 8px 20px;transition:all .3s var(--ease);box-shadow:var(--shadow-md)}
+.search-bar:focus-within{border-color:var(--primary);box-shadow:var(--shadow-lg),var(--glow-primary);transform:translateY(-2px)}
+.search-bar i.fa-magnifying-glass{color:var(--text-mute)}
+.search-bar input{flex:1;background:none;border:none;outline:none;padding:14px 0;font-size:1rem;font-weight:500;color:var(--text)}
+.search-bar input::placeholder{color:var(--text-mute)}
+.search-bar kbd{display:none}
+@media(min-width:640px){.search-bar kbd{display:inline-flex}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:12px;font-weight:700;font-size:.92rem;transition:all .3s var(--ease);white-space:nowrap;cursor:pointer;border:1px solid transparent}
+.btn-primary{background:var(--grad-2);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:var(--shadow-md),0 0 30px rgba(138,43,226,.5)}
+.btn-ghost{background:var(--panel);border-color:var(--border);color:var(--text-dim)}
+.btn-ghost:hover{color:var(--text);border-color:var(--border-hi)}
+.btn-sm{padding:9px 14px;font-size:.82rem;border-radius:10px}
+.btn-icon{padding:11px;width:42px;height:42px}
+
 .container{max-width:1440px;margin:0 auto;padding:0 clamp(16px,3vw,40px)}
 .section{padding:clamp(40px,5vw,72px) 0}
-.section-title{
-  font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-.02em;
-  margin-bottom:8px;display:flex;align-items:center;gap:12px;
-}
+.section-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:8px;display:flex;align-items:center;gap:12px}
 .section-title i{color:var(--accent);font-size:.9em}
 .section-sub{color:var(--text-dim);font-size:.95rem;margin-bottom:28px}
+.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.section-head .sh-left{flex:1;min-width:0}
 
-/* Featured strip */
-.featured-strip{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:14px;margin-bottom:24px;
-}
-.feat-card{
-  position:relative;border-radius:var(--radius-lg);overflow:hidden;
-  background:var(--panel);border:1px solid var(--border);
-  backdrop-filter:blur(10px);padding:18px;
-  transition:all var(--dur) var(--ease);
-  cursor:pointer;
-}
-.feat-card::before{
-  content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;
-  background:var(--grad-1);opacity:0;transition:opacity var(--dur);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;
-}
-.feat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
-.feat-card:hover::before{opacity:1}
+.featured-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:24px}
+.feat-card{position:relative;border-radius:var(--radius-lg);overflow:hidden;background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(10px);padding:18px;transition:all .3s var(--ease);cursor:pointer}
+.feat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--border-hi)}
 .feat-card .row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.feat-card .fi{
-  width:36px;height:36px;border-radius:10px;background:var(--grad-2);
-  display:grid;place-items:center;color:#fff;font-size:.9rem;flex-shrink:0;
-}
+.feat-card .fi{width:36px;height:36px;border-radius:10px;background:var(--grad-2);display:grid;place-items:center;color:#fff;font-size:.9rem;flex-shrink:0}
 .feat-card h4{font-size:.95rem;font-weight:700;line-height:1.2}
-.feat-card p{font-size:.8rem;color:var(--text-mute);line-height:1.4;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.feat-card p{font-size:.8rem;color:var(--text-mute);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
-/* Toolbar */
-.toolbar{
-  position:sticky;top:80px;z-index:50;
-  background:color-mix(in srgb,var(--bg-1) 85%,transparent);
-  backdrop-filter:blur(16px) saturate(180%);
-  -webkit-backdrop-filter:blur(16px) saturate(180%);
-  border:1px solid var(--border);border-radius:var(--radius-lg);
-  padding:12px;margin-bottom:20px;
-  display:flex;flex-direction:column;gap:10px;
-  box-shadow:var(--shadow-md);
-}
+.toolbar{position:sticky;top:80px;z-index:50;background:color-mix(in srgb,var(--bg-1) 85%,transparent);backdrop-filter:blur(16px) saturate(180%);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px;margin-bottom:20px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow-md)}
 .toolbar-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .chips{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:0}
-.chip{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:8px 14px;border-radius:99px;font-size:.83rem;font-weight:600;
-  background:var(--panel);border:1px solid var(--border);color:var(--text-dim);
-  transition:all var(--dur-fast) var(--ease);white-space:nowrap;
-}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:99px;font-size:.83rem;font-weight:600;background:var(--panel);border:1px solid var(--border);color:var(--text-dim);transition:all .18s var(--ease)}
 .chip:hover{color:var(--text);border-color:var(--border-hi);transform:translateY(-1px)}
 .chip.active{background:var(--grad-2);color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(138,43,226,.4)}
-.chip .ct{background:rgba(255,255,255,.15);color:inherit;font-size:.7rem;padding:1px 7px;border-radius:99px;font-weight:700}
+.chip .ct{background:rgba(255,255,255,.15);font-size:.7rem;padding:1px 7px;border-radius:99px;font-weight:700}
 .chip.active .ct{background:rgba(0,0,0,.25)}
-
 .toolbar-actions{display:flex;gap:8px;align-items:center;margin-left:auto;flex-wrap:wrap}
-.select{
-  padding:9px 14px;border-radius:10px;
-  background:var(--panel);border:1px solid var(--border);color:var(--text);
-  font-size:.83rem;font-weight:600;cursor:pointer;
-  appearance:none;padding-right:32px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a8a4c4' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 12px center;
-}
+.select{padding:9px 32px 9px 14px;border-radius:10px;background:var(--panel);border:1px solid var(--border);color:var(--text);font-size:.83rem;font-weight:600;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a8a4c4' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
 .view-toggle{display:flex;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:3px}
-.view-toggle button{
-  padding:7px 11px;border-radius:7px;color:var(--text-mute);
-  transition:all var(--dur-fast);font-size:.85rem;
-}
+.view-toggle button{padding:7px 11px;border-radius:7px;color:var(--text-mute);font-size:.85rem;transition:all .18s}
 .view-toggle button.active{background:var(--grad-1);color:#fff}
-
 .results-info{font-size:.85rem;color:var(--text-mute);font-weight:500}
 .results-info b{color:var(--text)}
-.clear-filters{
-  font-size:.8rem;color:var(--accent);font-weight:700;
-  display:inline-flex;align-items:center;gap:5px;padding:4px 0;
-}
-.clear-filters:hover{text-decoration:underline}
+.clear-filters{font-size:.8rem;color:var(--accent);font-weight:700;display:inline-flex;align-items:center;gap:5px}
 
-/* Grid */
 .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
 .grid.list-view{grid-template-columns:1fr}
 
-/* Card */
-.card{
-  position:relative;display:flex;flex-direction:column;
-  background:var(--panel);backdrop-filter:blur(10px);
-  border:1px solid var(--border);border-radius:var(--radius-lg);
-  padding:18px;overflow:hidden;
-  transition:all var(--dur) var(--ease);
-  content-visibility:auto;contain-intrinsic-size:320px 240px;
-  animation:cardIn .5s var(--ease-out) both;
-}
+.card{position:relative;display:flex;flex-direction:column;background:var(--panel);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;overflow:hidden;transition:all .3s var(--ease);content-visibility:auto;contain-intrinsic-size:320px 240px;animation:cardIn .5s var(--ease-out) both}
 @keyframes cardIn{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
-.card::before{
-  content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;
-  background:var(--grad-1);opacity:0;transition:opacity var(--dur);
-  pointer-events:none;
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;
-}
-.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:transparent}
-.card:hover::before{opacity:1}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--border-hi)}
 .card-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
-.card-icon{
-  width:44px;height:44px;border-radius:12px;flex-shrink:0;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 30%,transparent),color-mix(in srgb,var(--accent) 30%,transparent));
-  border:1px solid var(--border);
-  display:grid;place-items:center;font-size:1.1rem;
-  transition:transform var(--dur) var(--ease-bounce);
-}
+.card-icon{width:44px;height:44px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 30%,transparent),color-mix(in srgb,var(--accent) 30%,transparent));border:1px solid var(--border);display:grid;place-items:center;font-size:1.1rem;transition:transform .3s var(--ease-bounce)}
 .card:hover .card-icon{transform:scale(1.08) rotate(-4deg)}
 .card-titlewrap{flex:1;min-width:0}
-.card-title{
-  font-size:1rem;font-weight:700;line-height:1.25;
-  display:flex;align-items:center;gap:6px;
-  margin-bottom:2px;
-}
+.card-title{font-size:1rem;font-weight:700;line-height:1.25;display:flex;align-items:center;gap:6px;margin-bottom:2px}
 .card-title .verified{color:var(--accent);font-size:.8rem}
-.card-cat{
-  font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
-  color:var(--text-mute);display:flex;align-items:center;gap:5px;
-}
-.card-fav{
-  width:32px;height:32px;border-radius:9px;flex-shrink:0;
-  display:grid;place-items:center;color:var(--text-mute);font-size:.85rem;
-  transition:all var(--dur-fast);background:transparent;
-}
+.card-cat{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-mute);display:flex;align-items:center;gap:5px}
+.card-fav{width:32px;height:32px;border-radius:9px;flex-shrink:0;display:grid;place-items:center;color:var(--text-mute);font-size:.85rem;transition:all .18s}
 .card-fav:hover{background:var(--panel);color:var(--danger);transform:scale(1.1)}
 .card-fav.active{color:var(--danger);background:rgba(255,77,109,.12)}
-.card-fav.active i{animation:heart .4s var(--ease-bounce)}
-@keyframes heart{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
-
-.card-desc{
-  color:var(--text-dim);font-size:.87rem;line-height:1.55;
-  margin-bottom:14px;flex:1;
-  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
-}
+.card-desc{color:var(--text-dim);font-size:.87rem;line-height:1.55;margin-bottom:14px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .card-meta{display:flex;gap:14px;align-items:center;margin-bottom:14px;font-size:.78rem;color:var(--text-mute);font-weight:500}
 .card-meta span{display:inline-flex;align-items:center;gap:5px}
-.card-meta i{font-size:.85em;color:var(--text-mute)}
 .card-meta .rating i{color:var(--gold)}
 .card-meta .views i{color:var(--accent)}
 .card-meta .copies i{color:var(--accent-2)}
-
 .card-actions{display:flex;gap:8px}
 .card-actions .btn{flex:1}
 .card-actions .btn-icon{flex:0 0 auto}
-
-/* Badge status */
-.badge-status{
-  display:inline-flex;align-items:center;gap:5px;
-  font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:99px;
-  text-transform:uppercase;letter-spacing:.05em;
-}
+.badge-status{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:99px;text-transform:uppercase;letter-spacing:.05em}
 .badge-new{background:rgba(0,224,138,.15);color:var(--success);border:1px solid rgba(0,224,138,.3)}
 .badge-hot{background:rgba(255,180,58,.15);color:var(--warn);border:1px solid rgba(255,180,58,.3)}
 .badge-verified{background:rgba(0,217,255,.15);color:var(--accent);border:1px solid rgba(0,217,255,.3)}
-.badge-new::before,.badge-hot::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;box-shadow:0 0 6px currentColor;animation:dot 1.5s infinite}
+.badge-featured{background:rgba(255,215,106,.15);color:var(--gold);border:1px solid rgba(255,215,106,.3)}
+.badge-hot::before,.badge-featured::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;animation:dot 1.5s infinite}
 
-/* List view */
 .grid.list-view .card{flex-direction:row;align-items:center;padding:14px 18px}
 .grid.list-view .card-head{margin-bottom:0;flex-shrink:0}
 .grid.list-view .card-desc{-webkit-line-clamp:1;margin-bottom:8px}
 .grid.list-view .card-body{flex:1;min-width:0;margin:0 16px}
 .grid.list-view .card-actions{width:auto;flex-shrink:0;margin-left:auto}
-.grid.list-view .card-actions .btn{flex:0 0 auto}
 
-/* Skeleton */
 .skeleton{border-radius:var(--radius-lg);padding:18px;background:var(--panel);border:1px solid var(--border);display:flex;flex-direction:column;gap:12px}
 .sk-line{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--panel) 0%,color-mix(in srgb,var(--panel) 60%,var(--primary) 15%) 50%,var(--panel) 100%);background-size:200% 100%;animation:sk 1.4s linear infinite}
 @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.sk-line.w30{width:30%}.sk-line.w60{width:60%}.sk-line.w80{width:80%}.sk-line.w100{width:100%}.sk-line.h20{height:20px}
+.sk-line.w30{width:30%}.sk-line.w60{width:60%}.sk-line.w80{width:80%}.sk-line.w100{width:100%}
 
-/* Empty */
-.empty{
-  grid-column:1/-1;text-align:center;padding:80px 20px;
-  border:2px dashed var(--border);border-radius:var(--radius-lg);
-}
+.empty{grid-column:1/-1;text-align:center;padding:80px 20px;border:2px dashed var(--border);border-radius:var(--radius-lg)}
 .empty i{font-size:3rem;color:var(--text-mute);margin-bottom:16px;display:block}
 .empty h3{font-size:1.2rem;margin-bottom:8px}
 .empty p{color:var(--text-dim);font-size:.9rem;margin-bottom:20px}
 
-/* ============ STATS ============ */
-.stats-panel{
-  background:var(--panel);backdrop-filter:blur(16px);
-  border:1px solid var(--border);border-radius:var(--radius-xl);
-  padding:clamp(24px,4vw,44px);
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:24px;position:relative;overflow:hidden;
-}
+.stats-panel{background:var(--panel);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius-xl);padding:clamp(24px,4vw,44px);display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;position:relative;overflow:hidden}
 .stats-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad-1)}
-.stat{text-align:center;position:relative}
-.stat-ico{
-  width:56px;height:56px;margin:0 auto 14px;border-radius:16px;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 20%,transparent),color-mix(in srgb,var(--accent) 20%,transparent));
-  border:1px solid var(--border);
-  display:grid;place-items:center;font-size:1.3rem;color:var(--accent);
-}
+.stat{text-align:center}
+.stat-ico{width:56px;height:56px;margin:0 auto 14px;border-radius:16px;background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 20%,transparent),color-mix(in srgb,var(--accent) 20%,transparent));border:1px solid var(--border);display:grid;place-items:center;font-size:1.3rem;color:var(--accent)}
 .stat-num{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;line-height:1;background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px}
 .stat-lbl{font-size:.82rem;color:var(--text-mute);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
 
-/* ============ FAQ ============ */
 .faq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
-.faq{
-  background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
-  padding:0;overflow:hidden;transition:all var(--dur) var(--ease);
-  backdrop-filter:blur(10px);
-}
+.faq{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .3s var(--ease);backdrop-filter:blur(10px)}
 .faq:hover{border-color:var(--border-hi)}
-.faq summary{
-  padding:18px 20px;font-weight:700;font-size:.95rem;cursor:pointer;
-  display:flex;align-items:center;gap:12px;list-style:none;
-  transition:color var(--dur);
-}
+.faq summary{padding:18px 20px;font-weight:700;font-size:.95rem;cursor:pointer;display:flex;align-items:center;gap:12px;list-style:none}
 .faq summary::-webkit-details-marker{display:none}
-.faq summary:hover{color:var(--accent)}
-.faq summary i.q-ic{color:var(--accent);font-size:1rem}
-.faq summary .chev{margin-left:auto;color:var(--text-mute);transition:transform var(--dur) var(--ease)}
+.faq summary i.q-ic{color:var(--accent)}
+.faq summary .chev{margin-left:auto;color:var(--text-mute);transition:transform .3s}
 .faq[open] summary .chev{transform:rotate(180deg);color:var(--accent)}
-.faq-body{padding:0 20px 18px 52px;color:var(--text-dim);font-size:.88rem;line-height:1.65;animation:fadeUp .3s var(--ease-out)}
+.faq-body{padding:0 20px 18px 52px;color:var(--text-dim);font-size:.88rem;line-height:1.65}
 
-/* ============ FOOTER ============ */
-footer.site-footer{
-  margin-top:60px;padding:56px clamp(16px,3vw,40px) 32px;
-  background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--bg-2) 60%,transparent));
-  border-top:1px solid var(--border);
-}
+footer.site-footer{margin-top:60px;padding:56px clamp(16px,3vw,40px) 32px;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--bg-2) 60%,transparent));border-top:1px solid var(--border)}
 .footer-grid{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:40px}
-.footer-col h4{font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;margin-bottom:18px;color:var(--text)}
+.footer-col h4{font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;margin-bottom:18px}
 .footer-col p{font-size:.87rem;color:var(--text-dim);line-height:1.7;margin-bottom:16px;max-width:340px}
 .footer-links{display:flex;flex-direction:column;gap:10px}
-.footer-links a{font-size:.87rem;color:var(--text-dim);transition:all var(--dur-fast);display:inline-flex;align-items:center;gap:8px}
-.footer-links a i{font-size:.7rem;opacity:.6;transition:transform var(--dur-fast)}
+.footer-links a{font-size:.87rem;color:var(--text-dim);transition:all .18s;display:inline-flex;align-items:center;gap:8px}
 .footer-links a:hover{color:var(--accent);transform:translateX(4px)}
-.footer-links a:hover i{transform:translateX(2px)}
 .socials{display:flex;gap:10px;margin-top:20px}
-.soc{
-  width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
-  background:var(--panel);border:1px solid var(--border);color:var(--text-dim);
-  transition:all var(--dur) var(--ease);font-size:.95rem;
-}
-.soc:hover{background:var(--grad-2);color:#fff;transform:translateY(-4px);border-color:transparent;box-shadow:0 8px 24px rgba(138,43,226,.4)}
-.footer-bottom{
-  max-width:1440px;margin:44px auto 0;padding-top:24px;
-  border-top:1px solid var(--border);
-  display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;
-  font-size:.78rem;color:var(--text-mute);
-}
+.soc{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--panel);border:1px solid var(--border);color:var(--text-dim);transition:all .3s var(--ease)}
+.soc:hover{background:var(--grad-2);color:#fff;transform:translateY(-4px);border-color:transparent}
+.footer-bottom{max-width:1440px;margin:44px auto 0;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:.78rem;color:var(--text-mute)}
 .footer-bottom .disc{max-width:640px}
 
-/* ============ MODAL ============ */
-.modal-backdrop{
-  position:fixed;inset:0;background:rgba(5,3,15,.75);
-  backdrop-filter:blur(12px);z-index:2000;
-  display:grid;place-items:center;padding:20px;
-  opacity:0;pointer-events:none;transition:opacity var(--dur) var(--ease);
-}
+.modal-backdrop{position:fixed;inset:0;background:rgba(5,3,15,.75);backdrop-filter:blur(12px);z-index:2000;display:grid;place-items:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
 .modal-backdrop.open{opacity:1;pointer-events:auto}
-.modal{
-  width:100%;max-width:820px;max-height:90vh;
-  background:var(--panel-solid);border:1px solid var(--border);
-  border-radius:var(--radius-xl);overflow:hidden;display:flex;flex-direction:column;
-  transform:translateY(30px) scale(.97);transition:transform var(--dur) var(--ease-out);
-  box-shadow:var(--shadow-lg),var(--glow-primary);
-}
+.modal{width:100%;max-width:820px;max-height:90vh;background:var(--panel-solid);border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;display:flex;flex-direction:column;transform:translateY(30px) scale(.97);transition:transform .3s var(--ease-out);box-shadow:var(--shadow-lg),var(--glow-primary)}
 .modal-backdrop.open .modal{transform:none}
-.modal-head{
-  padding:18px 22px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:14px;
-  background:linear-gradient(180deg,color-mix(in srgb,var(--panel) 60%,transparent),transparent);
-}
-.modal-head .mi{width:40px;height:40px;border-radius:11px;background:var(--grad-2);display:grid;place-items:center;color:#fff;font-size:.95rem}
+.modal-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;background:linear-gradient(180deg,color-mix(in srgb,var(--panel) 60%,transparent),transparent)}
+.modal-head .mi{width:40px;height:40px;border-radius:11px;background:var(--grad-2);display:grid;place-items:center;color:#fff;font-size:.95rem;flex-shrink:0}
 .modal-head h3{font-size:1.05rem;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .modal-head .sub{font-size:.75rem;color:var(--text-mute);font-weight:500}
-.modal-close{
-  width:38px;height:38px;border-radius:10px;display:grid;place-items:center;
-  color:var(--text-dim);transition:all var(--dur-fast);background:var(--panel);
-}
-.modal-close:hover{color:var(--text);background:color-mix(in srgb,var(--panel) 70%,var(--danger) 20%);transform:rotate(90deg)}
-.modal-tabs{display:flex;padding:0 22px;gap:6px;border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--panel) 50%,transparent)}
-.modal-tab{
-  padding:12px 14px;font-size:.83rem;font-weight:700;color:var(--text-mute);
-  border-bottom:2px solid transparent;transition:all var(--dur-fast);
-  display:inline-flex;align-items:center;gap:7px;
-}
+.modal-close{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:var(--text-dim);transition:all .18s;background:var(--panel)}
+.modal-close:hover{color:var(--text);transform:rotate(90deg)}
+.modal-tabs{display:flex;padding:0 22px;gap:6px;border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--panel) 50%,transparent);overflow-x:auto}
+.modal-tab{padding:12px 14px;font-size:.83rem;font-weight:700;color:var(--text-mute);border-bottom:2px solid transparent;transition:all .18s;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
 .modal-tab:hover{color:var(--text)}
 .modal-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .modal-body{padding:22px;overflow-y:auto;flex:1}
 .tab-pane{display:none;animation:fadeUp .3s var(--ease-out)}
 .tab-pane.active{display:block}
-.code-block{
-  background:color-mix(in srgb,var(--bg-0) 70%,transparent);
-  border:1px solid var(--border);border-radius:var(--radius);
-  padding:18px;font-family:'JetBrains Mono',monospace;
-  font-size:.85rem;line-height:1.7;white-space:pre-wrap;word-break:break-word;
-  color:var(--text);max-height:420px;overflow:auto;
-  position:relative;
-}
-.code-block code{font-family:inherit}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.code-block{background:color-mix(in srgb,var(--bg-0) 70%,transparent);border:1px solid var(--border);border-radius:var(--radius);padding:18px;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.7;white-space:pre-wrap;word-break:break-word;color:var(--text);max-height:420px;overflow:auto}
 .info-list{display:flex;flex-direction:column;gap:10px}
 .info-list .row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:.88rem}
 .info-list .row:last-child{border-bottom:none}
 .info-list .row span:first-child{color:var(--text-mute);font-weight:600}
-.info-list .row span:last-child{font-weight:700}
-.modal-foot{
-  padding:16px 22px;border-top:1px solid var(--border);
-  display:flex;gap:10px;flex-wrap:wrap;
-  background:color-mix(in srgb,var(--panel) 50%,transparent);
-}
+
+.cmt-box{margin-top:10px}
+.cmt-form{display:flex;gap:10px;margin-bottom:12px}
+.cmt-form textarea{flex:1;min-height:80px;padding:12px;border-radius:var(--radius);background:var(--panel);border:1px solid var(--border);color:var(--text);font-size:.88rem;resize:vertical;outline:none;font-family:inherit}
+.cmt-form textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(138,43,226,.2)}
+.cmt-avatar{width:38px;height:38px;border-radius:50%;background:var(--grad-2);display:grid;place-items:center;color:#fff;font-weight:800;font-size:.85rem;flex-shrink:0}
+.cmt-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)}
+.cmt-item:last-child{border-bottom:none}
+.cmt-item .cbody{flex:1;min-width:0}
+.cmt-item .chead{display:flex;align-items:center;gap:8px;margin-bottom:4px;font-size:.82rem}
+.cmt-item .chead b{font-weight:700}
+.cmt-item .chead small{color:var(--text-mute);font-size:.72rem}
+.cmt-item .ctext{font-size:.88rem;color:var(--text-dim);line-height:1.5;word-break:break-word}
+.cmt-item .cdel{margin-left:auto;color:var(--text-mute);font-size:.75rem;padding:4px 8px;border-radius:6px}
+.cmt-item .cdel:hover{color:var(--danger);background:rgba(255,77,109,.1)}
+.cmt-empty{text-align:center;padding:32px;color:var(--text-mute);font-size:.88rem}
+
+.modal-foot{padding:16px 22px;border-top:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;background:color-mix(in srgb,var(--panel) 50%,transparent)}
 .modal-foot .btn{flex:1;min-width:130px}
 
-/* ============ TOASTS ============ */
 .toasts{position:fixed;bottom:24px;right:24px;z-index:3000;display:flex;flex-direction:column;gap:10px;pointer-events:none}
-.toast{
-  min-width:260px;max-width:360px;padding:14px 18px;
-  background:var(--panel-solid);border:1px solid var(--border);
-  border-radius:14px;box-shadow:var(--shadow-lg);
-  display:flex;align-items:center;gap:12px;font-size:.88rem;font-weight:600;
-  pointer-events:auto;
-  animation:toastIn .35s var(--ease-bounce);
-  border-left:3px solid var(--accent);
-  backdrop-filter:blur(10px);
-}
-.toast.ok{border-left-color:var(--success)}
-.toast.ok i{color:var(--success)}
-.toast.err{border-left-color:var(--danger)}
-.toast.err i{color:var(--danger)}
-.toast.warn{border-left-color:var(--warn)}
-.toast.warn i{color:var(--warn)}
+.toast{min-width:260px;max-width:360px;padding:14px 18px;background:var(--panel-solid);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:12px;font-size:.88rem;font-weight:600;pointer-events:auto;animation:toastIn .35s var(--ease-bounce);border-left:3px solid var(--accent);backdrop-filter:blur(10px)}
+.toast.ok{border-left-color:var(--success)}.toast.ok i{color:var(--success)}
+.toast.err{border-left-color:var(--danger)}.toast.err i{color:var(--danger)}
+.toast.warn{border-left-color:var(--warn)}.toast.warn i{color:var(--warn)}
 .toast i{font-size:1.1rem;color:var(--accent);flex-shrink:0}
 .toast.removing{animation:toastOut .3s var(--ease) forwards}
 @keyframes toastIn{from{opacity:0;transform:translateX(120%)}to{opacity:1;transform:none}}
 @keyframes toastOut{to{opacity:0;transform:translateX(120%)}}
 
-/* ============ COMMAND PALETTE ============ */
-.cmd-backdrop{
-  position:fixed;inset:0;background:rgba(5,3,15,.7);
-  backdrop-filter:blur(12px);z-index:2500;
-  display:flex;align-items:flex-start;justify-content:center;
-  padding:12vh 20px 20px;opacity:0;pointer-events:none;
-  transition:opacity var(--dur) var(--ease);
-}
+.cmd-backdrop{position:fixed;inset:0;background:rgba(5,3,15,.7);backdrop-filter:blur(12px);z-index:2500;display:flex;align-items:flex-start;justify-content:center;padding:12vh 20px 20px;opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
 .cmd-backdrop.open{opacity:1;pointer-events:auto}
-.cmd{
-  width:100%;max-width:600px;
-  background:var(--panel-solid);border:1px solid var(--border);
-  border-radius:var(--radius-lg);overflow:hidden;
-  box-shadow:var(--shadow-lg),var(--glow-primary);
-  transform:translateY(-20px);transition:transform var(--dur) var(--ease-out);
-}
+.cmd{width:100%;max-width:600px;background:var(--panel-solid);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg),var(--glow-primary);transform:translateY(-20px);transition:transform .3s var(--ease-out)}
 .cmd-backdrop.open .cmd{transform:none}
-.cmd-input{
-  display:flex;align-items:center;gap:12px;padding:16px 20px;
-  border-bottom:1px solid var(--border);
-}
+.cmd-input{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)}
 .cmd-input i{color:var(--text-mute)}
-.cmd-input input{flex:1;background:none;border:none;outline:none;font-size:1rem;font-weight:500;color:var(--text)}
+.cmd-input input{flex:1;background:none;border:none;outline:none;font-size:1rem;color:var(--text)}
 .cmd-list{max-height:420px;overflow-y:auto;padding:8px}
-.cmd-item{
-  padding:11px 14px;border-radius:10px;display:flex;align-items:center;gap:12px;
-  cursor:pointer;transition:background var(--dur-fast);
-}
+.cmd-item{padding:11px 14px;border-radius:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .18s}
 .cmd-item:hover,.cmd-item.active{background:var(--panel)}
 .cmd-item .ci{width:32px;height:32px;border-radius:9px;background:var(--panel);display:grid;place-items:center;color:var(--accent);font-size:.8rem;flex-shrink:0}
 .cmd-item .ct2{flex:1;min-width:0}
 .cmd-item .ct2 b{display:block;font-size:.88rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cmd-item .ct2 small{font-size:.72rem;color:var(--text-mute)}
-.cmd-item .k{font-size:.7rem;color:var(--text-mute);font-family:'JetBrains Mono',monospace}
 
-/* ============ BACK TO TOP ============ */
-.btt{
-  position:fixed;bottom:24px;left:24px;width:48px;height:48px;
-  border-radius:50%;display:grid;place-items:center;
-  background:var(--panel-solid);border:1px solid var(--border);color:var(--text);
-  z-index:900;opacity:0;pointer-events:none;transition:all var(--dur) var(--ease);
-  box-shadow:var(--shadow-md);
-}
+.btt{position:fixed;bottom:24px;left:24px;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--panel-solid);border:1px solid var(--border);color:var(--text);z-index:900;opacity:0;pointer-events:none;transition:all .3s var(--ease);box-shadow:var(--shadow-md)}
 .btt.show{opacity:1;pointer-events:auto}
-.btt:hover{transform:translateY(-4px);border-color:var(--primary);box-shadow:var(--shadow-lg),var(--glow-primary)}
-.btt svg{position:absolute;inset:0;transform:rotate(-90deg);width:48px;height:48px;pointer-events:none}
-.btt svg circle{fill:none;stroke:var(--primary);stroke-width:2;stroke-dasharray:145;stroke-dashoffset:calc(145 - (145 * var(--p,0)));transition:stroke-dashoffset .1s linear}
+.btt:hover{transform:translateY(-4px);border-color:var(--primary);box-shadow:var(--shadow-lg)}
 
-/* ============ THEME SWATCHES ============ */
-.theme-menu{
-  position:absolute;top:calc(100% + 8px);right:0;
-  background:var(--panel-solid);border:1px solid var(--border);
-  border-radius:14px;padding:10px;z-index:100;
-  min-width:200px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;
-  box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;
-  transform:translateY(-8px);transition:all var(--dur) var(--ease);
-}
+.theme-menu{position:absolute;top:calc(100% + 8px);right:0;background:var(--panel-solid);border:1px solid var(--border);border-radius:14px;padding:10px;z-index:100;min-width:200px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transform:translateY(-8px);transition:all .3s var(--ease)}
 .theme-menu.open{opacity:1;pointer-events:auto;transform:none}
-.swatch{
-  display:flex;flex-direction:column;align-items:center;gap:5px;
-  padding:8px 6px;border-radius:10px;font-size:.68rem;font-weight:700;
-  color:var(--text-dim);transition:all var(--dur-fast);cursor:pointer;
-}
+.swatch{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 6px;border-radius:10px;font-size:.68rem;font-weight:700;color:var(--text-dim);transition:all .18s}
 .swatch:hover{background:var(--panel);color:var(--text);transform:translateY(-2px)}
 .swatch.active{background:var(--panel);color:var(--accent)}
 .sw-color{width:24px;height:24px;border-radius:50%;border:2px solid var(--border-hi)}
@@ -636,93 +310,58 @@ footer.site-footer{
 [data-theme-swatch="pink"]{background:linear-gradient(135deg,#16060c,#240c14)}
 [data-theme-swatch="cyan"]{background:linear-gradient(135deg,#061216,#0c1f24)}
 
-/* ============ RESPONSIVE ============ */
-@media(max-width:1024px){
-  .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
-}
-@media(max-width:820px){
-  .nav-desktop{display:none}
-  .menu-toggle{display:grid}
-  .toolbar{top:70px}
-  .toolbar-row{gap:8px}
-  .chip{padding:7px 12px;font-size:.78rem}
-  .grid{grid-template-columns:1fr}
-  .featured-strip{grid-template-columns:1fr}
-}
-@media(max-width:640px){
-  body{font-size:14px}
-  .hero-stats{gap:24px}
-  .footer-grid{grid-template-columns:1fr;gap:28px}
-  .modal{max-height:95vh;border-radius:20px}
-  .modal-foot .btn{width:100%}
-  .toasts{left:16px;right:16px;bottom:16px}
-  .toast{min-width:0;width:100%}
-  .btt{left:16px;bottom:16px}
-  .grid.list-view .card{flex-direction:column;align-items:stretch}
-  .grid.list-view .card-body{margin:8px 0}
-  .grid.list-view .card-actions{width:100%;margin-left:0}
-}
+.user-modal{width:100%;max-width:420px;background:var(--panel-solid);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;box-shadow:var(--shadow-lg),var(--glow-primary);transform:translateY(20px);transition:transform .3s var(--ease-out)}
+.modal-backdrop.open .user-modal{transform:none}
+.user-modal h3{font-size:1.3rem;font-weight:800;margin-bottom:6px;text-align:center}
+.user-modal p{color:var(--text-dim);font-size:.88rem;text-align:center;margin-bottom:20px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:.8rem;font-weight:700;color:var(--text-dim);margin-bottom:6px}
+.form-group input{width:100%;padding:12px 14px;border-radius:12px;background:var(--panel);border:1px solid var(--border);color:var(--text);font-size:.92rem;outline:none}
+.form-group input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(138,43,226,.2)}
+.avatar-picker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.avatar-opt{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;cursor:pointer;border:2px solid transparent;transition:all .18s}
+.avatar-opt:hover{transform:scale(1.1)}
+.avatar-opt.selected{border-color:var(--accent);box-shadow:0 0 20px rgba(0,217,255,.5)}
 
-/* Mobile menu */
-.mobile-menu{
-  position:fixed;top:70px;left:0;right:0;z-index:999;
-  background:var(--panel-solid);border-bottom:1px solid var(--border);
-  padding:12px;display:none;flex-direction:column;gap:4px;
-  box-shadow:var(--shadow-lg);max-height:calc(100vh - 70px);overflow-y:auto;
-}
+.admin-badge{position:fixed;top:80px;right:20px;z-index:900;background:var(--danger);color:#fff;padding:6px 12px;border-radius:99px;font-size:.75rem;font-weight:800;box-shadow:0 4px 16px rgba(255,77,109,.5);display:none;animation:dot 2s infinite}
+.admin-badge.show{display:block}
+
+.mobile-menu{position:fixed;top:70px;left:0;right:0;z-index:999;background:var(--panel-solid);border-bottom:1px solid var(--border);padding:12px;display:none;flex-direction:column;gap:4px;box-shadow:var(--shadow-lg)}
 .mobile-menu.open{display:flex;animation:fadeUp .3s var(--ease-out)}
 .mobile-menu a{padding:14px 16px;border-radius:12px;font-weight:600;color:var(--text-dim);display:flex;align-items:center;gap:12px}
 .mobile-menu a:hover,.mobile-menu a.active{background:var(--panel);color:var(--text)}
 .mobile-menu a i{width:20px;text-align:center;color:var(--accent)}
 
-/* prefers-reduced-motion */
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
-  html{scroll-behavior:auto}
-}
+@media(max-width:1024px){.footer-grid{grid-template-columns:1fr 1fr;gap:32px}}
+@media(max-width:820px){.nav-desktop{display:none}.menu-toggle{display:grid}.grid{grid-template-columns:1fr}.featured-strip{grid-template-columns:1fr}}
+@media(max-width:640px){body{font-size:14px}.footer-grid{grid-template-columns:1fr;gap:28px}.modal{max-height:95vh}.toasts{left:16px;right:16px;bottom:16px}.toast{min-width:0;width:100%}.install-banner{left:16px;right:16px;bottom:16px;max-width:none}.grid.list-view .card{flex-direction:column;align-items:stretch}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body data-theme="dark">
 
-<!-- Background FX -->
-<div class="bg-fx" aria-hidden="true">
-  <div class="orb o1"></div>
-  <div class="orb o2"></div>
-  <div class="orb o3"></div>
-  <div class="grid-bg"></div>
-</div>
+<div class="bg-fx"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div id="scrollProgress"></div>
+<div class="admin-badge" id="adminBadge"><i class="fas fa-shield-halved"></i> MODO ADMIN</div>
 
-<!-- Scroll Progress -->
-<div id="scrollProgress" aria-hidden="true"></div>
-
-<!-- ============ HEADER ============ -->
 <header class="site-header">
-  <a href="#" class="logo" aria-label="RANOX SCRIPTS">
+  <a href="#" class="logo">
     <div class="logo-mark"><i class="fas fa-bolt"></i></div>
     <div class="logo-text">RANOX<small>SCRIPTS</small></div>
   </a>
-
-  <nav class="nav-desktop" aria-label="Principal">
+  <nav class="nav-desktop">
     <a href="#top" class="active">Home</a>
     <a href="#executores">Executores</a>
     <a href="#scripts">Scripts</a>
     <a href="#faq">FAQ</a>
-    <a href="#contato">Contato</a>
   </nav>
-
   <div class="header-actions">
-    <button class="icon-btn" id="cmdBtn" title="Busca rápida (Ctrl+K)" aria-label="Busca rápida">
-      <i class="fas fa-magnifying-glass"></i>
-    </button>
-    <button class="icon-btn" id="favBtn" title="Favoritos" aria-label="Favoritos">
-      <i class="fas fa-heart"></i>
-      <span class="badge" id="favCount" style="display:none">0</span>
-    </button>
+    <button class="icon-btn" id="cmdBtn" title="Busca rápida (Ctrl+K)"><i class="fas fa-magnifying-glass"></i></button>
+    <button class="icon-btn" id="favBtn" title="Favoritos"><i class="fas fa-heart"></i><span class="badge" id="favCount" style="display:none">0</span></button>
+    <button class="icon-btn" id="userBtn" title="Perfil"><span class="avatar" id="userAvatar">?</span></button>
     <div style="position:relative">
-      <button class="icon-btn" id="themeBtn" title="Temas" aria-label="Alterar tema">
-        <i class="fas fa-palette"></i>
-      </button>
-      <div class="theme-menu" id="themeMenu" role="menu">
+      <button class="icon-btn" id="themeBtn" title="Temas"><i class="fas fa-palette"></i></button>
+      <div class="theme-menu" id="themeMenu">
         <button class="swatch" data-theme-set="dark"><div class="sw-color" data-theme-swatch="dark"></div>Escuro</button>
         <button class="swatch" data-theme-set="light"><div class="sw-color" data-theme-swatch="light"></div>Claro</button>
         <button class="swatch" data-theme-set="green"><div class="sw-color" data-theme-swatch="green"></div>Verde</button>
@@ -734,218 +373,138 @@ footer.site-footer{
         <button class="swatch" data-theme-set="cyan"><div class="sw-color" data-theme-swatch="cyan"></div>Ciano</button>
       </div>
     </div>
-    <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Menu"><i class="fas fa-bars"></i></button>
+    <button class="icon-btn menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
   </div>
 </header>
 
-<nav class="mobile-menu" id="mobileMenu" aria-label="Menu mobile">
+<nav class="mobile-menu" id="mobileMenu">
   <a href="#top" class="active"><i class="fas fa-house"></i> Home</a>
   <a href="#executores"><i class="fas fa-rocket"></i> Executores</a>
   <a href="#scripts"><i class="fas fa-code"></i> Scripts</a>
   <a href="#faq"><i class="fas fa-circle-question"></i> FAQ</a>
-  <a href="#contato"><i class="fas fa-envelope"></i> Contato</a>
 </nav>
 
-<!-- ============ HERO ============ -->
 <main id="top">
 <section class="hero">
-  <div class="hero-badge">
-    <span class="dot"></span> Atualizado hoje às 14:32
-  </div>
+  <div class="hero-badge"><span class="dot"></span> <span id="lastUpdate">Atualizado recentemente</span></div>
   <h1>Scripts premium para <span class="grad">elevar seu jogo</span></h1>
   <p>A maior coleção curada de executores e scripts para Roblox. Tudo testado, verificado e sempre atualizado.</p>
-
   <div class="search-wrap">
     <div class="search-bar">
       <i class="fas fa-magnifying-glass"></i>
-      <input type="search" id="searchInput" placeholder="Buscar scripts, executores, jogos..." aria-label="Buscar">
+      <input type="search" id="searchInput" placeholder="Buscar scripts, executores, jogos...">
       <kbd>Ctrl K</kbd>
-      <button class="btn btn-primary" id="searchBtn">
-        <i class="fas fa-arrow-right"></i> Buscar
-      </button>
+      <button class="btn btn-primary" id="searchBtn"><i class="fas fa-arrow-right"></i> Buscar</button>
     </div>
   </div>
-
   <div class="hero-stats">
-    <div class="hero-stat"><b data-count="168">0</b><span>Scripts</span></div>
-    <div class="hero-stat"><b data-count="16">0</b><span>Executores</span></div>
+    <div class="hero-stat"><b data-count="0" id="statScripts">0</b><span>Scripts</span></div>
+    <div class="hero-stat"><b data-count="0" id="statExecutors">0</b><span>Executores</span></div>
     <div class="hero-stat"><b data-count="15" data-suffix="K+">0</b><span>Usuários</span></div>
     <div class="hero-stat"><b data-count="99" data-suffix="%">0</b><span>Uptime</span></div>
   </div>
 </section>
 
-<!-- ============ FEATURED ============ -->
-<section class="container" aria-labelledby="feat-title">
-  <h2 class="section-title" id="feat-title"><i class="fas fa-fire"></i> Em destaque</h2>
+<section class="container">
+  <h2 class="section-title"><i class="fas fa-fire"></i> Em destaque</h2>
   <p class="section-sub">Os scripts mais populares desta semana</p>
   <div class="featured-strip" id="featuredStrip"></div>
 </section>
 
-<!-- ============ CONTENT ============ -->
 <section class="container section" id="scripts">
-  <h2 class="section-title"><i class="fas fa-cube"></i> Biblioteca</h2>
-  <p class="section-sub">Navegue, filtre e encontre o script perfeito</p>
-
-  <div class="toolbar" role="toolbar">
-    <div class="toolbar-row">
-      <div class="chips" id="chips" role="tablist"></div>
+  <div class="section-head">
+    <div class="sh-left">
+      <h2 class="section-title"><i class="fas fa-cube"></i> Biblioteca</h2>
+      <p class="section-sub" style="margin-bottom:0">Navegue, filtre e encontre o script perfeito</p>
     </div>
+  </div>
+  <div class="toolbar">
+    <div class="toolbar-row"><div class="chips" id="chips"></div></div>
     <div class="toolbar-row">
-      <div class="results-info" id="resultsInfo">Mostrando <b>0</b> de <b>0</b></div>
-      <button class="clear-filters" id="clearFilters" style="display:none">
-        <i class="fas fa-xmark"></i> Limpar filtros
-      </button>
+      <div class="results-info" id="resultsInfo">Mostrando <b>0</b></div>
+      <button class="clear-filters" id="clearFilters" style="display:none"><i class="fas fa-xmark"></i> Limpar filtros</button>
       <div class="toolbar-actions">
-        <select class="select" id="sortSelect" aria-label="Ordenar">
+        <select class="select" id="sortSelect">
           <option value="popular">🔥 Mais populares</option>
           <option value="rating">⭐ Melhor avaliados</option>
           <option value="name">🔤 Nome (A-Z)</option>
           <option value="recent">🆕 Recentes</option>
         </select>
-        <div class="view-toggle" role="group" aria-label="Visualização">
-          <button data-view="grid" class="active" aria-label="Grade"><i class="fas fa-table-cells-large"></i></button>
-          <button data-view="list" aria-label="Lista"><i class="fas fa-list"></i></button>
+        <div class="view-toggle">
+          <button data-view="grid" class="active"><i class="fas fa-table-cells-large"></i></button>
+          <button data-view="list"><i class="fas fa-list"></i></button>
         </div>
       </div>
     </div>
   </div>
-
-  <div class="grid" id="grid" role="list"></div>
+  <div class="grid" id="grid"></div>
 </section>
 
-<!-- ============ STATS ============ -->
 <section class="container section" id="executores">
   <h2 class="section-title"><i class="fas fa-chart-line"></i> Comunidade em números</h2>
-  <p class="section-sub">Crescimento contínuo, sempre em evolução</p>
   <div class="stats-panel">
-    <div class="stat">
-      <div class="stat-ico"><i class="fas fa-code"></i></div>
-      <div class="stat-num" data-count="168">0</div>
-      <div class="stat-lbl">Scripts ativos</div>
-    </div>
-    <div class="stat">
-      <div class="stat-ico"><i class="fas fa-rocket"></i></div>
-      <div class="stat-num" data-count="16">0</div>
-      <div class="stat-lbl">Executores testados</div>
-    </div>
-    <div class="stat">
-      <div class="stat-ico"><i class="fas fa-users"></i></div>
-      <div class="stat-num" data-count="15" data-suffix="K+">0</div>
-      <div class="stat-lbl">Usuários ativos</div>
-    </div>
-    <div class="stat">
-      <div class="stat-ico"><i class="fas fa-shield-halved"></i></div>
-      <div class="stat-num" data-count="99" data-suffix="%">0</div>
-      <div class="stat-lbl">Livres de malware</div>
-    </div>
+    <div class="stat"><div class="stat-ico"><i class="fas fa-code"></i></div><div class="stat-num" id="statTotal">0</div><div class="stat-lbl">Scripts ativos</div></div>
+    <div class="stat"><div class="stat-ico"><i class="fas fa-rocket"></i></div><div class="stat-num" id="statExecTotal">0</div><div class="stat-lbl">Executores testados</div></div>
+    <div class="stat"><div class="stat-ico"><i class="fas fa-users"></i></div><div class="stat-num" data-count="15" data-suffix="K+">0</div><div class="stat-lbl">Usuários ativos</div></div>
+    <div class="stat"><div class="stat-ico"><i class="fas fa-shield-halved"></i></div><div class="stat-num" data-count="99" data-suffix="%">0</div><div class="stat-lbl">Livres de malware</div></div>
   </div>
 </section>
 
-<!-- ============ FAQ ============ -->
 <section class="container section" id="faq">
   <h2 class="section-title"><i class="fas fa-circle-question"></i> Perguntas frequentes</h2>
-  <p class="section-sub">Tudo que você precisa saber antes de começar</p>
   <div class="faq-grid">
-    <details class="faq">
-      <summary><i class="fas fa-terminal q-ic"></i> Como uso os scripts?<i class="fas fa-chevron-down chev"></i></summary>
-      <div class="faq-body">Você precisa de um executor compatível. Copie o código, abra o executor com o Roblox aberto, cole e execute. O script será injetado automaticamente.</div>
-    </details>
-    <details class="faq">
-      <summary><i class="fas fa-shield-halved q-ic"></i> Os scripts são seguros?<i class="fas fa-chevron-down chev"></i></summary>
-      <div class="faq-body">Todos os scripts são verificados antes de serem publicados. Ainda assim, recomendamos usar um antivírus e nunca executar scripts de fontes desconhecidas.</div>
-    </details>
-    <details class="faq">
-      <summary><i class="fas fa-triangle-exclamation q-ic"></i> Posso ser banido?<i class="fas fa-chevron-down chev"></i></summary>
-      <div class="faq-body">O uso de scripts viola os Termos de Serviço do Roblox. Existe risco. Use sempre em contas secundárias e por sua conta e risco.</div>
-    </details>
-    <details class="faq">
-      <summary><i class="fas fa-rotate q-ic"></i> Com que frequência atualizam?<i class="fas fa-chevron-down chev"></i></summary>
-      <div class="faq-body">Verificamos diariamente. Scripts quebrados são marcados ou removidos. Um script que para de funcionar volta em até 48h quando possível.</div>
-    </details>
-    <details class="faq">
-      <summary><i class="fas fa-heart q-ic"></i> Como favoritar um script?<i class="fas fa-chevron-down chev"></i></summary>
-      <div class="faq-body">Clique no ícone de coração no card do script. Seus favoritos ficam salvos no navegador e podem ser acessados no botão do coração no topo.</div>
-    </details>
-    <details class="faq">
-      <summary><i class="fas fa-download q-ic"></i> Onde baixo os executores?<i class="fas fa-chevron-down chev"></i></summary>
-      <div class="faq-body">Clique no card do executor desejado e depois em "Baixar agora". Sempre baixe dos links oficiais para evitar versões modificadas com malware.</div>
-    </details>
+    <details class="faq"><summary><i class="fas fa-terminal q-ic"></i> Como uso os scripts?<i class="fas fa-chevron-down chev"></i></summary><div class="faq-body">Você precisa de um executor compatível. Copie o código, abra o executor com o Roblox aberto, cole e execute.</div></details>
+    <details class="faq"><summary><i class="fas fa-shield-halved q-ic"></i> Os scripts são seguros?<i class="fas fa-chevron-down chev"></i></summary><div class="faq-body">Todos os scripts são verificados antes de serem publicados. Ainda assim, use antivírus e evite fontes desconhecidas.</div></details>
+    <details class="faq"><summary><i class="fas fa-triangle-exclamation q-ic"></i> Posso ser banido?<i class="fas fa-chevron-down chev"></i></summary><div class="faq-body">O uso de scripts viola os Termos de Serviço do Roblox. Existe risco. Use em contas secundárias.</div></details>
+    <details class="faq"><summary><i class="fas fa-comment q-ic"></i> Como funcionam os comentários?<i class="fas fa-chevron-down chev"></i></summary><div class="faq-body">Crie um perfil clicando no ícone do usuário no topo. Depois você pode comentar em qualquer script.</div></details>
   </div>
 </section>
 </main>
 
-<!-- ============ FOOTER ============ -->
-<footer class="site-footer" id="contato">
+<footer class="site-footer">
   <div class="footer-grid">
     <div class="footer-col">
-      <a href="#" class="logo" style="margin-bottom:16px">
-        <div class="logo-mark"><i class="fas fa-bolt"></i></div>
-        <div class="logo-text">RANOX<small>SCRIPTS</small></div>
-      </a>
-      <p>Sua fonte confiável de executores e scripts para Roblox. Curadoria diária, testes rigorosos e atualizações constantes.</p>
+      <a href="#" class="logo" style="margin-bottom:16px"><div class="logo-mark"><i class="fas fa-bolt"></i></div><div class="logo-text">RANOX<small>SCRIPTS</small></div></a>
+      <p>Sua fonte confiável de executores e scripts para Roblox. Curadoria diária, testes rigorosos.</p>
       <div class="socials">
-        <a href="https://discord.gg" target="_blank" rel="noopener" class="soc" aria-label="Discord"><i class="fab fa-discord"></i></a>
-        <a href="https://www.youtube.com/@RNOX_OFC123" target="_blank" rel="noopener" class="soc" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-        <a href="#" class="soc" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-        <a href="#" class="soc" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://discord.gg" target="_blank" rel="noopener" class="soc"><i class="fab fa-discord"></i></a>
+        <a href="https://www.youtube.com/@RNOX_OFC123" target="_blank" rel="noopener" class="soc"><i class="fab fa-youtube"></i></a>
+        <a href="#" class="soc"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="soc"><i class="fab fa-tiktok"></i></a>
       </div>
     </div>
-    <div class="footer-col">
-      <h4>Explorar</h4>
-      <div class="footer-links">
-        <a href="#executores"><i class="fas fa-chevron-right"></i> Executores</a>
-        <a href="#scripts"><i class="fas fa-chevron-right"></i> Scripts</a>
-        <a href="#scripts"><i class="fas fa-chevron-right"></i> Eventos</a>
-        <a href="#faq"><i class="fas fa-chevron-right"></i> FAQ</a>
-      </div>
-    </div>
-    <div class="footer-col">
-      <h4>Recursos</h4>
-      <div class="footer-links">
-        <a href="#"><i class="fas fa-chevron-right"></i> Instalação</a>
-        <a href="https://discord.gg" target="_blank" rel="noopener"><i class="fas fa-chevron-right"></i> Discord</a>
-        <a href="#"><i class="fas fa-chevron-right"></i> Termos de uso</a>
-        <a href="#"><i class="fas fa-chevron-right"></i> Privacidade</a>
-      </div>
-    </div>
-    <div class="footer-col">
-      <h4>Suporte</h4>
-      <div class="footer-links">
-        <a href="#"><i class="fas fa-chevron-right"></i> Central de ajuda</a>
-        <a href="#"><i class="fas fa-chevron-right"></i> Reportar problema</a>
-        <a href="#"><i class="fas fa-chevron-right"></i> Sugerir script</a>
-        <a href="#"><i class="fas fa-chevron-right"></i> Status</a>
-      </div>
-    </div>
+    <div class="footer-col"><h4>Explorar</h4><div class="footer-links"><a href="#executores"><i class="fas fa-chevron-right"></i> Executores</a><a href="#scripts"><i class="fas fa-chevron-right"></i> Scripts</a><a href="#faq"><i class="fas fa-chevron-right"></i> FAQ</a></div></div>
+    <div class="footer-col"><h4>Recursos</h4><div class="footer-links"><a href="#"><i class="fas fa-chevron-right"></i> Instalação</a><a href="#"><i class="fas fa-chevron-right"></i> Termos</a><a href="#"><i class="fas fa-chevron-right"></i> Privacidade</a></div></div>
+    <div class="footer-col"><h4>Suporte</h4><div class="footer-links"><a href="#"><i class="fas fa-chevron-right"></i> Central de ajuda</a><a href="#"><i class="fas fa-chevron-right"></i> Reportar</a><a href="#"><i class="fas fa-chevron-right"></i> Sugerir script</a></div></div>
   </div>
   <div class="footer-bottom">
     <span>© 2025 RANOX SCRIPTS. Todos os direitos reservados.</span>
-    <span class="disc">Não afiliado à Roblox Corporation. Scripts fornecidos "como estão", sem garantias. Use por sua conta e risco.</span>
+    <span class="disc">Não afiliado à Roblox Corporation. Use por conta e risco.</span>
   </div>
 </footer>
 
-<!-- ============ MODAL ============ -->
 <div class="modal-backdrop" id="modalBackdrop">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
     <div class="modal-head">
-      <div class="mi"><i class="fas fa-code"></i></div>
-      <div style="flex:1;min-width:0">
-        <h3 id="modalTitle">Script</h3>
-        <div class="sub" id="modalSub">Carregando…</div>
-      </div>
-      <button class="modal-close" id="modalClose" aria-label="Fechar"><i class="fas fa-xmark"></i></button>
+      <div class="mi" id="modalIcon"><i class="fas fa-code"></i></div>
+      <div style="flex:1;min-width:0"><h3 id="modalTitle">Script</h3><div class="sub" id="modalSub">Carregando…</div></div>
+      <button class="modal-close" id="modalClose"><i class="fas fa-xmark"></i></button>
     </div>
     <div class="modal-tabs">
       <button class="modal-tab active" data-tab="code"><i class="fas fa-code"></i> Código</button>
-      <button class="modal-tab" data-tab="info"><i class="fas fa-circle-info"></i> Informações</button>
+      <button class="modal-tab" data-tab="comments"><i class="fas fa-comments"></i> Comentários</button>
+      <button class="modal-tab" data-tab="info"><i class="fas fa-circle-info"></i> Info</button>
     </div>
     <div class="modal-body">
-      <div class="tab-pane active" data-pane="code">
-        <div class="code-block"><code id="codeContent"></code></div>
+      <div class="tab-pane active" data-pane="code"><div class="code-block"><code id="codeContent"></code></div></div>
+      <div class="tab-pane" data-pane="comments">
+        <div class="cmt-box">
+          <div class="cmt-form"><div class="cmt-avatar" id="cmtAvatar">?</div><textarea id="cmtInput" placeholder="O script funcionou? Deixe sua opinião…"></textarea></div>
+          <button class="btn btn-primary btn-sm" id="cmtSend" style="margin-bottom:16px"><i class="fas fa-paper-plane"></i> Comentar</button>
+          <div id="cmtList"></div>
+        </div>
       </div>
-      <div class="tab-pane" data-pane="info">
-        <div class="info-list" id="infoList"></div>
-      </div>
+      <div class="tab-pane" data-pane="info"><div class="info-list" id="infoList"></div></div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-primary" id="copyBtn"><i class="fas fa-copy"></i> Copiar script</button>
@@ -955,9 +514,22 @@ footer.site-footer{
   </div>
 </div>
 
-<!-- ============ COMMAND PALETTE ============ -->
+<div class="modal-backdrop" id="userBackdrop">
+  <div class="user-modal">
+    <h3>Seu perfil</h3>
+    <p>Crie um perfil local para comentar e personalizar</p>
+    <div class="form-group"><label>Nome de usuário</label><input type="text" id="userName" placeholder="Ex: PlayerPro123" maxlength="20"></div>
+    <label style="display:block;font-size:.8rem;font-weight:700;color:var(--text-dim);margin-bottom:6px">Cor do avatar</label>
+    <div class="avatar-picker" id="avatarPicker"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" id="saveUser" style="flex:1"><i class="fas fa-check"></i> Salvar</button>
+      <button class="btn btn-ghost" id="logoutUser" style="display:none"><i class="fas fa-right-from-bracket"></i></button>
+    </div>
+  </div>
+</div>
+
 <div class="cmd-backdrop" id="cmdBackdrop">
-  <div class="cmd" role="dialog" aria-modal="true">
+  <div class="cmd">
     <div class="cmd-input">
       <i class="fas fa-magnifying-glass"></i>
       <input type="text" id="cmdInput" placeholder="Buscar scripts, executores, ações…" autocomplete="off">
@@ -967,206 +539,270 @@ footer.site-footer{
   </div>
 </div>
 
-<!-- Toasts -->
-<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="install-banner" id="installBanner">
+  <div class="ib-icon"><i class="fas fa-download"></i></div>
+  <div class="ib-body"><b>Instalar RANOX</b><small>Adicione à tela inicial</small></div>
+  <button class="btn btn-primary btn-sm" id="installBtn">Instalar</button>
+  <button class="btn btn-ghost btn-sm btn-icon" id="installDismiss"><i class="fas fa-xmark"></i></button>
+</div>
 
-<!-- Back to top -->
-<button class="btt" id="btt" aria-label="Voltar ao topo">
-  <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="23"/></svg>
-  <i class="fas fa-arrow-up"></i>
-</button>
+<div class="toasts" id="toasts"></div>
+<button class="btt" id="btt"><i class="fas fa-arrow-up"></i></button>
 
 <script>
-/* ==========================================================================
-   RANOX SCRIPTS v2.0 — JavaScript
-   ========================================================================== */
-(() => {
+(function(){
 'use strict';
 
-/* ============ DATA ============ */
+/* ============================================================
+   SEUS DADOS — TODOS OS SCRIPTS (formato original)
+   ============================================================ */
 const DATA = [
-  // ---------- UNIVERSAL ----------
-  {id:1,title:"Rochips Universal",game:"Universal",desc:"Script universal com diversas funcionalidades para vários jogos.",code:'loadstring(game:HttpGet("https://glot.io/snippets/gzrux646yj/raw/main.ts"))()',cat:"universal",verified:true},
-  {id:2,title:"GhostHub",game:"Universal",desc:"Hub universal com interface moderna e diversas opções.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostPlayer352/Test4/main/GhostHub"))()',cat:"universal"},
-  {id:3,title:"Zygarde",game:"Universal",desc:"Script protegido com funcionalidades avançadas.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/louismich4el/Zygarde/main/Protected%20zygarde.lua"))()',cat:"universal"},
-  {id:4,title:"MainMenu",game:"Universal",desc:"Menu principal com scripts organizados por categoria.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/SkibidiCen/MainMenu/main/Code"))()',cat:"universal"},
-  {id:5,title:"Infinite Yield",game:"Universal",desc:"Comandos administrativos avançados com interface intuitiva.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/DarkNetworks/Infinite-Yield/main/latest.lua"))()',cat:"universal",verified:true},
-  {id:6,title:"Orca",game:"Universal",desc:"Foco em utilidades e comandos administrativos.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/richie0866/orca/master/public/latest.lua"))()',cat:"universal"},
-  {id:7,title:"ProjectPastel",game:"Universal",desc:"Hub com design colorido e diversas funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/NUTellaVING/ProjectPastel/main/Loader.lua"))()',cat:"universal"},
-  {id:8,title:"Pendulum Hub",game:"Universal",desc:"Interface moderna com scripts organizados.",code:'loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Op-PENDULUM-HUB-Gui-R6-6490"))()',cat:"universal"},
-  {id:9,title:"SCRIPTHUBV3",game:"Universal",desc:"Versão atualizada com novas funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/scripthubekitten/SCRIPTHUBV3/main/SCRIPTHUBV3"))()',cat:"universal"},
-  {id:10,title:"UTG V3",game:"Universal",desc:"Universal Trolling GUI com opções para trollar amigos.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/Blukez/Scripts/main/UTG%20V3%20RAW"))()',cat:"universal"},
-  {id:11,title:"Noname Hub",game:"Universal",desc:"Interface limpa e scripts organizados.",code:'loadstring(game:HttpGet("https://noname-hub.fun/loader.lua"))()',cat:"universal"},
-  {id:12,title:"InfiniteWare",game:"Universal",desc:"Diversas funcionalidades com interface moderna.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/Kitler69/InfiniteWare/refs/heads/main/Launcher"))()',cat:"universal"},
-  {id:13,title:"Zen Hub",game:"Universal",desc:"Hub zen com interface limpa.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/Zenhubtop/zen_hub_pr/main/zennewwwwui.lua"))()',cat:"universal"},
-  {id:14,title:"Hub Manager",game:"Universal",desc:"Gerencie e execute scripts facilmente.",code:'loadstring(game:HttpGet("https://github.com/Project-Evolution/Hub-Manager/raw/main/MainModule.lua"))()',cat:"universal"},
-  {id:15,title:"Rekt Sky Hub",game:"Universal",desc:"Interface moderna com scripts organizados.",code:'loadstring(game:HttpGet("https://github.com/KrackaYT/Rekt/raw/main/skyhubhub.lua"))()',cat:"universal"},
-  {id:16,title:"Ez Hub",game:"Universal",desc:"Hub simples e fácil de usar.",code:'loadstring(game:HttpGet("https://github.com/KrackaYT/Ez/raw/main/EzHubHub.lua"))()',cat:"universal"},
-  {id:17,title:"Dark Hub",game:"Universal",desc:"Hub com tema escuro e várias funcionalidades.",code:'loadstring(game:HttpGet("https://github.com/GalaxySpaceX9/Script/raw/main/DarkHub.lua"))()',cat:"universal"},
-  {id:18,title:"Project Evolution",game:"Universal",desc:"Hub em evolução constante.",code:'loadstring(game:HttpGet("https://github.com/Project-Evolution/Project/raw/main/MainModule.lua"))()',cat:"universal"},
-  {id:19,title:"KIWI X",game:"Universal",desc:"Interface moderna e scripts organizados.",code:'loadstring(game:HttpGet("https://github.com/AltsegoD/BasicHub/raw/main/Loader.lua"))()',cat:"universal"},
-  {id:20,title:"Hydrogen Hub",game:"Universal",desc:"Hub leve com diversas funcionalidades.",code:'loadstring(game:HttpGet("https://github.com/7Hydrogen/Hub/raw/main/MainLoader.lua"))()',cat:"universal"},
-  {id:21,title:"Fluxus Hub",game:"Universal",desc:"Hub oficial do executor Fluxus.",code:'loadstring(game:HttpGet("https://github.com/fluxteam/fluxus-hub/raw/main/MainLoader.lua"))()',cat:"universal"},
-  {id:22,title:"Arceus X Hub",game:"Universal",desc:"Hub oficial do executor Arceus X.",code:'loadstring(game:HttpGet("https://github.com/TANZ0X/Arceus-X/raw/main/MainLoader.lua"))()',cat:"universal"},
-  {id:23,title:"Synapse X Hub",game:"Universal",desc:"Hub oficial do executor Synapse X.",code:'loadstring(game:HttpGet("https://github.com/synapsehub/Synapse-X/raw/main/MainLoader.lua"))()',cat:"universal"},
-  {id:24,title:"Dark Dex",game:"Universal",desc:"Explore e modifique jogos do Roblox.",code:'loadstring(game:HttpGet("https://pastebin.com/raw/Abcd1234"))()',cat:"universal"},
-  {id:25,title:"Infinity Yield",game:"Universal",desc:"Comandos administrativos com interface moderna.",code:'loadstring(game:HttpGet("https://pastebin.com/raw/Xyz5678"))()',cat:"universal"},
-  {id:26,title:"CMD-X",game:"Universal",desc:"Comandos administrativos limpos e fáceis.",code:'loadstring(game:HttpGet("https://pastebin.com/raw/Qwerty9876"))()',cat:"universal"},
-  {id:27,title:"Universal Loader",game:"Universal",desc:"Carregador universal para scripts.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/Janorax/UniversalLoader/main/Main"))()',cat:"universal"},
-  {id:28,title:"Zap Hub",game:"Universal",desc:"Hub rápido com interface moderna.",code:'loadstring(game:HttpGet("https://zaphub.xyz/Exec"))()',cat:"universal"},
-  {id:29,title:"Rybowe Scripts",game:"Universal",desc:"Coleção organizada por categoria.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/rybowe/rybowescripts/main/release.lua"))()',cat:"universal"},
-  {id:30,title:"Fazium Loader",game:"Universal",desc:"Carregador com interface moderna.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ZaRdoOx/Fazium-files/main/Loader"))()',cat:"universal"},
+  // Scripts Universais
+  {"id": 1, "title": "Rochips Universal", "game": "Universal", "description": "Script universal com diversas funcionalidades para vários jogos.", "code": 'loadstring(game:HttpGet("https://glot.io/snippets/gzrux646yj/raw/main.ts"))()', "category": "universal"},
+  {"id": 2, "title": "GhostHub", "game": "Universal", "description": "Hub universal com interface moderna e diversas opções de scripts.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostPlayer352/Test4/main/GhostHub"))()', "category": "universal"},
+  {"id": 3, "title": "Zygarde", "game": "Universal", "description": "Script protegido com funcionalidades avançadas para diversos jogos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/louismich4el/Zygarde/main/Protected%20zygarde.lua"))()', "category": "universal"},
+  {"id": 4, "title": "MainMenu", "game": "Universal", "description": "Menu principal com diversos scripts organizados por categoria.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SkibidiCen/MainMenu/main/Code"))()', "category": "universal"},
+  {"id": 5, "title": "Infinite Yield (Universal)", "game": "Universal", "description": "Comandos administrativos avançados com interface intuitiva.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/DarkNetworks/Infinite-Yield/main/latest.lua"))()', "category": "universal", "verified": true},
+  {"id": 6, "title": "Orca (Universal)", "game": "Universal", "description": "Script universal com foco em utilidades e comandos administrativos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/richie0866/orca/master/public/latest.lua"))()', "category": "universal"},
+  {"id": 7, "title": "ProjectPastel (Universal)", "game": "Universal", "description": "Hub universal com design colorido e diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/NUTellaVING/ProjectPastel/main/Loader.lua"))()', "category": "universal"},
+  {"id": 8, "title": "Pendulum Hub (Universal)", "game": "Universal", "description": "Hub universal com interface moderna e scripts organizados.", "code": 'loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Op-PENDULUM-HUB-Gui-R6-6490"))()', "category": "universal"},
+  {"id": 9, "title": "SCRIPTHUBV3 (Universal)", "game": "Universal", "description": "Versão atualizada do ScriptHub com novas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/scripthubekitten/SCRIPTHUBV3/main/SCRIPTHUBV3"))()', "category": "universal"},
+  {"id": 10, "title": "UTG V3 (Universal)", "game": "Universal", "description": "Universal Trolling GUI com diversas opções para trollar amigos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Blukez/Scripts/main/UTG%20V3%20RAW"))()', "category": "universal"},
+  {"id": 11, "title": "Noname Hub (Universal)", "game": "Universal", "description": "Hub universal com interface limpa e scripts organizados.", "code": 'loadstring(game:HttpGet("https://noname-hub.fun/loader.lua"))()', "category": "universal"},
+  {"id": 12, "title": "InfiniteWare (Universal)", "game": "Universal", "description": "Script universal com diversas funcionalidades e interface moderna.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Kitler69/InfiniteWare/refs/heads/main/Launcher"))()', "category": "universal"},
+  {"id": 13, "title": "Zen Hub (Universal)", "game": "Universal", "description": "Hub zen com interface limpa e scripts organizados.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Zenhubtop/zen_hub_pr/main/zennewwwwui.lua"))()', "category": "universal"},
+  {"id": 14, "title": "Hub Manager", "game": "Universal", "description": "Gerenciador de hubs para organizar e executar scripts facilmente.", "code": 'loadstring(game:HttpGet("https://github.com/Project-Evolution/Hub-Manager/raw/main/MainModule.lua"))()', "category": "universal"},
+  {"id": 15, "title": "Rekt Sky Hub", "game": "Universal", "description": "Hub com interface moderna e diversos scripts organizados.", "code": 'loadstring(game:HttpGet("https://github.com/KrackaYT/Rekt/raw/main/skyhubhub.lua"))()', "category": "universal"},
+  {"id": 16, "title": "Ez Hub", "game": "Universal", "description": "Hub simples e fácil de usar com scripts organizados.", "code": 'loadstring(game:HttpGet("https://github.com/KrackaYT/Ez/raw/main/EzHubHub.lua"))()', "category": "universal"},
+  {"id": 17, "title": "Dark Hub", "game": "Universal", "description": "Hub com tema escuro e diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://github.com/GalaxySpaceX9/Script/raw/main/DarkHub.lua"))()', "category": "universal"},
+  {"id": 18, "title": "Project Evolution", "game": "Universal", "description": "Hub em evolução constante com novas funcionalidades.", "code": 'loadstring(game:HttpGet("https://github.com/Project-Evolution/Project/raw/main/MainModule.lua"))()', "category": "universal"},
+  {"id": 19, "title": "KIWI X", "game": "Universal", "description": "Hub com interface moderna e scripts organizados.", "code": 'loadstring(game:HttpGet("https://github.com/AltsegoD/BasicHub/raw/main/Loader.lua"))()', "category": "universal"},
+  {"id": 20, "title": "Hydrogen Hub", "game": "Universal", "description": "Hub leve com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://github.com/7Hydrogen/Hub/raw/main/MainLoader.lua"))()', "category": "universal"},
+  {"id": 21, "title": "Fluxus Hub", "game": "Universal", "description": "Hub oficial do executor Fluxus com scripts organizados.", "code": 'loadstring(game:HttpGet("https://github.com/fluxteam/fluxus-hub/raw/main/MainLoader.lua"))()', "category": "universal"},
+  {"id": 22, "title": "Arceus X Hub", "game": "Universal", "description": "Hub oficial do executor Arceus X.", "code": 'loadstring(game:HttpGet("https://github.com/TANZ0X/Arceus-X/raw/main/MainLoader.lua"))()', "category": "universal"},
+  {"id": 23, "title": "Synapse X Hub", "game": "Universal", "description": "Hub oficial do executor Synapse X.", "code": 'loadstring(game:HttpGet("https://github.com/synapsehub/Synapse-X/raw/main/MainLoader.lua"))()', "category": "universal"},
+  {"id": 24, "title": "Dark Dex", "game": "Universal", "description": "Ferramenta para explorar e modificar jogos do Roblox.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Abcd1234"))()', "category": "universal"},
+  {"id": 25, "title": "Infinity Yield", "game": "Universal", "description": "Comandos administrativos avançados com interface moderna.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Xyz5678"))()', "category": "universal"},
+  {"id": 26, "title": "CMD-X", "game": "Universal", "description": "Comandos administrativos com interface limpa e fácil de usar.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Qwerty9876"))()', "category": "universal"},
+  {"id": 27, "title": "Universal Loader", "game": "Universal", "description": "Carregador universal para scripts de diversos tipos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Janorax/UniversalLoader/main/Main"))()', "category": "universal"},
+  {"id": 28, "title": "Zap Hub", "game": "Universal", "description": "Hub rápido com interface moderna e scripts organizados.", "code": 'loadstring(game:HttpGet("https://zaphub.xyz/Exec"))()', "category": "universal"},
+  {"id": 29, "title": "Rybowe Scripts", "game": "Universal", "description": "Coleção de scripts organizados por categoria.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/rybowe/rybowescripts/main/release.lua"))()', "category": "universal"},
+  {"id": 30, "title": "Fazium Loader", "game": "Universal", "description": "Carregador para scripts com interface moderna.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ZaRdoOx/Fazium-files/main/Loader"))()', "category": "universal"},
+  {"id": 31, "title": "Script Luarmor", "game": "Universal", "description": "Script protegido com Luarmor para segurança adicional.", "code": 'loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/dc6d28652ef8e1fb0520e3ebbe8367f8.lua"))()', "category": "universal"},
+  {"id": 32, "title": "Script KaosX", "game": "Universal", "description": "Script com diversas funcionalidades e interface moderna.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/KaosX-Scripts/Loader/refs/heads/main/Key-yAdQ8gjds/mDuh309nvc"))()', "category": "universal"},
+  {"id": 33, "title": "Script Mars", "game": "Universal", "description": "Hub com interface moderna e scripts organizados.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/1st-Mars/Annie/main/1st.lua"))()', "category": "universal"},
+  {"id": 34, "title": "Script Speed Hub X", "game": "Universal", "description": "Hub rápido com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua"))()', "category": "universal"},
+  {"id": 35, "title": "Script Saint", "game": "Universal", "description": "Hub com interface limpa e scripts organizados.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Saintdadz7/EoSaintHub/main/Saintt.lua"))()', "category": "universal"},
+  {"id": 36, "title": "Script Rybowe", "game": "Universal", "description": "Coleção de scripts organizados por categoria.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/rybowe/rybowescripts/main/release.lua"))()', "category": "universal"},
+  {"id": 37, "title": "Script Tbao", "game": "Universal", "description": "Hub com interface moderna e scripts organizados.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/tbao143/thaibao/main/TbaoHubRivals"))()', "category": "universal"},
 
-  // ---------- GAMES ----------
-  {id:38,title:"Wrestling Legends",game:"Wrestling Legends",desc:"Script com diversas funcionalidades para Wrestling Legends.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/WrestlingLegends"))()',cat:"games"},
-  {id:39,title:"Murderers Vs Sheriffs",game:"MVS",desc:"Script com vantagens para ambos os lados.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/RenceeeX/MVSD/refs/heads/main/MurderersVsSheriffs"))()',cat:"games"},
-  {id:40,title:"BROOKHAVEN",game:"Brookhaven RP",desc:"Script com diversas funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/AstroXTeam/AstroXHubNeta/refs/heads/main/%D9%87%D9%84%D9%88.lua"))()',cat:"games"},
-  {id:41,title:"Speed-Hub (Blade Ball)",game:"Blade Ball",desc:"Autofarm e outras funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/Speed-Hub-Main-Releases-B-Y-R-E-N/refs/heads/main/Speed-Hub-Bladeball-Update-Lite-V2.txt"))()',cat:"games"},
-  {id:42,title:"R6 Animations for R15",game:"Universal",desc:"Animações R6 para avatares R15.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/Imagnir/r6_anims_for_r15/main/r6_anims.lua"))()',cat:"games"},
-  {id:43,title:"Fe Bypass",game:"Universal",desc:"Bypass para filtros em diversos jogos.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/g00lXploiter/g00lXploiter/main/Fe%20bypass"))()',cat:"games"},
-  {id:44,title:"Azure V3 (Blox Fruit)",game:"Blox Fruits",desc:"Autofarm e outras funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/BasementHub/BH-Blox-fruit/main/W-Azure-V3"))()',cat:"games",verified:true},
-  {id:45,title:"Baldy To Sorcerer",game:"Baldy's Basics",desc:"Script com diversas funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/skibiditoiletfan2007/BaldyToSorcerer/refs/heads/main/LatestV2.lua"))()',cat:"games"},
-  {id:46,title:"Skibidi Toilet War",game:"Skibidi Toilet",desc:"Vantagens e funcionalidades extras.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ExploiterGuy/Scriptblox-ExploitFin/refs/heads/main/Skibidi%20Toilet%20War"))()',cat:"games"},
-  {id:47,title:"TOILET TOWER",game:"Toilet Tower Defense",desc:"Autofarm e upgrades automáticos.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/LOLking123456/TTD/main/ToiletDefense"))()',cat:"games"},
-  {id:48,title:"Zenith Hub Knight Demons",game:"Knight Demons",desc:"Hub com diversas funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/LookP/Roblox/refs/heads/main/ZenithHub%20Knight%20Demons.lua"))()',cat:"games"},
-  {id:49,title:"Classic Nations OBF",game:"Nations",desc:"Script com diversas funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/Gamer-3/ClassicNationsOBF/refs/heads/main/latest_version.lua"))()',cat:"games"},
-  {id:50,title:"BOLA DA MORTE",game:"Bola da Morte",desc:"Vantagens e funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/kiciahook/kiciahook/refs/heads/main/loader.lua"))()',cat:"games"},
-  {id:51,title:"Burgeria Tycoon",game:"Burgeria Tycoon",desc:"Autofarm e upgrades automáticos.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ExploiterGuy/Scriptblox-ExploitFin/refs/heads/main/Burgeria%20Tycoon.txt"))()',cat:"games"},
-  {id:52,title:"DungeonRNG",game:"Dungeon RNG",desc:"Autofarm e outras funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ProjectpopCat/ywxoscripts/main/DungeonRNG231.lua"))()',cat:"games"},
-  {id:53,title:"XeraUltron (Blade Ball)",game:"Blade Ball",desc:"Script avançado com várias funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/luascriptsROBLOX/BladeBallXera/main/XeraUltron"))()',cat:"games"},
-  {id:54,title:"Anime",game:"Anime Games",desc:"Funcionalidades para diversos jogos de anime.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/LHking123456/nsX94GqZju2km/refs/heads/main/Anime"))()',cat:"games"},
-  {id:55,title:"Fish Release",game:"Fishing",desc:"Autofish e outras funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/yolobradda/fischjvrre/refs/heads/main/fishrelease"))()',cat:"games"},
-  {id:56,title:"Block Tales Auto Guard",game:"Block Tales",desc:"Auto guard e outras funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/TexRBLX/Roblox-stuff/refs/heads/main/block%20tales/Block-Tales-Auto-Guard.lua"))()',cat:"games"},
-  {id:57,title:"Damonvip",game:"Various",desc:"Script VIP com funcionalidades exclusivas.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/seagame/main/Damonvip.lua"))()',cat:"games"},
-  {id:58,title:"TOILET BATTLE",game:"Toilet Battle",desc:"Vantagens e funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/SkibidiToiletBattle"))()',cat:"games"},
-  {id:59,title:"Skinwalker Hub",game:"Various",desc:"Hub com interface moderna.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/lucas021ajds/theskinwalkerhub/main/script"))()',cat:"games"},
-  {id:60,title:"X Script",game:"Various",desc:"Funcionalidades variadas.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/NICKISBAD/RM/main/xscript.lua"))()',cat:"games"},
-  {id:61,title:"PizzeriaTycoon",game:"Pizzeria Tycoon",desc:"Autofarm e upgrades automáticos.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/PizzeriaTycoon"))()',cat:"games"},
-  {id:62,title:"NovBoatR1",game:"Boat Games",desc:"Funcionalidades para jogos de barco.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/novakoolhub/Scripts/main/Scripts/NovBoatR1"))()',cat:"games"},
-  {id:63,title:"Vapa v2 Arsenal",game:"Arsenal",desc:"Aimbot, ESP e outras vantagens.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/Nickyangtpe/Vapa-v2/refs/heads/main/Vapav2-Arsenal.lua"))()',cat:"games"},
-  {id:64,title:"PetsGo",game:"Pet Simulator",desc:"Autofarm e outras funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/RenceeeX/PetsGo/refs/heads/main/RenceeXHub"))()',cat:"games"},
-  {id:89,title:"RIVALS",game:"Rivals",desc:"Script com diversas funcionalidades.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/SkibidiCen/MainMenu/main/Code"))()',cat:"games"},
-  {id:96,title:"Arsenal Pro",game:"Arsenal",desc:"Aimbot, ESP e outras vantagens.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/Theyfwdan/Theyfwdan/refs/heads/main/ExpressHubPaidVersion"))()',cat:"games"},
-  {id:124,title:"GROW A GARDEN",game:"Grow a Garden",desc:"Script com diversas funcionalidades.",code:'loadstring(game:HttpGet("https://lunor.dev/loader"))()',cat:"games",hot:true},
-  {id:132,title:"ROUBE UM BRAINROT",game:"Roube um Brainrot",desc:"Script atualizado para o jogo.",code:'loadstring(game:HttpGet("https://pastefy.app/ebI6lwxc/raw"))()',cat:"games",hot:true},
-  {id:133,title:"99 Nights In Forest",game:"99 Nights In Forest",desc:"Script principal para o jogo.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/mynamewendel-ctrl/Blessed-Hub-X-/refs/heads/main/99-Nights-In-Forest.lua"))()',cat:"games",hot:true},
-  {id:134,title:"Plants vs Brainrots",game:"Plants vs Brainrot",desc:"Loader atualizado para o jogo.",code:'loadstring(game:HttpGet("https://rifton.top/loader.lua"))()',cat:"games",hot:true},
-  {id:135,title:"Blox Fruits (Styxz)",game:"Blox Fruits",desc:"Script Styxz para Blox Fruits.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToshyWare/StyxzHub/main/Styxz.lua"))()',cat:"games"},
-  {id:160,title:"Roube um Brainrot (Alt)",game:"Plants vs Brainrot",desc:"Alternativa para Plants vs Brainrot.",code:'loadstring(game:HttpGet("https://pastefy.app/ebI6lwxc/raw"))()',cat:"games"},
-  {id:162,title:"99 Nights (VW-Add)",game:"99 Nights In Forest",desc:"Versão VW-Add para 99 Nights.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VW-Add/main/nightsintheforest.lua", true))()',cat:"games"},
-  {id:163,title:"Solvex GUI - 99 Nights",game:"99 Nights In Forest",desc:"Interface Solvex para 99 Nights.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/Solvexxxx/Scripts/refs/heads/main/SolvexGUI99nights.lua"))()',cat:"games"},
-  {id:165,title:"Koronis Hub",game:"Murder Mystery 2",desc:"Loader oficial do Koronis Hub.",code:'loadstring(game:HttpGet("https://koronis.xyz/hub.lua"))()',cat:"games",verified:true},
+  // Scripts de Jogos
+  {"id": 38, "title": "Wrestling Legends", "game": "Wrestling Legends", "description": "Script para Wrestling Legends com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/WrestlingLegends"))()', "category": "games"},
+  {"id": 39, "title": "MurderersVsSheriffs", "game": "Murderers Vs Sheriffs", "description": "Script para Murderers Vs Sheriffs com vantagens para ambos os lados.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/RenceeeX/MVSD/refs/heads/main/MurderersVsSheriffs"))()', "category": "games"},
+  {"id": 40, "title": "BROOKHAVEN", "game": "Brookhaven", "description": "Script para Brookhaven RP com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/AstroXTeam/AstroXHubNeta/refs/heads/main/%D9%87%D9%84%D9%88.lua"))()', "category": "games"},
+  {"id": 41, "title": "Speed-Hub (Blade Ball)", "game": "Blade Ball", "description": "Hub para Blade Ball com autofarm e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Speed-Hub-Main-Releases-B-Y-R-E-N/refs/heads/main/Speed-Hub-Bladeball-Update-Lite-V2.txt"))()', "category": "games"},
+  {"id": 42, "title": "R6 Animations for R15", "game": "Universal", "description": "Animações R6 para avatares R15 em qualquer jogo.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Imagnir/r6_anims_for_r15/main/r6_anims.lua"))()', "category": "games"},
+  {"id": 43, "title": "Fe Bypass", "game": "Universal", "description": "Bypass para filtros em diversos jogos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/g00lXploiter/g00lXploiter/main/Fe%20bypass"))()', "category": "games"},
+  {"id": 44, "title": "Azure V3 (Blox Fruit)", "game": "Blox Fruits", "description": "Script avançado para Blox Fruits com autofarm e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/BasementHub/BH-Blox-fruit/main/W-Azure-V3"))()', "category": "games"},
+  {"id": 45, "title": "Baldy To Sorcerer", "game": "Baldy's Basics", "description": "Script para Baldy's Basics com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/skibiditoiletfan2007/BaldyToSorcerer/refs/heads/main/LatestV2.lua"))()', "category": "games"},
+  {"id": 46, "title": "Skibidi Toilet War", "game": "Skibidi Toilet", "description": "Script para Skibidi Toilet War com vantagens e funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ExploiterGuy/Scriptblox-ExploitFin/refs/heads/main/Skibidi%20Toilet%20War"))()', "category": "games"},
+  {"id": 47, "title": "TOILET TOWER", "game": "Toilet Tower Defense", "description": "Script para Toilet Tower Defense com autofarm e upgrades automáticos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/LOLking123456/TTD/main/ToiletDefense"))()', "category": "games"},
+  {"id": 48, "title": "Zenith Hub Knight Demons", "game": "Knight Demons", "description": "Hub para Knight Demons com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/LookP/Roblox/refs/heads/main/ZenithHub%20Knight%20Demons.lua"))()', "category": "games"},
+  {"id": 49, "title": "Classic Nations OBF", "game": "Nations", "description": "Script para Nations com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Gamer-3/ClassicNationsOBF/refs/heads/main/latest_version.lua"))()', "category": "games"},
+  {"id": 50, "title": "BOLA DA MORTE", "game": "Bola da Morte", "description": "Script para Bola da Morte com vantagens e funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/kiciahook/kiciahook/refs/heads/main/loader.lua"))()', "category": "games"},
+  {"id": 51, "title": "Burgeria Tycoon", "game": "Burgeria Tycoon", "description": "Script para Burgeria Tycoon com autofarm e upgrades automáticos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ExploiterGuy/Scriptblox-ExploitFin/refs/heads/main/Burgeria%20Tycoon.txt"))()', "category": "games"},
+  {"id": 52, "title": "DungeonRNG", "game": "Dungeon RNG", "description": "Script para Dungeon RNG com autofarm e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ProjectpopCat/ywxoscripts/main/DungeonRNG231.lua"))()', "category": "games"},
+  {"id": 53, "title": "XeraUltron (Blade Ball)", "game": "Blade Ball", "description": "Script avançado para Blade Ball com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/luascriptsROBLOX/BladeBallXera/main/XeraUltron"))()', "category": "games"},
+  {"id": 54, "title": "Anime", "game": "Anime Games", "description": "Script para diversos jogos de anime com funcionalidades específicas.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/LHking123456/nsX94GqZju2km/refs/heads/main/Anime"))()', "category": "games"},
+  {"id": 55, "title": "Fish Release", "game": "Fishing Games", "description": "Script para jogos de pesca com autofish e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/yolobradda/fischjvrre/refs/heads/main/fishrelease"))()', "category": "games"},
+  {"id": 56, "title": "Block Tales Auto Guard (Block Tales)", "game": "Block Tales", "description": "Script para Block Tales com auto guard e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/TexRBLX/Roblox-stuff/refs/heads/main/block%20tales/Block-Tales-Auto-Guard.lua"))()', "category": "games"},
+  {"id": 57, "title": "Damonvip", "game": "Various Games", "description": "Script VIP para diversos jogos com funcionalidades exclusivas.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/seagame/main/Damonvip.lua"))()', "category": "games"},
+  {"id": 58, "title": "TOILET BATTLE", "game": "Toilet Battle", "description": "Script para Toilet Battle com vantagens e funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/SkibidiToiletBattle"))()', "category": "games"},
+  {"id": 59, "title": "Skinwalker Hub", "game": "Various Games", "description": "Hub para diversos jogos com interface moderna.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/lucas021ajds/theskinwalkerhub/main/script"))()', "category": "games"},
+  {"id": 60, "title": "X Script", "game": "Various Games", "description": "Script para diversos jogos com funcionalidades variadas.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/NICKISBAD/RM/main/xscript.lua"))()', "category": "games"},
+  {"id": 61, "title": "PizzeriaTycoon", "game": "Pizzeria Tycoon", "description": "Script para Pizzeria Tycoon com autofarm e upgrades automáticos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/PizzeriaTycoon"))()', "category": "games"},
+  {"id": 62, "title": "NovBoatR1", "game": "Boat Games", "description": "Script para jogos de barco com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/novakoolhub/Scripts/main/Scripts/NovBoatR1"))()', "category": "games"},
+  {"id": 63, "title": "Vapa v2 Arsenal (Roblox Arsenal)", "game": "Arsenal", "description": "Script para Arsenal com aimbot, ESP e outras vantagens.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Nickyangtpe/Vapa-v2/refs/heads/main/Vapav2-Arsenal.lua"))()', "category": "games"},
+  {"id": 64, "title": "PetsGo (Pet Simulator)", "game": "Pet Simulator", "description": "Script para Pet Simulator com autofarm e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/RenceeeX/PetsGo/refs/heads/main/RenceeXHub"))()', "category": "games"},
+  {"id": 65, "title": "SCRIPTS BROOKHAVEN", "game": "Brookhaven", "description": "Scripts diversos para Brookhaven RP.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/FLY/refs/heads/main/%40yahoo.com"))()', "category": "games"},
+  {"id": 66, "title": "RNG SCRIPTS", "game": "RNG Games", "description": "Scripts para diversos jogos RNG.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/Inf/refs/heads/main/Samuel"))()', "category": "games"},
+  {"id": 67, "title": "BLOX FRUITS SCRIPTS", "game": "Blox Fruits", "description": "Scripts diversos para Blox Fruits.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/NOCLIP/refs/heads/main/Slk"))()', "category": "games"},
+  {"id": 68, "title": "PETS GO! SCRIPTS", "game": "Pets Go", "description": "Scripts diversos para Pets Go.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/-829-1-9IWN1O/refs/heads/main/Saia%20e%20n%C3%A3o%20roube%20minha%20URL"))()', "category": "games"},
+  {"id": 69, "title": "BLADE BALL SCRIPTS", "game": "Blade Ball", "description": "Scripts diversos para Blade Ball.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/SUPER-OP/refs/heads/main/AOPA%20D%20BOA%20MEU%20CHAPA"))()', "category": "games"},
+  {"id": 70, "title": "Aimbot", "game": "FPS Games", "description": "Aimbot para diversos jogos FPS.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Zxcv5432"))()', "category": "games"},
+  {"id": 71, "title": "ESP Script", "game": "FPS Games", "description": "ESP para ver jogadores através das paredes.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Lkjhg0987"))()', "category": "games"},
+  {"id": 72, "title": "Fly Script", "game": "Various Games", "description": "Script para voar em diversos jogos.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Jhgf7654"))()', "category": "games"},
+  {"id": 73, "title": "Wallhack Script", "game": "FPS Games", "description": "Wallhack para ver através das paredes.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Nbvcx4321"))()', "category": "games"},
+  {"id": 74, "title": "Speed Script", "game": "Various Games", "description": "Script para aumentar a velocidade do personagem.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Mnbv0987"))()', "category": "games"},
+  {"id": 75, "title": "Btools Script", "game": "Building Games", "description": "Ferramentas de construção para diversos jogos.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Plok1234"))()', "category": "games"},
+  {"id": 76, "title": "Noclip Script", "game": "Various Games", "description": "Script para atravessar paredes e objetos.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Qwas5678"))()', "category": "games"},
+  {"id": 77, "title": "Teleport Script", "game": "Various Games", "description": "Script para teletransporte em diversos jogos.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Uioz4321"))()', "category": "games"},
+  {"id": 78, "title": "Super Jump Script", "game": "Various Games", "description": "Script para pulo aumentado em diversos jogos.", "code": 'loadstring(game:HttpGet("https://pastebin.com/raw/Edrf0987"))()', "category": "games"},
+  {"id": 79, "title": "EatWorld Script", "game": "Eat World", "description": "Script para Eat World com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/EatWorld"))()', "category": "games"},
+  {"id": 80, "title": "Eat the World Script", "game": "Eat the World", "description": "Script para Eat the World com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Kenniel123/Eat-the-World-script/main/Eat%20the%20world%20Script"))()', "category": "games"},
+  {"id": 81, "title": "Horse Race Script", "game": "Horse Race", "description": "Script para Horse Race com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/HorseRace"))()', "category": "games"},
+  {"id": 82, "title": "Anime RNG TD", "game": "Anime RNG TD", "description": "Script para Anime RNG TD com autofarm e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/AnimeRNGTD"))()', "category": "games"},
+  {"id": 83, "title": "Legends of Speed", "game": "Legends of Speed", "description": "Script para Legends of Speed com autofarm e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/WhackyCode/SPEEDDEVIL/main/legendsofspeed.lua"))()', "category": "games"},
+  {"id": 84, "title": "Block Tales Auto Guard", "game": "Block Tales", "description": "Script para Block Tales com auto guard e outras funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/TexRBLX/Roblox-stuff/refs/heads/main/block%20tales/Block-Tales-Auto-Guard.lua"))()', "category": "games"},
+  {"id": 85, "title": "Neox Hub Fisch", "game": "Fishing Games", "description": "Hub para jogos de pesca com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/hassanxzayn-lua/neoxhubfisch1.3/refs/heads/main/script"))()', "category": "games"},
+  {"id": 86, "title": "HADE'S RNG", "game": "Hade's RNG", "description": "Script para Hade's RNG com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/HadesRNG"))()', "category": "games"},
+  {"id": 87, "title": "ExploiterGuy Script", "game": "Various Games", "description": "Script para diversos jogos com funcionalidades variadas.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ExploiterGuy/FBC/refs/heads/main/Protected_4190755030019270.txt"))()', "category": "games"},
+  {"id": 88, "title": "LHking Script", "game": "Various Games", "description": "Script para diversos jogos com funcionalidades variadas.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/LHking123456/n4dgW8TF7rNyL/refs/heads/main/Sols"))()', "category": "games"},
+  {"id": 89, "title": "RIVALS", "game": "Rivals", "description": "Script para Rivals com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SkibidiCen/MainMenu/main/Code"))()', "category": "games"},
+  {"id": 90, "title": "TITAN CLASH ONLINE", "game": "Titan Clash Online", "description": "Script para Titan Clash Online com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/Keykeykeykey939393---oq8IVS8uV8VUriVu/refs/heads/main/FgDIBTViVdKCKbYjcTg"))()', "category": "games"},
+  {"id": 91, "title": "BLADE SLAYER", "game": "Blade Slayer", "description": "Script para Blade Slayer com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/1BladeSlayer"))()', "category": "games"},
+  {"id": 92, "title": "MUSCLE-LEGENDS 2024", "game": "Muscle Legends", "description": "Script para Muscle Legends 2024 com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua"))()', "category": "games"},
+  {"id": 93, "title": "JULES RNG", "game": "Jules RNG", "description": "Script para Jules RNG com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/wasduiop/JUULScript/refs/heads/main/JUUL%20SPullaSword"))()', "category": "games"},
+  {"id": 94, "title": "My Restaurante", "game": "My Restaurante", "description": "Script para My Restaurante com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://gist.githubusercontent.com/SpencerDevv/4127570215e413bf8ab4e074791bcf45/raw/78b977974b36e2d5cde7a28dab7f9a464dd1a2c1/betaV5"))()', "category": "games"},
+  {"id": 95, "title": "PullaSword", "game": "Pulla Sword", "description": "Script para Pulla Sword com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/PullaSword"))()', "category": "games"},
+  {"id": 96, "title": "Arsenal", "game": "Arsenal", "description": "Script para Arsenal com aimbot, ESP e outras vantagens.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Theyfwdan/Theyfwdan/refs/heads/main/ExpressHubPaidVersion"))()', "category": "games"},
+  {"id": 97, "title": "Assassinos Vs Xerifes", "game": "Assassinos Vs Xerifes", "description": "Script para Assassinos Vs Xerifes com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Sheeshablee73/Scriptss/main/MVSD%20UPD2.lua"))()', "category": "games"},
+  {"id": 98, "title": "FLEX YOUR FPS SCRIPT", "game": "Various Games", "description": "Script para melhorar FPS em diversos jogos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/v-oidd/flex-your-fps-script/main/script"))()', "category": "games"},
+  {"id": 99, "title": "RENZXW-SCRIPTS", "game": "Various Games", "description": "Scripts diversos para vários jogos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/RENZXW/RENZXW-SCRIPTS/refs/heads/main/renz%20hub.txt"))()', "category": "games"},
+  {"id": 100, "title": "Every Clicker +1 JUMP", "game": "Clicker Games", "description": "Script para clicker games com pulo automático.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/Key2/refs/heads/main/Key"))()', "category": "games"},
+  {"id": 101, "title": "Race Clicker", "game": "Race Clicker", "description": "Script para Race Clicker com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/2.0"))()', "category": "games"},
+  {"id": 102, "title": "DRIVING EMPIRE", "game": "Driving Empire", "description": "Script para Driving Empire com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/CasperFlyModz/discord.gg-rips/main/DrivingEmpire.lua"))()', "category": "games"},
+  {"id": 103, "title": "Vehicle Legends", "game": "Vehicle Legends", "description": "Script para Vehicle Legends com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Marco8642/science/main/Vehicle%20legends"))()', "category": "games"},
+  {"id": 104, "title": "Vehicle Legends 2", "game": "Vehicle Legends", "description": "Script atualizado para Vehicle Legends.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/KeySystem/refs/heads/main/123"))()', "category": "games"},
+  {"id": 105, "title": "PONTE DE VIDRO 2 impossível SQUID", "game": "Ponte de Vidro", "description": "Script para Ponte de Vidro 2 com vantagens.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/00wuua"))()', "category": "games"},
+  {"id": 106, "title": "MILLIONAIRE-EMPIRE-TYCOON💯", "game": "Millionaire Empire Tycoon", "description": "Script para Millionaire Empire Tycoon com autofarm.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/MILLIONAIRE"))()', "category": "games"},
+  {"id": 107, "title": "PONTE DE VIDRO 1M", "game": "Ponte de Vidro", "description": "Script para Ponte de Vidro 1M com vantagens.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/Ponte%20de%20vidro%202%20flopada"))()', "category": "games"},
+  {"id": 108, "title": "FINISH TREINING", "game": "Fish Training", "description": "Script para Fish Training com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/gumanba/Scripts/main/FishTraining"))()', "category": "games"},
+  {"id": 109, "title": "DrillDigging", "game": "Drill Digging", "description": "Script para Drill Digging com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/gumanba/Scripts/main/DrillDigging"))()', "category": "games"},
+  {"id": 110, "title": "DeadRails", "game": "Dead Rails", "description": "Script para Dead Rails com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/gumanba/Scripts/main/DeadRails"))()', "category": "games"},
+  {"id": 111, "title": "MurderersVsSheriffs", "game": "Murderers Vs Sheriffs", "description": "Script para Murderers Vs Sheriffs com vantagens.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/FabsKebabs/mvss/refs/heads/main/mvss"))()', "category": "games"},
+  {"id": 112, "title": "MurderersVsSheriffs", "game": "Murderers Vs Sheriffs", "description": "Outro script para Murderers Vs Sheriffs.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SHipRoX/ALL-SCRIPT/refs/heads/main/SHipRoXScript%20Obfuscated"))()', "category": "games"},
+  {"id": 113, "title": "DEAD RAILS", "game": "Dead Rails", "description": "Script para Dead Rails com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/%22%2C%204483362458"))()', "category": "games"},
+  {"id": 114, "title": "Suviver The Killer", "game": "Survivor The Killer", "description": "Script para Survivor The Killer com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Milan08Studio/ChairWare/main/main.lua"))()', "category": "games"},
+  {"id": 115, "title": "Math Murder", "game": "Math Murder", "description": "Script para Math Murder com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/gumanba/Scripts/main/MathMurder"))()', "category": "games"},
+  {"id": 116, "title": "RANOX: FFA - Everyone Against Everyone", "game": "Ranox FFA", "description": "Script para Ranox FFA com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/PYRO0%251%2519157190"))()', "category": "games"},
+  {"id": 117, "title": "DOGS OFF WAR (WW2)", "game": "Dogs of War", "description": "Script para Dogs of War com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/JOGO%20DE%20GUERRA"))()', "category": "games"},
+  {"id": 118, "title": "PONTE DE VIDRO impossível (JOGO DE LULA)", "game": "Ponte de Vidro", "description": "Script para Ponte de Vidro impossível.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/RANOX"))()', "category": "games"},
+  {"id": 119, "title": "PONTE DE VIDRO (PRO)", "game": "Ponte de Vidro", "description": "Script profissional para Ponte de Vidro.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/INTERFACE-RNOX-HUB"))()', "category": "games"},
+  {"id": 120, "title": "CROSSOVER SCRIPT (1)", "game": "Crossover", "description": "Script para Crossover com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/defnotry/devry-hub/main/arise-crossover/main.lua"))()', "category": "games"},
+  {"id": 121, "title": "CROSSOVER SCRIPT (2)", "game": "Crossover", "description": "Outro script para Crossover.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/perfectusmim1/script/refs/heads/main/crossover"))()', "category": "games"},
+  {"id": 122, "title": "RANOXSPY🛰", "game": "Ranox Spy", "description": "Script para Ranox Spy com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/F%20%3D%20S%202%20%3D%5B9%5D"))()', "category": "games"},
+  {"id": 123, "title": "CLIMB AND JUMP TOWER🪂 v1.0", "game": "Climb and Jump Tower", "description": "Script para Climb and Jump Tower.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/gumanba/Scripts/main/ClimbandJump"))()', "category": "games"},
+  {"id": 124, "title": "GROW A GARDEN🌟", "game": "Grow a Garden", "description": "Script para Grow a Garden com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://lunor.dev/loader"))()', "category": "games"},
+  {"id": 125, "title": "LOCAL OBJETOS DETECTO 🏠", "game": "Various Games", "description": "Script para detectar objetos em diversos jogos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/Library"))()', "category": "games"},
+  {"id": 126, "title": "CHEAT X v1.0✨️", "game": "Various Games", "description": "Cheat X para diversos jogos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/I2i8288"))()', "category": "games"},
+  {"id": 127, "title": "QUANTUM SPY🛸", "game": "Various Games", "description": "Quantum Spy para diversos jogos.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/HttpGet"))()', "category": "games"},
+  {"id": 128, "title": "Hypershot⚡️ (Luta de armas)", "game": "Hypershot", "description": "Script para Hypershot com diversas funcionalidades.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/.lua/refs/heads/main/index.lua"))()', "category": "games"},
+  {"id": 129, "title": "CLIMB AND SLIDE 🛥", "game": "Climb and Slide", "description": "Script para Climb and Slide.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/157190123"))()', "category": "games"},
+  {"id": 130, "title": "The $1.000.000 Jump Rope 💰", "game": "Jump Rope", "description": "Script para The $1.000.000 Jump Rope.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/%5B%5D)(%5D%5B%5D"))()', "category": "games"},
+  {"id": 131, "title": "COLONY SURVIVAL 🧟", "game": "Colony Survival", "description": "Script para Colony Survival.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/SAMUCARARONOB/0-/refs/heads/main/f.1.b3.lua"))()', "category": "games"},
+  {"id": 132, "title": "ROUBE UM BRAINROT ✨", "game": "Roube um Brainrot", "description": "Script para Roube um Brainrot.", "code": 'loadstring(game:HttpGet("https://pastefy.app/ebI6lwxc/raw"))()', "category": "games"},
+  {"id": 133, "title": "99 Nights In Forest 🌲", "game": "99 Nights In Forest", "description": "Script para 99 Nights In Forest.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/mynamewendel-ctrl/Blessed-Hub-X-/refs/heads/main/99-Nights-In-Forest.lua"))()', "category": "games"},
+  {"id": 134, "title": "Plants vs Brainrots 🧠", "game": "Plants vs Brainrots", "description": "Script para Plants vs Brainrots.", "code": 'loadstring(game:HttpGet("https://rifton.top/loader.lua"))()', "category": "games"},
+  {"id": 135, "title": "Blox Fruits (Styxz) ⚡", "game": "Blox Fruits", "description": "Script Styxz para Blox Fruits.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToshyWare/StyxzHub/main/Styxz.lua"))()', "category": "games"},
+  {"id":160, "title":"Roube um Brainrot 🧠", "game":"Plants vs Brainrot", "description":"Script principal para o jogo Plants vs Brainrot.", "code":"loadstring(game:HttpGet(\"https://pastefy.app/ebI6lwxc/raw\"))()", "category":"games"},
+  {"id":161, "title":"99 Nights In Forest 🌲", "game":"99 Nights In Forest", "description":"Script principal para o jogo 99 Nights In Forest.", "code":"loadstring(game:HttpGet(\"https://raw.githubusercontent.com/mynamewendel-ctrl/Blessed-Hub-X-/refs/heads/main/99-Nights-In-Forest.lua\"))()", "category":"games"},
+  {"id":162, "title":"99 Nights In Forest (VW-Add) 🌲", "game":"99 Nights In Forest", "description":"Versão alternativa VW-Add do script para 99 Nights In Forest.", "code":"loadstring(game:HttpGet(\"https://raw.githubusercontent.com/VapeVoidware/VW-Add/main/nightsintheforest.lua\", true))()", "category":"games"},
+  {"id":163, "title":"Solvex GUI - 99 Nights 🌙", "game":"99 Nights In Forest", "description":"Interface Solvex GUI para o jogo 99 Nights In Forest.", "code":"loadstring(game:HttpGet(\"https://raw.githubusercontent.com/Solvexxxx/Scripts/refs/heads/main/SolvexGUI99nights.lua\"))()", "category":"games"},
+  {"id":164, "title":"Plants vs Brainrots 🌿", "game":"Plants vs Brainrot", "description":"Loader atualizado para o jogo Plants vs Brainrot.", "code":"loadstring(game:HttpGet(\"https://rifton.top/loader.lua\"))()", "category":"games"},
+  {"id":165, "title":"Koronis Hub 💫", "game":"Murder Mystery 2", "description":"Loader oficial do Koronis Hub para Murder Mystery 2.", "code":"loadstring(game:HttpGet(\"https://koronis.xyz/hub.lua\"))()", "category":"games"},
 
-  // ---------- EVENTS ----------
-  {id:136,title:"UGC SANTA SUIT",game:"Evento de Natal",desc:"Obtenha a roupa de Santa no UGC.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/SantaSuit"))()',cat:"events"},
-  {id:137,title:"Sonic EVENT",game:"Evento de Inverno",desc:"Script do evento de inverno do Sonic.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/SonicWinter"))()',cat:"events"},
-  {id:138,title:"Royale EVENT",game:"Royale High",desc:"Evento de inverno do Royale High.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/RoyaleHighWinter"))()',cat:"events"},
-  {id:139,title:"War Tycoon EVENT",game:"War Tycoon",desc:"Evento de inverno do War Tycoon.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/WarTycoonWinter"))()',cat:"events"},
-  {id:140,title:"Driving Empire EVENT",game:"Driving Empire",desc:"Evento de inverno do Driving Empire.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/DrivingEmpireWinter"))()',cat:"events"},
-  {id:141,title:"Greenville EVENT",game:"Greenville",desc:"Evento de inverno do Greenville.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/GreenvilleWinter"))()',cat:"events"},
-  {id:142,title:"DressToImpress EVENT",game:"Dress To Impress",desc:"Evento de inverno do Dress To Impress.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/DressToImpressWinter"))()',cat:"events"},
-  {id:143,title:"Warrior Cat EVENT",game:"Warrior Cat",desc:"Evento de inverno do Warrior Cat.",code:'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/WarriorCatsWinter"))()',cat:"events"},
+  // Scripts de Eventos
+  {"id": 136, "title": "🎁UGC SANTA SUIT", "game": "Evento de Natal", "description": "Script para obter a roupa de Santa no UGC.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/SantaSuit"))()', "category": "events"},
+  {"id": 137, "title": "Sonic EVENT🎅", "game": "Evento de Inverno Sonic", "description": "Script para o evento de inverno do Sonic.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/SonicWinter"))()', "category": "events"},
+  {"id": 138, "title": "Royale EVENT🎅", "game": "Evento de Inverno Royale High", "description": "Script para o evento de inverno do Royale High.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/RoyaleHighWinter"))()', "category": "events"},
+  {"id": 139, "title": "War Tycoon EVENT🎅", "game": "Evento de Inverno War Tycoon", "description": "Script para o evento de inverno do War Tycoon.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/WarTycoonWinter"))()', "category": "events"},
+  {"id": 140, "title": "Driving Empire EVENT🎅", "game": "Evento de Inverno Driving Empire", "description": "Script para o evento de inverno do Driving Empire.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/DrivingEmpireWinter"))()', "category": "events"},
+  {"id": 141, "title": "Greenville EVENT🎅", "game": "Evento de Inverno Greenville", "description": "Script para o evento de inverno do Greenville.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/GreenvilleWinter"))()', "category": "events"},
+  {"id": 142, "title": "DressToImpress EVENT🎅", "game": "Evento de Inverno DressToImpress", "description": "Script para o evento de inverno do DressToImpress.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/DressToImpressWinter"))()', "category": "events"},
+  {"id": 143, "title": "Warrior Cat EVENT🎅", "game": "Evento de Inverno Warrior Cat", "description": "Script para o evento de inverno do Warrior Cat.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/WarriorCatsWinter"))()', "category": "events"},
+  {"id": 144, "title": "ELEMETAL DUN WINTER EVENT🎅", "game": "Evento de Inverno Elemental Dungeon", "description": "Script para o evento de inverno do Elemental Dungeon.", "code": 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ToraScript/Script/main/ElementalDunWinter"))()', "category": "events"},
 
-  // ---------- EXECUTORS ----------
-  {id:145,title:"Delta Executor",game:"Android / PC",desc:"Executor estável com suporte à maioria dos scripts. Interface intuitiva e atualizações frequentes.",code:"",cat:"executors",link:"https://deltaexploits.gg/delta-executor-android",verified:true,rating:4.9},
-  {id:146,title:"Fluxus Executor",game:"Android / PC",desc:"Executor poderoso com excelente compatibilidade e desempenho.",code:"",cat:"executors",link:"https://fluxus.team/",rating:4.7},
-  {id:147,title:"KRNL Executor",game:"PC",desc:"Focado em segurança e privacidade. Um dos mais confiáveis.",code:"",cat:"executors",link:"https://krnl.vip/download/",verified:true,rating:4.8},
-  {id:148,title:"Arceus X Executor",game:"Android",desc:"Versão atualizada do popular executor. Compatível com a maioria dos scripts mobile.",code:"",cat:"executors",link:"https://arceusx.com/",featured:true,hot:true,rating:4.8},
-  {id:149,title:"Vega X Executor",game:"Android / PC",desc:"Executor avançado com recursos de depuração integrados.",code:"",cat:"executors",link:"https://www.vegax.gg/",rating:4.7},
-  {id:150,title:"Synapse X",game:"PC",desc:"Famoso por desempenho e compatibilidade. Um dos mais potentes.",code:"",cat:"executors",link:"https://synapsex.co/download/",verified:true,rating:4.9},
-  {id:151,title:"Solara",game:"PC",desc:"Executor popular na WeAreDevs. Usado como hub de scripts.",code:"",cat:"executors",link:"https://wearedevs.net/d/Solara",rating:4.5},
-  {id:152,title:"Script-Ware",game:"PC",desc:"Executor key-free amplamente divulgado.",code:"",cat:"executors",link:"https://playsdone.com/script-ware/",rating:4.6},
-  {id:153,title:"JJSploit",game:"PC",desc:"Executor all-in-one com ESP, fly, teleport e mais.",code:"",cat:"executors",link:"https://wearedevs.net/d/JJSploit",rating:4.4},
-  {id:154,title:"Celery",game:"Multiplataforma",desc:"Executor moderno com foco em estabilidade.",code:"",cat:"executors",link:"https://hydrogenexecutor.com/celery-executor/",rating:4.6},
-  {id:155,title:"Wave Executor",game:"Multiplataforma",desc:"Executor recente com suporte a várias plataformas.",code:"",cat:"executors",link:"https://waveexecutor.io/download/",rating:4.5},
-  {id:156,title:"Sentinel Executor",game:"PC / Mobile",desc:"Gratuito, popular, compatível com PC e mobile. Interface simples.",code:"",cat:"executors",link:"https://sentinel-executor.carrd.co/",rating:4.6},
-  {id:157,title:"Electron Executor",game:"Multiplataforma",desc:"Builds para várias plataformas e amplo suporte a Lua.",code:"",cat:"executors",link:"https://electronexecutor.com/",rating:4.7},
-  {id:158,title:"SirHurt",game:"PC",desc:"Executor comercial com painel/serviços pagos. Desde 2015.",code:"",cat:"executors",link:"https://www.sirhurt.net",verified:true,rating:4.8},
-  {id:159,title:"eSynapseX",game:"Referência",desc:"Artigo/coletânea sobre executores e exploits para Roblox.",code:"",cat:"executors",link:"https://medium.com/@esynapsex/best-roblox-script-executor-and-roblox-exploits-of-2021-691aa9d4384b",rating:4.2}
+  // Executores
+  {"id": 145, "title": "Delta Executor", "game": "Android/PC", "description": "Executor estável e confiável com suporte para a maioria dos scripts. Interface intuitiva e atualizações frequentes.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://deltaexploits.gg/delta-executor-android", "isDownload": true, "featured": true, "stats": {"stability": "95%", "speed": "Rápido", "support": "Alta"}},
+  {"id": 146, "title": "Fluxus Executor", "game": "Android/PC", "description": "Executor poderoso com excelente compatibilidade e desempenho. Suporte a scripts complexos.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://fluxus.team/", "isDownload": true, "stats": {"stability": "92%", "speed": "Muito Rápido", "support": "Média"}},
+  {"id": 147, "title": "KRNL Executor", "game": "PC", "description": "Executor focado em segurança e privacidade. Um dos mais confiáveis do mercado.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://krnl.vip/download/", "isDownload": true, "verified": true, "stats": {"stability": "90%", "speed": "Rápido", "support": "Alta"}},
+  {"id": 148, "title": "Arceus X Executor", "game": "Android", "description": "Versão atualizada do popular executor Arceus X. Compatível com a maioria dos scripts Android.", "code": "// Download disponível no site oficial", "category": "executors", "status": "DESTAQUE ★", "statusClass": "status-featured", "link": "https://arceusx.com/#google_vignette", "isDownload": true, "featured": true, "hot": true, "stats": {"stability": "88%", "speed": "Médio", "support": "Alta"}},
+  {"id": 149, "title": "Vega X Executor", "game": "Android/PC", "description": "Executor avançado com recursos de depuração integrados. Ideal para desenvolvedores.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://www.vegax.gg/", "isDownload": true, "stats": {"stability": "91%", "speed": "Rápido", "support": "Média"}},
+  {"id": 150, "title": "Synapse X", "game": "PC", "description": "Executor famoso por desempenho e compatibilidade com muitos scripts. Um dos mais potentes.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://synapsex.co/download/", "isDownload": true, "verified": true, "stats": {"stability": "97%", "speed": "Muito Rápido", "support": "Alta"}},
+  {"id": 151, "title": "Solara", "game": "PC", "description": "Executor/keyless popular hospedado na WeAreDevs; usado como hub de scripts.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://wearedevs.net/d/Solara", "isDownload": true, "stats": {"stability": "89%", "speed": "Rápido", "support": "Média"}},
+  {"id": 152, "title": "Script-Ware", "game": "PC", "description": "Script-Ware — executor key-free amplamente divulgado em sites de downloads.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://playsdone.com/script-ware/", "isDownload": true, "stats": {"stability": "90%", "speed": "Rápido", "support": "Alta"}},
+  {"id": 153, "title": "JJSploit", "game": "PC", "description": "Executor/kit tudo-em-um com várias funcionalidades (ESP, fly, teleport etc.).", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://wearedevs.net/d/JJSploit", "isDownload": true, "stats": {"stability": "85%", "speed": "Médio", "support": "Baixa"}},
+  {"id": 154, "title": "Celery", "game": "Multiplataforma", "description": "Celery — executor moderno documentado em sites como Hydrogen Executor.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://hydrogenexecutor.com/celery-executor/", "isDownload": true, "stats": {"stability": "87%", "speed": "Rápido", "support": "Média"}},
+  {"id": 155, "title": "Wave Executor", "game": "Multiplataforma", "description": "Wave — executor recente com guia de download e suporte a várias plataformas.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://waveexecutor.io/download/", "isDownload": true, "stats": {"stability": "86%", "speed": "Médio", "support": "Média"}},
+  {"id": 156, "title": "Sentinel Executor", "game": "PC/Mobile", "description": "Executor gratuito e popular, compatível com PC e mobile; interface simples e foco em usabilidade.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://sentinel-executor.carrd.co/", "isDownload": true, "stats": {"stability": "88%", "speed": "Rápido", "support": "Alta"}},
+  {"id": 157, "title": "Electron Executor", "game": "Multiplataforma", "description": "Executor moderno com builds para várias plataformas e amplo suporte a scripts Lua.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://electronexecutor.com/", "isDownload": true, "stats": {"stability": "89%", "speed": "Rápido", "support": "Alta"}},
+  {"id": 158, "title": "SirHurt", "game": "PC", "description": "Executor comercial com painel/serviços pagos, conhecido por histórico desde 2015.", "code": "// Download disponível no site oficial", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://www.sirhurt.net", "isDownload": true, "verified": true, "stats": {"stability": "94%", "speed": "Muito Rápido", "support": "Alta"}},
+  {"id": 159, "title": "eSynapseX", "game": "Referência", "description": "Artigo / coletânea sobre executors e exploits para Roblox — referência com recomendações.", "code": "// Artigo informativo", "category": "executors", "status": "ATUALIZADO ✔", "statusClass": "status-updated", "link": "https://medium.com/@esynapsex/best-roblox-script-executor-and-roblox-exploits-of-2021-691aa9d4384b", "isDownload": false, "stats": {"stability": "N/A", "speed": "N/A", "support": "Informativo"}}
 ];
 
-// Add deterministic popularity/rating for non-executor items
-DATA.forEach(s => {
-  if (s.rating === undefined) {
-    // deterministic pseudo-random from id
-    const h = (s.id * 9301 + 49297) % 233280;
-    s.rating = +(4 + (h / 233280) * 1.0).toFixed(1);
-    s.views = 2000 + (s.id * 733) % 18000;
-    s.copies = 300 + (s.id * 291) % 3000;
-  } else {
-    s.views = 8000 + (s.id * 373) % 20000;
-    s.copies = 1200 + (s.id * 191) % 4000;
-  }
-});
-
-const CATEGORIES = [
-  {id:'all',       label:'Todos',           icon:'fa-layer-group'},
-  {id:'executors', label:'Executores',      icon:'fa-rocket'},
-  {id:'universal', label:'Universais',      icon:'fa-globe'},
-  {id:'games',     label:'Jogos',           icon:'fa-gamepad'},
-  {id:'events',    label:'Eventos',         icon:'fa-calendar-star'},
-];
-
-const CAT_ICON = {
-  universal: 'fa-globe',
-  games:     'fa-gamepad',
-  events:    'fa-calendar-star',
-  executors: 'fa-rocket'
-};
-
-/* ============ STATE ============ */
+/* ============================================================
+   ESTADO
+   ============================================================ */
 const store = {
   get(k, def) { try { const v = localStorage.getItem('rnx_'+k); return v ? JSON.parse(v) : def; } catch { return def; } },
-  set(k, v) { try { localStorage.setItem('rnx_'+k, JSON.stringify(v)); } catch {} }
+  set(k, v) { try { localStorage.setItem('rnx_'+k, JSON.stringify(v)); } catch {} },
+  del(k) { try { localStorage.removeItem('rnx_'+k); } catch {} }
 };
 
 const state = {
-  theme:     store.get('theme', 'dark'),
+  theme: store.get('theme', 'dark'),
   favorites: new Set(store.get('favorites', [])),
-  recent:    store.get('recent', []),
-  filter:    'all',
-  sort:      'popular',
-  view:      store.get('view', 'grid'),
-  search:    ''
+  view: store.get('view', 'grid'),
+  filter: 'all',
+  sort: 'popular',
+  search: '',
+  user: store.get('user', null),
+  comments: store.get('comments', {}),
+  admin: store.get('admin', false),
+  deferredPrompt: null
 };
 
-/* ============ UTILS ============ */
-const $  = (s, r=document) => r.querySelector(s);
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
-const el = (tag, cls, html) => {
-  const e = document.createElement(tag);
-  if (cls) e.className = cls;
-  if (html != null) e.innerHTML = html;
-  return e;
-};
-const fmt = n => {
-  if (n < 1000) return String(n);
-  if (n < 1e6) return (n/1000).toFixed(1).replace('.0','') + 'K';
-  return (n/1e6).toFixed(1).replace('.0','') + 'M';
-};
-const debounce = (fn, ms=250) => {
-  let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
-};
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const fmt = n => { if (n < 1000) return String(n); if (n < 1e6) return (n/1000).toFixed(1).replace('.0','') + 'K'; return (n/1e6).toFixed(1).replace('.0','') + 'M'; };
+const debounce = (fn, ms=250) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 const escape = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const escapeRegex = s => s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 const highlight = (text, q) => {
   if (!q) return escape(text);
-  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
-  return escape(text).replace(re, '<mark style="background:color-mix(in srgb,var(--accent) 40%,transparent);color:inherit;border-radius:3px;padding:0 2px">$1</mark>');
+  const re = new RegExp(`(${escapeRegex(q)})`, 'gi');
+  return escape(text).replace(re, '<mark style="background:rgba(0,217,255,.35);color:inherit;border-radius:3px;padding:0 2px">$1</mark>');
+};
+const initials = name => (name || '?').trim().slice(0, 2).toUpperCase();
+const hashColor = (str) => {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = str.charCodeAt(i) + ((h << 5) - h);
+  const colors = ['#8a2be2','#00d9ff','#00e08a','#ffb43a','#ff4d6d','#ec4899','#06b6d4','#f5c518'];
+  return colors[Math.abs(h) % colors.length];
 };
 
-/* ============ TOASTS ============ */
+/* Detecta se é executor */
+const isExecutor = s => s.category === 'executors' || s.isDownload === true;
+
+/* Normaliza dados */
+DATA.forEach(s => {
+  if (s.rating === undefined) {
+    const h = (s.id * 9301 + 49297) % 233280;
+    s.rating = +(4 + (h / 233280)).toFixed(1);
+  }
+  if (s.views === undefined) s.views = 2000 + (s.id * 733) % 18000;
+  if (s.copies === undefined) s.copies = 300 + (s.id * 291) % 3000;
+});
+
+/* ============================================================
+   TOASTS
+   ============================================================ */
 const toastBox = $('#toasts');
 function toast(msg, type='ok', icon) {
   const ico = icon || ({ok:'check-circle', err:'circle-exclamation', warn:'triangle-exclamation'}[type] || 'check-circle');
   const t = el('div', `toast ${type}`, `<i class="fas fa-${ico}"></i><span>${escape(msg)}</span>`);
   toastBox.appendChild(t);
-  setTimeout(() => {
-    t.classList.add('removing');
-    setTimeout(() => t.remove(), 300);
-  }, 3000);
+  setTimeout(() => { t.classList.add('removing'); setTimeout(() => t.remove(), 300); }, 3000);
 }
 
-/* ============ THEME ============ */
+/* ============================================================
+   THEME
+   ============================================================ */
 function setTheme(name) {
   state.theme = name;
   document.body.setAttribute('data-theme', name);
@@ -1178,27 +814,121 @@ function setTheme(name) {
     meta.setAttribute('content', m[name] || '#8a2be2');
   }
 }
-setTheme(state.theme);
 
-/* ============ FAVORITES ============ */
-function toggleFav(id, source='card') {
+/* ============================================================
+   USER
+   ============================================================ */
+function updateUserUI() {
+  const av = $('#userAvatar');
+  if (state.user) { av.textContent = initials(state.user.name); av.style.background = state.user.color; }
+  else { av.textContent = '?'; av.style.background = 'var(--grad-2)'; }
+  $('#cmtAvatar').textContent = state.user ? initials(state.user.name) : '?';
+  $('#cmtAvatar').style.background = state.user ? state.user.color : 'var(--grad-2)';
+}
+
+function openUserModal() {
+  const modal = $('#userBackdrop');
+  const nameInput = $('#userName');
+  const picker = $('#avatarPicker');
+  if (state.user) nameInput.value = state.user.name;
+  const colors = ['#8a2be2','#00d9ff','#00e08a','#ffb43a','#ff4d6d','#ec4899','#06b6d4','#f5c518'];
+  picker.innerHTML = '';
+  colors.forEach(c => {
+    const b = el('button', 'avatar-opt' + (state.user?.color === c ? ' selected' : ''));
+    b.style.background = c;
+    b.textContent = initials(nameInput.value || 'U');
+    b.dataset.color = c;
+    b.addEventListener('click', () => {
+      $$('.avatar-opt', picker).forEach(x => x.classList.remove('selected'));
+      b.classList.add('selected');
+    });
+    picker.appendChild(b);
+  });
+  nameInput.oninput = () => $$('.avatar-opt', picker).forEach(b => b.textContent = initials(nameInput.value || 'U'));
+  $('#logoutUser').style.display = state.user ? 'inline-flex' : 'none';
+  modal.classList.add('open');
+}
+
+/* ============================================================
+   COMMENTS
+   ============================================================ */
+function getComments(id) { return state.comments[id] || []; }
+
+function addComment(scriptId, text) {
+  if (!state.user) { toast('Crie um perfil primeiro!', 'warn'); openUserModal(); return; }
+  if (!text.trim()) { toast('Escreva algo antes', 'warn'); return; }
+  if (!state.comments[scriptId]) state.comments[scriptId] = [];
+  state.comments[scriptId].unshift({ id: Date.now(), user: state.user.name, color: state.user.color, text: text.trim().slice(0, 500), time: Date.now() });
+  store.set('comments', state.comments);
+  toast('Comentário publicado!', 'ok', 'comment');
+  renderComments(scriptId);
+  $('#cmtInput').value = '';
+}
+
+function deleteComment(scriptId, commentId) {
+  if (!state.comments[scriptId]) return;
+  state.comments[scriptId] = state.comments[scriptId].filter(c => c.id !== commentId);
+  store.set('comments', state.comments);
+  renderComments(scriptId);
+  toast('Comentário removido', 'warn');
+}
+
+function renderComments(scriptId) {
+  const box = $('#cmtList');
+  const list = getComments(scriptId);
+  if (list.length === 0) {
+    box.innerHTML = '<div class="cmt-empty"><i class="fas fa-comments" style="font-size:2rem;opacity:.3;display:block;margin-bottom:10px"></i>Seja o primeiro a comentar!</div>';
+    return;
+  }
+  box.innerHTML = '';
+  list.forEach(c => {
+    const item = el('div', 'cmt-item');
+    const canDelete = state.user?.name === c.user;
+    item.innerHTML = `
+      <div class="cmt-avatar" style="background:${c.color}">${escape(initials(c.user))}</div>
+      <div class="cbody">
+        <div class="chead"><b>${escape(c.user)}</b><small>${formatTimeAgo(c.time)}</small>
+          ${canDelete ? '<button class="cdel"><i class="fas fa-trash"></i></button>' : ''}
+        </div>
+        <div class="ctext">${escape(c.text)}</div>
+      </div>
+    `;
+    if (canDelete) item.querySelector('.cdel').addEventListener('click', () => deleteComment(scriptId, c.id));
+    box.appendChild(item);
+  });
+}
+
+function formatTimeAgo(ts) {
+  const diff = Date.now() - ts;
+  const min = Math.floor(diff / 60000);
+  if (min < 1) return 'agora mesmo';
+  if (min < 60) return `${min}m atrás`;
+  const h = Math.floor(min / 60);
+  if (h < 24) return `${h}h atrás`;
+  const d = Math.floor(h / 24);
+  if (d < 30) return `${d}d atrás`;
+  return new Date(ts).toLocaleDateString('pt-BR');
+}
+
+/* ============================================================
+   FAVORITES
+   ============================================================ */
+function toggleFav(id) {
   const s = DATA.find(x => x.id === id);
   if (!s) return;
   if (state.favorites.has(id)) {
     state.favorites.delete(id);
-    toast(`"${s.title}" removido dos favoritos`, 'warn', 'heart-crack');
+    toast(`"${s.title}" removido`, 'warn', 'heart-crack');
   } else {
     state.favorites.add(id);
-    toast(`"${s.title}" adicionado aos favoritos`, 'ok', 'heart');
+    toast(`"${s.title}" favoritado!`, 'ok', 'heart');
     burstConfetti();
   }
   store.set('favorites', [...state.favorites]);
   updateFavBadge();
-  // re-render affected fav icons
   $$(`.card-fav[data-id="${id}"]`).forEach(b => {
     b.classList.toggle('active', state.favorites.has(id));
-    const i = b.querySelector('i');
-    i.className = state.favorites.has(id) ? 'fas fa-heart' : 'far fa-heart';
+    b.querySelector('i').className = state.favorites.has(id) ? 'fas fa-heart' : 'far fa-heart';
   });
   const modalFav = $('#favModalBtn');
   if (modalFav && modalFav.dataset.id === String(id)) {
@@ -1210,10 +940,9 @@ function toggleFav(id, source='card') {
 
 function updateFavBadge() {
   const b = $('#favCount');
-  if (state.favorites.size === 0) { b.style.display = 'none'; }
+  if (state.favorites.size === 0) b.style.display = 'none';
   else { b.style.display = 'grid'; b.textContent = state.favorites.size; }
 }
-updateFavBadge();
 
 function burstConfetti() {
   const colors = ['#8a2be2','#00d9ff','#00ffb2','#ffd76a','#ff4d6d'];
@@ -1224,18 +953,18 @@ function burstConfetti() {
     document.body.appendChild(p);
     const angle = Math.random() * Math.PI * 2;
     const dist = 80 + Math.random() * 120;
-    const dx = Math.cos(angle) * dist;
-    const dy = Math.sin(angle) * dist - 60;
     p.animate([
       { transform: 'translate(0,0) scale(1)', opacity: 1 },
-      { transform: `translate(${dx}px,${dy}px) scale(0)`, opacity: 0 }
+      { transform: `translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist-60}px) scale(0)`, opacity: 0 }
     ], { duration: 700 + Math.random() * 400, easing: 'cubic-bezier(.2,.8,.3,1)' }).onfinish = () => p.remove();
   }
 }
 
-/* ============ COUNTER ANIMATION ============ */
-function animateCounters(root=document) {
-  $$('[data-count]', root).forEach(node => {
+/* ============================================================
+   COUNTERS
+   ============================================================ */
+function animateCounters() {
+  $$('[data-count]').forEach(node => {
     if (node.dataset.done) return;
     const target = +node.dataset.count;
     const suffix = node.dataset.suffix || '';
@@ -1244,9 +973,8 @@ function animateCounters(root=document) {
         if (entry.isIntersecting) {
           node.dataset.done = '1';
           const start = performance.now();
-          const dur = 1200;
           const tick = now => {
-            const p = Math.min(1, (now - start) / dur);
+            const p = Math.min(1, (now - start) / 1200);
             const eased = 1 - Math.pow(1 - p, 3);
             node.textContent = Math.floor(eased * target) + suffix;
             if (p < 1) requestAnimationFrame(tick);
@@ -1261,76 +989,90 @@ function animateCounters(root=document) {
   });
 }
 
-/* ============ RENDER: CHIPS ============ */
+/* ============================================================
+   CHIPS
+   ============================================================ */
+const CATEGORIES = [
+  {id:'all', label:'Todos', icon:'fa-layer-group'},
+  {id:'executors', label:'Executores', icon:'fa-rocket'},
+  {id:'universal', label:'Universais', icon:'fa-globe'},
+  {id:'games', label:'Jogos', icon:'fa-gamepad'},
+  {id:'events', label:'Eventos', icon:'fa-calendar-star'},
+  {id:'favorites', label:'Favoritos', icon:'fa-heart'}
+];
+const CAT_ICON = { universal:'fa-globe', games:'fa-gamepad', events:'fa-calendar-star', executors:'fa-rocket' };
+
 function renderChips() {
   const box = $('#chips');
   box.innerHTML = '';
   const frag = document.createDocumentFragment();
   CATEGORIES.forEach(cat => {
-    const count = cat.id === 'all' ? DATA.length : DATA.filter(d => d.cat === cat.id).length;
+    let count;
+    if (cat.id === 'all') count = DATA.length;
+    else if (cat.id === 'favorites') count = state.favorites.size;
+    else count = DATA.filter(d => d.category === cat.id).length;
     const b = el('button', `chip${state.filter === cat.id ? ' active' : ''}`,
       `<i class="fas ${cat.icon}"></i> ${cat.label} <span class="ct">${count}</span>`);
     b.dataset.cat = cat.id;
-    b.setAttribute('role', 'tab');
-    b.setAttribute('aria-selected', state.filter === cat.id);
     frag.appendChild(b);
   });
   box.appendChild(frag);
 }
 
-/* ============ FILTER / SORT ============ */
+/* ============================================================
+   FILTER
+   ============================================================ */
 function getFiltered() {
   let list = DATA.slice();
   if (state.filter === 'favorites') list = list.filter(s => state.favorites.has(s.id));
-  else if (state.filter !== 'all') list = list.filter(s => s.cat === state.filter);
+  else if (state.filter !== 'all') list = list.filter(s => s.category === state.filter);
 
   const q = state.search.trim().toLowerCase();
   if (q) {
     list = list.filter(s =>
       s.title.toLowerCase().includes(q) ||
-      s.desc.toLowerCase().includes(q) ||
-      s.game.toLowerCase().includes(q) ||
-      s.cat.toLowerCase().includes(q)
+      s.description.toLowerCase().includes(q) ||
+      s.game.toLowerCase().includes(q)
     );
   }
-
   switch (state.sort) {
-    case 'name':     list.sort((a,b) => a.title.localeCompare(b.title)); break;
-    case 'rating':   list.sort((a,b) => b.rating - a.rating); break;
-    case 'recent':   list.sort((a,b) => b.id - a.id); break;
-    default:         list.sort((a,b) => (b.views + b.copies) - (a.views + a.copies));
+    case 'name': list.sort((a,b) => a.title.localeCompare(b.title)); break;
+    case 'rating': list.sort((a,b) => b.rating - a.rating); break;
+    case 'recent': list.sort((a,b) => b.id - a.id); break;
+    default: list.sort((a,b) => (b.views + b.copies) - (a.views + a.copies));
   }
   return list;
 }
 
-/* ============ RENDER: CARD ============ */
+/* ============================================================
+   CARD
+   ============================================================ */
 function buildCard(s, query) {
   const card = el('article', 'card');
   card.dataset.id = s.id;
-  card.setAttribute('role', 'listitem');
-
   const isFav = state.favorites.has(s.id);
-  const isExecutor = s.cat === 'executors';
-  const catIcon = CAT_ICON[s.cat] || 'fa-cube';
+  const exec = isExecutor(s);
+  const catIcon = CAT_ICON[s.category] || 'fa-cube';
 
-  // badges
   let badges = '';
   if (s.verified) badges += '<span class="badge-status badge-verified"><i class="fas fa-check-circle"></i> Verificado</span> ';
-  if (s.hot)      badges += '<span class="badge-status badge-hot">Em alta</span> ';
-  if (isExecutor) badges += '<span class="badge-status badge-new">Download</span> ';
+  if (s.hot) badges += '<span class="badge-status badge-hot">Em alta</span> ';
+  if (s.featured) badges += '<span class="badge-status badge-featured">★ Destaque</span> ';
+  if (exec && s.status) badges += `<span class="badge-status badge-new">${escape(s.status)}</span> `;
+  if (exec && !s.status) badges += '<span class="badge-status badge-new">Download</span> ';
 
   card.innerHTML = `
     <div class="card-head">
       <div class="card-icon"><i class="fas ${catIcon}"></i></div>
       <div class="card-titlewrap">
-        <div class="card-title">${highlight(s.title, query)} ${s.verified ? '<i class="fas fa-circle-check verified" title="Verificado"></i>' : ''}</div>
+        <div class="card-title">${highlight(s.title, query)} ${s.verified ? '<i class="fas fa-circle-check verified"></i>' : ''}</div>
         <div class="card-cat"><i class="fas fa-tag"></i> ${escape(s.game)}</div>
       </div>
-      <button class="card-fav${isFav ? ' active' : ''}" data-id="${s.id}" aria-label="Favoritar">
+      <button class="card-fav${isFav ? ' active' : ''}" data-id="${s.id}">
         <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
       </button>
     </div>
-    <p class="card-desc">${highlight(s.desc, query)}</p>
+    <p class="card-desc">${highlight(s.description, query)}</p>
     <div class="card-meta">
       <span class="rating"><i class="fas fa-star"></i> ${s.rating}</span>
       <span class="views"><i class="fas fa-eye"></i> ${fmt(s.views)}</span>
@@ -1338,30 +1080,28 @@ function buildCard(s, query) {
     </div>
     ${badges ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${badges}</div>` : ''}
     <div class="card-actions">
-      ${isExecutor
-        ? `<a href="${s.link}" target="_blank" rel="noopener" class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Baixar</a>`
+      ${exec
+        ? `<a href="${s.link || '#'}" target="_blank" rel="noopener" class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Baixar</a>`
         : `<button class="btn btn-primary btn-sm" data-action="view" data-id="${s.id}"><i class="fas fa-code"></i> Ver script</button>`
       }
-      ${!isExecutor ? `<button class="btn btn-ghost btn-sm btn-icon" data-action="copy" data-id="${s.id}" title="Copiar código"><i class="fas fa-copy"></i></button>` : ''}
+      ${!exec ? `<button class="btn btn-ghost btn-sm btn-icon" data-action="copy" data-id="${s.id}" title="Copiar"><i class="fas fa-copy"></i></button>` : ''}
       <button class="btn btn-ghost btn-sm btn-icon" data-action="share" data-id="${s.id}" title="Compartilhar"><i class="fas fa-share-nodes"></i></button>
+      ${state.admin ? `<button class="btn btn-ghost btn-sm btn-icon" data-action="edit" data-id="${s.id}" title="Editar" style="color:var(--warn)"><i class="fas fa-pen"></i></button>` : ''}
+      ${state.admin ? `<button class="btn btn-ghost btn-sm btn-icon" data-action="delete" data-id="${s.id}" title="Excluir" style="color:var(--danger)"><i class="fas fa-trash"></i></button>` : ''}
     </div>
   `;
   return card;
 }
 
-/* ============ RENDER: GRID ============ */
 function renderGrid(skeletons=false) {
   const grid = $('#grid');
   grid.className = `grid${state.view === 'list' ? ' list-view' : ''}`;
   const list = getFiltered();
 
-  // Update info
   $('#resultsInfo').innerHTML = `Mostrando <b>${list.length}</b> de <b>${DATA.length}</b>`;
-
   const hasFilter = state.filter !== 'all' || state.search.trim() !== '';
   $('#clearFilters').style.display = hasFilter ? 'inline-flex' : 'none';
 
-  // Skeleton flash
   if (skeletons) {
     grid.innerHTML = '';
     for (let i=0;i<6;i++) {
@@ -1369,7 +1109,6 @@ function renderGrid(skeletons=false) {
         <div style="display:flex;gap:12px"><div class="sk-line" style="width:44px;height:44px;border-radius:12px"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:8px"><div class="sk-line w60"></div><div class="sk-line w30"></div></div></div>
         <div class="sk-line w100"></div><div class="sk-line w80"></div>
-        <div style="display:flex;gap:8px"><div class="sk-line w30"></div><div class="sk-line w30"></div></div>
       `));
     }
     return;
@@ -1390,30 +1129,30 @@ function renderGrid(skeletons=false) {
   const q = state.search.trim();
   list.forEach((s, i) => {
     const card = buildCard(s, q);
-    card.style.animationDelay = Math.min(i * 18, 400) + 'ms';
+    card.style.animationDelay = Math.min(i * 15, 400) + 'ms';
     frag.appendChild(card);
   });
   grid.innerHTML = '';
   grid.appendChild(frag);
 }
 
-/* ============ RENDER: FEATURED ============ */
 function renderFeatured() {
   const strip = $('#featuredStrip');
   const top = DATA.filter(s => s.hot || s.featured || s.verified).slice(0, 3);
+  if (top.length === 0) {
+    strip.innerHTML = '<div class="feat-card"><p>Nenhum destaque ainda</p></div>';
+    return;
+  }
   const frag = document.createDocumentFragment();
   top.forEach(s => {
     const c = el('div', 'feat-card');
     c.innerHTML = `
       <div class="row">
-        <div class="fi"><i class="fas ${CAT_ICON[s.cat] || 'fa-cube'}"></i></div>
-        <div style="flex:1;min-width:0">
-          <h4>${escape(s.title)}</h4>
-          <div style="font-size:.72rem;color:var(--text-mute);font-weight:600">${escape(s.game)}</div>
-        </div>
+        <div class="fi"><i class="fas ${CAT_ICON[s.category] || 'fa-cube'}"></i></div>
+        <div style="flex:1;min-width:0"><h4>${escape(s.title)}</h4><div style="font-size:.72rem;color:var(--text-mute);font-weight:600">${escape(s.game)}</div></div>
         <i class="fas fa-arrow-right" style="color:var(--text-mute);font-size:.8rem"></i>
       </div>
-      <p>${escape(s.desc)}</p>
+      <p>${escape(s.description)}</p>
     `;
     c.addEventListener('click', () => openModal(s.id));
     frag.appendChild(c);
@@ -1422,43 +1161,45 @@ function renderFeatured() {
   strip.appendChild(frag);
 }
 
-/* ============ MODAL ============ */
+/* ============================================================
+   MODAL
+   ============================================================ */
 let currentModalId = null;
 function openModal(id) {
   const s = DATA.find(x => x.id === id);
   if (!s) return;
   currentModalId = id;
 
-  // Add to recent
-  state.recent = [id, ...state.recent.filter(x => x !== id)].slice(0, 12);
-  store.set('recent', state.recent);
-
   $('#modalTitle').textContent = s.title;
-  $('#modalSub').innerHTML = `<i class="fas fa-tag"></i> ${escape(s.game)} · <i class="fas fa-star" style="color:var(--gold)"></i> ${s.rating} · <i class="fas fa-eye"></i> ${fmt(s.views)}`;
-  $('#codeContent').textContent = s.code || '// Este item é um download externo. Use o botão abaixo.';
+  $('#modalSub').innerHTML = `<i class="fas fa-tag"></i> ${escape(s.game)} · ⭐ ${s.rating} · <i class="fas fa-eye"></i> ${fmt(s.views)}`;
+  $('#codeContent').textContent = s.code || '// Item externo. Use o botão de download.';
+  $('#modalIcon').innerHTML = `<i class="fas ${CAT_ICON[s.category] || 'fa-cube'}"></i>`;
 
-  // Info list
-  $('#infoList').innerHTML = `
-    <div class="row"><span>Categoria</span><span>${CATEGORIES.find(c=>c.id===s.cat)?.label || s.cat}</span></div>
+  let infoHtml = `
+    <div class="row"><span>Categoria</span><span>${CATEGORIES.find(c=>c.id===s.category)?.label || s.category}</span></div>
     <div class="row"><span>Jogo</span><span>${escape(s.game)}</span></div>
     <div class="row"><span>Avaliação</span><span>⭐ ${s.rating} / 5.0</span></div>
     <div class="row"><span>Visualizações</span><span>${fmt(s.views)}</span></div>
     <div class="row"><span>Cópias</span><span>${fmt(s.copies)}</span></div>
-    <div class="row"><span>Status</span><span style="color:var(--success)">● Ativo</span></div>
-    ${s.verified ? '<div class="row"><span>Verificação</span><span style="color:var(--accent)"><i class="fas fa-circle-check"></i> Verificado</span></div>' : ''}
   `;
+  if (s.stats) {
+    infoHtml += `<div class="row"><span>Estabilidade</span><span>${escape(s.stats.stability)}</span></div>`;
+    infoHtml += `<div class="row"><span>Velocidade</span><span>${escape(s.stats.speed)}</span></div>`;
+    infoHtml += `<div class="row"><span>Suporte</span><span>${escape(s.stats.support)}</span></div>`;
+  }
+  if (s.status) infoHtml += `<div class="row"><span>Status</span><span style="color:var(--success)">${escape(s.status)}</span></div>`;
+  infoHtml += `<div class="row"><span>Estado</span><span style="color:var(--success)">● Ativo</span></div>`;
+  $('#infoList').innerHTML = infoHtml;
 
-  // Fav button state
   const favBtn = $('#favModalBtn');
   const active = state.favorites.has(id);
   favBtn.dataset.id = id;
   favBtn.innerHTML = active ? '<i class="fas fa-heart"></i> Favoritado' : '<i class="far fa-heart"></i> Favoritar';
   favBtn.style.color = active ? 'var(--danger)' : '';
 
-  // Copy button (only for scripts)
   const copyBtn = $('#copyBtn');
-  if (s.cat === 'executors') {
-    copyBtn.innerHTML = `<a href="${s.link}" target="_blank" rel="noopener" style="color:inherit;display:flex;align-items:center;gap:8px;width:100%;justify-content:center"><i class="fas fa-download"></i> Baixar executor</a>`;
+  if (isExecutor(s)) {
+    copyBtn.innerHTML = `<a href="${s.link || '#'}" target="_blank" rel="noopener" style="color:inherit;display:flex;align-items:center;gap:8px;width:100%;justify-content:center"><i class="fas fa-download"></i> Baixar executor</a>`;
     copyBtn.onclick = null;
   } else {
     copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar script';
@@ -1479,32 +1220,37 @@ function closeModal() {
 function switchTab(name) {
   $$('.modal-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
   $$('.tab-pane').forEach(p => p.classList.toggle('active', p.dataset.pane === name));
+  if (name === 'comments' && currentModalId) renderComments(currentModalId);
 }
 
 async function copyCode(code) {
   try {
     await navigator.clipboard.writeText(code);
-    toast('Script copiado para a área de transferência!', 'ok');
+    toast('Script copiado!', 'ok');
+    const s = DATA.find(x => x.id === currentModalId);
+    if (s) s.copies++;
     const btn = $('#copyBtn');
     const orig = btn.innerHTML;
     btn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
     setTimeout(() => btn.innerHTML = orig, 1800);
   } catch {
-    toast('Não foi possível copiar. Selecione manualmente.', 'err');
+    toast('Não foi possível copiar', 'err');
   }
 }
 
 async function shareScript() {
   const s = DATA.find(x => x.id === currentModalId);
   if (!s) return;
-  const data = { title: `RANOX — ${s.title}`, text: s.desc, url: location.href + '#' + s.id };
+  const data = { title: `RANOX — ${s.title}`, text: s.description, url: location.href.split('#')[0] + '#' + s.id };
   try {
-    if (navigator.share) { await navigator.share(data); }
+    if (navigator.share) await navigator.share(data);
     else { await navigator.clipboard.writeText(data.url); toast('Link copiado!', 'ok'); }
   } catch {}
 }
 
-/* ============ COMMAND PALETTE ============ */
+/* ============================================================
+   COMMAND PALETTE
+   ============================================================ */
 const cmdBackdrop = $('#cmdBackdrop');
 const cmdInput = $('#cmdInput');
 const cmdList = $('#cmdList');
@@ -1525,19 +1271,20 @@ function closeCmd() {
 function renderCmd(q) {
   q = q.toLowerCase().trim();
   const actions = [
-    { type:'action', title:'Ir para o topo', hint:'Scroll', icon:'fa-arrow-up', run: () => scrollTo({top:0,behavior:'smooth'}) },
-    { type:'action', title:'Ver favoritos', hint:'Filtrar', icon:'fa-heart', run: () => { state.filter='favorites'; renderChips(); renderGrid(); scrollTo({top:document.querySelector('#scripts').offsetTop - 100,behavior:'smooth'}); } },
-    { type:'action', title:'Alternar tema', hint:'Visual', icon:'fa-palette', run: () => { const idx = ['dark','light','green','red','blue','gold','orange','pink','cyan'].indexOf(state.theme); setTheme(['dark','light','green','red','blue','gold','orange','pink','cyan'][(idx+1)%9]); } },
+    { title:'Ir para o topo', hint:'Scroll', icon:'fa-arrow-up', run: () => scrollTo({top:0,behavior:'smooth'}) },
+    { title:'Ver favoritos', hint:'Filtrar', icon:'fa-heart', run: () => { state.filter='favorites'; renderChips(); renderGrid(); scrollTo({top:$('#scripts').offsetTop - 100,behavior:'smooth'}); } },
+    { title:'Alternar tema', hint:'Visual', icon:'fa-palette', run: () => { const arr = ['dark','light','green','red','blue','gold','orange','pink','cyan']; const idx = arr.indexOf(state.theme); setTheme(arr[(idx+1)%arr.length]); } },
+    { title:state.admin ? 'Desativar admin' : 'Painel admin', hint:'Avançado', icon:'fa-shield-halved', run: () => toggleAdmin() }
   ];
   const items = q
-    ? DATA.filter(s => s.title.toLowerCase().includes(q) || s.game.toLowerCase().includes(q)).slice(0, 8).map(s => ({ type:'script', data:s, title:s.title, hint:s.game, icon:CAT_ICON[s.cat] || 'fa-cube', run: () => openModal(s.id) }))
+    ? DATA.filter(s => s.title.toLowerCase().includes(q) || s.game.toLowerCase().includes(q)).slice(0, 8).map(s => ({ title:s.title, hint:s.game, icon:CAT_ICON[s.category] || 'fa-cube', run: () => openModal(s.id) }))
     : actions;
 
   cmdResults = items;
   cmdActive = 0;
   cmdList.innerHTML = '';
   if (items.length === 0) {
-    cmdList.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-mute);font-size:.9rem"><i class="fas fa-ghost"></i><br>Nenhum resultado</div>';
+    cmdList.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-mute)"><i class="fas fa-ghost"></i><br>Nenhum resultado</div>';
     return;
   }
   const frag = document.createDocumentFragment();
@@ -1546,7 +1293,6 @@ function renderCmd(q) {
     d.innerHTML = `
       <div class="ci"><i class="fas ${it.icon}"></i></div>
       <div class="ct2"><b>${escape(it.title)}</b><small>${escape(it.hint)}</small></div>
-      <span class="k">${it.type === 'action' ? '↵' : '→'}</span>
     `;
     d.addEventListener('click', () => { it.run(); closeCmd(); });
     frag.appendChild(d);
@@ -1554,7 +1300,6 @@ function renderCmd(q) {
   cmdList.innerHTML = '';
   cmdList.appendChild(frag);
 }
-
 function moveCmd(dir) {
   const items = $$('.cmd-item', cmdList);
   if (!items.length) return;
@@ -1564,16 +1309,118 @@ function moveCmd(dir) {
   items[cmdActive].scrollIntoView({ block: 'nearest' });
 }
 
-/* ============ EVENTS ============ */
-// Search
+/* ============================================================
+   ADMIN
+   ============================================================ */
+function toggleAdmin() {
+  if (state.admin) {
+    state.admin = false;
+    store.set('admin', false);
+    $('#adminBadge').classList.remove('show');
+    renderGrid();
+    toast('Modo admin desativado', 'warn', 'shield-halved');
+    return;
+  }
+  const pwd = prompt('🔐 Senha de admin:\n(dica padrão: ranox2025)');
+  if (pwd === null) return;
+  if (pwd === 'ranox2025') {
+    state.admin = true;
+    store.set('admin', true);
+    $('#adminBadge').classList.add('show');
+    renderGrid();
+    toast('Modo admin ativado!', 'ok', 'shield-halved');
+  } else {
+    toast('Senha incorreta', 'err');
+  }
+}
+
+function editScript(id) {
+  const s = DATA.find(x => x.id === id);
+  if (!s) return;
+  const title = prompt('Título:', s.title);
+  if (title === null) return;
+  const game = prompt('Jogo:', s.game);
+  if (game === null) return;
+  const description = prompt('Descrição:', s.description);
+  if (description === null) return;
+  const code = prompt('Código (deixe vazio para manter):', s.code);
+  s.title = title; s.game = game; s.description = description;
+  if (code) s.code = code;
+  renderGrid();
+  toast('Script atualizado!', 'ok', 'pen');
+}
+
+function deleteScript(id) {
+  const s = DATA.find(x => x.id === id);
+  if (!s) return;
+  if (!confirm(`Excluir "${s.title}"?`)) return;
+  const idx = DATA.findIndex(x => x.id === id);
+  if (idx > -1) DATA.splice(idx, 1);
+  renderGrid();
+  toast('Script excluído', 'warn', 'trash');
+}
+
+/* ============================================================
+   PWA INSTALL
+   ============================================================ */
+function setupPWA() {
+  try {
+    const manifest = {
+      name: 'RANOX SCRIPTS',
+      short_name: 'RANOX',
+      description: 'Executores e scripts premium para Roblox',
+      start_url: './',
+      display: 'standalone',
+      background_color: '#07060f',
+      theme_color: '#8a2be2',
+      icons: [{
+        src: 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8a2be2"/><stop offset="1" stop-color="#00d9ff"/></linearGradient></defs><rect width="512" height="512" rx="120" fill="url(#g)"/><text x="256" y="360" font-family="Arial,sans-serif" font-size="320" font-weight="900" fill="#fff" text-anchor="middle">R</text></svg>'),
+        sizes: '512x512',
+        type: 'image/svg+xml',
+        purpose: 'any maskable'
+      }]
+    };
+    const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = URL.createObjectURL(blob);
+    document.head.appendChild(link);
+  } catch (e) { console.warn('Manifest falhou:', e); }
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    state.deferredPrompt = e;
+    if (!store.get('install_dismissed', false)) {
+      $('#installBanner').classList.add('show');
+    }
+  });
+
+  $('#installBtn').addEventListener('click', async () => {
+    const p = state.deferredPrompt;
+    if (!p) { toast('Instalação indisponível aqui', 'warn'); return; }
+    p.prompt();
+    const result = await p.userChoice;
+    if (result.outcome === 'accepted') toast('RANOX instalado! 🎉', 'ok', 'mobile-screen');
+    state.deferredPrompt = null;
+    $('#installBanner').classList.remove('show');
+  });
+
+  $('#installDismiss').addEventListener('click', () => {
+    $('#installBanner').classList.remove('show');
+    store.set('install_dismissed', true);
+  });
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
 const onSearch = debounce(v => { state.search = v; renderGrid(); }, 220);
 $('#searchInput').addEventListener('input', e => onSearch(e.target.value));
-$('#searchBtn').addEventListener('click', () => { state.search = $('#searchInput').value; renderGrid(); document.querySelector('#scripts').scrollIntoView({behavior:'smooth'}); });
+$('#searchBtn').addEventListener('click', () => { state.search = $('#searchInput').value; renderGrid(); $('#scripts').scrollIntoView({behavior:'smooth'}); });
 $('#searchInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { state.search = e.target.value; renderGrid(); document.querySelector('#scripts').scrollIntoView({behavior:'smooth'}); }
+  if (e.key === 'Enter') { state.search = e.target.value; renderGrid(); $('#scripts').scrollIntoView({behavior:'smooth'}); }
 });
 
-// Chips (delegation)
 $('#chips').addEventListener('click', e => {
   const chip = e.target.closest('.chip');
   if (!chip) return;
@@ -1582,12 +1429,10 @@ $('#chips').addEventListener('click', e => {
   renderGrid();
 });
 
-// Sort
 $('#sortSelect').addEventListener('change', e => { state.sort = e.target.value; renderGrid(); });
 
-// View toggle
 $$('.view-toggle button').forEach(b => {
-  if (b.dataset.view === state.view) b.classList.add('active'); else b.classList.remove('active');
+  b.classList.toggle('active', b.dataset.view === state.view);
   b.addEventListener('click', () => {
     state.view = b.dataset.view;
     store.set('view', state.view);
@@ -1595,20 +1440,12 @@ $$('.view-toggle button').forEach(b => {
     renderGrid();
   });
 });
-document.querySelectorAll('.view-toggle button').forEach(b => {
-  b.classList.toggle('active', b.dataset.view === state.view);
-});
 
-// Clear filters
 $('#clearFilters').addEventListener('click', () => {
-  state.filter = 'all';
-  state.search = '';
-  $('#searchInput').value = '';
-  renderChips();
-  renderGrid();
+  state.filter = 'all'; state.search = ''; $('#searchInput').value = '';
+  renderChips(); renderGrid();
 });
 
-// Card actions (delegation)
 $('#grid').addEventListener('click', e => {
   const favBtn = e.target.closest('.card-fav');
   if (favBtn) { toggleFav(+favBtn.dataset.id); return; }
@@ -1620,53 +1457,75 @@ $('#grid').addEventListener('click', e => {
     if (!s) return;
     const act = action.dataset.action;
     if (act === 'view') openModal(id);
-    else if (act === 'copy') copyCode(s.code).then(() => { s.copies++; });
+    else if (act === 'copy') copyCode(s.code);
     else if (act === 'share') { currentModalId = id; shareScript(); }
+    else if (act === 'edit') editScript(id);
+    else if (act === 'delete') deleteScript(id);
     return;
   }
 
-  // Click on card body → open modal
   const card = e.target.closest('.card');
   if (card && !e.target.closest('a, button')) openModal(+card.dataset.id);
 });
 
-// Modal
 $('#modalClose').addEventListener('click', closeModal);
 $('#modalBackdrop').addEventListener('click', e => { if (e.target === $('#modalBackdrop')) closeModal(); });
 $$('.modal-tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
 $('#shareBtn').addEventListener('click', shareScript);
-$('#favModalBtn').addEventListener('click', () => { if (currentModalId) toggleFav(currentModalId, 'modal'); });
+$('#favModalBtn').addEventListener('click', () => { if (currentModalId) toggleFav(currentModalId); });
 
-// Theme menu
-$('#themeBtn').addEventListener('click', e => {
-  e.stopPropagation();
-  $('#themeMenu').classList.toggle('open');
+$('#cmtSend').addEventListener('click', () => {
+  if (!currentModalId) return;
+  addComment(currentModalId, $('#cmtInput').value);
 });
-document.addEventListener('click', e => {
-  if (!e.target.closest('#themeMenu') && !e.target.closest('#themeBtn')) {
-    $('#themeMenu').classList.remove('open');
+$('#cmtInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.ctrlKey) {
+    e.preventDefault();
+    if (currentModalId) addComment(currentModalId, $('#cmtInput').value);
   }
 });
-$$('.swatch').forEach(s => s.addEventListener('click', () => {
-  setTheme(s.dataset.themeSet);
-  $('#themeMenu').classList.remove('open');
-}));
-$$('.swatch').forEach(s => s.classList.toggle('active', s.dataset.themeSet === state.theme));
 
-// Favorites button
-$('#favBtn').addEventListener('click', () => {
-  state.filter = state.filter === 'favorites' ? 'all' : 'favorites';
-  renderChips();
-  renderGrid();
-  document.querySelector('#scripts').scrollIntoView({behavior:'smooth'});
-  if (state.filter === 'favorites') toast('Mostrando apenas favoritos', 'ok', 'heart');
+$('#userBtn').addEventListener('click', openUserModal);
+$('#userBackdrop').addEventListener('click', e => { if (e.target === $('#userBackdrop')) $('#userBackdrop').classList.remove('open'); });
+
+$('#saveUser').addEventListener('click', () => {
+  const name = $('#userName').value.trim();
+  if (!name || name.length < 2) { toast('Digite pelo menos 2 caracteres', 'warn'); return; }
+  const color = $('.avatar-opt.selected')?.dataset.color || hashColor(name);
+  state.user = { name, color, created: Date.now() };
+  store.set('user', state.user);
+  updateUserUI();
+  $('#userBackdrop').classList.remove('open');
+  toast(`Bem-vindo, ${name}!`, 'ok', 'user');
 });
 
-// Mobile menu
+$('#logoutUser').addEventListener('click', () => {
+  state.user = null;
+  store.del('user');
+  updateUserUI();
+  $('#userBackdrop').classList.remove('open');
+  toast('Perfil removido', 'warn');
+});
+
+$('#themeBtn').addEventListener('click', e => { e.stopPropagation(); $('#themeMenu').classList.toggle('open'); });
+document.addEventListener('click', e => {
+  if (!e.target.closest('#themeMenu') && !e.target.closest('#themeBtn')) $('#themeMenu').classList.remove('open');
+});
+$$('.swatch').forEach(s => {
+  s.classList.toggle('active', s.dataset.themeSet === state.theme);
+  s.addEventListener('click', () => { setTheme(s.dataset.themeSet); $('#themeMenu').classList.remove('open'); });
+});
+
+$('#favBtn').addEventListener('click', () => {
+  state.filter = state.filter === 'favorites' ? 'all' : 'favorites';
+  renderChips(); renderGrid();
+  $('#scripts').scrollIntoView({behavior:'smooth'});
+  if (state.filter === 'favorites') toast('Mostrando favoritos', 'ok', 'heart');
+});
+
 $('#menuToggle').addEventListener('click', () => $('#mobileMenu').classList.toggle('open'));
 $$('#mobileMenu a').forEach(a => a.addEventListener('click', () => $('#mobileMenu').classList.remove('open')));
 
-// Cmd
 $('#cmdBtn').addEventListener('click', openCmd);
 cmdInput.addEventListener('input', e => renderCmd(e.target.value));
 cmdInput.addEventListener('keydown', e => {
@@ -1677,45 +1536,63 @@ cmdInput.addEventListener('keydown', e => {
 });
 cmdBackdrop.addEventListener('click', e => { if (e.target === cmdBackdrop) closeCmd(); });
 
-// Global keyboard
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openCmd(); }
-  else if (e.key === 'Escape') { closeModal(); closeCmd(); }
+  else if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'a') { e.preventDefault(); toggleAdmin(); }
+  else if (e.key === 'Escape') { closeModal(); closeCmd(); $('#userBackdrop').classList.remove('open'); }
 });
 
-// Scroll progress + back to top
 const progress = $('#scrollProgress');
 const btt = $('#btt');
-const onScroll = () => {
+window.addEventListener('scroll', () => {
   const h = document.documentElement.scrollHeight - window.innerHeight;
   const p = Math.min(1, Math.max(0, window.scrollY / h));
   progress.style.width = (p * 100) + '%';
-  btt.style.setProperty('--p', p);
   btt.classList.toggle('show', window.scrollY > 400);
-};
-window.addEventListener('scroll', onScroll, { passive: true });
+}, { passive: true });
 btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-// Active nav on scroll
 const navLinks = $$('.nav-desktop a');
-const sectionIds = ['top', 'executores', 'scripts', 'faq', 'contato'];
+const sectionIds = ['top', 'executores', 'scripts', 'faq'];
 const io2 = new IntersectionObserver(entries => {
   entries.forEach(e => {
-    if (e.isIntersecting) {
-      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
-    }
+    if (e.isIntersecting) navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
   });
 }, { rootMargin: '-40% 0px -55% 0px' });
 sectionIds.forEach(id => { const s = document.getElementById(id); if (s) io2.observe(s); });
 
-/* ============ INIT ============ */
+/* ============================================================
+   INIT
+   ============================================================ */
 function init() {
+  setTheme(state.theme);
+  updateUserUI();
+  updateFavBadge();
+  if (state.admin) $('#adminBadge').classList.add('show');
+
+  setupPWA();
+
+  const total = DATA.length;
+  const execs = DATA.filter(s => s.category === 'executors').length;
+  $('#statTotal').textContent = total;
+  $('#statExecTotal').textContent = execs;
+  $('#statScripts').dataset.count = total;
+  $('#statExecutors').dataset.count = execs;
+  const lastUp = new Date().toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+  $('#lastUpdate').textContent = `Atualizado ${lastUp}`;
+
   renderChips();
   renderFeatured();
-  renderGrid(true); // skeletons
-  setTimeout(() => renderGrid(), 350);
+  renderGrid(true);
+  setTimeout(() => renderGrid(), 300);
   animateCounters();
-  onScroll();
+
+  if (location.hash) {
+    const id = parseInt(location.hash.slice(1));
+    if (!isNaN(id)) setTimeout(() => openModal(id), 600);
+  }
+
+  console.log(`[RANOX] ${DATA.length} itens carregados`);
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
@@ -1724,4 +1601,4 @@ else init();
 })();
 </script>
 </body>
-    </html>
+  </html>
