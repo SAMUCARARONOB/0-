@@ -1,16 +1,15 @@
 --[[
     ╔══════════════════════════════════════════════════════════════════╗
-    ║                                                                  ║
-    ║                        RANOX UI LIBRARY                          ║
-    ║                         Version 2.0.0                            ║
-    ║                                                                  ║
-    ║              ✦ Glow Up Edition · 100% API Compatible ✦           ║
-    ║                                                                  ║
+    ║  RANOX UI LIBRARY · Version 3.0.0                                ║
+    ║  ✦ Alien Edition · 100% API Compatible ✦                         ║
+    ║  ✦ Animações de entrada · Glow · Partículas · Sons · Ripple ✦    ║
     ╚══════════════════════════════════════════════════════════════════╝
---]]
+]]
 
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 
 local RANOX = {}
@@ -33,6 +32,9 @@ local Palette = {
     Danger       = Color3.fromRGB(255, 70, 100),
 }
 
+-- ═══════════════════════════════════════════════════════════════════
+-- HELPERS DE ANIMAÇÃO
+-- ═══════════════════════════════════════════════════════════════════
 local function tween(inst, info, props)
     local t = TweenService:Create(inst, info, props)
     t:Play()
@@ -51,6 +53,36 @@ local function bounce(inst, props)
     return tween(inst, TweenInfo.new(0.32, Enum.EasingStyle.Back, Enum.EasingDirection.Out), props)
 end
 
+local function addCorner(parent, radius)
+    local c = Instance.new("UICorner", parent)
+    c.CornerRadius = radius or UDim.new(0, 6)
+    return c
+end
+
+local function addStroke(parent, color, thickness, transparency)
+    local s = Instance.new("UIStroke", parent)
+    s.Color = color or Palette.Border
+    s.Thickness = thickness or 1
+    s.Transparency = transparency or 0.4
+    s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    return s
+end
+
+local function playSound(id, vol)
+    local s = Instance.new("Sound")
+    s.SoundId = "rbxassetid://" .. tostring(id)
+    s.Volume = vol or 0.25
+    s.Parent = game:GetService("SoundService")
+    s:Play()
+    game:GetService("Debris"):AddItem(s, 2)
+end
+
+local SOUNDS = {
+    Hover  = 6895084505,
+    Click  = 6895083992,
+    Toggle = 6895083749,
+}
+
 -- ═══════════════════════════════════════════════════════════════════
 -- CREATE WINDOW
 -- ═══════════════════════════════════════════════════════════════════
@@ -58,16 +90,26 @@ function RANOX:CreateWindow(config)
     config = config or {}
     local Window = {}
 
+    -- ScreenGui
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "RANOX_UI"
     screenGui.ResetOnSpawn = false
     screenGui.IgnoreGuiInset = true
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     screenGui.DisplayOrder = 99e99
-    screenGui.Parent = game:GetService("CoreGui")
+    pcall(function() screenGui.Parent = game:GetService("CoreGui") end)
+    if not screenGui.Parent then screenGui.Parent = player:WaitForChild("PlayerGui") end
 
+    -- Blur ambiente
+    local ambientBlur = Instance.new("BlurEffect")
+    ambientBlur.Size = 0
+    ambientBlur.Parent = game.Lighting
+    tween(ambientBlur, TweenInfo.new(0.6, Enum.EasingStyle.Quint), { Size = 8 })
+
+    -- Main Frame
     local mainFrame = Instance.new("TextButton")
-    mainFrame.Size = UDim2.new(0, 575, 0, 375)
+    mainFrame.Name = "MainFrame"
+    mainFrame.Size = UDim2.new(0, 0, 0, 0) -- entrada animada
     mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
     mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     mainFrame.BackgroundColor3 = Palette.Bg
@@ -78,16 +120,10 @@ function RANOX:CreateWindow(config)
     mainFrame.Draggable = true
     mainFrame.Active = true
     mainFrame.Parent = screenGui
-    Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
+    addCorner(mainFrame, UDim.new(0, 12))
 
-    -- Borda com glow (substitui sombra bugada)
-    local stroke = Instance.new("UIStroke")
-    stroke.Thickness = 1.5
-    stroke.Transparency = 0.25
-    stroke.Color = Palette.Accent
+    local stroke = addStroke(mainFrame, Palette.Accent, 1.5, 0.25)
     stroke.Name = "MainStroke"
-    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    stroke.Parent = mainFrame
 
     local gradient = Instance.new("UIGradient")
     gradient.Name = "MainGradient"
@@ -103,6 +139,41 @@ function RANOX:CreateWindow(config)
     }
     gradient.Parent = mainFrame
 
+    -- Glow orbs decorativos animados
+    local decorHolder = Instance.new("Frame", mainFrame)
+    decorHolder.Name = "Decor"
+    decorHolder.Size = UDim2.new(1, 0, 1, 0)
+    decorHolder.BackgroundTransparency = 1
+    decorHolder.ClipsDescendants = true
+    decorHolder.ZIndex = 0
+
+    local orb1 = Instance.new("Frame", decorHolder)
+    orb1.Size = UDim2.new(0, 260, 0, 260)
+    orb1.Position = UDim2.new(-0.3, 0, -0.3, 0)
+    orb1.BackgroundColor3 = Palette.Accent
+    orb1.BackgroundTransparency = 0.82
+    orb1.BorderSizePixel = 0
+    orb1.ZIndex = 0
+    addCorner(orb1, UDim.new(1, 0))
+
+    local orb2 = Instance.new("Frame", decorHolder)
+    orb2.Size = UDim2.new(0, 220, 0, 220)
+    orb2.Position = UDim2.new(0.85, 0, 0.75, 0)
+    orb2.BackgroundColor3 = Color3.fromRGB(120, 0, 60)
+    orb2.BackgroundTransparency = 0.85
+    orb2.BorderSizePixel = 0
+    orb2.ZIndex = 0
+    addCorner(orb2, UDim.new(1, 0))
+
+    task.spawn(function()
+        local t = 0
+        while mainFrame.Parent do
+            t += task.wait(0.03)
+            orb1.Position = UDim2.new(-0.3 + math.sin(t*0.6)*0.08, 0, -0.3 + math.cos(t*0.5)*0.08, 0)
+            orb2.Position = UDim2.new(0.85 + math.cos(t*0.4)*0.06, 0, 0.75 + math.sin(t*0.7)*0.06, 0)
+        end
+    end)
+
     -- Linha superior animada (accent que corre)
     local topGlow = Instance.new("Frame")
     topGlow.Size = UDim2.new(0, 100, 0, 2)
@@ -111,7 +182,7 @@ function RANOX:CreateWindow(config)
     topGlow.BorderSizePixel = 0
     topGlow.ZIndex = 5
     topGlow.Parent = mainFrame
-    Instance.new("UICorner", topGlow).CornerRadius = UDim.new(0, 3)
+    addCorner(topGlow, UDim.new(0, 3))
 
     task.spawn(function()
         while topGlow.Parent do
@@ -130,6 +201,7 @@ function RANOX:CreateWindow(config)
             ColorSequenceKeypoint.new(1, corGradiente2)
         }
         topGlow.BackgroundColor3 = corGradiente2
+        orb1.BackgroundColor3 = corStroke
     end
 
     -- Título
@@ -146,7 +218,7 @@ function RANOX:CreateWindow(config)
     title.ClipsDescendants = true
     title.ZIndex = 5
 
-    -- Subtítulo (posicionado depois do título)
+    -- Subtítulo
     local subtitle = Instance.new("TextLabel", mainFrame)
     subtitle.BackgroundTransparency = 1
     subtitle.Text = config.Subtitle or "v1.0"
@@ -163,7 +235,7 @@ function RANOX:CreateWindow(config)
         subtitle.Position = UDim2.new(0, 10 + textWidth + 8, 0, 0)
     end)
 
-    -- Botão esconder (minimizar)
+    -- Botão minimizar
     local hideButton = Instance.new("TextButton", mainFrame)
     hideButton.Size = UDim2.new(0, 25, 0, 25)
     hideButton.Position = UDim2.new(1, -30, 0, 0)
@@ -176,16 +248,14 @@ function RANOX:CreateWindow(config)
     hideButton.AutoButtonColor = false
     hideButton.BorderSizePixel = 0
     hideButton.ZIndex = 5
-    Instance.new("UICorner", hideButton).CornerRadius = UDim.new(0, 6)
-    local hideStroke = Instance.new("UIStroke")
-    hideStroke.Color = Palette.Border
-    hideStroke.Thickness = 1
-    hideStroke.Transparency = 0.4
-    hideStroke.Parent = hideButton
+    addCorner(hideButton, UDim.new(0, 6))
+
+    local hideStroke = addStroke(hideButton, Palette.Border, 1, 0.4)
 
     hideButton.MouseEnter:Connect(function()
         fast(hideButton, { BackgroundColor3 = Palette.AccentSoft, BackgroundTransparency = 0.1 })
         fast(hideStroke, { Color = Palette.Accent })
+        playSound(SOUNDS.Hover, 0.1)
     end)
     hideButton.MouseLeave:Connect(function()
         fast(hideButton, { BackgroundColor3 = Palette.Surface, BackgroundTransparency = 0.4 })
@@ -213,11 +283,12 @@ function RANOX:CreateWindow(config)
     sidebar.BorderSizePixel = 0
     sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
     sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
-    Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0, 6)
+    addCorner(sidebar, UDim.new(0, 6))
 
     local sidebarLayout = Instance.new("UIListLayout", sidebar)
     sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
     sidebarLayout.Padding = UDim.new(0, 3)
+
     local sidebarPad = Instance.new("UIPadding", sidebar)
     sidebarPad.PaddingTop = UDim.new(0, 5)
     sidebarPad.PaddingLeft = UDim.new(0, 5)
@@ -237,11 +308,9 @@ function RANOX:CreateWindow(config)
     tabIndicator.BorderSizePixel = 0
     tabIndicator.ZIndex = 1
     tabIndicator.Visible = false
-    Instance.new("UICorner", tabIndicator).CornerRadius = UDim.new(0, 6)
-    local indStroke = Instance.new("UIStroke", tabIndicator)
-    indStroke.Color = Palette.Accent
-    indStroke.Thickness = 1.2
-    indStroke.Transparency = 0.3
+    addCorner(tabIndicator, UDim.new(0, 6))
+
+    local indStroke = addStroke(tabIndicator, Palette.Accent, 1.2, 0.3)
 
     -- Scroll Holder (conteúdo)
     local scrollHolder = Instance.new("ScrollingFrame", mainFrame)
@@ -256,7 +325,7 @@ function RANOX:CreateWindow(config)
 
     -- Floating Ball (para restaurar)
     local ballButton = Instance.new("ImageButton")
-    ballButton.Size = UDim2.new(0.05, 0, 0.1, 0)
+    ballButton.Size = UDim2.new(0, 50, 0, 50)
     ballButton.Position = UDim2.new(0.1, 0, 0.9, -150)
     ballButton.AnchorPoint = Vector2.new(0.5, 0.5)
     ballButton.BackgroundColor3 = Palette.Accent
@@ -266,15 +335,18 @@ function RANOX:CreateWindow(config)
     ballButton.Active = true
     ballButton.Draggable = true
     ballButton.Parent = screenGui
+    addCorner(ballButton, UDim.new(0.5, 0))
 
-    local ballCorner = Instance.new("UICorner")
-    ballCorner.CornerRadius = UDim.new(0.5, 0)
-    ballCorner.Parent = ballButton
+    local ballStroke = addStroke(ballButton, Palette.AccentBright, 2, 0.2)
 
-    local ballStroke = Instance.new("UIStroke", ballButton)
-    ballStroke.Color = Palette.AccentBright
-    ballStroke.Thickness = 2
-    ballStroke.Transparency = 0.2
+    task.spawn(function()
+        while ballButton.Parent do
+            tween(ballStroke, TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { Transparency = 0.8 })
+            task.wait(1.2)
+            tween(ballStroke, TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { Transparency = 0.2 })
+            task.wait(1.2)
+        end
+    end)
 
     -- Entry animation
     mainFrame.Size = UDim2.new(0, 0, 0, 0)
@@ -293,9 +365,7 @@ function RANOX:CreateWindow(config)
             local marker = btn:FindFirstChild("TabMarker")
             local label = btn:FindFirstChildOfClass("TextLabel")
             local icon = btn:FindFirstChild("TabIcon")
-            if marker then
-                marker.Visible = (tabName == name)
-            end
+            if marker then marker.Visible = (tabName == name) end
             if label then
                 fast(label, { TextColor3 = (tabName == name) and Palette.Text or Palette.TextDim })
             end
@@ -322,14 +392,9 @@ function RANOX:CreateWindow(config)
         tabBtn.ClipsDescendants = true
         tabBtn.TextXAlignment = Enum.TextXAlignment.Left
         tabBtn.ZIndex = 2
+        addCorner(tabBtn, UDim.new(0, 6))
 
-        local uiCorner = Instance.new("UICorner", tabBtn)
-        uiCorner.CornerRadius = UDim.new(0, 6)
-
-        local uiStroke = Instance.new("UIStroke", tabBtn)
-        uiStroke.Thickness = 1
-        uiStroke.Color = Palette.Border
-        uiStroke.Transparency = 1
+        local uiStroke = addStroke(tabBtn, Palette.Border, 1, 1)
 
         local marker = Instance.new("Frame", tabBtn)
         marker.Name = "TabMarker"
@@ -338,7 +403,7 @@ function RANOX:CreateWindow(config)
         marker.BackgroundColor3 = Palette.AccentBright
         marker.BorderSizePixel = 0
         marker.Visible = false
-        Instance.new("UICorner", marker).CornerRadius = UDim.new(0, 3)
+        addCorner(marker, UDim.new(0, 3))
 
         local label = Instance.new("TextLabel", tabBtn)
         label.BackgroundTransparency = 1
@@ -347,143 +412,132 @@ function RANOX:CreateWindow(config)
         label.TextSize = 12
         label.TextColor3 = Palette.TextDim
         label.TextXAlignment = Enum.TextXAlignment.Left
-        label.TextWrapped = false
-        label.TextTruncate = Enum.TextTruncate.AtEnd
-        label.ZIndex = 3
+        label.TextWrapped = true
 
         if iconId then
             local icon = Instance.new("ImageLabel", tabBtn)
             icon.Name = "TabIcon"
             icon.Size = UDim2.new(0, 16, 0, 16)
-            icon.Position = UDim2.new(0, 8, 0.5, -8)
+            icon.Position = UDim2.new(0, 6, 0.5, -8)
             icon.BackgroundTransparency = 1
             icon.Image = "rbxassetid://" .. tostring(iconId)
             icon.ImageColor3 = Palette.TextMute
-            icon.ZIndex = 3
-            label.Position = UDim2.new(0, 30, 0, 0)
-            label.Size = UDim2.new(1, -34, 1, 0)
+            label.Position = UDim2.new(0, 26, 0, 0)
+            label.Size = UDim2.new(1, -28, 1, 0)
         else
-            label.Position = UDim2.new(0, 12, 0, 0)
-            label.Size = UDim2.new(1, -16, 1, 0)
+            label.Position = UDim2.new(0, 10, 0, 0)
+            label.Size = UDim2.new(1, -10, 1, 0)
         end
 
         tabButtons[tabName] = tabBtn
 
         tabBtn.MouseEnter:Connect(function()
             if selectedTab ~= tabName then
-                fast(tabBtn, { BackgroundTransparency = 0.6, BackgroundColor3 = Palette.SurfaceHi })
-                fast(uiStroke, { Transparency = 0.7, Color = Palette.Border })
+                fast(tabBtn, { BackgroundColor3 = Palette.SurfaceHi, BackgroundTransparency = 0.5 })
+                playSound(SOUNDS.Hover, 0.08)
             end
         end)
 
         tabBtn.MouseLeave:Connect(function()
             if selectedTab ~= tabName then
-                fast(tabBtn, { BackgroundTransparency = 1 })
-                fast(uiStroke, { Transparency = 1 })
+                fast(tabBtn, { BackgroundColor3 = Palette.Surface, BackgroundTransparency = 1 })
             end
         end)
 
         local tabPage = Instance.new("Frame", scrollHolder)
         tabPage.Name = tabName
-        tabPage.Size = UDim2.new(1, 0, 0, 0)
+        tabPage.Size = UDim2.new(1, 0, 0, 1000)
         tabPage.BackgroundTransparency = 1
         tabPage.Visible = false
-        tabPage.AutomaticSize = Enum.AutomaticSize.Y
 
         local layout = Instance.new("UIListLayout", tabPage)
         layout.SortOrder = Enum.SortOrder.LayoutOrder
         layout.Padding = UDim.new(0, 8)
 
+        local pad = Instance.new("UIPadding", tabPage)
+        pad.PaddingTop = UDim.new(0, 4)
+        pad.PaddingLeft = UDim.new(0, 4)
+        pad.PaddingRight = UDim.new(0, 8)
+
         pages[tabName] = tabPage
 
         tabBtn.MouseButton1Click:Connect(function()
-            -- Animação do indicador
-            tabIndicator.Visible = true
-            smooth(tabIndicator, {
-                Position = UDim2.new(0, 5, 0, tabBtn.AbsolutePosition.Y - sidebar.AbsolutePosition.Y + sidebar.CanvasPosition.Y),
-            }, 0.28)
-
-            for name, button in pairs(tabButtons) do
-                local btnStroke = button:FindFirstChildOfClass("UIStroke")
-                if name == tabName then
-                    fast(button, { BackgroundTransparency = 0.1, BackgroundColor3 = Palette.Surface })
-                    if btnStroke then fast(btnStroke, { Transparency = 0.5 }) end
-                    -- Pequeno bounce no botão ativo
-                    tween(button, TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-                        Size = UDim2.new(1, -2, 0, 35)
-                    })
-                    task.delay(0.15, function()
-                        tween(button, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                            Size = UDim2.new(1, -2, 0, 33)
-                        })
-                    end)
-                    button.TabMarker.Visible = true
-                else
-                    fast(button, { BackgroundTransparency = 1 })
-                    if btnStroke then fast(btnStroke, { Transparency = 1 }) end
-                    button.TabMarker.Visible = false
-                end
-            end
+            playSound(SOUNDS.Click, 0.25)
             switchTab(tabName)
         end)
 
         if not selectedTab then
-            task.defer(function()
-                task.wait(0.1)
-                tabBtn.MouseButton1Click:Fire()
-            end)
+            switchTab(tabName)
         end
+    end
+
+    -- ═══════════════════════════════════════════════════════════════
+    -- RIPPLE HELPER
+    -- ═══════════════════════════════════════════════════════════════
+    local function addRipple(parent)
+        local ripple = Instance.new("Frame", parent)
+        ripple.Size = UDim2.new(0, 0, 0, 0)
+        ripple.AnchorPoint = Vector2.new(0.5, 0.5)
+        ripple.Position = UDim2.new(0.5, 0, 0.5, 0)
+        ripple.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        ripple.BackgroundTransparency = 0.7
+        ripple.BorderSizePixel = 0
+        ripple.ZIndex = 2
+        addCorner(ripple, UDim.new(1, 0))
+        local t1 = tween(ripple, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Size = UDim2.new(1.8, 0, 4, 0),
+            BackgroundTransparency = 1
+        })
+        t1.Completed:Connect(function() ripple:Destroy() end)
     end
 
     -- ═══════════════════════════════════════════════════════════════
     -- CREATE BUTTON
     -- ═══════════════════════════════════════════════════════════════
     function Window:CreateButton(tabName, text, callback)
-        local tab = pages[tabName]
-        if not tab then return end
+        local tab = pages[tabName]; if not tab then return end
 
         local btn = Instance.new("TextButton", tab)
-        btn.Size = UDim2.new(1, -20, 0, 30)
+        btn.Size = UDim2.new(1, -20, 0, 34)
         btn.Position = UDim2.new(0, 10, 0, 0)
         btn.Text = text
-        btn.Font = Enum.Font.GothamSemibold
+        btn.Font = Enum.Font.GothamMedium
         btn.TextSize = 14
         btn.TextColor3 = Palette.Text
-        btn.BackgroundColor3 = Palette.Surface
+        btn.BackgroundColor3 = Palette.SurfaceHi
         btn.AutoButtonColor = false
         btn.ClipsDescendants = true
-        btn.TextWrapped = false
-        btn.TextTruncate = Enum.TextTruncate.AtEnd
-        btn.BorderSizePixel = 0
-        Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+        btn.TextWrapped = true
+        addCorner(btn, UDim.new(0, 8))
+        local stroke = addStroke(btn, Palette.Border, 1, 0.5)
 
-        local bStroke = Instance.new("UIStroke", btn)
-        bStroke.Color = Palette.Border
-        bStroke.Thickness = 1
-        bStroke.Transparency = 0.4
-
-        -- Barra de accent esquerda
         local accentBar = Instance.new("Frame", btn)
-        accentBar.Size = UDim2.new(0, 3, 0, 16)
-        accentBar.Position = UDim2.new(0, 8, 0.5, -8)
+        accentBar.Size = UDim2.new(0, 3, 1, 0)
+        accentBar.Position = UDim2.new(0, 0, 0, 0)
         accentBar.BackgroundColor3 = Palette.Accent
         accentBar.BorderSizePixel = 0
-        Instance.new("UICorner", accentBar).CornerRadius = UDim.new(0, 2)
 
         btn.MouseEnter:Connect(function()
-            fast(btn, { BackgroundColor3 = Palette.SurfaceHi })
-            fast(bStroke, { Color = Palette.Accent, Transparency = 0.2 })
-            smooth(accentBar, { Size = UDim2.new(0, 5, 0, 22) }, 0.2)
+            tween(btn, TweenInfo.new(0.2), { BackgroundColor3 = Color3.fromRGB(55, 20, 22) })
+            tween(stroke, TweenInfo.new(0.2), { Color = Palette.AccentBright, Transparency = 0.2 })
+            tween(accentBar, TweenInfo.new(0.2), { Size = UDim2.new(0, 5, 1, 0) })
+            playSound(SOUNDS.Hover, 0.1)
         end)
 
         btn.MouseLeave:Connect(function()
-            fast(btn, { BackgroundColor3 = Palette.Surface })
-            fast(bStroke, { Color = Palette.Border, Transparency = 0.4 })
-            smooth(accentBar, { Size = UDim2.new(0, 3, 0, 16) }, 0.2)
+            tween(btn, TweenInfo.new(0.2), { BackgroundColor3 = Palette.SurfaceHi })
+            tween(stroke, TweenInfo.new(0.2), { Color = Palette.Border, Transparency = 0.5 })
+            tween(accentBar, TweenInfo.new(0.2), { Size = UDim2.new(0, 3, 1, 0) })
         end)
 
         btn.MouseButton1Click:Connect(function()
-            pcall(callback)
+            playSound(SOUNDS.Click, 0.3)
+            addRipple(btn)
+            tween(btn, TweenInfo.new(0.1), { Size = UDim2.new(1, -22, 0, 32) })
+            task.delay(0.1, function()
+                tween(btn, TweenInfo.new(0.15, Enum.EasingStyle.Back), { Size = UDim2.new(1, -20, 0, 34) })
+            end)
+            if callback then pcall(callback) end
         end)
     end
 
@@ -491,66 +545,59 @@ function RANOX:CreateWindow(config)
     -- CREATE CHECKBOX
     -- ═══════════════════════════════════════════════════════════════
     function Window:CreateCheckbox(tabName, checkboxConfig)
-        local tab = pages[tabName]
-        if not tab then return end
+        local tab = pages[tabName]; if not tab then return end
         checkboxConfig = checkboxConfig or {}
 
         local checkboxFrame = Instance.new("Frame", tab)
-        checkboxFrame.Size = UDim2.new(1, -20, 0, 43)
+        checkboxFrame.Size = UDim2.new(1, -20, 0, 46)
         checkboxFrame.BackgroundColor3 = Palette.Surface
         checkboxFrame.BorderSizePixel = 0
         checkboxFrame.ClipsDescendants = true
         checkboxFrame.LayoutOrder = checkboxConfig.Order or 0
-        Instance.new("UICorner", checkboxFrame).CornerRadius = UDim.new(0, 8)
-        local cfStroke = Instance.new("UIStroke", checkboxFrame)
-        cfStroke.Color = Palette.Border
-        cfStroke.Thickness = 1
-        cfStroke.Transparency = 0.4
+        addCorner(checkboxFrame, UDim.new(0, 8))
+        local cfStroke = addStroke(checkboxFrame, Palette.Border, 1, 0.7)
 
         local title = Instance.new("TextLabel", checkboxFrame)
         title.Text = checkboxConfig.Text or "Checkbox"
         title.TextColor3 = Palette.Text
-        title.Font = Enum.Font.GothamSemibold
+        title.Font = Enum.Font.GothamMedium
         title.TextSize = 14
         title.TextXAlignment = Enum.TextXAlignment.Left
         title.TextYAlignment = Enum.TextYAlignment.Top
         title.BackgroundTransparency = 1
-        title.Size = UDim2.new(1, -44, 0, 14)
-        title.Position = UDim2.new(0, 10, 0, 4)
+        title.Size = UDim2.new(1, -50, 0, 16)
+        title.Position = UDim2.new(0, 12, 0, 5)
 
         local description = Instance.new("TextLabel", checkboxFrame)
         description.Text = checkboxConfig.Description or ""
-        description.TextColor3 = Palette.TextDim
+        description.TextColor3 = Palette.TextMuted
         description.Font = Enum.Font.Gotham
-        description.TextSize = 12
+        description.TextSize = 11
         description.TextXAlignment = Enum.TextXAlignment.Left
         description.TextYAlignment = Enum.TextYAlignment.Top
         description.BackgroundTransparency = 1
-        description.Size = UDim2.new(1, -44, 0, 12)
-        description.Position = UDim2.new(0, 10, 0, 22)
+        description.Size = UDim2.new(1, -50, 0, 14)
+        description.Position = UDim2.new(0, 12, 0, 24)
 
         local box = Instance.new("Frame", checkboxFrame)
         box.Size = UDim2.new(0, 24, 0, 24)
-        box.Position = UDim2.new(1, -34, 0.5, -12)
-        box.BackgroundColor3 = Palette.SurfaceHi
+        box.Position = UDim2.new(1, -38, 0.5, -12)
+        box.BackgroundColor3 = Color3.fromRGB(28, 28, 32)
         box.BorderSizePixel = 0
-        Instance.new("UICorner", box).CornerRadius = UDim.new(0, 6)
-        local stroke = Instance.new("UIStroke", box)
-        stroke.Color = Palette.Border
-        stroke.Thickness = 1.3
+        addCorner(box, UDim.new(0, 6))
+        local boxStroke = addStroke(box, Palette.Border, 1.3, 0.3)
 
         local checkmark = Instance.new("TextLabel", box)
-        checkmark.Size = UDim2.new(1, -6, 1, -6)
-        checkmark.Position = UDim2.new(0, 3, 0, 3)
+        checkmark.Size = UDim2.new(1, -4, 1, -4)
+        checkmark.Position = UDim2.new(0, 2, 0, 2)
         checkmark.Text = "✔"
-        checkmark.TextColor3 = Color3.new(1, 1, 1)
+        checkmark.TextColor3 = Color3.fromRGB(255, 255, 255)
         checkmark.TextScaled = true
         checkmark.BackgroundTransparency = 1
         checkmark.Visible = false
 
         local button = Instance.new("TextButton", checkboxFrame)
         button.Size = UDim2.new(1, 0, 1, 0)
-        button.Position = UDim2.new(0, 0, 0, 0)
         button.BackgroundTransparency = 1
         button.Text = ""
         button.AutoButtonColor = false
@@ -558,30 +605,44 @@ function RANOX:CreateWindow(config)
         local toggled = false
         local running = false
 
+        local function tweenBoxColor(toColor)
+            tween(box, TweenInfo.new(0.2), { BackgroundColor3 = toColor })
+        end
+
+        button.MouseEnter:Connect(function()
+            tween(boxStroke, TweenInfo.new(0.2), { Color = Palette.AccentBright, Transparency = 0.1 })
+            tween(checkboxFrame, TweenInfo.new(0.2), { BackgroundColor3 = Palette.SurfaceHi })
+        end)
+        button.MouseLeave:Connect(function()
+            if not toggled then
+                tween(boxStroke, TweenInfo.new(0.2), { Color = Palette.Border, Transparency = 0.3 })
+            end
+            tween(checkboxFrame, TweenInfo.new(0.2), { BackgroundColor3 = Palette.Surface })
+        end)
+
         button.MouseButton1Click:Connect(function()
             toggled = not toggled
             checkmark.Visible = toggled
+            playSound(SOUNDS.Toggle, 0.25)
+
+            local grow = tween(box, TweenInfo.new(0.15), { Size = UDim2.new(0, 28, 0, 28), Position = UDim2.new(1, -40, 0.5, -14) })
+            grow.Completed:Connect(function()
+                tween(box, TweenInfo.new(0.15, Enum.EasingStyle.Back), { Size = UDim2.new(0, 24, 0, 24), Position = UDim2.new(1, -38, 0.5, -12) })
+            end)
 
             if toggled then
-                fast(box, { BackgroundColor3 = Palette.Accent })
-                fast(stroke, { Color = Palette.AccentBright })
-                -- Bounce suave
-                bounce(box, { Size = UDim2.new(0, 26, 0, 26), Position = UDim2.new(1, -35, 0.5, -13) })
-                task.delay(0.18, function()
-                    fast(box, { Size = UDim2.new(0, 24, 0, 24), Position = UDim2.new(1, -34, 0.5, -12) })
-                end)
+                tweenBoxColor(Palette.Accent)
+                tween(boxStroke, TweenInfo.new(0.2), { Color = Palette.AccentBright, Transparency = 0 })
                 running = true
                 task.spawn(function()
                     while running and toggled do
-                        if checkboxConfig.Callback then
-                            pcall(checkboxConfig.Callback, true)
-                        end
+                        pcall(checkboxConfig.Callback)
                         task.wait()
                     end
                 end)
             else
-                fast(box, { BackgroundColor3 = Palette.SurfaceHi })
-                fast(stroke, { Color = Palette.Border })
+                tweenBoxColor(Color3.fromRGB(28, 28, 32))
+                tween(boxStroke, TweenInfo.new(0.2), { Color = Palette.Border, Transparency = 0.3 })
                 running = false
             end
 
@@ -595,102 +656,80 @@ function RANOX:CreateWindow(config)
     -- CREATE TOGGLE
     -- ═══════════════════════════════════════════════════════════════
     function Window:CreateToggle(tabName, toggleConfig)
-        local tab = pages[tabName]
-        if not tab then return end
+        local tab = pages[tabName]; if not tab then return end
         toggleConfig = toggleConfig or {}
 
         local toggleFrame = Instance.new("Frame", tab)
-        toggleFrame.Size = UDim2.new(1, -20, 0, 45)
+        toggleFrame.Size = UDim2.new(1, -20, 0, 46)
         toggleFrame.Position = UDim2.new(0, 10, 0, 0)
         toggleFrame.BackgroundColor3 = Palette.Surface
-        toggleFrame.BackgroundTransparency = 0
         toggleFrame.ClipsDescendants = true
         toggleFrame.BorderSizePixel = 0
-        Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 8)
-        local tfStroke = Instance.new("UIStroke", toggleFrame)
-        tfStroke.Color = Palette.Border
-        tfStroke.Thickness = 1
-        tfStroke.Transparency = 0.4
+        addCorner(toggleFrame, UDim.new(0, 8))
+        local tfStroke = addStroke(toggleFrame, Palette.Border, 1, 0.7)
 
         local title = Instance.new("TextLabel", toggleFrame)
         title.Text = toggleConfig.Text or "Toggle"
         title.TextColor3 = Palette.Text
-        title.Font = Enum.Font.GothamSemibold
+        title.Font = Enum.Font.GothamMedium
         title.TextSize = 14
         title.TextXAlignment = Enum.TextXAlignment.Left
         title.TextYAlignment = Enum.TextYAlignment.Top
         title.BackgroundTransparency = 1
-        title.Size = UDim2.new(1, -70, 0, 14)
-        title.Position = UDim2.new(0, 12, 0, 6)
+        title.Size = UDim2.new(1, -60, 0, 16)
+        title.Position = UDim2.new(0, 12, 0, 5)
 
         local description = Instance.new("TextLabel", toggleFrame)
-        description.Text = toggleConfig.Description or ""
-        description.TextColor3 = Palette.TextDim
+        description.Text = toggleConfig.Description or "Descrição"
+        description.TextColor3 = Palette.TextMuted
         description.Font = Enum.Font.Gotham
-        description.TextSize = 12
+        description.TextSize = 11
         description.TextXAlignment = Enum.TextXAlignment.Left
         description.TextYAlignment = Enum.TextYAlignment.Top
         description.BackgroundTransparency = 1
-        description.Size = UDim2.new(1, -70, 0, 12)
+        description.Size = UDim2.new(1, -60, 0, 14)
         description.Position = UDim2.new(0, 12, 0, 24)
 
         local switch = Instance.new("Frame", toggleFrame)
-        switch.Size = UDim2.new(0, 40, 0, 22)
-        switch.Position = UDim2.new(1, -50, 0.5, -11)
-        switch.BackgroundColor3 = Palette.SurfaceHi
+        switch.Size = UDim2.new(0, 42, 0, 22)
+        switch.Position = UDim2.new(1, -54, 0.5, -11)
+        switch.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
         switch.BorderSizePixel = 0
-        Instance.new("UICorner", switch).CornerRadius = UDim.new(1, 0)
-        local swStroke = Instance.new("UIStroke", switch)
-        swStroke.Color = Palette.Border
-        swStroke.Thickness = 1
-        swStroke.Transparency = 0.3
+        addCorner(switch, UDim.new(1, 0))
 
         local ball = Instance.new("Frame", switch)
         ball.Size = UDim2.new(0, 16, 0, 16)
         ball.Position = UDim2.new(0, 3, 0.5, -8)
-        ball.BackgroundColor3 = Palette.TextDim
+        ball.BackgroundColor3 = Color3.fromRGB(200, 200, 205)
         ball.BorderSizePixel = 0
-        Instance.new("UICorner", ball).CornerRadius = UDim.new(1, 0)
+        addCorner(ball, UDim.new(1, 0))
 
         local toggleButton = Instance.new("TextButton", switch)
         toggleButton.Size = UDim2.new(1, 0, 1, 0)
-        toggleButton.Position = UDim2.new(0, 0, 0, 0)
         toggleButton.BackgroundTransparency = 1
         toggleButton.Text = ""
         toggleButton.AutoButtonColor = false
 
         local isOn = false
 
+        toggleButton.MouseEnter:Connect(function()
+            tween(tfStroke, TweenInfo.new(0.2), { Color = Palette.AccentBright, Transparency = 0.2 })
+        end)
+        toggleButton.MouseLeave:Connect(function()
+            tween(tfStroke, TweenInfo.new(0.2), { Color = Palette.Border, Transparency = 0.7 })
+        end)
+
         toggleButton.MouseButton1Click:Connect(function()
             isOn = not isOn
+            playSound(SOUNDS.Toggle, 0.25)
+            local bgColor = isOn and Palette.Accent or Color3.fromRGB(40, 40, 45)
+            local ballPos = isOn and UDim2.new(1, -19, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)
+            local ballColor = isOn and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 205)
 
-            if isOn then
-                fast(switch, { BackgroundColor3 = Palette.Accent })
-                fast(swStroke, { Color = Palette.AccentBright, Transparency = 0.1 })
-                tween(ball, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-                    Position = UDim2.new(1, -19, 0.5, -8),
-                    BackgroundColor3 = Color3.new(1, 1, 1),
-                })
-            else
-                fast(switch, { BackgroundColor3 = Palette.SurfaceHi })
-                fast(swStroke, { Color = Palette.Border, Transparency = 0.3 })
-                tween(ball, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-                    Position = UDim2.new(0, 3, 0.5, -8),
-                    BackgroundColor3 = Palette.TextDim,
-                })
-            end
+            tween(switch, TweenInfo.new(0.3, Enum.EasingStyle.Back), { BackgroundColor3 = bgColor })
+            tween(ball, TweenInfo.new(0.3, Enum.EasingStyle.Back), { Position = ballPos, BackgroundColor3 = ballColor })
 
-            if toggleConfig.Callback then
-                pcall(toggleConfig.Callback, isOn)
-            end
-        end)
-
-        -- Hover do frame inteiro também ativa
-        toggleFrame.MouseEnter:Connect(function()
-            fast(tfStroke, { Color = Palette.Border, Transparency = 0.1 })
-        end)
-        toggleFrame.MouseLeave:Connect(function()
-            fast(tfStroke, { Color = Palette.Border, Transparency = 0.4 })
+            if toggleConfig.Callback then pcall(toggleConfig.Callback, isOn) end
         end)
     end
 
@@ -698,11 +737,10 @@ function RANOX:CreateWindow(config)
     -- CREATE LABEL
     -- ═══════════════════════════════════════════════════════════════
     function Window:CreateLabel(tabName, text)
-        local tab = pages[tabName]
-        if not tab then return end
+        local tab = pages[tabName]; if not tab then return end
 
         local label = Instance.new("TextLabel", tab)
-        label.Size = UDim2.new(1, -20, 0, 28)
+        label.Size = UDim2.new(1, -20, 0, 30)
         label.Position = UDim2.new(0, 10, 0, 0)
         label.Text = "  " .. string.upper(text or "")
         label.Font = Enum.Font.GothamBold
@@ -712,40 +750,58 @@ function RANOX:CreateWindow(config)
         label.TextXAlignment = Enum.TextXAlignment.Left
         label.TextYAlignment = Enum.TextYAlignment.Center
 
+        local accentDot = Instance.new("Frame", label)
+        accentDot.Size = UDim2.new(0, 6, 0, 6)
+        accentDot.Position = UDim2.new(0, 0, 0.5, -3)
+        accentDot.BackgroundColor3 = Palette.AccentBright
+        accentDot.BorderSizePixel = 0
+        addCorner(accentDot, UDim.new(1, 0))
+
+        local dotGlow = addStroke(accentDot, Palette.AccentBright, 2, 0.3)
+
+        task.spawn(function()
+            while accentDot.Parent do
+                tween(dotGlow, TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { Transparency = 0.9 })
+                task.wait(1.2)
+                tween(dotGlow, TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { Transparency = 0.2 })
+                task.wait(1.2)
+            end
+        end)
+
         local underline = Instance.new("Frame", label)
         underline.Size = UDim2.new(1, -20, 0, 1)
         underline.Position = UDim2.new(0, 10, 1, -3)
-        underline.BackgroundColor3 = Palette.Accent
-        underline.BackgroundTransparency = 0.5
+        underline.BackgroundColor3 = Palette.Outline
         underline.BorderSizePixel = 0
+        local ug = Instance.new("UIGradient", underline)
+        ug.Transparency = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 0),
+            NumberSequenceKeypoint.new(1, 1),
+        })
     end
 
     -- ═══════════════════════════════════════════════════════════════
     -- CREATE DROPDOWN
     -- ═══════════════════════════════════════════════════════════════
     function Window:CreateDropdown(tabName, dropdownConfig)
-        local tab = pages[tabName]
-        if not tab then return end
+        local tab = pages[tabName]; if not tab then return end
         dropdownConfig = dropdownConfig or {}
 
         local dropdownFrame = Instance.new("Frame", tab)
-        dropdownFrame.Size = UDim2.new(1, -20, 0, 34)
+        dropdownFrame.Size = UDim2.new(1, -20, 0, 36)
         dropdownFrame.Position = UDim2.new(0, 10, 0, 0)
         dropdownFrame.BackgroundColor3 = Palette.Surface
         dropdownFrame.BorderSizePixel = 0
         dropdownFrame.ZIndex = 2
-        Instance.new("UICorner", dropdownFrame).CornerRadius = UDim.new(0, 8)
-        local dfStroke = Instance.new("UIStroke", dropdownFrame)
-        dfStroke.Color = Palette.Border
-        dfStroke.Thickness = 1
-        dfStroke.Transparency = 0.4
+        addCorner(dropdownFrame, UDim.new(0, 8))
+        local dfStroke = addStroke(dropdownFrame, Palette.Border, 1, 0.5)
 
         local title = Instance.new("TextLabel", dropdownFrame)
         title.BackgroundTransparency = 1
         title.Text = dropdownConfig.Text or "Selecione..."
         title.TextColor3 = Palette.TextDim
         title.Font = Enum.Font.GothamSemibold
-        title.TextSize = 14
+        title.TextSize = 13
         title.TextXAlignment = Enum.TextXAlignment.Left
         title.TextYAlignment = Enum.TextYAlignment.Center
         title.Size = UDim2.new(0, 200, 1, 0)
@@ -759,7 +815,7 @@ function RANOX:CreateWindow(config)
         arrowIcon.Text = "˅"
         arrowIcon.TextColor3 = Palette.TextDim
         arrowIcon.Font = Enum.Font.GothamBold
-        arrowIcon.TextSize = 16
+        arrowIcon.TextSize = 14
         arrowIcon.ZIndex = 3
 
         local selectedLabel = Instance.new("TextLabel", dropdownFrame)
@@ -767,7 +823,7 @@ function RANOX:CreateWindow(config)
         selectedLabel.Text = dropdownConfig.Default or "None"
         selectedLabel.TextColor3 = Palette.Text
         selectedLabel.Font = Enum.Font.GothamBold
-        selectedLabel.TextSize = 14
+        selectedLabel.TextSize = 13
         selectedLabel.TextXAlignment = Enum.TextXAlignment.Right
         selectedLabel.TextYAlignment = Enum.TextYAlignment.Center
         selectedLabel.Size = UDim2.new(0, 0, 1, 0)
@@ -779,7 +835,6 @@ function RANOX:CreateWindow(config)
             selectedLabel.Size = UDim2.new(0, selectedLabel.TextBounds.X + 6, 1, 0)
             selectedLabel.Position = UDim2.new(1, -arrowIcon.Size.X.Offset - selectedLabel.Size.X.Offset - 14, 0, 0)
         end
-
         updateSelectedLabelText(selectedLabel.Text)
 
         local toggleButton = Instance.new("TextButton", dropdownFrame)
@@ -790,20 +845,18 @@ function RANOX:CreateWindow(config)
 
         local dropdownList = Instance.new("Frame", tab)
         dropdownList.Size = UDim2.new(1, -20, 0, 0)
-        dropdownList.Position = UDim2.new(0, 10, 0, dropdownFrame.Position.Y.Offset + 45)
-        dropdownList.BackgroundColor3 = Palette.Bg
+        dropdownList.Position = UDim2.new(0, 10, 0, 0)
+        dropdownList.BackgroundColor3 = Color3.fromRGB(18, 18, 20)
         dropdownList.Visible = false
         dropdownList.ClipsDescendants = true
         dropdownList.ZIndex = 5
-        Instance.new("UICorner", dropdownList).CornerRadius = UDim.new(0, 8)
-        local dlStroke = Instance.new("UIStroke", dropdownList)
-        dlStroke.Color = Palette.Accent
-        dlStroke.Thickness = 1.2
-        dlStroke.Transparency = 0.3
+        addCorner(dropdownList, UDim.new(0, 8))
+        addStroke(dropdownList, Palette.Border, 1, 0.4)
 
         local listLayout = Instance.new("UIListLayout", dropdownList)
         listLayout.Padding = UDim.new(0, 2)
         listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
         local listPad = Instance.new("UIPadding", dropdownList)
         listPad.PaddingTop = UDim.new(0, 4)
         listPad.PaddingLeft = UDim.new(0, 4)
@@ -812,55 +865,44 @@ function RANOX:CreateWindow(config)
         local isOpen = false
         toggleButton.MouseButton1Click:Connect(function()
             isOpen = not isOpen
+            playSound(SOUNDS.Click, 0.25)
             dropdownList.Visible = true
-            local targetHeight = isOpen and (#(dropdownConfig.Options or {}) * 34 + 8) or 0
+            local targetHeight = isOpen and (#(dropdownConfig.Options or {}) * 32 + 12) or 0
             arrowIcon.Text = isOpen and "˄" or "˅"
-            tween(dropdownList, TweenInfo.new(0.25, Enum.EasingStyle.Quint), {
-                Size = UDim2.new(1, -20, 0, targetHeight)
-            })
-            fast(dfStroke, { Color = isOpen and Palette.Accent or Palette.Border })
+            dropdownList:TweenSize(UDim2.new(1, -20, 0, targetHeight), "Out", "Back", 0.35, true)
+            tween(dfStroke, TweenInfo.new(0.25), { Color = isOpen and Palette.AccentBright or Palette.Border })
             if not isOpen then
-                task.delay(0.25, function()
-                    dropdownList.Visible = false
-                end)
+                task.delay(0.35, function() dropdownList.Visible = false end)
             end
         end)
 
         for _, option in ipairs(dropdownConfig.Options or {}) do
             local optBtn = Instance.new("TextButton", dropdownList)
-            optBtn.Size = UDim2.new(1, 0, 0, 34)
+            optBtn.Size = UDim2.new(1, 0, 0, 32)
             optBtn.Text = option
-            optBtn.BackgroundColor3 = Palette.Surface
-            optBtn.BackgroundTransparency = 0.4
+            optBtn.BackgroundColor3 = Palette.SurfaceHi
             optBtn.TextColor3 = Palette.Text
             optBtn.Font = Enum.Font.Gotham
             optBtn.TextSize = 13
             optBtn.AutoButtonColor = false
-            optBtn.BorderSizePixel = 0
             optBtn.ZIndex = 6
-            Instance.new("UICorner", optBtn).CornerRadius = UDim.new(0, 6)
+            addCorner(optBtn, UDim.new(0, 6))
 
             optBtn.MouseEnter:Connect(function()
-                fast(optBtn, { BackgroundColor3 = Palette.Accent, BackgroundTransparency = 0.2 })
+                tween(optBtn, TweenInfo.new(0.15), { BackgroundColor3 = Color3.fromRGB(60, 20, 22) })
             end)
             optBtn.MouseLeave:Connect(function()
-                fast(optBtn, { BackgroundColor3 = Palette.Surface, BackgroundTransparency = 0.4 })
+                tween(optBtn, TweenInfo.new(0.15), { BackgroundColor3 = Palette.SurfaceHi })
             end)
 
             optBtn.MouseButton1Click:Connect(function()
                 updateSelectedLabelText(option)
-                if dropdownConfig.Callback then
-                    pcall(dropdownConfig.Callback, option)
-                end
+                playSound(SOUNDS.Click, 0.3)
+                if dropdownConfig.Callback then pcall(dropdownConfig.Callback, option) end
                 isOpen = false
                 arrowIcon.Text = "˅"
-                tween(dropdownList, TweenInfo.new(0.25, Enum.EasingStyle.Quint), {
-                    Size = UDim2.new(1, -20, 0, 0)
-                })
-                fast(dfStroke, { Color = Palette.Border })
-                task.delay(0.25, function()
-                    dropdownList.Visible = false
-                end)
+                dropdownList:TweenSize(UDim2.new(1, -20, 0, 0), "In", "Back", 0.3, true)
+                task.delay(0.3, function() dropdownList.Visible = false end)
             end)
         end
     end
@@ -869,8 +911,7 @@ function RANOX:CreateWindow(config)
     -- CREATE SLIDER
     -- ═══════════════════════════════════════════════════════════════
     function Window:CreateSlider(tabName, sliderConfig)
-        local tab = pages[tabName]
-        if not tab then return end
+        local tab = pages[tabName]; if not tab then return end
         sliderConfig = sliderConfig or {}
 
         local sliderHolder = Instance.new("Frame", tab)
@@ -884,24 +925,20 @@ function RANOX:CreateWindow(config)
         layout.SortOrder = Enum.SortOrder.LayoutOrder
 
         local bg = Instance.new("Frame", sliderHolder)
-        bg.Size = UDim2.new(1, 0, 0, 56)
+        bg.Size = UDim2.new(1, 0, 0, 60)
         bg.BackgroundColor3 = Palette.Surface
         bg.BorderSizePixel = 0
         bg.ZIndex = 2
-        Instance.new("UICorner", bg).CornerRadius = UDim.new(0, 8)
-
-        local border = Instance.new("UIStroke", bg)
-        border.Color = Palette.Border
-        border.Thickness = 1
-        border.Transparency = 0.4
+        addCorner(bg, UDim.new(0, 8))
+        local bgStroke = addStroke(bg, Palette.Border, 1, 0.6)
 
         local title = Instance.new("TextLabel", bg)
         title.Size = UDim2.new(1, -60, 0, 16)
-        title.Position = UDim2.new(0, 10, 0, 4)
+        title.Position = UDim2.new(0, 12, 0, 6)
         title.Text = sliderConfig.Text or "Slider"
         title.TextColor3 = Palette.Text
         title.TextSize = 14
-        title.Font = Enum.Font.GothamSemibold
+        title.Font = Enum.Font.GothamMedium
         title.BackgroundTransparency = 1
         title.TextXAlignment = Enum.TextXAlignment.Left
         title.ZIndex = 3
@@ -909,10 +946,10 @@ function RANOX:CreateWindow(config)
 
         local desc = Instance.new("TextLabel", bg)
         desc.Size = UDim2.new(1, -20, 0, 11)
-        desc.Position = UDim2.new(0, 10, 0, 22)
+        desc.Position = UDim2.new(0, 12, 0, 24)
         desc.Text = sliderConfig.Description or ""
-        desc.TextColor3 = Palette.TextDim
-        desc.TextSize = 12
+        desc.TextColor3 = Palette.TextMuted
+        desc.TextSize = 11
         desc.Font = Enum.Font.Gotham
         desc.BackgroundTransparency = 1
         desc.TextXAlignment = Enum.TextXAlignment.Left
@@ -921,7 +958,7 @@ function RANOX:CreateWindow(config)
 
         local valueLabel = Instance.new("TextLabel", bg)
         valueLabel.Size = UDim2.new(0, 50, 0, 16)
-        valueLabel.Position = UDim2.new(1, -60, 0, 4)
+        valueLabel.Position = UDim2.new(1, -62, 0, 6)
         valueLabel.TextColor3 = Palette.AccentBright
         valueLabel.TextSize = 14
         valueLabel.Font = Enum.Font.GothamBold
@@ -931,43 +968,50 @@ function RANOX:CreateWindow(config)
         valueLabel.TextYAlignment = Enum.TextYAlignment.Center
 
         local bar = Instance.new("Frame", bg)
-        bar.Size = UDim2.new(1, -20, 0, 6)
-        bar.Position = UDim2.new(0, 10, 0, 45)
-        bar.BackgroundColor3 = Palette.SurfaceHi
+        bar.Size = UDim2.new(1, -24, 0, 8)
+        bar.Position = UDim2.new(0, 12, 0, 46)
+        bar.BackgroundColor3 = Color3.fromRGB(40, 40, 44)
         bar.BorderSizePixel = 0
         bar.ZIndex = 2
-        Instance.new("UICorner", bar).CornerRadius = UDim.new(1, 0)
+        addCorner(bar, UDim.new(1, 0))
 
         local fill = Instance.new("Frame", bar)
         fill.Size = UDim2.new(0, 0, 1, 0)
         fill.BackgroundColor3 = Palette.Accent
         fill.BorderSizePixel = 0
         fill.ZIndex = 3
-        Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
+        addCorner(fill, UDim.new(1, 0))
 
-        local fillGradient = Instance.new("UIGradient", fill)
-        fillGradient.Color = ColorSequence.new{
-            ColorSequenceKeypoint.new(0, Palette.Accent),
+        local fillGrad = Instance.new("UIGradient", fill)
+        fillGrad.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Palette.AccentSoft),
             ColorSequenceKeypoint.new(1, Palette.AccentBright),
         }
 
         local neonStroke = Instance.new("UIStroke", fill)
-        neonStroke.Thickness = 2
-        neonStroke.Transparency = 0.5
-        neonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+        neonStroke.Thickness = 3
+        neonStroke.Transparency = 0.3
         neonStroke.Color = Palette.AccentBright
+
+        task.spawn(function()
+            local state = true
+            while fill.Parent do
+                local goal = state and Color3.fromRGB(195, 20, 20) or Color3.fromRGB(255, 30, 30)
+                tween(fill, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { BackgroundColor3 = goal })
+                neonStroke.Color = goal
+                state = not state
+                task.wait(1.6)
+            end
+        end)
 
         local knob = Instance.new("Frame", bar)
         knob.Size = UDim2.new(0, 16, 0, 16)
         knob.Position = UDim2.new(0, -8, 0.5, -8)
-        knob.BackgroundColor3 = Color3.new(1, 1, 1)
+        knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         knob.BorderSizePixel = 0
         knob.ZIndex = 4
-        Instance.new("UICorner", knob).CornerRadius = UDim.new(1, 0)
-        local knobStroke = Instance.new("UIStroke", knob)
-        knobStroke.Color = Palette.Accent
-        knobStroke.Transparency = 0.2
-        knobStroke.Thickness = 2
+        addCorner(knob, UDim.new(1, 0))
+        local knobShadow = addStroke(knob, Palette.AccentBright, 2, 0.2)
 
         local min = sliderConfig.Min or 0
         local max = sliderConfig.Max or 100
@@ -984,35 +1028,32 @@ function RANOX:CreateWindow(config)
             local clamped = math.clamp((inputX - barAbsPos) / barWidth, 0, 1)
             local rawValue = min + (max - min) * clamped
             local roundedValue = roundToDecimals(rawValue, 2)
-            tween(fill, TweenInfo.new(0.1, Enum.EasingStyle.Quad), { Size = UDim2.new(clamped, 0, 1, 0) })
-            tween(knob, TweenInfo.new(0.1, Enum.EasingStyle.Quad), { Position = UDim2.new(clamped, -8, 0.5, -8) })
+            fill:TweenSize(UDim2.new(clamped, 0, 1, 0), "Out", "Quad", 0.08, true)
+            knob:TweenPosition(UDim2.new(clamped, -8, 0.5, -8), "Out", "Quad", 0.08, true)
             valueLabel.Text = tostring(roundedValue)
-            if sliderConfig.Callback then
-                pcall(sliderConfig.Callback, roundedValue)
-            end
+            if sliderConfig.Callback then pcall(sliderConfig.Callback, roundedValue) end
         end
 
         local dragging = false
-        local userInput = game:GetService("UserInputService")
 
         bar.InputBegan:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = true
+                tween(knob, TweenInfo.new(0.15, Enum.EasingStyle.Back), { Size = UDim2.new(0, 20, 0, 20), Position = UDim2.new(knob.Position.X.Scale, -10, 0.5, -10) })
                 updateSlider(input.Position.X)
-                smooth(knobStroke, { Thickness = 3, Transparency = 0 }, 0.15)
             end
         end)
 
-        userInput.InputChanged:Connect(function(input)
+        UserInputService.InputChanged:Connect(function(input)
             if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
                 updateSlider(input.Position.X)
             end
         end)
 
-        userInput.InputEnded:Connect(function(input)
+        UserInputService.InputEnded:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = false
-                smooth(knobStroke, { Thickness = 2, Transparency = 0.2 }, 0.15)
+                tween(knob, TweenInfo.new(0.2, Enum.EasingStyle.Back), { Size = UDim2.new(0, 16, 0, 16) })
             end
         end)
 
@@ -1020,11 +1061,10 @@ function RANOX:CreateWindow(config)
     end
 
     -- ═══════════════════════════════════════════════════════════════
-    -- CREATE TEXTBOX
+    -- CREATE TEXT BOX
     -- ═══════════════════════════════════════════════════════════════
     function Window:CreateTextBox(tabName, placeholderText, callback)
-        local tab = pages[tabName]
-        if not tab then return end
+        local tab = pages[tabName]; if not tab then return end
 
         local container = Instance.new("Frame", tab)
         container.Size = UDim2.new(1, -20, 0, 40)
@@ -1034,53 +1074,28 @@ function RANOX:CreateWindow(config)
 
         local background = Instance.new("Frame", container)
         background.Size = UDim2.new(1, 0, 1, 0)
-        background.Position = UDim2.new(0, 0, 0, 0)
         background.BackgroundColor3 = Palette.Surface
         background.BorderSizePixel = 0
         background.ZIndex = 1
-        Instance.new("UICorner", background).CornerRadius = UDim.new(0, 6)
-        local bgStroke = Instance.new("UIStroke", background)
-        bgStroke.Color = Palette.Border
-        bgStroke.Thickness = 1
-        bgStroke.Transparency = 0.4
+        addCorner(background, UDim.new(0, 8))
+        local bgStroke = addStroke(background, Palette.Border, 1, 0.5)
 
         local highlight = Instance.new("Frame", background)
         highlight.Size = UDim2.new(1, 0, 0, 2)
         highlight.Position = UDim2.new(0, 0, 1, -2)
         highlight.BackgroundColor3 = Palette.Accent
-        highlight.BackgroundTransparency = 0.5
+        highlight.BackgroundTransparency = 1
         highlight.BorderSizePixel = 0
-        highlight.Visible = false
         highlight.ZIndex = 2
-        Instance.new("UICorner", highlight).CornerRadius = UDim.new(0, 2)
-
-        -- Animação suave do highlight
-        task.spawn(function()
-            local increasing = true
-            local i = 0
-            while highlight.Parent do
-                if highlight.Visible then
-                    if increasing then
-                        i = math.min(1, i + 0.05)
-                    else
-                        i = math.max(0, i - 0.05)
-                    end
-                    if i >= 1 then increasing = false end
-                    if i <= 0 then increasing = true end
-                    highlight.BackgroundTransparency = 0.2 + (0.6 * i)
-                end
-                task.wait(0.03)
-            end
-        end)
 
         local placeholder = Instance.new("TextLabel", background)
         placeholder.Size = UDim2.new(1, -20, 0, 14)
         placeholder.Position = UDim2.new(0, 10, 0.5, -7)
         placeholder.BackgroundTransparency = 1
         placeholder.Text = placeholderText or "Escreva aqui"
-        placeholder.TextColor3 = Palette.TextMute
+        placeholder.TextColor3 = Palette.TextMuted
         placeholder.Font = Enum.Font.Gotham
-        placeholder.TextSize = 14
+        placeholder.TextSize = 13
         placeholder.TextXAlignment = Enum.TextXAlignment.Left
         placeholder.ZIndex = 2
 
@@ -1089,10 +1104,9 @@ function RANOX:CreateWindow(config)
         textBox.Position = UDim2.new(0, 10, 0, 0)
         textBox.BackgroundTransparency = 1
         textBox.Text = ""
-        textBox.PlaceholderText = ""
         textBox.TextColor3 = Palette.Text
         textBox.Font = Enum.Font.Gotham
-        textBox.TextSize = 14
+        textBox.TextSize = 13
         textBox.ClearTextOnFocus = false
         textBox.TextXAlignment = Enum.TextXAlignment.Left
         textBox.TextWrapped = false
@@ -1100,26 +1114,18 @@ function RANOX:CreateWindow(config)
         textBox.ZIndex = 3
 
         textBox.Focused:Connect(function()
-            highlight.Visible = true
-            fast(bgStroke, { Color = Palette.Accent, Transparency = 0.1 })
-            smooth(placeholder, { Position = UDim2.new(0, 10, 0, -8), Size = UDim2.new(1, -20, 0, 0) }, 0.2)
-            task.delay(0.2, function()
-                if textBox:IsFocused() then
-                    placeholder.Visible = false
-                end
-            end)
+            tween(highlight, TweenInfo.new(0.25), { BackgroundTransparency = 0.3 })
+            tween(bgStroke, TweenInfo.new(0.25), { Color = Palette.AccentBright, Transparency = 0.1 })
+            placeholder.Visible = false
         end)
 
         textBox.FocusLost:Connect(function(enterPressed)
-            highlight.Visible = false
-            fast(bgStroke, { Color = Palette.Border, Transparency = 0.4 })
+            tween(highlight, TweenInfo.new(0.25), { BackgroundTransparency = 1 })
+            tween(bgStroke, TweenInfo.new(0.25), { Color = Palette.Border, Transparency = 0.5 })
             if textBox.Text == "" then
                 placeholder.Visible = true
-                smooth(placeholder, { Position = UDim2.new(0, 10, 0.5, -7), Size = UDim2.new(1, -20, 0, 14) }, 0.2)
             end
-            if enterPressed and callback then
-                pcall(callback, textBox.Text)
-            end
+            if enterPressed and callback then pcall(callback, textBox.Text) end
         end)
     end
 
@@ -1127,34 +1133,20 @@ function RANOX:CreateWindow(config)
     -- CREATE COLOR PICKER
     -- ═══════════════════════════════════════════════════════════════
     function Window:CreateColorPicker(tabName, colorConfig)
-        local tab = pages[tabName]
-        if not tab then return end
+        local tab = pages[tabName]; if not tab then return end
         colorConfig = colorConfig or {}
 
         local pickerFrame = Instance.new("Frame", tab)
-        pickerFrame.Size = UDim2.new(1, -20, 0, 180)
+        pickerFrame.Size = UDim2.new(1, -20, 0, 190)
         pickerFrame.Position = UDim2.new(0, 10, 0, 0)
         pickerFrame.BackgroundColor3 = Palette.Surface
         pickerFrame.ClipsDescendants = true
-        pickerFrame.BorderSizePixel = 0
-        Instance.new("UICorner", pickerFrame).CornerRadius = UDim.new(0, 10)
-        local pfStroke = Instance.new("UIStroke", pickerFrame)
-        pfStroke.Color = Palette.Border
-        pfStroke.Thickness = 1
-        pfStroke.Transparency = 0.4
-
-        local toggleButton = Instance.new("TextButton", pickerFrame)
-        toggleButton.Size = UDim2.new(0, 20, 0, 20)
-        toggleButton.Position = UDim2.new(1, -30, 0, 5)
-        toggleButton.BackgroundTransparency = 1
-        toggleButton.Text = "▼"
-        toggleButton.TextColor3 = Palette.TextDim
-        toggleButton.Font = Enum.Font.GothamBold
-        toggleButton.TextSize = 16
+        addCorner(pickerFrame, UDim.new(0, 10))
+        local pfStroke = addStroke(pickerFrame, Palette.Border, 1, 0.5)
 
         local label = Instance.new("TextLabel", pickerFrame)
-        label.Size = UDim2.new(1, -60, 0, 26)
-        label.Position = UDim2.new(0, 10, 0, 0)
+        label.Size = UDim2.new(1, -60, 0, 30)
+        label.Position = UDim2.new(0, 12, 0, 0)
         label.BackgroundTransparency = 1
         label.Text = colorConfig.Text or "Escolha uma cor"
         label.TextColor3 = Palette.Text
@@ -1162,31 +1154,35 @@ function RANOX:CreateWindow(config)
         label.TextSize = 14
         label.TextXAlignment = Enum.TextXAlignment.Left
 
+        local toggleButton = Instance.new("TextButton", pickerFrame)
+        toggleButton.Size = UDim2.new(0, 24, 0, 24)
+        toggleButton.Position = UDim2.new(1, -32, 0, 3)
+        toggleButton.BackgroundTransparency = 1
+        toggleButton.Text = "▼"
+        toggleButton.TextColor3 = Palette.Text
+        toggleButton.Font = Enum.Font.GothamBold
+        toggleButton.TextSize = 14
+
         local container = Instance.new("Frame", pickerFrame)
-        container.Size = UDim2.new(1, 0, 0, 150)
+        container.Size = UDim2.new(1, 0, 0, 160)
         container.Position = UDim2.new(0, 0, 0, 30)
         container.BackgroundTransparency = 1
-        container.Name = "Container"
 
         local colorDisplay = Instance.new("Frame", container)
-        colorDisplay.Size = UDim2.new(1, -20, 0, 30)
-        colorDisplay.Position = UDim2.new(0, 10, 0, 0)
+        colorDisplay.Size = UDim2.new(1, -24, 0, 32)
+        colorDisplay.Position = UDim2.new(0, 12, 0, 4)
         colorDisplay.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-        Instance.new("UICorner", colorDisplay).CornerRadius = UDim.new(0, 10)
-        local cdStroke = Instance.new("UIStroke", colorDisplay)
-        cdStroke.Color = Palette.Accent
-        cdStroke.Thickness = 1.5
-        cdStroke.Transparency = 0.3
+        addCorner(colorDisplay, UDim.new(0, 8))
+        local cdStroke = addStroke(colorDisplay, Color3.fromRGB(255,255,255), 1, 0.7)
 
-        local function createGradientBar(parent, position, height, colorType)
+        local function createGradientBar(parent, position, colorType)
             local bar = Instance.new("TextButton", parent)
-            bar.Size = UDim2.new(0.7, 0, 0, height)
+            bar.Size = UDim2.new(0.68, 0, 0, 20)
             bar.Position = position
             bar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             bar.AutoButtonColor = false
             bar.Text = ""
-            bar.BorderSizePixel = 0
-            Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 10)
+            addCorner(bar, UDim.new(0, 10))
 
             local gradient = Instance.new("UIGradient", bar)
             if colorType == "Hue" then
@@ -1205,64 +1201,47 @@ function RANOX:CreateWindow(config)
                     ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))
                 })
             end
-
             return bar
         end
 
-        local hueSlider = createGradientBar(container, UDim2.new(0, 10, 0, 40), 20, "Hue")
-        local brightnessSlider = createGradientBar(container, UDim2.new(0, 10, 0, 70), 20, "Brightness")
+        local hueSlider = createGradientBar(container, UDim2.new(0, 12, 0, 46), "Hue")
+        local brightnessSlider = createGradientBar(container, UDim2.new(0, 12, 0, 76), "Brightness")
 
         local hueMarker = Instance.new("Frame", hueSlider)
-        hueMarker.Size = UDim2.new(0, 6, 0, 26)
+        hueMarker.Size = UDim2.new(0, 5, 0, 24)
         hueMarker.AnchorPoint = Vector2.new(0.5, 0.5)
         hueMarker.Position = UDim2.new(0, 0, 0.5, 0)
-        hueMarker.BackgroundColor3 = Color3.new(1, 1, 1)
-        hueMarker.BorderSizePixel = 0
-        Instance.new("UICorner", hueMarker).CornerRadius = UDim.new(1, 0)
-        local hmStroke = Instance.new("UIStroke", hueMarker)
-        hmStroke.Color = Palette.Bg
-        hmStroke.Thickness = 1.5
+        hueMarker.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        addCorner(hueMarker, UDim.new(1, 0))
+        addStroke(hueMarker, Color3.fromRGB(0,0,0), 1, 0.3)
 
         local brightnessMarker = Instance.new("Frame", brightnessSlider)
-        brightnessMarker.Size = UDim2.new(0, 6, 0, 26)
+        brightnessMarker.Size = UDim2.new(0, 5, 0, 24)
         brightnessMarker.AnchorPoint = Vector2.new(0.5, 0.5)
         brightnessMarker.Position = UDim2.new(1, 0, 0.5, 0)
-        brightnessMarker.BackgroundColor3 = Color3.new(1, 1, 1)
-        brightnessMarker.BorderSizePixel = 0
-        Instance.new("UICorner", brightnessMarker).CornerRadius = UDim.new(1, 0)
-        local bmStroke = Instance.new("UIStroke", brightnessMarker)
-        bmStroke.Color = Palette.Bg
-        bmStroke.Thickness = 1.5
+        brightnessMarker.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        addCorner(brightnessMarker, UDim.new(1, 0))
+        addStroke(brightnessMarker, Color3.fromRGB(0,0,0), 1, 0.3)
 
         local rgbBox = Instance.new("TextBox", container)
-        rgbBox.Size = UDim2.new(0.25, 0, 0, 20)
-        rgbBox.Position = UDim2.new(0.75, 15, 0, 40)
-        rgbBox.BackgroundColor3 = Palette.Bg
+        rgbBox.Size = UDim2.new(0.26, 0, 0, 20)
+        rgbBox.Position = UDim2.new(0.72, 0, 0, 46)
+        rgbBox.BackgroundColor3 = Palette.SurfaceHi
         rgbBox.TextColor3 = Palette.Text
         rgbBox.Font = Enum.Font.Gotham
-        rgbBox.TextSize = 12
+        rgbBox.TextSize = 11
         rgbBox.Text = "0.255.255"
-        rgbBox.BorderSizePixel = 0
-        Instance.new("UICorner", rgbBox).CornerRadius = UDim.new(0, 6)
-        local rbStroke = Instance.new("UIStroke", rgbBox)
-        rbStroke.Color = Palette.Border
-        rbStroke.Thickness = 1
-        rbStroke.Transparency = 0.4
+        addCorner(rgbBox, UDim.new(0, 6))
 
         local brightnessBox = Instance.new("TextBox", container)
-        brightnessBox.Size = UDim2.new(0.25, 0, 0, 20)
-        brightnessBox.Position = UDim2.new(0.75, 15, 0, 70)
-        brightnessBox.BackgroundColor3 = Palette.Bg
+        brightnessBox.Size = UDim2.new(0.26, 0, 0, 20)
+        brightnessBox.Position = UDim2.new(0.72, 0, 0, 76)
+        brightnessBox.BackgroundColor3 = Palette.SurfaceHi
         brightnessBox.TextColor3 = Palette.Text
         brightnessBox.Font = Enum.Font.Gotham
-        brightnessBox.TextSize = 12
+        brightnessBox.TextSize = 11
         brightnessBox.Text = "255"
-        brightnessBox.BorderSizePixel = 0
-        Instance.new("UICorner", brightnessBox).CornerRadius = UDim.new(0, 6)
-        local bbStroke = Instance.new("UIStroke", brightnessBox)
-        bbStroke.Color = Palette.Border
-        bbStroke.Thickness = 1
-        bbStroke.Transparency = 0.4
+        addCorner(brightnessBox, UDim.new(0, 6))
 
         local function applyColorFromBox()
             local r, g, b = rgbBox.Text:match("(%d+)%.(%d+)%.(%d+)")
@@ -1275,14 +1254,10 @@ function RANOX:CreateWindow(config)
                     math.clamp(g * brightness / 255, 0, 255),
                     math.clamp(b * brightness / 255, 0, 255)
                 )
-                fast(colorDisplay, { BackgroundColor3 = adjusted })
-                if colorConfig.Callback then
-                    pcall(colorConfig.Callback, adjusted)
-                end
+                colorDisplay.BackgroundColor3 = adjusted
+                if colorConfig.Callback then pcall(colorConfig.Callback, adjusted) end
             end
         end
-
-        local UserInputService = game:GetService("UserInputService")
 
         local function enableDragging(slider, marker, isHue)
             local dragging = false
@@ -1325,48 +1300,35 @@ function RANOX:CreateWindow(config)
         local opened = true
         toggleButton.MouseButton1Click:Connect(function()
             opened = not opened
+            playSound(SOUNDS.Click, 0.25)
             toggleButton.Text = opened and "▼" or "▲"
-            local goalSize = opened and 180 or 30
-            local goalContentSize = opened and 150 or 0
-            tween(pickerFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quint), { Size = UDim2.new(1, -20, 0, goalSize) })
-            tween(container, TweenInfo.new(0.3, Enum.EasingStyle.Quint), { Size = UDim2.new(1, 0, 0, goalContentSize) })
+            local goalSize = opened and 190 or 32
+            local goalContentSize = opened and 160 or 0
+            tween(pickerFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back), { Size = UDim2.new(1, -20, 0, goalSize) })
+            tween(container, TweenInfo.new(0.3, Enum.EasingStyle.Back), { Size = UDim2.new(1, 0, 0, goalContentSize) })
         end)
 
         applyColorFromBox()
 
         local randomColorToggle = Instance.new("TextButton", container)
-        randomColorToggle.Size = UDim2.new(1, -20, 0, 26)
-        randomColorToggle.Position = UDim2.new(0, 10, 0, 100)
-        randomColorToggle.BackgroundColor3 = Palette.Bg
-        randomColorToggle.Text = "COR RGB ALEATÓRIA [DESATIVADO]"
+        randomColorToggle.Size = UDim2.new(1, -24, 0, 26)
+        randomColorToggle.Position = UDim2.new(0, 12, 0, 110)
+        randomColorToggle.BackgroundColor3 = Palette.SurfaceHi
+        randomColorToggle.Text = "🎲  COR RGB ALEATÓRIA [OFF]"
         randomColorToggle.TextColor3 = Palette.Text
-        randomColorToggle.Font = Enum.Font.GothamSemibold
+        randomColorToggle.Font = Enum.Font.GothamMedium
         randomColorToggle.TextSize = 12
-        randomColorToggle.AutoButtonColor = false
-        randomColorToggle.BorderSizePixel = 0
-        Instance.new("UICorner", randomColorToggle).CornerRadius = UDim.new(0, 6)
-        local rcStroke = Instance.new("UIStroke", randomColorToggle)
-        rcStroke.Color = Palette.Border
-        rcStroke.Thickness = 1
-        rcStroke.Transparency = 0.4
-
-        randomColorToggle.MouseEnter:Connect(function()
-            fast(rcStroke, { Color = Palette.Accent, Transparency = 0.2 })
-        end)
-        randomColorToggle.MouseLeave:Connect(function()
-            fast(rcStroke, { Color = Palette.Border, Transparency = 0.4 })
-        end)
+        addCorner(randomColorToggle, UDim.new(0, 6))
+        local rcStroke = addStroke(randomColorToggle, Palette.Border, 1, 0.4)
 
         local randomColorEnabled = false
 
         task.spawn(function()
-            while randomColorToggle.Parent do
+            while pickerFrame.Parent do
                 if randomColorEnabled then
-                    local randomColor = Color3.fromRGB(math.random(0, 255), math.random(0, 255), math.random(0, 255))
-                    tween(colorDisplay, TweenInfo.new(0.5), { BackgroundColor3 = randomColor })
-                    if colorConfig.Callback then
-                        pcall(colorConfig.Callback, randomColor)
-                    end
+                    local rc = Color3.fromRGB(math.random(0,255), math.random(0,255), math.random(0,255))
+                    tween(colorDisplay, TweenInfo.new(0.5), { BackgroundColor3 = rc })
+                    if colorConfig.Callback then pcall(colorConfig.Callback, rc) end
                 end
                 task.wait(0.6)
             end
@@ -1374,8 +1336,11 @@ function RANOX:CreateWindow(config)
 
         randomColorToggle.MouseButton1Click:Connect(function()
             randomColorEnabled = not randomColorEnabled
-            randomColorToggle.Text = randomColorEnabled and "COR RGB ALEATÓRIA [ATIVADO]" or "COR RGB ALEATÓRIA [DESATIVADO]"
-            fast(rcStroke, { Color = randomColorEnabled and Palette.Success or Palette.Border })
+            randomColorToggle.Text = randomColorEnabled and "🎲  COR RGB ALEATÓRIA [ON]" or "🎲  COR RGB ALEATÓRIA [OFF]"
+            tween(rcStroke, TweenInfo.new(0.25), {
+                Color = randomColorEnabled and Palette.AccentBright or Palette.Border,
+                Transparency = randomColorEnabled and 0 or 0.4
+            })
         end)
     end
 
@@ -1383,8 +1348,7 @@ function RANOX:CreateWindow(config)
     -- CREATE SWITCH
     -- ═══════════════════════════════════════════════════════════════
     function Window:CreateSwitch(tabName, switchConfig)
-        local tab = pages[tabName]
-        if not tab then return end
+        local tab = pages[tabName]; if not tab then return end
         switchConfig = switchConfig or {}
 
         local holder = Instance.new("Frame", tab)
@@ -1405,22 +1369,18 @@ function RANOX:CreateWindow(config)
         local switch = Instance.new("Frame", holder)
         switch.Size = UDim2.new(0, 60, 0, 26)
         switch.Position = UDim2.new(1, -65, 0.5, -13)
-        switch.BackgroundColor3 = Palette.SurfaceHi
+        switch.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
         switch.BorderSizePixel = 0
-        switch.BackgroundTransparency = 0.05
-        Instance.new("UICorner", switch).CornerRadius = UDim.new(1, 0)
+        addCorner(switch, UDim.new(1, 0))
 
-        local glow = Instance.new("UIStroke", switch)
-        glow.Thickness = 1.3
-        glow.Color = Palette.AccentBright
-        glow.Transparency = 1
+        local glow = addStroke(switch, Palette.AccentBright, 1.5, 1)
 
         local circle = Instance.new("Frame", switch)
         circle.Size = UDim2.new(0, 22, 0, 22)
         circle.Position = UDim2.new(0, 3, 0.5, -11)
-        circle.BackgroundColor3 = Palette.TextDim
+        circle.BackgroundColor3 = Color3.fromRGB(200, 200, 205)
         circle.BorderSizePixel = 0
-        Instance.new("UICorner", circle).CornerRadius = UDim.new(1, 0)
+        addCorner(circle, UDim.new(1, 0))
 
         local stateLabel = Instance.new("TextLabel", holder)
         stateLabel.Size = UDim2.new(0, 40, 1, -10)
@@ -1428,7 +1388,7 @@ function RANOX:CreateWindow(config)
         stateLabel.BackgroundTransparency = 1
         stateLabel.Font = Enum.Font.GothamBold
         stateLabel.TextSize = 13
-        stateLabel.TextColor3 = Palette.Danger
+        stateLabel.TextColor3 = Color3.fromRGB(255, 85, 85)
         stateLabel.Text = "OFF"
         stateLabel.TextXAlignment = Enum.TextXAlignment.Right
 
@@ -1436,32 +1396,43 @@ function RANOX:CreateWindow(config)
         underline.Size = UDim2.new(1, 0, 0, 1)
         underline.Position = UDim2.new(0, 0, 1, -3)
         underline.BackgroundColor3 = Palette.Border
-        underline.BackgroundTransparency = 0.5
         underline.BorderSizePixel = 0
+
+        local particle = Instance.new("ParticleEmitter", circle)
+        particle.Enabled = false
+        particle.LightEmission = 1
+        particle.Rate = 60
+        particle.Lifetime = NumberRange.new(0.4, 0.6)
+        particle.Speed = NumberRange.new(2, 4)
+        particle.Size = NumberSequence.new(0.3)
+        particle.Rotation = NumberRange.new(0, 360)
+        particle.RotSpeed = NumberRange.new(-180, 180)
+        particle.Texture = "rbxassetid://296874871"
+        particle.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+            ColorSequenceKeypoint.new(1, Palette.AccentBright)
+        }
 
         local state = false
 
         local function toggleSwitch()
             state = not state
+            playSound(SOUNDS.Toggle, 0.3)
             local goalPos = state and UDim2.new(1, -25, 0.5, -11) or UDim2.new(0, 3, 0.5, -11)
-            local bgColor = state and Palette.Accent or Palette.SurfaceHi
-            local circleColor = state and Color3.new(1, 1, 1) or Palette.TextDim
-            local textColor = state and Palette.Success or Palette.Danger
-            local glowTrans = state and 0.15 or 1
+            local bgColor = state and Palette.Accent or Color3.fromRGB(50, 50, 55)
+            local circleColor = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 205)
+            local textColor = state and Color3.fromRGB(0, 255, 100) or Color3.fromRGB(255, 85, 85)
 
-            tween(circle, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-                Position = goalPos,
-                BackgroundColor3 = circleColor,
-            })
-            fast(switch, { BackgroundColor3 = bgColor })
-            fast(stateLabel, { TextColor3 = textColor })
-            fast(glow, { Transparency = glowTrans })
+            tween(circle, TweenInfo.new(0.3, Enum.EasingStyle.Back), { Position = goalPos, BackgroundColor3 = circleColor })
+            tween(switch, TweenInfo.new(0.3, Enum.EasingStyle.Back), { BackgroundColor3 = bgColor })
+            tween(stateLabel, TweenInfo.new(0.25), { TextColor3 = textColor })
+            tween(glow, TweenInfo.new(0.3), { Transparency = state and 0 or 1 })
 
             stateLabel.Text = state and "ON" or "OFF"
+            particle.Enabled = true
+            task.delay(0.25, function() particle.Enabled = false end)
 
-            if switchConfig.Callback then
-                pcall(switchConfig.Callback, state)
-            end
+            if switchConfig.Callback then pcall(switchConfig.Callback, state) end
         end
 
         switch.InputBegan:Connect(function(input)
@@ -1471,11 +1442,10 @@ function RANOX:CreateWindow(config)
         end)
 
         switch.MouseEnter:Connect(function()
-            fast(glow, { Transparency = state and 0.1 or 0.5 })
+            tween(glow, TweenInfo.new(0.2), { Transparency = state and 0 or 0.4 })
         end)
-
         switch.MouseLeave:Connect(function()
-            fast(glow, { Transparency = state and 0.15 or 1 })
+            tween(glow, TweenInfo.new(0.2), { Transparency = 1 })
         end)
     end
 
@@ -1483,108 +1453,131 @@ function RANOX:CreateWindow(config)
     -- CREATE LINE
     -- ═══════════════════════════════════════════════════════════════
     function Window:CreateLine(tabName, color)
-        local tab = pages[tabName]
-        if not tab then return end
-
+        local tab = pages[tabName]; if not tab then return end
         local line = Instance.new("Frame", tab)
         line.Size = UDim2.new(1, -20, 0, 1)
         line.Position = UDim2.new(0, 10, 0, 0)
         line.BackgroundColor3 = color or Palette.Border
-        line.BackgroundTransparency = 0.4
         line.BorderSizePixel = 0
+        local lg = Instance.new("UIGradient", line)
+        lg.Transparency = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 1),
+            NumberSequenceKeypoint.new(0.5, 0),
+            NumberSequenceKeypoint.new(1, 1),
+        })
     end
 
     -- ═══════════════════════════════════════════════════════════════
     -- NOTIFY CUSTOM
     -- ═══════════════════════════════════════════════════════════════
+    local notifyQueue = {}
+    local notifying = false
+
+    local function processQueue()
+        if notifying then return end
+        if #notifyQueue == 0 then return end
+        notifying = true
+        local data = table.remove(notifyQueue, 1)
+        local frame = data.frame
+
+        frame:TweenPosition(UDim2.new(1, -20, 1, -20 - (data.offset or 0)), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.4, true)
+
+        task.delay(2.2, function()
+            frame:TweenPosition(UDim2.new(1, 320, 1, -200 - (data.offset or 0)), Enum.EasingDirection.In, Enum.EasingStyle.Quint, 0.35, true)
+            task.wait(0.4)
+            data.gui:Destroy()
+            if data.blur then
+                tween(data.blur, TweenInfo.new(0.3), { Size = 0 })
+                task.delay(0.3, function() data.blur:Destroy() end)
+            end
+            notifying = false
+            processQueue()
+        end)
+    end
+
     function Window:NotifyCustom(title, text, iconId)
-        local notifyGui = Instance.new("ScreenGui")
-        notifyGui.Name = "NotifyCustom"
-        notifyGui.ResetOnSpawn = false
-        notifyGui.IgnoreGuiInset = true
-        notifyGui.DisplayOrder = 99999
-        notifyGui.Parent = player:WaitForChild("PlayerGui")
+        local screenGui = Instance.new("ScreenGui")
+        screenGui.Name = "NotifyCustom"
+        screenGui.ResetOnSpawn = false
+        screenGui.IgnoreGuiInset = true
+        screenGui.DisplayOrder = 100
+        pcall(function() screenGui.Parent = game:GetService("CoreGui") end)
+        if not screenGui.Parent then screenGui.Parent = player:WaitForChild("PlayerGui") end
+
+        local blur = Instance.new("BlurEffect")
+        blur.Size = 0
+        blur.Parent = game.Lighting
+        tween(blur, TweenInfo.new(0.4), { Size = 5 })
 
         local frame = Instance.new("Frame")
-        frame.Size = UDim2.new(0, 280, 0, 85)
-        frame.Position = UDim2.new(1, 320, 1, -110)
+        frame.Size = UDim2.new(0, 300, 0, 100)
+        frame.Position = UDim2.new(1, 320, 1, -200)
         frame.AnchorPoint = Vector2.new(1, 1)
         frame.BackgroundColor3 = Palette.Bg
         frame.BackgroundTransparency = 0.05
         frame.BorderSizePixel = 0
-        frame.ZIndex = 999999
-        frame.Parent = notifyGui
-        Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+        frame.Parent = screenGui
+        addCorner(frame, UDim.new(0, 12))
 
-        local nStroke = Instance.new("UIStroke", frame)
-        nStroke.Color = Palette.Accent
-        nStroke.Thickness = 1.5
-        nStroke.Transparency = 0.2
+        local fStroke = addStroke(frame, Palette.AccentBright, 1.5, 0.2)
 
-        -- Barra lateral colorida (substitui sombra)
-        local sideBar = Instance.new("Frame", frame)
-        sideBar.Size = UDim2.new(0, 4, 1, -20)
-        sideBar.Position = UDim2.new(0, 0, 0.5, -((85-20)/2))
-        sideBar.BackgroundColor3 = Palette.Accent
-        sideBar.BorderSizePixel = 0
-        sideBar.ZIndex = 999999
-        Instance.new("UICorner", sideBar).CornerRadius = UDim.new(0, 3)
+        local gradient = Instance.new("UIGradient", frame)
+        gradient.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 100)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 0))
+        })
+        gradient.Rotation = 45
+        gradient.Transparency = NumberSequence.new(0.95)
 
-        local sideGrad = Instance.new("UIGradient", sideBar)
-        sideGrad.Color = ColorSequence.new(Palette.Accent, Palette.AccentBright)
-        sideGrad.Rotation = 90
+        local progress = Instance.new("Frame", frame)
+        progress.Size = UDim2.new(1, 0, 0, 3)
+        progress.Position = UDim2.new(0, 0, 1, -3)
+        progress.BackgroundColor3 = Palette.AccentBright
+        progress.BorderSizePixel = 0
+        addCorner(progress, UDim.new(1, 0))
+        tween(progress, TweenInfo.new(2.2, Enum.EasingStyle.Linear), { Size = UDim2.new(0, 0, 0, 3) })
 
-        local icon = Instance.new("ImageLabel", frame)
-        icon.Size = UDim2.new(0, 42, 0, 42)
-        icon.Position = UDim2.new(0, 16, 0, 22)
-        icon.Image = "rbxassetid://" .. tostring(iconId or 4483362458)
+        local icon = Instance.new("ImageLabel")
+        icon.Size = UDim2.new(0, 48, 0, 48)
+        icon.Position = UDim2.new(0, 14, 0, 26)
+        icon.Image = "rbxassetid://" .. tostring(iconId)
         icon.BackgroundTransparency = 1
-        icon.ZIndex = 999999
+        icon.Parent = frame
 
-        local titleLabel = Instance.new("TextLabel", frame)
-        titleLabel.Size = UDim2.new(1, -80, 0, 22)
-        titleLabel.Position = UDim2.new(0, 68, 0, 12)
+        local titleLabel = Instance.new("TextLabel")
+        titleLabel.Size = UDim2.new(1, -80, 0, 26)
+        titleLabel.Position = UDim2.new(0, 72, 0, 16)
         titleLabel.Text = title
         titleLabel.Font = Enum.Font.GothamBold
-        titleLabel.TextSize = 14
+        titleLabel.TextSize = 15
         titleLabel.TextColor3 = Palette.Text
         titleLabel.TextXAlignment = Enum.TextXAlignment.Left
         titleLabel.BackgroundTransparency = 1
-        titleLabel.ZIndex = 999999
+        titleLabel.Parent = frame
 
-        local textLabel = Instance.new("TextLabel", frame)
-        textLabel.Size = UDim2.new(1, -80, 0, 40)
-        textLabel.Position = UDim2.new(0, 68, 0, 34)
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Size = UDim2.new(1, -80, 0, 36)
+        textLabel.Position = UDim2.new(0, 72, 0, 42)
         textLabel.Text = text
         textLabel.Font = Enum.Font.Gotham
         textLabel.TextSize = 12
-        textLabel.TextColor3 = Palette.TextDim
+        textLabel.TextColor3 = Palette.TextMuted
         textLabel.TextWrapped = true
         textLabel.TextXAlignment = Enum.TextXAlignment.Left
         textLabel.TextYAlignment = Enum.TextYAlignment.Top
         textLabel.BackgroundTransparency = 1
-        textLabel.ZIndex = 999999
+        textLabel.Parent = frame
 
-        -- Slide in
-        tween(frame, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-            Position = UDim2.new(1, -20, 1, -20)
-        })
-
-        task.delay(2.2, function()
-            tween(frame, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
-                Position = UDim2.new(1, 320, 1, -110)
-            })
-            task.wait(0.4)
-            notifyGui:Destroy()
-        end)
+        table.insert(notifyQueue, { frame = frame, gui = screenGui, blur = blur })
+        processQueue()
     end
 
     -- ═══════════════════════════════════════════════════════════════
     -- CREATE PROMO BOX
     -- ═══════════════════════════════════════════════════════════════
     function Window:CreatePromoBox(tabName, title, description, imageId, link, channelName)
-        local tab = pages[tabName]
-        if not tab then return end
+        local tab = pages[tabName]; if not tab then return end
 
         local box = Instance.new("Frame", tab)
         box.Size = UDim2.new(1, -20, 0, 0)
@@ -1593,33 +1586,27 @@ function RANOX:CreateWindow(config)
         box.BorderSizePixel = 0
         box.AutomaticSize = Enum.AutomaticSize.Y
         box.ClipsDescendants = true
-        Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
-        local boxStroke = Instance.new("UIStroke", box)
-        boxStroke.Color = Palette.Accent
-        boxStroke.Thickness = 1.5
-        boxStroke.Transparency = 0.3
+        addCorner(box, UDim.new(0, 12))
+        local boxStroke = addStroke(box, Color3.fromRGB(80, 10, 10), 1.5, 0.3)
 
         local icon = Instance.new("ImageLabel", box)
         icon.Size = UDim2.new(0, 90, 0, 90)
         icon.Position = UDim2.new(0, 10, 0, 10)
         icon.Image = "rbxassetid://" .. tostring(imageId)
-        icon.BackgroundColor3 = Palette.Bg
+        icon.BackgroundColor3 = Palette.SurfaceHi
         icon.BorderSizePixel = 0
         icon.ScaleType = Enum.ScaleType.Fit
-        Instance.new("UICorner", icon).CornerRadius = UDim.new(0, 8)
-        local iconStroke = Instance.new("UIStroke", icon)
-        iconStroke.Color = Palette.Accent
-        iconStroke.Thickness = 1.5
-        iconStroke.Transparency = 0.3
+        addCorner(icon, UDim.new(0, 8))
+        addStroke(icon, Palette.Border, 1, 0.5)
 
         local channelBox = Instance.new("TextBox", box)
         channelBox.Text = channelName or "SEU CANAL AQUI"
         channelBox.Size = UDim2.new(0, 90, 0, 0)
         channelBox.Position = UDim2.new(0, 10, 0, 105)
         channelBox.Font = Enum.Font.GothamBold
-        channelBox.TextSize = 11
+        channelBox.TextSize = 12
         channelBox.TextColor3 = Palette.Text
-        channelBox.BackgroundColor3 = Palette.Bg
+        channelBox.BackgroundColor3 = Palette.SurfaceHi
         channelBox.BorderSizePixel = 0
         channelBox.ClearTextOnFocus = false
         channelBox.AutomaticSize = Enum.AutomaticSize.Y
@@ -1628,11 +1615,8 @@ function RANOX:CreateWindow(config)
         channelBox.TextYAlignment = Enum.TextYAlignment.Center
         channelBox.ClipsDescendants = true
         channelBox.TextEditable = false
-        Instance.new("UICorner", channelBox).CornerRadius = UDim.new(0, 6)
-        local channelStroke = Instance.new("UIStroke", channelBox)
-        channelStroke.Color = Palette.Accent
-        channelStroke.Thickness = 1
-        channelStroke.Transparency = 0.4
+        addCorner(channelBox, UDim.new(0, 6))
+        addStroke(channelBox, Palette.Accent, 1.2, 0.2)
 
         local content = Instance.new("Frame", box)
         content.BackgroundTransparency = 1
@@ -1648,30 +1632,20 @@ function RANOX:CreateWindow(config)
         local titleLabel = Instance.new("TextLabel", content)
         titleLabel.Text = "  " .. string.upper(title or "")
         titleLabel.Font = Enum.Font.GothamBold
-        titleLabel.TextSize = 15
+        titleLabel.TextSize = 16
         titleLabel.TextColor3 = Palette.Text
         titleLabel.BackgroundTransparency = 1
-        titleLabel.Size = UDim2.new(1, 0, 0, 24)
+        titleLabel.Size = UDim2.new(1, 0, 0, 30)
         titleLabel.TextXAlignment = Enum.TextXAlignment.Left
         titleLabel.TextYAlignment = Enum.TextYAlignment.Center
 
-        local underline = Instance.new("Frame", titleLabel)
-        underline.Size = UDim2.new(1, -20, 0, 1)
-        underline.Position = UDim2.new(0, 10, 1, -3)
-        underline.BackgroundColor3 = Palette.Accent
-        underline.BackgroundTransparency = 0.5
-        underline.BorderSizePixel = 0
-
         local buttonHolder = Instance.new("Frame", content)
         buttonHolder.Size = UDim2.new(1, 0, 0, 32)
-        buttonHolder.BackgroundColor3 = Palette.AccentSoft
+        buttonHolder.BackgroundColor3 = Color3.fromRGB(70, 10, 10)
         buttonHolder.BorderSizePixel = 0
         buttonHolder.ClipsDescendants = true
-        Instance.new("UICorner", buttonHolder).CornerRadius = UDim.new(0, 6)
-        local buttonStroke = Instance.new("UIStroke", buttonHolder)
-        buttonStroke.Color = Palette.Accent
-        buttonStroke.Thickness = 1.2
-        buttonStroke.Transparency = 0.2
+        addCorner(buttonHolder, UDim.new(0, 6))
+        addStroke(buttonHolder, Palette.Accent, 1.2, 0.2)
 
         local copyButton = Instance.new("TextButton", buttonHolder)
         copyButton.Text = "COPIAR LINK"
@@ -1684,18 +1658,15 @@ function RANOX:CreateWindow(config)
 
         local fillBar = Instance.new("Frame", buttonHolder)
         fillBar.Size = UDim2.new(0, 0, 1, 0)
-        fillBar.Position = UDim2.new(0, 0, 0, 0)
-        fillBar.BackgroundColor3 = Palette.Accent
+        fillBar.BackgroundColor3 = Palette.AccentBright
         fillBar.BorderSizePixel = 0
         fillBar.ZIndex = 1
-        local fbGrad = Instance.new("UIGradient", fillBar)
-        fbGrad.Color = ColorSequence.new(Palette.Accent, Palette.AccentBright)
 
         local descLabel = Instance.new("TextLabel", content)
         descLabel.Text = description
         descLabel.Font = Enum.Font.Gotham
         descLabel.TextSize = 13
-        descLabel.TextColor3 = Palette.TextDim
+        descLabel.TextColor3 = Palette.TextMuted
         descLabel.BackgroundTransparency = 1
         descLabel.Size = UDim2.new(1, 0, 0, 0)
         descLabel.AutomaticSize = Enum.AutomaticSize.Y
@@ -1703,9 +1674,10 @@ function RANOX:CreateWindow(config)
         descLabel.TextXAlignment = Enum.TextXAlignment.Left
 
         copyButton.MouseButton1Click:Connect(function()
-            pcall(function() setclipboard(link) end)
+            pcall(setclipboard, link)
+            playSound(SOUNDS.Click, 0.3)
             fillBar.Size = UDim2.new(0, 0, 1, 0)
-            tween(fillBar, TweenInfo.new(0.4, Enum.EasingStyle.Sine), { Size = UDim2.new(1, 0, 1, 0) })
+            fillBar:TweenSize(UDim2.new(1, 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.5, true)
         end)
 
         return {
@@ -1719,9 +1691,8 @@ function RANOX:CreateWindow(config)
     -- ═══════════════════════════════════════════════════════════════
     -- CREATE THEME BOXES
     -- ═══════════════════════════════════════════════════════════════
-    function Window:CreateThemeBoxes(tabName, mainFrameArg)
-        local tab = pages[tabName]
-        if not tab then return end
+    function Window:CreateThemeBoxes(tabName)
+        local tab = pages[tabName]; if not tab then return end
 
         local container = Instance.new("Frame", tab)
         container.Size = UDim2.new(1, -20, 0, 0)
@@ -1771,11 +1742,8 @@ function RANOX:CreateWindow(config)
             box.ClipsDescendants = true
             box.Parent = container
 
-            Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
-            local stroke = Instance.new("UIStroke", box)
-            stroke.Color = Palette.Border
-            stroke.Thickness = 1.2
-            stroke.Transparency = 0.3
+            addCorner(box, UDim.new(0, 12))
+            local stroke = addStroke(box, Color3.fromRGB(80, 10, 10), 1.5, 0.3)
 
             local titleLabel = Instance.new("TextLabel", box)
             titleLabel.Text = titleText
@@ -1783,7 +1751,7 @@ function RANOX:CreateWindow(config)
             titleLabel.TextSize = 15
             titleLabel.TextColor3 = Palette.Text
             titleLabel.BackgroundTransparency = 1
-            titleLabel.Size = UDim2.new(1, -20, 0, 28)
+            titleLabel.Size = UDim2.new(1, -20, 0, 26)
             titleLabel.Position = UDim2.new(0, 10, 0, 10)
             titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -1791,7 +1759,7 @@ function RANOX:CreateWindow(config)
             label.Text = labelText
             label.Font = Enum.Font.Gotham
             label.TextSize = 12
-            label.TextColor3 = Palette.TextDim
+            label.TextColor3 = Palette.TextMuted
             label.BackgroundTransparency = 1
             label.Size = UDim2.new(1, -20, 0, 18)
             label.Position = UDim2.new(0, 10, 0, 38)
@@ -1799,7 +1767,7 @@ function RANOX:CreateWindow(config)
 
             local content = Instance.new("Frame", box)
             content.BackgroundTransparency = 1
-            content.Position = UDim2.new(0, 10, 0, 62)
+            content.Position = UDim2.new(0, 10, 0, 66)
             content.Size = UDim2.new(1, -20, 0, 0)
             content.AutomaticSize = Enum.AutomaticSize.Y
 
@@ -1815,19 +1783,15 @@ function RANOX:CreateWindow(config)
                 square.BackgroundColor3 = pair[1]
                 square.BorderSizePixel = 0
                 square.Size = UDim2.new(0, 36, 0, 36)
-                Instance.new("UICorner", square).CornerRadius = UDim.new(0, 6)
+                addCorner(square, UDim.new(0, 6))
 
-                local s = Instance.new("UIStroke", square)
-                s.Color = Palette.Border
-                s.Thickness = 1.2
-                s.Transparency = 0.3
+                local s = addStroke(square, Color3.fromRGB(60, 0, 0), 1.2, 0.4)
 
                 local g = Instance.new("UIGradient", square)
                 g.Color = ColorSequence.new{
                     ColorSequenceKeypoint.new(0, pair[1]),
                     ColorSequenceKeypoint.new(1, pair[2])
                 }
-                g.Rotation = 45
 
                 local button = Instance.new("TextButton", square)
                 button.BackgroundTransparency = 1
@@ -1836,44 +1800,38 @@ function RANOX:CreateWindow(config)
                 button.AutoButtonColor = false
 
                 button.MouseEnter:Connect(function()
-                    tween(square, TweenInfo.new(0.15, Enum.EasingStyle.Back), { Size = UDim2.new(0, 40, 0, 40) })
-                    fast(s, { Color = Palette.AccentBright })
+                    tween(square, TweenInfo.new(0.2, Enum.EasingStyle.Back), { Size = UDim2.new(0, 40, 0, 40) })
+                    tween(s, TweenInfo.new(0.2), { Color = Palette.AccentBright, Transparency = 0 })
                 end)
                 button.MouseLeave:Connect(function()
-                    tween(square, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Size = UDim2.new(0, 36, 0, 36) })
-                    fast(s, { Color = Palette.Border })
+                    tween(square, TweenInfo.new(0.2, Enum.EasingStyle.Back), { Size = UDim2.new(0, 36, 0, 36) })
+                    tween(s, TweenInfo.new(0.2), { Color = Color3.fromRGB(60, 0, 0), Transparency = 0.4 })
                 end)
 
                 button.MouseButton1Click:Connect(function()
+                    playSound(SOUNDS.Click, 0.25)
                     if mode == "interface" then
                         AtualizarCorInterface(pair[1], pair[1], pair[2])
                     elseif mode == "titulo" then
-                        fast(title, { TextColor3 = pair[1] })
-                        fast(subtitle, { TextColor3 = pair[2] })
+                        title.TextColor3 = pair[1]
+                        subtitle.TextColor3 = pair[2]
                     end
                 end)
             end
 
             local colorInputBox = Instance.new("TextBox", box)
             colorInputBox.Text = ""
-            colorInputBox.Size = UDim2.new(1, -20, 0, 28)
-            colorInputBox.BackgroundColor3 = Palette.Bg
+            colorInputBox.Size = UDim2.new(1, -20, 0, 30)
+            colorInputBox.BackgroundColor3 = Palette.SurfaceHi
             colorInputBox.TextColor3 = Palette.Text
             colorInputBox.TextSize = 12
             colorInputBox.PlaceholderText = "(ex: 255.0.0/0.0.0)"
-            colorInputBox.PlaceholderColor3 = Palette.TextMute
+            colorInputBox.PlaceholderColor3 = Palette.TextMuted
             colorInputBox.ClearTextOnFocus = false
             colorInputBox.Position = UDim2.new(0, 10, 0, 0)
             colorInputBox.LayoutOrder = 999
-            colorInputBox.BorderSizePixel = 0
-
-            local corner = Instance.new("UICorner")
-            corner.CornerRadius = UDim.new(0, 6)
-            corner.Parent = colorInputBox
-            local ciStroke = Instance.new("UIStroke", colorInputBox)
-            ciStroke.Color = Palette.Border
-            ciStroke.Thickness = 1
-            ciStroke.Transparency = 0.4
+            addCorner(colorInputBox, UDim.new(0, 6))
+            addStroke(colorInputBox, Palette.Border, 1, 0.5)
 
             local layoutForInput = Instance.new("UIListLayout", box)
             layoutForInput.SortOrder = Enum.SortOrder.LayoutOrder
@@ -1884,19 +1842,19 @@ function RANOX:CreateWindow(config)
                     local colorText = colorInputBox.Text
                     local colorsInput = string.split(colorText, "/")
                     if #colorsInput == 2 then
-                        local color1 = string.split(colorsInput[1], ".")
-                        local color2 = string.split(colorsInput[2], ".")
-                        if #color1 == 3 and #color2 == 3 then
-                            local r1, g1, b1 = tonumber(color1[1]), tonumber(color1[2]), tonumber(color1[3])
-                            local r2, g2, b2 = tonumber(color2[1]), tonumber(color2[2]), tonumber(color2[3])
+                        local c1 = string.split(colorsInput[1], ".")
+                        local c2 = string.split(colorsInput[2], ".")
+                        if #c1 == 3 and #c2 == 3 then
+                            local r1, g1, b1 = tonumber(c1[1]), tonumber(c1[2]), tonumber(c1[3])
+                            local r2, g2, b2 = tonumber(c2[1]), tonumber(c2[2]), tonumber(c2[3])
                             if r1 and g1 and b1 and r2 and g2 and b2 then
-                                local newColor1 = Color3.fromRGB(r1, g1, b1)
-                                local newColor2 = Color3.fromRGB(r2, g2, b2)
+                                local nc1 = Color3.fromRGB(r1, g1, b1)
+                                local nc2 = Color3.fromRGB(r2, g2, b2)
                                 if mode == "interface" then
-                                    AtualizarCorInterface(newColor1, newColor1, newColor2)
+                                    AtualizarCorInterface(nc1, nc1, nc2)
                                 elseif mode == "titulo" then
-                                    fast(title, { TextColor3 = newColor1 })
-                                    fast(subtitle, { TextColor3 = newColor2 })
+                                    title.TextColor3 = nc1
+                                    subtitle.TextColor3 = nc2
                                 end
                             end
                         end
@@ -1916,9 +1874,8 @@ function RANOX:CreateWindow(config)
     -- ═══════════════════════════════════════════════════════════════
     -- CREATE INFO BOX
     -- ═══════════════════════════════════════════════════════════════
-    function Window:CreateInfoBox(tabName, titleText, infoList)
-        local tab = pages[tabName]
-        if not tab then return end
+    function Window:CreateInfoBox(tabName, title, infoList)
+        local tab = pages[tabName]; if not tab then return end
 
         local box = Instance.new("Frame", tab)
         box.Size = UDim2.new(1, -20, 0, 0)
@@ -1927,33 +1884,23 @@ function RANOX:CreateWindow(config)
         box.BorderSizePixel = 0
         box.AutomaticSize = Enum.AutomaticSize.Y
         box.ClipsDescendants = true
-        Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
-        local boxStroke = Instance.new("UIStroke", box)
-        boxStroke.Color = Palette.Accent
-        boxStroke.Thickness = 1.2
-        boxStroke.Transparency = 0.3
+        addCorner(box, UDim.new(0, 12))
+        addStroke(box, Color3.fromRGB(120, 0, 0), 1.5, 0.3)
 
         local titleLabel = Instance.new("TextLabel", box)
-        titleLabel.Text = "  " .. string.upper(titleText or "INFORMAÇÃO")
+        titleLabel.Text = "  " .. string.upper(title or "INFORMAÇÃO")
         titleLabel.Font = Enum.Font.GothamBold
-        titleLabel.TextSize = 15
+        titleLabel.TextSize = 16
         titleLabel.TextColor3 = Palette.Text
         titleLabel.BackgroundTransparency = 1
-        titleLabel.Size = UDim2.new(1, -20, 0, 28)
+        titleLabel.Size = UDim2.new(1, -20, 0, 30)
         titleLabel.Position = UDim2.new(0, 10, 0, 10)
         titleLabel.TextXAlignment = Enum.TextXAlignment.Left
         titleLabel.TextYAlignment = Enum.TextYAlignment.Center
 
-        local underline = Instance.new("Frame", titleLabel)
-        underline.Size = UDim2.new(1, -20, 0, 1)
-        underline.Position = UDim2.new(0, 10, 1, -3)
-        underline.BackgroundColor3 = Palette.Accent
-        underline.BackgroundTransparency = 0.5
-        underline.BorderSizePixel = 0
-
         local content = Instance.new("Frame", box)
         content.BackgroundTransparency = 1
-        content.Position = UDim2.new(0, 10, 0, 45)
+        content.Position = UDim2.new(0, 10, 0, 50)
         content.Size = UDim2.new(1, -20, 0, 0)
         content.AutomaticSize = Enum.AutomaticSize.Y
 
@@ -1964,17 +1911,13 @@ function RANOX:CreateWindow(config)
 
         for i, text in ipairs(infoList or {}) do
             local itemFrame = Instance.new("Frame", content)
-            itemFrame.BackgroundColor3 = Palette.Bg
-            itemFrame.BackgroundTransparency = 0.4
+            itemFrame.BackgroundColor3 = Palette.SurfaceHi
             itemFrame.BorderSizePixel = 0
             itemFrame.AutomaticSize = Enum.AutomaticSize.Y
             itemFrame.Size = UDim2.new(1, 0, 0, 0)
             itemFrame.ClipsDescendants = true
-            Instance.new("UICorner", itemFrame).CornerRadius = UDim.new(0, 6)
-            local itemStroke = Instance.new("UIStroke", itemFrame)
-            itemStroke.Color = Palette.Border
-            itemStroke.Thickness = 1
-            itemStroke.Transparency = 0.4
+            addCorner(itemFrame, UDim.new(0, 6))
+            addStroke(itemFrame, Color3.fromRGB(100, 0, 0), 1, 0.5)
 
             local numberLabel = Instance.new("TextLabel", itemFrame)
             numberLabel.Text = tostring(i) .. "."
@@ -1982,7 +1925,7 @@ function RANOX:CreateWindow(config)
             numberLabel.TextSize = 13
             numberLabel.TextColor3 = Palette.AccentBright
             numberLabel.BackgroundTransparency = 1
-            numberLabel.Size = UDim2.new(0, 26, 1, 0)
+            numberLabel.Size = UDim2.new(0, 30, 1, 0)
             numberLabel.Position = UDim2.new(0, 10, 0, 0)
             numberLabel.TextXAlignment = Enum.TextXAlignment.Left
             numberLabel.TextYAlignment = Enum.TextYAlignment.Top
@@ -1991,10 +1934,10 @@ function RANOX:CreateWindow(config)
             descLabel.Text = text
             descLabel.Font = Enum.Font.Gotham
             descLabel.TextSize = 13
-            descLabel.TextColor3 = Palette.TextDim
+            descLabel.TextColor3 = Palette.Text
             descLabel.BackgroundTransparency = 1
-            descLabel.Position = UDim2.new(0, 34, 0, 5)
-            descLabel.Size = UDim2.new(1, -44, 0, 0)
+            descLabel.Position = UDim2.new(0, 40, 0, 5)
+            descLabel.Size = UDim2.new(1, -50, 0, 0)
             descLabel.AutomaticSize = Enum.AutomaticSize.Y
             descLabel.TextWrapped = true
             descLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -2009,28 +1952,46 @@ function RANOX:CreateWindow(config)
     end
 
     -- ═══════════════════════════════════════════════════════════════
-    -- HIDE / SHOW BUTTONS
+    -- HIDE / SHOW
     -- ═══════════════════════════════════════════════════════════════
     local isHidden = false
+
     hideButton.MouseButton1Click:Connect(function()
-        local targetSize = isHidden and UDim2.new(0, 575, 0, 375) or UDim2.new(0, 0, 0, 0)
-        tween(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-            Size = targetSize
-        })
-        isHidden = not isHidden
-        ballButton.Visible = isHidden
-        if isHidden then
-            ballButton.Size = UDim2.new(0, 0, 0, 0)
-            tween(ballButton, TweenInfo.new(0.3, Enum.EasingStyle.Back), { Size = UDim2.new(0.05, 0, 0.1, 0) })
+        playSound(SOUNDS.Click, 0.3)
+        if not isHidden then
+            tween(mainFrame, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
+                Size = UDim2.new(0, 575, 0, 10),
+                BackgroundTransparency = 0.4
+            })
+            task.delay(0.25, function()
+                mainFrame.Visible = false
+                mainFrame.Size = UDim2.new(0, 575, 0, 375)
+                mainFrame.BackgroundTransparency = 0.03
+                ballButton.Visible = true
+                ballButton.Size = UDim2.new(0, 0, 0, 0)
+                bounce(ballButton, { Size = UDim2.new(0, 50, 0, 50) })
+                tween(ambientBlur, TweenInfo.new(0.4), { Size = 0 })
+            end)
         end
+        isHidden = true
     end)
 
     ballButton.MouseButton1Click:Connect(function()
-        tween(mainFrame, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-            Size = UDim2.new(0, 575, 0, 375)
-        })
+        playSound(SOUNDS.Click, 0.3)
+        tween(ballButton, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.In), { Size = UDim2.new(0, 0, 0, 0) })
+        task.delay(0.2, function()
+            ballButton.Visible = false
+            ballButton.Size = UDim2.new(0, 50, 0, 50)
+            mainFrame.Visible = true
+            mainFrame.Size = UDim2.new(0, 575, 0, 10)
+            mainFrame.BackgroundTransparency = 0.5
+            bounce(mainFrame, {
+                Size = UDim2.new(0, 575, 0, 375),
+                BackgroundTransparency = 0.03
+            })
+            tween(ambientBlur, TweenInfo.new(0.5), { Size = 8 })
+        end)
         isHidden = false
-        ballButton.Visible = false
     end)
 
     return Window
