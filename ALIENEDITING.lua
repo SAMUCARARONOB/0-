@@ -1,20 +1,20 @@
 --[[
     ╔══════════════════════════════════════════════════════════════════╗
-    ║  RANOX UI LIBRARY · Version 4.0.0 · COSMIC EDITION               ║
-    ║  ✦ 100% API Compatible · Todos os métodos originais mantidos ✦    ║
-    ║  ✦ Sombras · Grid · Plasma · Search · Resize · Notif Types ✦      ║
+    ║  RANOX UI LIBRARY · Version 4.1.0 · COSMIC EDITION               ║
+    ║  ✦ Sombra dinâmica · Resize melhorado · Restore inteligente ✦     ║
     ╚══════════════════════════════════════════════════════════════════╝
 ]]
 
 local TweenService = game:GetService("TweenService")
 local Players      = game:GetService("Players")
 local UIS          = game:GetService("UserInputService")
+local RunService   = game:GetService("RunService")
 local player       = Players.LocalPlayer
 
 local RANOX = {}
 
 -- ═══════════════════════════════════════════════════════════════════
--- PALETA GLOBAL
+-- PALETA
 -- ═══════════════════════════════════════════════════════════════════
 local P = {
     Bg          = Color3.fromRGB(16, 16, 20),
@@ -73,28 +73,18 @@ local function addPadding(parent, t, l, r, b)
     return p
 end
 
-local function addShadow(parent, size, transparency)
-    local sh = Instance.new("ImageLabel", parent)
-    sh.Name = "Shadow"
-    sh.AnchorPoint = Vector2.new(0.5, 0.5)
-    sh.Position = UDim2.new(0.5, 0, 0.5, 6)
-    sh.Size = UDim2.new(1, size or 40, 1, size or 40)
-    sh.BackgroundTransparency = 1
-    sh.Image = "rbxassetid://1316045217"
-    sh.ImageColor3 = Color3.fromRGB(0, 0, 0)
-    sh.ImageTransparency = transparency or 0.55
-    sh.ScaleType = Enum.ScaleType.Slice
-    sh.SliceCenter = Rect.new(10, 10, 118, 118)
-    sh.ZIndex = -1
-    return sh
-end
-
 -- ═══════════════════════════════════════════════════════════════════
 -- CREATE WINDOW
 -- ═══════════════════════════════════════════════════════════════════
 function RANOX:CreateWindow(config)
     config = config or {}
     local Window = {}
+
+    -- Tamanho padrão + variável de tamanho ATUAL (persiste após resize)
+    local DEFAULT_SIZE = Vector2.new(575, 375)
+    local MIN_SIZE     = Vector2.new(400, 300)
+    local MAX_SIZE     = Vector2.new(1200, 900)
+    local currentSize  = DEFAULT_SIZE
 
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "RANOX_UI"
@@ -107,12 +97,12 @@ function RANOX:CreateWindow(config)
         screenGui.Parent = player:WaitForChild("PlayerGui")
     end
 
-    -- ═══════════════ SOMBRA (fora do ClipsDescendants)
+    -- ═══════════════ SOMBRA (sincronizada em tempo real)
     local shadowHolder = Instance.new("Frame", screenGui)
     shadowHolder.Name = "ShadowHolder"
     shadowHolder.BackgroundTransparency = 1
-    shadowHolder.Size = UDim2.new(0, 615, 0, 415)
-    shadowHolder.Position = UDim2.new(0.5, 0, 0.5, 6)
+    shadowHolder.Size = UDim2.new(0, currentSize.X + 6, 0, currentSize.Y + 6)
+    shadowHolder.Position = UDim2.new(0.5, 0, 0.5, 2)
     shadowHolder.AnchorPoint = Vector2.new(0.5, 0.5)
     shadowHolder.ZIndex = 0
 
@@ -123,7 +113,7 @@ function RANOX:CreateWindow(config)
     shadowImg.ImageColor3 = Color3.fromRGB(0, 0, 0)
     shadowImg.ImageTransparency = 0.55
     shadowImg.ScaleType = Enum.ScaleType.Slice
-    shadowImg.SliceCenter = Rect.new(10, 10, 118, 118)
+    shadowImg.SliceCenter = Rect.new(6, 6, 122, 122)
 
     -- ═══════════════ MAIN FRAME
     local mainFrame = Instance.new("TextButton")
@@ -152,14 +142,13 @@ function RANOX:CreateWindow(config)
         ColorSequenceKeypoint.new(1, P.Bg),
     }
 
-    -- ─── GRID ANIMADO
+    -- ─── GRID
     local gridHolder = Instance.new("Frame", mainFrame)
     gridHolder.Name = "GridHolder"
     gridHolder.Size = UDim2.new(1, 0, 1, 0)
     gridHolder.BackgroundTransparency = 1
     gridHolder.ClipsDescendants = true
     gridHolder.ZIndex = 0
-
     for i = 0, 14 do
         local l = Instance.new("Frame", gridHolder)
         l.BackgroundColor3 = P.Border
@@ -179,7 +168,7 @@ function RANOX:CreateWindow(config)
         l.ZIndex = 0
     end
 
-    -- ─── GLOW ORBS
+    -- ─── ORBS
     local decor = Instance.new("Frame", mainFrame)
     decor.Name = "Decor"
     decor.Size = UDim2.new(1, 0, 1, 0)
@@ -214,7 +203,7 @@ function RANOX:CreateWindow(config)
         end
     end)
 
-    -- ─── LINHA DE GLOW CORRENDO
+    -- ─── GLOW LINHA
     local topGlow = Instance.new("Frame", mainFrame)
     topGlow.Size = UDim2.new(0, 120, 0, 2)
     topGlow.Position = UDim2.new(0, 0, 0, 0)
@@ -295,7 +284,7 @@ function RANOX:CreateWindow(config)
         tw(hideStroke, 0.2, { Color = P.Border, Transparency = 0.4 })
     end)
 
-    -- ═══════════════ LINHA DIVISÓRIA
+    -- ═══════════════ LINHA
     local line = Instance.new("Frame", mainFrame)
     line.Size = UDim2.new(1, 0, 0, 1)
     line.Position = UDim2.new(0, 0, 0, 26)
@@ -323,7 +312,6 @@ function RANOX:CreateWindow(config)
     sidebarLayout.Padding = UDim.new(0, 3)
     addPadding(sidebar, 5, 5, 5, 0)
 
-    -- ─── Barra de pesquisa
     local searchBox = Instance.new("TextBox", sidebar)
     searchBox.Name = "SearchBox"
     searchBox.Size = UDim2.new(1, 0, 0, 26)
@@ -339,7 +327,7 @@ function RANOX:CreateWindow(config)
     searchBox.ClearTextOnFocus = false
     searchBox.LayoutOrder = -1
     addCorner(searchBox, UDim.new(0, 6))
-    local searchStroke = addStroke(searchBox, P.Border, 1, 0.5)
+    addStroke(searchBox, P.Border, 1, 0.5)
     addPadding(searchBox, 0, 8, 8, 0)
 
     local tabButtons = {}
@@ -349,11 +337,7 @@ function RANOX:CreateWindow(config)
     searchBox:GetPropertyChangedSignal("Text"):Connect(function()
         local q = string.lower(searchBox.Text)
         for name, btn in pairs(tabButtons) do
-            if q == "" then
-                btn.Visible = true
-            else
-                btn.Visible = string.find(string.lower(name), q, 1, true) ~= nil
-            end
+            btn.Visible = (q == "") or (string.find(string.lower(name), q, 1, true) ~= nil)
         end
     end)
 
@@ -392,65 +376,154 @@ function RANOX:CreateWindow(config)
         end
     end)
 
-    -- ═══════════════ RESIZE HANDLE
+    -- ═══════════════════════════════════════════════════════════════
+    -- RESIZE HANDLE (MELHORADO)
+    -- ═══════════════════════════════════════════════════════════════
     local resizeHandle = Instance.new("TextButton", mainFrame)
     resizeHandle.Name = "ResizeHandle"
-    resizeHandle.Size = UDim2.new(0, 16, 0, 16)
-    resizeHandle.Position = UDim2.new(1, -18, 1, -18)
-    resizeHandle.BackgroundTransparency = 1
+    resizeHandle.Size = UDim2.new(0, 20, 0, 20)
+    resizeHandle.Position = UDim2.new(1, -24, 1, -24)
+    resizeHandle.AnchorPoint = Vector2.new(0, 0)
+    resizeHandle.BackgroundColor3 = P.Surface
+    resizeHandle.BackgroundTransparency = 0.35
     resizeHandle.Text = "◢"
-    resizeHandle.TextColor3 = P.TextMute
-    resizeHandle.TextSize = 12
+    resizeHandle.TextColor3 = P.TextDim
+    resizeHandle.TextSize = 14
     resizeHandle.Font = Enum.Font.GothamBold
-    resizeHandle.ZIndex = 10
+    resizeHandle.TextXAlignment = Enum.TextXAlignment.Center
+    resizeHandle.TextYAlignment = Enum.TextYAlignment.Center
+    resizeHandle.AutoButtonColor = false
+    resizeHandle.ZIndex = 20
+    addCorner(resizeHandle, UDim.new(0, 5))
 
+    local resizeStroke = addStroke(resizeHandle, P.Border, 1.2, 0.35)
+
+    -- brilho interno (glow pulsante quando idle)
+    local resizeGlow = Instance.new("ImageLabel", resizeHandle)
+    resizeGlow.Size = UDim2.new(1, 4, 1, 4)
+    resizeGlow.Position = UDim2.new(0, -2, 0, -2)
+    resizeGlow.BackgroundTransparency = 1
+    resizeGlow.Image = "rbxassetid://1316045217"
+    resizeGlow.ImageColor3 = P.AccentHi
+    resizeGlow.ImageTransparency = 1
+    resizeGlow.ScaleType = Enum.ScaleType.Slice
+    resizeGlow.SliceCenter = Rect.new(10, 10, 118, 118)
+    resizeGlow.ZIndex = -1
+
+    -- Hover / Leave
+    local hovered = false
+    resizeHandle.MouseEnter:Connect(function()
+        hovered = true
+        tw(resizeHandle, 0.18, {
+            BackgroundColor3 = P.AccentSoft,
+            BackgroundTransparency = 0.1,
+            Size = UDim2.new(0, 24, 0, 24),
+            Position = UDim2.new(1, -28, 1, -28),
+        }, Enum.EasingStyle.Back)
+        tw(resizeStroke, 0.18, { Color = P.AccentHi, Transparency = 0 })
+        tw(resizeGlow, 0.18, { ImageTransparency = 0.7 })
+    end)
+    resizeHandle.MouseLeave:Connect(function()
+        hovered = false
+        tw(resizeHandle, 0.2, {
+            BackgroundColor3 = P.Surface,
+            BackgroundTransparency = 0.35,
+            Size = UDim2.new(0, 20, 0, 20),
+            Position = UDim2.new(1, -24, 1, -24),
+        }, Enum.EasingStyle.Back)
+        tw(resizeStroke, 0.2, { Color = P.Border, Transparency = 0.35 })
+        tw(resizeGlow, 0.2, { ImageTransparency = 1 })
+    end)
+
+    -- Pulso idle
+    task.spawn(function()
+        while resizeHandle.Parent do
+            if not hovered then
+                tw(resizeStroke, 1.6, { Transparency = 0.85 }, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
+                task.wait(1.6)
+                tw(resizeStroke, 1.6, { Transparency = 0.35 }, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
+                task.wait(1.6)
+            else
+                task.wait(0.4)
+            end
+        end
+    end)
+
+    -- Lógica de resize
     do
         local dragging = false
         local startSize, startPos
 
         resizeHandle.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if input.UserInputType == Enum.UserInputType.MouseButton1
+            or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = true
                 startSize = mainFrame.AbsoluteSize
                 startPos = input.Position
+                tw(resizeHandle, 0.15, { BackgroundColor3 = P.AccentHi, BackgroundTransparency = 0 })
+                tw(resizeGlow, 0.15, { ImageTransparency = 0.3 })
             end
         end)
+
         UIS.InputChanged:Connect(function(input)
-            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement
+            or input.UserInputType == Enum.UserInputType.Touch) then
                 local delta = input.Position - startPos
-                local w = math.clamp(startSize.X + delta.X, 400, 1200)
-                local h = math.clamp(startSize.Y + delta.Y, 300, 900)
+                local w = math.clamp(startSize.X + delta.X, MIN_SIZE.X, MAX_SIZE.X)
+                local h = math.clamp(startSize.Y + delta.Y, MIN_SIZE.Y, MAX_SIZE.Y)
                 mainFrame.Size = UDim2.new(0, w, 0, h)
-                shadowHolder.Size = UDim2.new(0, w + 40, 0, h + 40)
+                currentSize = Vector2.new(w, h)
             end
         end)
+
         UIS.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                dragging = false
+            if input.UserInputType == Enum.UserInputType.MouseButton1
+            or input.UserInputType == Enum.UserInputType.Touch then
+                if dragging then
+                    dragging = false
+                    local finalSize = mainFrame.AbsoluteSize
+                    currentSize = Vector2.new(finalSize.X, finalSize.Y)
+                    tw(resizeHandle, 0.2, { BackgroundColor3 = P.Surface, BackgroundTransparency = 0.35 })
+                    tw(resizeGlow, 0.2, { ImageTransparency = 1 })
+                end
             end
         end)
     end
 
+    -- ═══════════════════════════════════════════════════════════════
+    -- SYNC LOOP: sombra segue posição + tamanho do mainFrame
+    -- ═══════════════════════════════════════════════════════════════
+    local syncConn = RunService.RenderStepped:Connect(function()
+        if not mainFrame or not mainFrame.Parent then return end
+
+        shadowHolder.Position = UDim2.new(
+            mainFrame.Position.X.Scale,
+            mainFrame.Position.X.Offset,
+            mainFrame.Position.Y.Scale,
+            mainFrame.Position.Y.Offset + 2
+        )
+        shadowHolder.Size = UDim2.new(
+            0, mainFrame.AbsoluteSize.X + 6,
+            0, mainFrame.AbsoluteSize.Y + 6
+        )
+    end)
+
     -- ═══════════════ ANIMAÇÃO DE ENTRADA (cascata)
     task.spawn(function()
-        mainFrame.Size = UDim2.new(0, 575, 0, 375)
+        mainFrame.Size = UDim2.new(0, 0, 0, 0)
         mainFrame.BackgroundTransparency = 1
         shadowImg.ImageTransparency = 1
 
         task.wait(0.05)
-        tw(mainFrame, 0.5, { BackgroundTransparency = 0 }, Enum.EasingStyle.Quint)
+        mainFrame.Size = UDim2.new(0, currentSize.X - 35, 0, currentSize.Y - 20)
+        tw(mainFrame, 0.55, { Size = UDim2.new(0, currentSize.X, 0, currentSize.Y) }, Enum.EasingStyle.Back)
+        tw(mainFrame, 0.4, { BackgroundTransparency = 0 }, Enum.EasingStyle.Quint)
         tw(shadowImg, 0.5, { ImageTransparency = 0.55 })
 
-        -- escala de entrada
-        mainFrame.Size = UDim2.new(0, 540, 0, 355)
-        tw(mainFrame, 0.55, { Size = UDim2.new(0, 575, 0, 375) }, Enum.EasingStyle.Back)
-
-        -- sidebar entrada
         sidebar.Position = UDim2.new(0, -50, 0, 26)
         task.wait(0.15)
         tw(sidebar, 0.45, { Position = UDim2.new(0, 0, 0, 26) }, Enum.EasingStyle.Quint)
 
-        -- título entrada
         title.Position = UDim2.new(0, -60, 0, 0)
         tw(title, 0.4, { Position = UDim2.new(0, 12, 0, 0) }, Enum.EasingStyle.Quint)
     end)
@@ -467,9 +540,7 @@ function RANOX:CreateWindow(config)
         end
         for tabName, btn in pairs(tabButtons) do
             local marker = btn:FindFirstChild("TabMarker")
-            if marker then
-                marker.Visible = (tabName == name)
-            end
+            if marker then marker.Visible = (tabName == name) end
             tw(btn, 0.2, {
                 BackgroundColor3 = (tabName == name) and P.SurfaceHi or P.Surface,
             })
@@ -578,9 +649,7 @@ function RANOX:CreateWindow(config)
             switchTab(tabName)
         end)
 
-        if not selectedTab then
-            switchTab(tabName)
-        end
+        if not selectedTab then switchTab(tabName) end
     end
 
     -- ═══════════════════════════════════════════════════════════════
@@ -1150,7 +1219,8 @@ function RANOX:CreateWindow(config)
         local dragging = false
 
         bar.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if input.UserInputType == Enum.UserInputType.MouseButton1
+            or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = true
                 tw(knob, 0.15, {
                     Size = UDim2.new(0, 20, 0, 20),
@@ -1161,13 +1231,15 @@ function RANOX:CreateWindow(config)
         end)
 
         UIS.InputChanged:Connect(function(input)
-            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement
+            or input.UserInputType == Enum.UserInputType.Touch) then
                 updateSlider(input.Position.X)
             end
         end)
 
         UIS.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if input.UserInputType == Enum.UserInputType.MouseButton1
+            or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = false
                 tw(knob, 0.2, { Size = UDim2.new(0, 16, 0, 16) }, Enum.EasingStyle.Back)
             end
@@ -1392,18 +1464,21 @@ function RANOX:CreateWindow(config)
                 applyColorFromBox()
             end
             slider.InputBegan:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                if input.UserInputType == Enum.UserInputType.MouseButton1
+                or input.UserInputType == Enum.UserInputType.Touch then
                     dragging = true
                     update(input)
                 end
             end)
             UIS.InputChanged:Connect(function(input)
-                if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+                if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement
+                or input.UserInputType == Enum.UserInputType.Touch) then
                     update(input)
                 end
             end)
             UIS.InputEnded:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                if input.UserInputType == Enum.UserInputType.MouseButton1
+                or input.UserInputType == Enum.UserInputType.Touch then
                     dragging = false
                 end
             end)
@@ -1553,7 +1628,8 @@ function RANOX:CreateWindow(config)
         end
 
         switch.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if input.UserInputType == Enum.UserInputType.MouseButton1
+            or input.UserInputType == Enum.UserInputType.Touch then
                 toggleSwitch()
             end
         end)
@@ -1587,7 +1663,7 @@ function RANOX:CreateWindow(config)
     end
 
     -- ═══════════════════════════════════════════════════════════════
-    -- NOTIFY CUSTOM (com fila + tipos)
+    -- NOTIFY CUSTOM
     -- ═══════════════════════════════════════════════════════════════
     local notifyQueue = {}
     local notifying = false
@@ -1598,10 +1674,12 @@ function RANOX:CreateWindow(config)
         local data = table.remove(notifyQueue, 1)
         local frame = data.frame
 
-        frame:TweenPosition(UDim2.new(1, -20, 1, -20 - ((#notifyQueue) * 110)), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.4, true)
+        frame:TweenPosition(UDim2.new(1, -20, 1, -20 - ((#notifyQueue) * 110)),
+            Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.4, true)
 
         task.delay(2.2, function()
-            frame:TweenPosition(UDim2.new(1, 320, 1, -200), Enum.EasingDirection.In, Enum.EasingStyle.Quint, 0.35, true)
+            frame:TweenPosition(UDim2.new(1, 320, 1, -200),
+                Enum.EasingDirection.In, Enum.EasingStyle.Quint, 0.35, true)
             task.wait(0.4)
             data.gui:Destroy()
             notifying = false
@@ -2073,21 +2151,27 @@ function RANOX:CreateWindow(config)
     end
 
     -- ═══════════════════════════════════════════════════════════════
-    -- HIDE / SHOW + ATALHO (Right Shift)
+    -- HIDE / SHOW (agora restaura o tamanho atual!)
     -- ═══════════════════════════════════════════════════════════════
     local isHidden = false
 
     local function doHide()
         if isHidden then return end
         isHidden = true
+
+        -- guarda o tamanho atual ANTES de esconder
+        local finalSize = mainFrame.AbsoluteSize
+        currentSize = Vector2.new(finalSize.X, finalSize.Y)
+
         tw(mainFrame, 0.25, {
-            Size = UDim2.new(0, 575, 0, 10),
+            Size = UDim2.new(0, currentSize.X, 0, 10),
             BackgroundTransparency = 0.4,
         }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
         tw(shadowImg, 0.25, { ImageTransparency = 1 })
+
         task.delay(0.25, function()
             mainFrame.Visible = false
-            mainFrame.Size = UDim2.new(0, 575, 0, 375)
+            mainFrame.Size = UDim2.new(0, currentSize.X, 0, currentSize.Y)
             mainFrame.BackgroundTransparency = 0
             ballButton.Visible = true
             ballButton.Size = UDim2.new(0, 0, 0, 0)
@@ -2098,15 +2182,16 @@ function RANOX:CreateWindow(config)
     local function doShow()
         if not isHidden then return end
         isHidden = false
+
         tw(ballButton, 0.25, { Size = UDim2.new(0, 0, 0, 0) }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
         task.delay(0.2, function()
             ballButton.Visible = false
             ballButton.Size = UDim2.new(0, 50, 0, 50)
             mainFrame.Visible = true
-            mainFrame.Size = UDim2.new(0, 575, 0, 10)
+            mainFrame.Size = UDim2.new(0, currentSize.X, 0, 10)
             mainFrame.BackgroundTransparency = 0.4
             tw(mainFrame, 0.4, {
-                Size = UDim2.new(0, 575, 0, 375),
+                Size = UDim2.new(0, currentSize.X, 0, currentSize.Y),
                 BackgroundTransparency = 0,
             }, Enum.EasingStyle.Back)
             tw(shadowImg, 0.4, { ImageTransparency = 0.55 })
