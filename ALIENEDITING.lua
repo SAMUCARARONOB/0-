@@ -1,9 +1,9 @@
 --[[
-    ╔══════════════════════════════════════════════════════════════════════════════╗
-    ║  NINOMAX UI LIBRARY · v1.0.0                                                 ║
-    ║  Fusion of Rayfield + RedzLib + Luna Interface Suite                          ║
-    ║  Superior performance, smart theming, professional elements.                  ║
-    ╚══════════════════════════════════════════════════════════════════════════════╝
+    ╔══════════════════════════════════════════════════════════════════════════╗
+    ║  NINOMAX UI LIBRARY · v1.0.0                                              ║
+    ║  Fusion of Rayfield + RedzLib + Luna                                      ║
+    ║  Title: NINO (white) + MAX (red) with animated glow effect                ║
+    ╚══════════════════════════════════════════════════════════════════════════╝
 ]]
 
 --=====================================================================
@@ -18,13 +18,20 @@ local HttpService      = game:GetService("HttpService")
 local player           = Players.LocalPlayer
 
 --=====================================================================
--- UTILITIES
+-- HELPERS
 --=====================================================================
-local function clamp(v, min, max) return math.clamp(v, min, max) end
+local function clamp(v, min, max)
+    if v < min then return min end
+    if v > max then return max end
+    return v
+end
+
 local function tw(inst, dur, props, style, dir)
-    local t = TweenService:Create(inst,
+    local t = TweenService:Create(
+        inst,
         TweenInfo.new(dur or 0.25, style or Enum.EasingStyle.Quint, dir or Enum.EasingDirection.Out),
-        props)
+        props
+    )
     t:Play()
     return t
 end
@@ -55,7 +62,6 @@ local function padding(parent, t, l, r, b)
     return p
 end
 
--- Conversão de cores
 local function hexToColor(hex)
     hex = tostring(hex):gsub("#", ""):gsub("%s", "")
     if #hex == 3 then
@@ -70,10 +76,12 @@ local function hexToColor(hex)
 end
 
 local function colorToHex(c)
-    return string.format("#%02X%02X%02X",
+    return string.format(
+        "#%02X%02X%02X",
         math.floor(c.R * 255 + 0.5),
         math.floor(c.G * 255 + 0.5),
-        math.floor(c.B * 255 + 0.5))
+        math.floor(c.B * 255 + 0.5)
+    )
 end
 
 local function mix(a, b, t)
@@ -89,13 +97,15 @@ local function luminance(c)
 end
 
 local function contrastText(bg)
-    return luminance(bg) > 0.55
-        and Color3.fromRGB(20, 20, 25)
-        or Color3.fromRGB(245, 245, 250)
+    if luminance(bg) > 0.55 then
+        return Color3.fromRGB(20, 20, 25)
+    else
+        return Color3.fromRGB(245, 245, 250)
+    end
 end
 
 --=====================================================================
--- TEMA INTELIGENTE
+-- THEME ENGINE
 --=====================================================================
 local BaseTheme = {
     Bg          = Color3.fromRGB(16, 16, 20),
@@ -117,8 +127,8 @@ for k, v in pairs(BaseTheme) do P[k] = v end
 
 local function applySmartTheme(accent)
     local h, s, v = Color3.toHSV(accent)
-    s = math.max(s, 0.35)
-    v = math.max(v, 0.40)
+    if s < 0.35 then s = 0.35 end
+    if v < 0.40 then v = 0.40 end
     local clean = Color3.fromHSV(h, s, v)
 
     P.Accent       = clean
@@ -134,30 +144,35 @@ end
 applySmartTheme(Color3.fromRGB(200, 30, 30))
 
 --=====================================================================
--- BIBLIOTECA NINOMAX
+-- LIBRARY
 --=====================================================================
 local NINOMAX = {}
 NINOMAX.Flags = {}
 NINOMAX._themeCallbacks = {}
 
-local function registerTheme(fn) table.insert(NINOMAX._themeCallbacks, fn) end
+local function registerTheme(fn)
+    table.insert(NINOMAX._themeCallbacks, fn)
+end
+
 local function broadcastTheme()
-    for _, fn in ipairs(NINOMAX._themeCallbacks) do pcall(fn) end
+    for _, fn in ipairs(NINOMAX._themeCallbacks) do
+        pcall(fn)
+    end
 end
 
 --=====================================================================
--- CRIAÇÃO DA JANELA
+-- CREATE WINDOW
 --=====================================================================
 function NINOMAX:CreateWindow(config)
     config = config or {}
     local Window = {}
-    local titleText = config.Title or "NINOMAX"
+
+    local titleText    = config.Title or "NINOMAX"
     local subtitleText = config.Subtitle or "by NINOMAX"
 
-    -- Dimensões
-    local DEFAULT_SIZE = Vector2.new(600, 400)
-    local MIN_SIZE     = Vector2.new(420, 320)
-    local MAX_SIZE     = Vector2.new(1200, 900)
+    local DEFAULT_SIZE = Vector2.new(620, 420)
+    local MIN_SIZE     = Vector2.new(440, 340)
+    local MAX_SIZE     = Vector2.new(1280, 900)
     local currentSize  = DEFAULT_SIZE
 
     -- ScreenGui
@@ -168,13 +183,15 @@ function NINOMAX:CreateWindow(config)
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     screenGui.DisplayOrder = 99e99
     pcall(function() screenGui.Parent = CoreGui end)
-    if not screenGui.Parent then screenGui.Parent = player:WaitForChild("PlayerGui") end
+    if not screenGui.Parent then
+        screenGui.Parent = player:WaitForChild("PlayerGui")
+    end
 
     -- Sombra
     local shadowHolder = Instance.new("Frame", screenGui)
     shadowHolder.BackgroundTransparency = 1
     shadowHolder.Size = UDim2.new(0, currentSize.X + 10, 0, currentSize.Y + 10)
-    shadowHolder.Position = UDim2.new(0.5, 0, 0.5, 0)
+    shadowHolder.Position = UDim2.new(0.5, 0, 0.5, 2)
     shadowHolder.AnchorPoint = Vector2.new(0.5, 0.5)
     shadowHolder.ZIndex = 0
     local shadowImg = Instance.new("ImageLabel", shadowHolder)
@@ -211,7 +228,7 @@ function NINOMAX:CreateWindow(config)
     gridHolder.BackgroundTransparency = 1
     gridHolder.ClipsDescendants = true
     gridHolder.ZIndex = 0
-    for i = 0, 16 do
+    for i = 0, 18 do
         local l = Instance.new("Frame", gridHolder)
         l.BackgroundColor3 = P.Border
         l.BackgroundTransparency = 0.92
@@ -228,12 +245,13 @@ function NINOMAX:CreateWindow(config)
         l.Position = UDim2.new(0, 0, 0, i * 42)
     end
 
-    -- Orbs animados
+    -- Orbs
     local decor = Instance.new("Frame", mainFrame)
     decor.Size = UDim2.new(1, 0, 1, 0)
     decor.BackgroundTransparency = 1
     decor.ClipsDescendants = true
     decor.ZIndex = 0
+
     local orb1 = Instance.new("Frame", decor)
     orb1.Size = UDim2.new(0, 280, 0, 280)
     orb1.Position = UDim2.new(-0.3, 0, -0.3, 0)
@@ -241,6 +259,7 @@ function NINOMAX:CreateWindow(config)
     orb1.BackgroundTransparency = 0.9
     orb1.BorderSizePixel = 0
     corner(orb1, UDim.new(1, 0))
+
     local orb2 = Instance.new("Frame", decor)
     orb2.Size = UDim2.new(0, 240, 0, 240)
     orb2.Position = UDim2.new(0.9, 0, 0.8, 0)
@@ -266,6 +285,7 @@ function NINOMAX:CreateWindow(config)
     topGlow.BorderSizePixel = 0
     topGlow.ZIndex = 6
     corner(topGlow, UDim.new(0, 3))
+
     task.spawn(function()
         while topGlow.Parent do
             topGlow.Position = UDim2.new(0, -140, 0, 0)
@@ -274,47 +294,49 @@ function NINOMAX:CreateWindow(config)
         end
     end)
 
-    -- Título NINOMAX com efeito
+    --=================================================================
+    -- TÍTULO NINOMAX (NINO branco + MAX vermelho)
+    --=================================================================
     local titleContainer = Instance.new("Frame", mainFrame)
-    titleContainer.Size = UDim2.new(1, -50, 0, 28)
+    titleContainer.Size = UDim2.new(1, -120, 0, 28)
     titleContainer.Position = UDim2.new(0, 14, 0, 0)
     titleContainer.BackgroundTransparency = 1
     titleContainer.ZIndex = 5
 
     local titleNino = Instance.new("TextLabel", titleContainer)
-    titleNino.Size = UDim2.new(0, 100, 1, 0)
+    titleNino.Size = UDim2.new(0, 60, 1, 0)
     titleNino.Position = UDim2.new(0, 0, 0, 0)
     titleNino.BackgroundTransparency = 1
     titleNino.Text = "NINO"
     titleNino.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleNino.Font = Enum.Font.GothamBold
+    titleNino.Font = Enum.Font.GothamBlack
     titleNino.TextSize = 18
     titleNino.TextXAlignment = Enum.TextXAlignment.Left
     titleNino.TextYAlignment = Enum.TextYAlignment.Center
     titleNino.ZIndex = 5
 
     local titleMax = Instance.new("TextLabel", titleContainer)
-    titleMax.Size = UDim2.new(0, 100, 1, 0)
-    titleMax.Position = UDim2.new(0, 52, 0, 0)
+    titleMax.Size = UDim2.new(0, 60, 1, 0)
+    titleMax.Position = UDim2.new(0, 56, 0, 0)
     titleMax.BackgroundTransparency = 1
     titleMax.Text = "MAX"
     titleMax.TextColor3 = Color3.fromRGB(220, 30, 30)
-    titleMax.Font = Enum.Font.GothamBold
+    titleMax.Font = Enum.Font.GothamBlack
     titleMax.TextSize = 18
     titleMax.TextXAlignment = Enum.TextXAlignment.Left
     titleMax.TextYAlignment = Enum.TextYAlignment.Center
     titleMax.ZIndex = 5
 
-    -- Efeito de gradiente no NINO (branco -> cinza claro)
-    local titleGrad = Instance.new("UIGradient", titleNino)
-    titleGrad.Color = ColorSequence.new({
+    -- Efeito gradiente no NINO
+    local ninoGrad = Instance.new("UIGradient", titleNino)
+    ninoGrad.Color = ColorSequence.new({
         ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(220, 220, 230)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(220, 220, 235)),
         ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255)),
     })
-    titleGrad.Rotation = 90
+    ninoGrad.Rotation = 90
 
-    -- Efeito de brilho no MAX
+    -- Glow externo no MAX
     local titleGlow = Instance.new("ImageLabel", titleMax)
     titleGlow.Size = UDim2.new(1, 20, 1, 20)
     titleGlow.Position = UDim2.new(0, -10, 0, -10)
@@ -335,7 +357,7 @@ function NINOMAX:CreateWindow(config)
         end
     end)
 
-    -- Subtítulo editável
+    -- Subtítulo
     local subtitle = Instance.new("TextLabel", mainFrame)
     subtitle.BackgroundTransparency = 1
     subtitle.Text = subtitleText
@@ -344,8 +366,8 @@ function NINOMAX:CreateWindow(config)
     subtitle.TextSize = 10
     subtitle.TextXAlignment = Enum.TextXAlignment.Left
     subtitle.TextYAlignment = Enum.TextYAlignment.Center
-    subtitle.Size = UDim2.new(0, 200, 0, 28)
-    subtitle.Position = UDim2.new(0, 118, 0, 0)
+    subtitle.Size = UDim2.new(0, 220, 0, 28)
+    subtitle.Position = UDim2.new(0, 120, 0, 0)
     subtitle.ZIndex = 5
 
     -- Botão minimizar
@@ -363,6 +385,7 @@ function NINOMAX:CreateWindow(config)
     hideButton.ZIndex = 5
     corner(hideButton, UDim.new(0, 6))
     local hideStroke = stroke(hideButton, P.Border, 1, 0.4)
+
     hideButton.MouseEnter:Connect(function()
         tw(hideButton, 0.2, { BackgroundColor3 = P.AccentSoft })
         tw(hideStroke, 0.2, { Color = P.Accent })
@@ -372,7 +395,7 @@ function NINOMAX:CreateWindow(config)
         tw(hideStroke, 0.2, { Color = P.Border, Transparency = 0.4 })
     end)
 
-    -- Linha divisória
+    -- Linha
     local line = Instance.new("Frame", mainFrame)
     line.Size = UDim2.new(1, 0, 0, 1)
     line.Position = UDim2.new(0, 0, 0, 28)
@@ -381,10 +404,12 @@ function NINOMAX:CreateWindow(config)
     line.BorderSizePixel = 0
     line.ZIndex = 4
 
-    -- Sidebar
+    --=================================================================
+    -- SIDEBAR
+    --=================================================================
     local sidebar = Instance.new("ScrollingFrame", mainFrame)
-    sidebar.Size = UDim2.new(0.22, 0, 1, -28)
-    sidebar.Position = UDim2.new(0, 0, 0, 28)
+    sidebar.Size = UDim2.new(0.22, 0, 1, -29)
+    sidebar.Position = UDim2.new(0, 0, 0, 29)
     sidebar.BackgroundColor3 = P.BgSolid
     sidebar.BackgroundTransparency = 0.3
     sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -394,17 +419,18 @@ function NINOMAX:CreateWindow(config)
     sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
     sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
     corner(sidebar, UDim.new(0, 4))
+
     local sidebarLayout = Instance.new("UIListLayout", sidebar)
     sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
     sidebarLayout.Padding = UDim.new(0, 3)
-    padding(sidebar, 5, 5, 5, 0)
+    padding(sidebar, 5, 5, 5, 5)
 
-    -- Search
+    -- Search Box
     local searchBox = Instance.new("TextBox", sidebar)
     searchBox.Size = UDim2.new(1, 0, 0, 26)
     searchBox.BackgroundColor3 = P.Surface
     searchBox.BorderSizePixel = 0
-    searchBox.PlaceholderText = "🔍 Buscar..."
+    searchBox.PlaceholderText = "🔍  Buscar..."
     searchBox.PlaceholderColor3 = P.TextMute
     searchBox.TextColor3 = P.Text
     searchBox.Font = Enum.Font.Gotham
@@ -416,26 +442,41 @@ function NINOMAX:CreateWindow(config)
     stroke(searchBox, P.Border, 1, 0.5)
     padding(searchBox, 0, 8, 8, 0)
 
-    local tabButtons, pages, selectedTab = {}, {}, nil
+    --=================================================================
+    -- ÁREA DE CONTEÚDO (ScrollingFrame principal)
+    --=================================================================
+    local contentHolder = Instance.new("ScrollingFrame", mainFrame)
+    contentHolder.Position = UDim2.new(0.22, 4, 0, 33)
+    contentHolder.Size = UDim2.new(0.78, -8, 1, -38)
+    contentHolder.BackgroundTransparency = 1
+    contentHolder.BorderSizePixel = 0
+    contentHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
+    contentHolder.ScrollBarThickness = 4
+    contentHolder.ScrollBarImageColor3 = P.Accent
+    contentHolder.ScrollBarImageTransparency = 0.3
+    contentHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    contentHolder.ScrollingDirection = Enum.ScrollingDirection.Y
 
+    -- Registro de abas
+    local tabButtons = {}
+    local pages = {}
+    local selectedTab = nil
+
+    -- Busca
     searchBox:GetPropertyChangedSignal("Text"):Connect(function()
         local q = string.lower(searchBox.Text)
         for name, btn in pairs(tabButtons) do
-            btn.Visible = (q == "") or (string.find(string.lower(name), q, 1, true) ~= nil)
+            if q == "" then
+                btn.Visible = true
+            else
+                btn.Visible = (string.find(string.lower(name), q, 1, true) ~= nil)
+            end
         end
     end)
 
-    local scrollHolder = Instance.new("ScrollingFrame", mainFrame)
-    scrollHolder.Position = UDim2.new(0.22, 4, 0, 33)
-    scrollHolder.Size = UDim2.new(0.78, -8, 1, -38)
-    scrollHolder.BackgroundTransparency = 1
-    scrollHolder.BorderSizePixel = 0
-    scrollHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
-    scrollHolder.ScrollBarThickness = 4
-    scrollHolder.ScrollBarImageColor3 = P.Accent
-    scrollHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
-
-    -- Botão flutuante (restaurar)
+    --=================================================================
+    -- FLOATING BALL (restaurar quando minimizado)
+    --=================================================================
     local ballButton = Instance.new("ImageButton")
     ballButton.Size = UDim2.new(0, 50, 0, 50)
     ballButton.Position = UDim2.new(0.1, 0, 0.9, -150)
@@ -448,7 +489,9 @@ function NINOMAX:CreateWindow(config)
     corner(ballButton, UDim.new(0.5, 0))
     local ballStroke = stroke(ballButton, P.AccentHi, 2, 0.2)
 
-    -- Resize handle
+    --=================================================================
+    -- RESIZE HANDLE
+    --=================================================================
     local resizeHandle = Instance.new("TextButton", mainFrame)
     resizeHandle.Size = UDim2.new(0, 20, 0, 20)
     resizeHandle.Position = UDim2.new(1, -24, 1, -24)
@@ -485,7 +528,6 @@ function NINOMAX:CreateWindow(config)
         tw(resizeStroke, 0.2, { Color = P.Border, Transparency = 0.35 })
     end)
 
-    -- Lógica de resize
     do
         local dragging, startSize, startPos
         resizeHandle.InputBegan:Connect(function(input)
@@ -497,9 +539,8 @@ function NINOMAX:CreateWindow(config)
             end
         end)
         UserInputService.InputChanged:Connect(function(input)
-            if dragging
-               and (input.UserInputType == Enum.UserInputType.MouseMovement
-                    or input.UserInputType == Enum.UserInputType.Touch) then
+            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement
+               or input.UserInputType == Enum.UserInputType.Touch) then
                 local delta = input.Position - startPos
                 local w = clamp(startSize.X + delta.X, MIN_SIZE.X, MAX_SIZE.X)
                 local h = clamp(startSize.Y + delta.Y, MIN_SIZE.Y, MAX_SIZE.Y)
@@ -541,21 +582,46 @@ function NINOMAX:CreateWindow(config)
         tw(mainFrame, 0.55, { Size = UDim2.new(0, currentSize.X, 0, currentSize.Y) }, Enum.EasingStyle.Back)
         tw(mainFrame, 0.4, { BackgroundTransparency = 0 })
         tw(shadowImg, 0.5, { ImageTransparency = 0.55 })
-        sidebar.Position = UDim2.new(0, -50, 0, 28)
-        task.wait(0.15)
-        tw(sidebar, 0.45, { Position = UDim2.new(0, 0, 0, 28) })
     end)
+
+    --=================================================================
+    -- SWITCH TAB
+    --=================================================================
+    local function switchTab(tabName)
+        for tn, frame in pairs(pages) do
+            local active = (tn == tabName)
+            frame.Visible = active
+            if active then
+                frame.Position = UDim2.new(0, 20, 0, 0)
+                tw(frame, 0.28, { Position = UDim2.new(0, 0, 0, 0) })
+            end
+        end
+        for tn, btn in pairs(tabButtons) do
+            local marker = btn:FindFirstChild("TabMarker")
+            if marker then
+                marker.Visible = (tn == tabName)
+            end
+            if tn == tabName then
+                tw(btn, 0.25, { BackgroundColor3 = P.SurfaceHi })
+            else
+                tw(btn, 0.25, { BackgroundColor3 = P.Surface })
+            end
+        end
+        selectedTab = tabName
+    end
 
     --=================================================================
     -- CREATE TAB
     --=================================================================
     function Window:CreateTab(tabName, iconId)
+        -- Botão lateral
         local tabBtn = Instance.new("TextButton", sidebar)
         tabBtn.Size = UDim2.new(1, 0, 0, 32)
         tabBtn.Text = ""
         tabBtn.BackgroundColor3 = P.Surface
         tabBtn.AutoButtonColor = false
         tabBtn.ClipsDescendants = true
+        tabBtn.LayoutOrder = #sidebar:GetChildren()
         corner(tabBtn, UDim.new(0, 6))
         local uiStroke = stroke(tabBtn, P.Border, 1, 0.6)
 
@@ -575,7 +641,7 @@ function NINOMAX:CreateWindow(config)
         label.TextSize = 12
         label.TextColor3 = P.Text
         label.TextXAlignment = Enum.TextXAlignment.Left
-        label.TextWrapped = true
+        label.TextTruncate = Enum.TextTruncate.AtEnd
 
         if iconId then
             local icon = Instance.new("ImageLabel", tabBtn)
@@ -585,13 +651,14 @@ function NINOMAX:CreateWindow(config)
             icon.Image = "rbxassetid://" .. tostring(iconId)
             icon.ImageColor3 = P.TextMute
             label.Position = UDim2.new(0, 30, 0, 0)
-            label.Size = UDim2.new(1, -32, 1, 0)
+            label.Size = UDim2.new(1, -34, 1, 0)
         else
             label.Position = UDim2.new(0, 12, 0, 0)
-            label.Size = UDim2.new(1, -12, 1, 0)
+            label.Size = UDim2.new(1, -14, 1, 0)
         end
 
         tabButtons[tabName] = tabBtn
+
         registerTheme(function()
             if selectedTab == tabName then
                 tw(tabBtn, 0.35, { BackgroundColor3 = P.SurfaceHi })
@@ -610,15 +677,26 @@ function NINOMAX:CreateWindow(config)
             end
         end)
 
-        local tabPage = Instance.new("Frame", scrollHolder)
+        -- Page container (Frame com UIListLayout + AutomaticSize)
+        local tabPage = Instance.new("ScrollingFrame", contentHolder)
         tabPage.Name = tabName
-        tabPage.Size = UDim2.new(1, 0, 0, 1000)
+        tabPage.Size = UDim2.new(1, 0, 1, 0)
+        tabPage.Position = UDim2.new(0, 0, 0, 0)
         tabPage.BackgroundTransparency = 1
+        tabPage.BorderSizePixel = 0
+        tabPage.CanvasSize = UDim2.new(0, 0, 0, 0)
+        tabPage.AutomaticCanvasSize = Enum.AutomaticSize.Y
+        tabPage.ScrollBarThickness = 0
         tabPage.Visible = false
+        tabPage.ScrollingDirection = Enum.ScrollingDirection.Y
+
         local layout = Instance.new("UIListLayout", tabPage)
         layout.SortOrder = Enum.SortOrder.LayoutOrder
-        layout.Padding = UDim.new(0, 8)
-        padding(tabPage, 4, 4, 8, 4)
+        layout.Padding = UDim.new(0, 6)
+        layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+        padding(tabPage, 4, 4, 4, 12)
+
         pages[tabName] = tabPage
 
         tabBtn.MouseButton1Click:Connect(function()
@@ -635,21 +713,14 @@ function NINOMAX:CreateWindow(config)
                     button.TabMarker.Visible = false
                 end
             end
-            for tn, f in pairs(pages) do
-                local active = (tn == tabName)
-                f.Visible = active
-                if active then
-                    f.Position = UDim2.new(0, 20, 0, 0)
-                    tw(f, 0.28, { Position = UDim2.new(0, 0, 0, 0) })
-                end
-            end
-            selectedTab = tabName
+            switchTab(tabName)
         end)
 
         if not selectedTab then
             selectedTab = tabName
             tabPage.Visible = true
             tabBtn.TabMarker.Visible = true
+            tw(tabBtn, 0.25, { BackgroundColor3 = P.SurfaceHi })
         end
 
         return tabPage
@@ -659,19 +730,21 @@ function NINOMAX:CreateWindow(config)
     -- ELEMENTOS
     --=================================================================
 
-    --[[ BOTÃO ]]--
+    --=================================================================
+    -- BOTÃO
+    --=================================================================
     function Window:CreateButton(tabName, text, callback, options)
         options = options or {}
         local tab = pages[tabName]; if not tab then return end
 
         local btn = Instance.new("TextButton", tab)
-        btn.Size = UDim2.new(1, -20, 0, 32)
-        btn.Position = UDim2.new(0, 10, 0, 0)
+        btn.Size = UDim2.new(1, -8, 0, 34)
         btn.Text = ""
+        btn.BackgroundColor3 = P.SurfaceHi
         btn.AutoButtonColor = false
         btn.ClipsDescendants = true
+        btn.LayoutOrder = #tab:GetChildren()
         corner(btn, UDim.new(0, 7))
-        btn.BackgroundColor3 = P.SurfaceHi
 
         local bgGrad = Instance.new("UIGradient", btn)
         bgGrad.Rotation = 90
@@ -704,13 +777,14 @@ function NINOMAX:CreateWindow(config)
 
         local label = Instance.new("TextLabel", btn)
         label.BackgroundTransparency = 1
-        label.Text = text
+        label.Text = text or "Button"
         label.Font = Enum.Font.GothamMedium
         label.TextSize = 14
         label.TextColor3 = P.Text
         label.TextYAlignment = Enum.TextYAlignment.Center
         label.TextTruncate = Enum.TextTruncate.AtEnd
         label.ZIndex = 3
+
         if iconLbl then
             label.Position = UDim2.new(0, 34, 0, 0)
             label.Size = UDim2.new(1, -40, 1, 0)
@@ -762,6 +836,7 @@ function NINOMAX:CreateWindow(config)
         btn.MouseButton1Click:Connect(function()
             if cooling then return end
             cooling = true
+
             local flash = Instance.new("Frame", btn)
             flash.Size = UDim2.new(1, 0, 1, 0)
             flash.BackgroundColor3 = P.Success
@@ -772,9 +847,9 @@ function NINOMAX:CreateWindow(config)
             tw(flash, 0.5, { BackgroundTransparency = 1 })
             task.delay(0.5, function() flash:Destroy() end)
 
-            tw(btn, 0.08, { Size = UDim2.new(1, -22, 0, 30) })
+            tw(btn, 0.08, { Size = UDim2.new(1, -10, 0, 32) })
             task.delay(0.08, function()
-                tw(btn, 0.15, { Size = UDim2.new(1, -20, 0, 32) }, Enum.EasingStyle.Back)
+                tw(btn, 0.15, { Size = UDim2.new(1, -8, 0, 34) }, Enum.EasingStyle.Back)
             end)
 
             if callback then pcall(callback) end
@@ -782,16 +857,19 @@ function NINOMAX:CreateWindow(config)
         end)
     end
 
-    --[[ TOGGLE ]]--
+    --=================================================================
+    -- TOGGLE
+    --=================================================================
     function Window:CreateToggle(tabName, cfg)
         local tab = pages[tabName]; if not tab then return end
         cfg = cfg or {}
 
         local f = Instance.new("Frame", tab)
-        f.Size = UDim2.new(1, -20, 0, 46)
+        f.Size = UDim2.new(1, -8, 0, 48)
         f.BackgroundColor3 = P.Surface
-        f.ClipsDescendants = true
         f.BorderSizePixel = 0
+        f.ClipsDescendants = true
+        f.LayoutOrder = #tab:GetChildren()
         corner(f, UDim.new(0, 8))
         local fStroke = stroke(f, P.Border, 1, 0.6)
 
@@ -803,8 +881,8 @@ function NINOMAX:CreateWindow(config)
         title.TextXAlignment = Enum.TextXAlignment.Left
         title.TextYAlignment = Enum.TextYAlignment.Top
         title.BackgroundTransparency = 1
-        title.Size = UDim2.new(1, -70, 0, 16)
-        title.Position = UDim2.new(0, 12, 0, 5)
+        title.Size = UDim2.new(1, -80, 0, 18)
+        title.Position = UDim2.new(0, 12, 0, 6)
 
         local desc = Instance.new("TextLabel", f)
         desc.Text = cfg.Description or ""
@@ -814,8 +892,8 @@ function NINOMAX:CreateWindow(config)
         desc.TextXAlignment = Enum.TextXAlignment.Left
         desc.TextYAlignment = Enum.TextYAlignment.Top
         desc.BackgroundTransparency = 1
-        desc.Size = UDim2.new(1, -70, 0, 14)
-        desc.Position = UDim2.new(0, 12, 0, 24)
+        desc.Size = UDim2.new(1, -80, 0, 14)
+        desc.Position = UDim2.new(0, 12, 0, 26)
 
         local sw = Instance.new("Frame", f)
         sw.Size = UDim2.new(0, 44, 0, 24)
@@ -831,7 +909,7 @@ function NINOMAX:CreateWindow(config)
         ball.BackgroundColor3 = Color3.fromRGB(210, 210, 215)
         ball.BorderSizePixel = 0
         corner(ball, UDim.new(1, 0))
-        local ballStroke = stroke(ball, P.Border, 1, 0.4)
+        stroke(ball, P.Border, 1, 0.4)
 
         local glowFrame = Instance.new("Frame", sw)
         glowFrame.Size = UDim2.new(1, 0, 1, 0)
@@ -841,10 +919,10 @@ function NINOMAX:CreateWindow(config)
         corner(glowFrame, UDim.new(1, 0))
         glowFrame.ZIndex = 0
 
-        local btn = Instance.new("TextButton", sw)
-        btn.Size = UDim2.new(1, 0, 1, 0)
-        btn.BackgroundTransparency = 1
-        btn.Text = ""
+        local clickBtn = Instance.new("TextButton", sw)
+        clickBtn.Size = UDim2.new(1, 0, 1, 0)
+        clickBtn.BackgroundTransparency = 1
+        clickBtn.Text = ""
 
         local isOn = false
         local cooling = false
@@ -871,10 +949,10 @@ function NINOMAX:CreateWindow(config)
             end
         end)
 
-        btn.MouseEnter:Connect(function()
+        clickBtn.MouseEnter:Connect(function()
             tw(fStroke, 0.2, { Color = P.AccentHi, Transparency = 0.25 })
         end)
-        btn.MouseLeave:Connect(function()
+        clickBtn.MouseLeave:Connect(function()
             tw(fStroke, 0.2, { Color = P.Border, Transparency = 0.6 })
         end)
 
@@ -907,7 +985,9 @@ function NINOMAX:CreateWindow(config)
             task.delay(cooldown, function() cooling = false end)
         end
 
-        btn.MouseButton1Click:Connect(function() setState(not isOn) end)
+        clickBtn.MouseButton1Click:Connect(function()
+            setState(not isOn)
+        end)
 
         return {
             Set = function(_, v) setState(v, true) end,
@@ -915,27 +995,129 @@ function NINOMAX:CreateWindow(config)
         }
     end
 
-    --[[ SLIDER ]]--
+    --=================================================================
+    -- CHECKBOX
+    --=================================================================
+    function Window:CreateCheckbox(tabName, cfg)
+        local tab = pages[tabName]; if not tab then return end
+        cfg = cfg or {}
+
+        local f = Instance.new("Frame", tab)
+        f.Size = UDim2.new(1, -8, 0, 48)
+        f.BackgroundColor3 = P.Surface
+        f.BorderSizePixel = 0
+        f.ClipsDescendants = true
+        f.LayoutOrder = #tab:GetChildren()
+        corner(f, UDim.new(0, 8))
+        local fStroke = stroke(f, P.Border, 1, 0.6)
+
+        local title = Instance.new("TextLabel", f)
+        title.Text = cfg.Text or "Checkbox"
+        title.TextColor3 = P.Text
+        title.Font = Enum.Font.GothamMedium
+        title.TextSize = 14
+        title.TextXAlignment = Enum.TextXAlignment.Left
+        title.TextYAlignment = Enum.TextYAlignment.Top
+        title.BackgroundTransparency = 1
+        title.Size = UDim2.new(1, -60, 0, 18)
+        title.Position = UDim2.new(0, 12, 0, 6)
+
+        local desc = Instance.new("TextLabel", f)
+        desc.Text = cfg.Description or ""
+        desc.TextColor3 = P.TextMute
+        desc.Font = Enum.Font.Gotham
+        desc.TextSize = 11
+        desc.TextXAlignment = Enum.TextXAlignment.Left
+        desc.TextYAlignment = Enum.TextYAlignment.Top
+        desc.BackgroundTransparency = 1
+        desc.Size = UDim2.new(1, -60, 0, 14)
+        desc.Position = UDim2.new(0, 12, 0, 26)
+
+        local box = Instance.new("Frame", f)
+        box.Size = UDim2.new(0, 24, 0, 24)
+        box.Position = UDim2.new(1, -38, 0.5, -12)
+        box.BackgroundColor3 = P.SurfaceLow
+        box.BorderSizePixel = 0
+        corner(box, UDim.new(0, 6))
+        local boxStroke = stroke(box, P.Border, 1.3, 0.3)
+
+        local chk = Instance.new("TextLabel", box)
+        chk.Size = UDim2.new(1, -4, 1, -4)
+        chk.Position = UDim2.new(0, 2, 0, 2)
+        chk.Text = "✔"
+        chk.TextColor3 = Color3.new(1, 1, 1)
+        chk.TextScaled = true
+        chk.BackgroundTransparency = 1
+        chk.Visible = false
+
+        local clickBtn = Instance.new("TextButton", f)
+        clickBtn.Size = UDim2.new(1, 0, 1, 0)
+        clickBtn.BackgroundTransparency = 1
+        clickBtn.Text = ""
+
+        local toggled = false
+        local running = false
+
+        registerTheme(function()
+            if toggled then
+                tw(box, 0.4, { BackgroundColor3 = P.Accent })
+                tw(boxStroke, 0.4, { Color = P.AccentHi, Transparency = 0 })
+            end
+        end)
+
+        clickBtn.MouseEnter:Connect(function()
+            tw(boxStroke, 0.2, { Color = P.AccentHi, Transparency = 0.1 })
+            tw(f, 0.2, { BackgroundColor3 = P.SurfaceHi })
+        end)
+        clickBtn.MouseLeave:Connect(function()
+            if not toggled then
+                tw(boxStroke, 0.2, { Color = P.Border, Transparency = 0.3 })
+            end
+            tw(f, 0.2, { BackgroundColor3 = P.Surface })
+        end)
+
+        clickBtn.MouseButton1Click:Connect(function()
+            toggled = not toggled
+            chk.Visible = toggled
+            chk.Size = UDim2.new(0, 0, 0, 0)
+            tw(chk, 0.2, { Size = UDim2.new(1, -4, 1, -4) }, Enum.EasingStyle.Back)
+
+            if toggled then
+                tw(box, 0.2, { BackgroundColor3 = P.Accent })
+                tw(boxStroke, 0.2, { Color = P.AccentHi, Transparency = 0 })
+                running = true
+                task.spawn(function()
+                    while running and toggled do
+                        pcall(cfg.Callback, toggled)
+                        task.wait()
+                    end
+                end)
+            else
+                tw(box, 0.2, { BackgroundColor3 = P.SurfaceLow })
+                tw(boxStroke, 0.2, { Color = P.Border, Transparency = 0.3 })
+                running = false
+            end
+            if cfg.Callback then pcall(cfg.Callback, toggled) end
+        end)
+    end
+
+    --=================================================================
+    -- SLIDER
+    --=================================================================
     function Window:CreateSlider(tabName, cfg)
         local tab = pages[tabName]; if not tab then return end
         cfg = cfg or {}
 
-        local holder = Instance.new("Frame", tab)
-        holder.Size = UDim2.new(1, -20, 0, 0)
-        holder.Position = UDim2.new(0, 10, 0, 0)
-        holder.BackgroundTransparency = 1
-        holder.AutomaticSize = Enum.AutomaticSize.Y
-        local lay = Instance.new("UIListLayout", holder)
-
-        local bg = Instance.new("Frame", holder)
-        bg.Size = UDim2.new(1, 0, 0, 58)
+        local bg = Instance.new("Frame", tab)
+        bg.Size = UDim2.new(1, -8, 0, 60)
         bg.BackgroundColor3 = P.SurfaceLow
         bg.BorderSizePixel = 0
+        bg.LayoutOrder = #tab:GetChildren()
         corner(bg, UDim.new(0, 8))
         stroke(bg, P.Border, 1, 0.5)
 
         local t = Instance.new("TextLabel", bg)
-        t.Size = UDim2.new(1, -60, 0, 16)
+        t.Size = UDim2.new(1, -70, 0, 18)
         t.Position = UDim2.new(0, 12, 0, 6)
         t.Text = cfg.Text or "Slider"
         t.TextColor3 = P.Text
@@ -945,7 +1127,7 @@ function NINOMAX:CreateWindow(config)
         t.TextXAlignment = Enum.TextXAlignment.Left
 
         local d = Instance.new("TextLabel", bg)
-        d.Size = UDim2.new(1, -20, 0, 11)
+        d.Size = UDim2.new(1, -70, 0, 12)
         d.Position = UDim2.new(0, 12, 0, 24)
         d.Text = cfg.Description or ""
         d.TextColor3 = P.TextMute
@@ -955,8 +1137,8 @@ function NINOMAX:CreateWindow(config)
         d.TextXAlignment = Enum.TextXAlignment.Left
 
         local vl = Instance.new("TextLabel", bg)
-        vl.Size = UDim2.new(0, 50, 0, 16)
-        vl.Position = UDim2.new(1, -62, 0, 6)
+        vl.Size = UDim2.new(0, 60, 0, 18)
+        vl.Position = UDim2.new(1, -68, 0, 6)
         vl.TextColor3 = P.AccentHi
         vl.TextSize = 14
         vl.Font = Enum.Font.GothamBold
@@ -965,7 +1147,7 @@ function NINOMAX:CreateWindow(config)
 
         local bar = Instance.new("Frame", bg)
         bar.Size = UDim2.new(1, -24, 0, 8)
-        bar.Position = UDim2.new(0, 12, 0, 46)
+        bar.Position = UDim2.new(0, 12, 0, 48)
         bar.BackgroundColor3 = Color3.fromRGB(40, 40, 46)
         bar.BorderSizePixel = 0
         corner(bar, UDim.new(1, 0))
@@ -1032,6 +1214,7 @@ function NINOMAX:CreateWindow(config)
         end
 
         local drag = false
+
         bar.InputBegan:Connect(function(i)
             if i.UserInputType == Enum.UserInputType.MouseButton1
                or i.UserInputType == Enum.UserInputType.Touch then
@@ -1044,7 +1227,7 @@ function NINOMAX:CreateWindow(config)
 
         UserInputService.InputChanged:Connect(function(i)
             if drag and (i.UserInputType == Enum.UserInputType.MouseMovement
-                         or i.UserInputType == Enum.UserInputType.Touch) then
+               or i.UserInputType == Enum.UserInputType.Touch) then
                 update(i.Position.X)
             end
         end)
@@ -1061,7 +1244,9 @@ function NINOMAX:CreateWindow(config)
         update(bar.AbsolutePosition.X)
     end
 
-    --[[ DROPDOWN ]]--
+    --=================================================================
+    -- DROPDOWN
+    --=================================================================
     function Window:CreateDropdown(tabName, cfg)
         local tab = pages[tabName]; if not tab then return end
         cfg = cfg or {}
@@ -1069,11 +1254,11 @@ function NINOMAX:CreateWindow(config)
         local open = false
 
         local f = Instance.new("Frame", tab)
-        f.Size = UDim2.new(1, -20, 0, 38)
-        f.Position = UDim2.new(0, 10, 0, 0)
+        f.Size = UDim2.new(1, -8, 0, 40)
         f.BackgroundColor3 = P.Surface
         f.BorderSizePixel = 0
-        f.ZIndex = 2
+        f.ClipsDescendants = false
+        f.LayoutOrder = #tab:GetChildren()
         corner(f, UDim.new(0, 8))
         local fStroke = stroke(f, P.Border, 1, 0.5)
 
@@ -1100,10 +1285,10 @@ function NINOMAX:CreateWindow(config)
         arrow.Size = UDim2.new(0, 14, 0, 14)
         arrow.Position = UDim2.new(1, -24, 0.5, -7)
         arrow.BackgroundTransparency = 1
-        arrow.Text = "˅"
+        arrow.Text = "▼"
         arrow.TextColor3 = P.TextDim
         arrow.Font = Enum.Font.GothamBold
-        arrow.TextSize = 14
+        arrow.TextSize = 12
 
         local sel = Instance.new("TextLabel", f)
         sel.BackgroundTransparency = 1
@@ -1112,17 +1297,9 @@ function NINOMAX:CreateWindow(config)
         sel.Font = Enum.Font.GothamBold
         sel.TextSize = 13
         sel.TextXAlignment = Enum.TextXAlignment.Right
-        sel.Size = UDim2.new(0, 0, 1, 0)
-        sel.Position = UDim2.new(1, -34, 0, 0)
+        sel.Size = UDim2.new(0, 100, 1, 0)
+        sel.Position = UDim2.new(1, -140, 0, 0)
         sel.TextTruncate = Enum.TextTruncate.AtEnd
-
-        local function updateSel(t)
-            sel.Text = t
-            local w = math.min(sel.TextBounds.X + 6, 200)
-            sel.Size = UDim2.new(0, w, 1, 0)
-            sel.Position = UDim2.new(1, -34 - w, 0, 0)
-        end
-        updateSel(sel.Text)
 
         local btn = Instance.new("TextButton", f)
         btn.Size = UDim2.new(1, 0, 1, 0)
@@ -1130,9 +1307,10 @@ function NINOMAX:CreateWindow(config)
         btn.Text = ""
         btn.ZIndex = 4
 
-        local list = Instance.new("Frame", tab)
-        list.Size = UDim2.new(1, -20, 0, 0)
-        list.Position = UDim2.new(0, 10, 0, 0)
+        -- Lista
+        local list = Instance.new("Frame", f)
+        list.Size = UDim2.new(1, 0, 0, 0)
+        list.Position = UDim2.new(0, 0, 1, 4)
         list.BackgroundColor3 = P.SurfaceLow
         list.Visible = false
         list.ClipsDescendants = true
@@ -1140,31 +1318,8 @@ function NINOMAX:CreateWindow(config)
         corner(list, UDim.new(0, 8))
         stroke(list, P.Border, 1, 0.4)
 
-        local hasSearch = #options > 5
-        local searchH = hasSearch and 30 or 0
-
-        local searchField = nil
-        if hasSearch then
-            searchField = Instance.new("TextBox", list)
-            searchField.Size = UDim2.new(1, -8, 0, 26)
-            searchField.Position = UDim2.new(0, 4, 0, 4)
-            searchField.BackgroundColor3 = P.Surface
-            searchField.BorderSizePixel = 0
-            searchField.PlaceholderText = "🔍 Filtrar..."
-            searchField.PlaceholderColor3 = P.TextMute
-            searchField.TextColor3 = P.Text
-            searchField.Font = Enum.Font.Gotham
-            searchField.TextSize = 12
-            searchField.ClearTextOnFocus = false
-            searchField.TextXAlignment = Enum.TextXAlignment.Left
-            corner(searchField, UDim.new(0, 5))
-            stroke(searchField, P.Border, 1, 0.5)
-            padding(searchField, 0, 8, 8, 0)
-        end
-
         local scrollOpt = Instance.new("ScrollingFrame", list)
-        scrollOpt.Size = UDim2.new(1, 0, 1, -searchH - 8)
-        scrollOpt.Position = UDim2.new(0, 0, 0, searchH + 4)
+        scrollOpt.Size = UDim2.new(1, 0, 1, 0)
         scrollOpt.BackgroundTransparency = 1
         scrollOpt.BorderSizePixel = 0
         scrollOpt.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -1181,9 +1336,8 @@ function NINOMAX:CreateWindow(config)
 
         local function closeDropdown()
             open = false
-            arrow.Text = "˅"
-            tw(arrow, 0.25, { Rotation = 0 })
-            list:TweenSize(UDim2.new(1, -20, 0, 0), "In", "Back", 0.22, true)
+            arrow.Text = "▼"
+            list:TweenSize(UDim2.new(1, 0, 0, 0), "In", "Back", 0.22, true)
             tw(fStroke, 0.25, { Color = P.Border, Transparency = 0.5 })
             tw(leftIcon, 0.25, { TextColor3 = P.TextMute })
             task.delay(0.25, function() list.Visible = false end)
@@ -1247,60 +1401,23 @@ function NINOMAX:CreateWindow(config)
                 dot.Visible = true
                 chk.Visible = true
                 currentlySelected = opt
-                updateSel(opt)
+                sel.Text = opt
                 if cfg.Callback then pcall(cfg.Callback, opt) end
                 closeDropdown()
-            end)
-        end
-
-        if hasSearch then
-            searchField:GetPropertyChangedSignal("Text"):Connect(function()
-                local q = string.lower(searchField.Text)
-                local visibleCount = 0
-                for _, data in pairs(optionButtons) do
-                    local match = (q == "") or (string.find(string.lower(data.label.Text), q, 1, true) ~= nil)
-                    data.frame.Visible = match
-                    if match then visibleCount += 1 end
-                end
-                if open then
-                    local h = math.min(visibleCount * 33 + searchH + 12, 240)
-                    list:TweenSize(UDim2.new(1, -20, 0, h), "Out", "Back", 0.2, true)
-                end
             end)
         end
 
         btn.MouseButton1Click:Connect(function()
             open = not open
             list.Visible = true
-            local count = 0
-            for _, data in pairs(optionButtons) do
-                if data.frame.Visible then count += 1 end
-            end
-            local h = open and math.min(count * 33 + searchH + 12, 240) or 0
-            arrow.Text = open and "˄" or "˅"
-            tw(arrow, 0.3, { Rotation = open and 180 or 0 }, Enum.EasingStyle.Back)
-            list:TweenSize(UDim2.new(1, -20, 0, h), "Out", "Back", 0.28, true)
+            local count = #options
+            local h = open and math.min(count * 33 + 12, 240) or 0
+            arrow.Text = open and "▲" or "▼"
+            list:TweenSize(UDim2.new(1, 0, 0, h), "Out", "Back", 0.28, true)
             tw(fStroke, 0.25, { Color = open and P.AccentHi or P.Border, Transparency = open and 0 or 0.5 })
             tw(leftIcon, 0.25, { TextColor3 = open and P.AccentHi or P.TextMute })
 
-            if open then
-                if hasSearch and searchField then searchField.Text = "" end
-                local i = 0
-                for _, data in pairs(optionButtons) do
-                    if data.frame.Visible then
-                        i += 1
-                        data.frame.BackgroundTransparency = 1
-                        data.label.TextTransparency = 1
-                        local delay = i * 0.02
-                        task.delay(delay, function()
-                            if data.frame.Parent then
-                                tw(data.frame, 0.25, { BackgroundTransparency = 0 })
-                                tw(data.label, 0.25, { TextTransparency = 0 })
-                            end
-                        end)
-                    end
-                end
-            else
+            if not open then
                 task.delay(0.28, function() list.Visible = false end)
             end
         end)
@@ -1314,32 +1431,331 @@ function NINOMAX:CreateWindow(config)
         end)
     end
 
-    --[[ COLOR PICKER ]]--
+    --=================================================================
+    -- INPUT
+    --=================================================================
+    function Window:CreateInput(tabName, cfg)
+        local tab = pages[tabName]; if not tab then return end
+        cfg = cfg or {}
+
+        local f = Instance.new("Frame", tab)
+        f.Size = UDim2.new(1, -8, 0, 46)
+        f.BackgroundColor3 = P.Surface
+        f.BorderSizePixel = 0
+        f.LayoutOrder = #tab:GetChildren()
+        corner(f, UDim.new(0, 8))
+        local fStroke = stroke(f, P.Border, 1, 0.5)
+
+        local title = Instance.new("TextLabel", f)
+        title.Size = UDim2.new(1, -24, 0, 16)
+        title.Position = UDim2.new(0, 12, 0, 4)
+        title.BackgroundTransparency = 1
+        title.Text = cfg.Text or "Input"
+        title.TextColor3 = P.Text
+        title.Font = Enum.Font.GothamMedium
+        title.TextSize = 13
+        title.TextXAlignment = Enum.TextXAlignment.Left
+
+        local inputFrame = Instance.new("Frame", f)
+        inputFrame.Size = UDim2.new(1, -24, 0, 22)
+        inputFrame.Position = UDim2.new(0, 12, 0, 22)
+        inputFrame.BackgroundColor3 = P.SurfaceLow
+        inputFrame.BorderSizePixel = 0
+        corner(inputFrame, UDim.new(0, 5))
+        stroke(inputFrame, P.Border, 1, 0.5)
+
+        local textBox = Instance.new("TextBox", inputFrame)
+        textBox.Size = UDim2.new(1, -16, 1, 0)
+        textBox.Position = UDim2.new(0, 8, 0, 0)
+        textBox.BackgroundTransparency = 1
+        textBox.Text = cfg.Default or ""
+        textBox.PlaceholderText = cfg.Placeholder or "Digite..."
+        textBox.PlaceholderColor3 = P.TextMute
+        textBox.TextColor3 = P.Text
+        textBox.Font = Enum.Font.Gotham
+        textBox.TextSize = 12
+        textBox.TextXAlignment = Enum.TextXAlignment.Left
+        textBox.ClearTextOnFocus = false
+
+        textBox.FocusLost:Connect(function()
+            if cfg.Callback then pcall(cfg.Callback, textBox.Text) end
+        end)
+    end
+
+    --=================================================================
+    -- KEYBIND
+    --=================================================================
+    function Window:CreateKeybind(tabName, cfg)
+        local tab = pages[tabName]; if not tab then return end
+        cfg = cfg or {}
+
+        local f = Instance.new("Frame", tab)
+        f.Size = UDim2.new(1, -8, 0, 46)
+        f.BackgroundColor3 = P.Surface
+        f.BorderSizePixel = 0
+        f.LayoutOrder = #tab:GetChildren()
+        corner(f, UDim.new(0, 8))
+        local fStroke = stroke(f, P.Border, 1, 0.6)
+
+        local title = Instance.new("TextLabel", f)
+        title.Size = UDim2.new(1, -110, 1, 0)
+        title.Position = UDim2.new(0, 14, 0, 0)
+        title.BackgroundTransparency = 1
+        title.Text = cfg.Text or "Tecla"
+        title.TextColor3 = P.Text
+        title.Font = Enum.Font.GothamMedium
+        title.TextSize = 14
+        title.TextXAlignment = Enum.TextXAlignment.Left
+
+        local kbBtn = Instance.new("TextButton", f)
+        kbBtn.Size = UDim2.new(0, 90, 0, 28)
+        kbBtn.Position = UDim2.new(1, -102, 0.5, -14)
+        kbBtn.BackgroundColor3 = P.SurfaceHi
+        kbBtn.Text = cfg.Default or "Nenhuma"
+        kbBtn.TextColor3 = P.Text
+        kbBtn.Font = Enum.Font.Code
+        kbBtn.TextSize = 12
+        kbBtn.AutoButtonColor = false
+        corner(kbBtn, UDim.new(0, 6))
+        local kbStroke = stroke(kbBtn, P.Border, 1, 0.5)
+
+        local capturing = false
+        local currentKey = cfg.Default
+
+        kbBtn.MouseButton1Click:Connect(function()
+            capturing = not capturing
+            if capturing then
+                kbBtn.Text = "Pressione..."
+                kbBtn.TextColor3 = P.AccentHi
+                tw(kbStroke, 0.2, { Color = P.AccentHi, Transparency = 0 })
+            else
+                kbBtn.Text = currentKey or "Nenhuma"
+                kbBtn.TextColor3 = P.Text
+                tw(kbStroke, 0.2, { Color = P.Border, Transparency = 0.5 })
+            end
+        end)
+
+        UserInputService.InputBegan:Connect(function(input, gpe)
+            if gpe or not capturing then return end
+            if input.UserInputType == Enum.UserInputType.Keyboard then
+                currentKey = input.KeyCode.Name
+                kbBtn.Text = currentKey
+                kbBtn.TextColor3 = P.Text
+                capturing = false
+                tw(kbStroke, 0.2, { Color = P.Border, Transparency = 0.5 })
+                if cfg.Callback then pcall(cfg.Callback, input.KeyCode) end
+            end
+        end)
+    end
+
+    --=================================================================
+    -- LABEL
+    --=================================================================
+    function Window:CreateLabel(tabName, text)
+        local tab = pages[tabName]; if not tab then return end
+
+        local label = Instance.new("TextLabel", tab)
+        label.Size = UDim2.new(1, -8, 0, 28)
+        label.Text = "  " .. string.upper(text or "")
+        label.Font = Enum.Font.GothamBold
+        label.TextSize = 15
+        label.TextColor3 = P.Text
+        label.BackgroundTransparency = 1
+        label.TextXAlignment = Enum.TextXAlignment.Left
+        label.TextYAlignment = Enum.TextYAlignment.Center
+        label.LayoutOrder = #tab:GetChildren()
+
+        local dot = Instance.new("Frame", label)
+        dot.Size = UDim2.new(0, 6, 0, 6)
+        dot.Position = UDim2.new(0, 0, 0.5, -3)
+        dot.BackgroundColor3 = P.AccentHi
+        dot.BorderSizePixel = 0
+        corner(dot, UDim.new(1, 0))
+        local dotGlow = stroke(dot, P.AccentHi, 2, 0.3)
+
+        registerTheme(function()
+            tw(dot, 0.4, { BackgroundColor3 = P.AccentHi })
+        end)
+
+        task.spawn(function()
+            while dot.Parent do
+                tw(dotGlow, 1.2, { Transparency = 0.9 }, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
+                task.wait(1.2)
+                tw(dotGlow, 1.2, { Transparency = 0.2 }, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
+                task.wait(1.2)
+            end
+        end)
+    end
+
+    --=================================================================
+    -- SECTION
+    --=================================================================
+    function Window:CreateSection(tabName, text)
+        local tab = pages[tabName]; if not tab then return end
+
+        local label = Instance.new("TextLabel", tab)
+        label.Size = UDim2.new(1, -8, 0, 26)
+        label.Text = text or "Section"
+        label.Font = Enum.Font.GothamBold
+        label.TextSize = 14
+        label.TextColor3 = P.AccentHi
+        label.BackgroundTransparency = 1
+        label.TextXAlignment = Enum.TextXAlignment.Left
+        label.TextYAlignment = Enum.TextYAlignment.Center
+        label.LayoutOrder = #tab:GetChildren()
+        padding(label, 0, 6, 0, 0)
+    end
+
+    --=================================================================
+    -- DIVIDER
+    --=================================================================
+    function Window:CreateDivider(tabName)
+        local tab = pages[tabName]; if not tab then return end
+
+        local divider = Instance.new("Frame", tab)
+        divider.Size = UDim2.new(1, -20, 0, 1)
+        divider.BackgroundColor3 = P.Border
+        divider.BackgroundTransparency = 0.5
+        divider.BorderSizePixel = 0
+        divider.LayoutOrder = #tab:GetChildren()
+    end
+
+    --=================================================================
+    -- PARAGRAPH
+    --=================================================================
+    function Window:CreateParagraph(tabName, cfg)
+        local tab = pages[tabName]; if not tab then return end
+        cfg = cfg or {}
+
+        local frame = Instance.new("Frame", tab)
+        frame.Size = UDim2.new(1, -8, 0, 70)
+        frame.BackgroundColor3 = P.Surface
+        frame.BorderSizePixel = 0
+        frame.LayoutOrder = #tab:GetChildren()
+        corner(frame, UDim.new(0, 8))
+        stroke(frame, P.Border, 1, 0.5)
+
+        local t = Instance.new("TextLabel", frame)
+        t.Size = UDim2.new(1, -20, 0, 20)
+        t.Position = UDim2.new(0, 10, 0, 6)
+        t.BackgroundTransparency = 1
+        t.Text = cfg.Title or "Paragraph"
+        t.TextColor3 = P.Text
+        t.Font = Enum.Font.GothamBold
+        t.TextSize = 14
+        t.TextXAlignment = Enum.TextXAlignment.Left
+
+        local c = Instance.new("TextLabel", frame)
+        c.Size = UDim2.new(1, -20, 0, 36)
+        c.Position = UDim2.new(0, 10, 0, 28)
+        c.BackgroundTransparency = 1
+        c.Text = cfg.Content or ""
+        c.TextColor3 = P.TextMute
+        c.Font = Enum.Font.Gotham
+        c.TextSize = 12
+        c.TextWrapped = true
+        c.TextXAlignment = Enum.TextXAlignment.Left
+        c.TextYAlignment = Enum.TextYAlignment.Top
+    end
+
+    --=================================================================
+    -- PROGRESS BAR
+    --=================================================================
+    function Window:CreateProgressBar(tabName, cfg)
+        local tab = pages[tabName]; if not tab then return end
+        cfg = cfg or {}
+
+        local f = Instance.new("Frame", tab)
+        f.Size = UDim2.new(1, -8, 0, 48)
+        f.BackgroundColor3 = P.Surface
+        f.BorderSizePixel = 0
+        f.LayoutOrder = #tab:GetChildren()
+        corner(f, UDim.new(0, 8))
+        stroke(f, P.Border, 1, 0.6)
+
+        local title = Instance.new("TextLabel", f)
+        title.Size = UDim2.new(1, -70, 0, 16)
+        title.Position = UDim2.new(0, 12, 0, 6)
+        title.BackgroundTransparency = 1
+        title.Text = cfg.Text or "Progresso"
+        title.TextColor3 = P.Text
+        title.Font = Enum.Font.GothamMedium
+        title.TextSize = 13
+        title.TextXAlignment = Enum.TextXAlignment.Left
+
+        local pctLbl = Instance.new("TextLabel", f)
+        pctLbl.Size = UDim2.new(0, 50, 0, 16)
+        pctLbl.Position = UDim2.new(1, -62, 0, 6)
+        pctLbl.BackgroundTransparency = 1
+        pctLbl.Text = "0%"
+        pctLbl.TextColor3 = P.AccentHi
+        pctLbl.Font = Enum.Font.GothamBold
+        pctLbl.TextSize = 13
+        pctLbl.TextXAlignment = Enum.TextXAlignment.Right
+
+        local bar = Instance.new("Frame", f)
+        bar.Size = UDim2.new(1, -24, 0, 8)
+        bar.Position = UDim2.new(0, 12, 0, 30)
+        bar.BackgroundColor3 = Color3.fromRGB(40, 40, 46)
+        bar.BorderSizePixel = 0
+        corner(bar, UDim.new(1, 0))
+
+        local fill = Instance.new("Frame", bar)
+        fill.Size = UDim2.new(0, 0, 1, 0)
+        fill.BackgroundColor3 = P.Accent
+        fill.BorderSizePixel = 0
+        corner(fill, UDim.new(1, 0))
+        local fg = Instance.new("UIGradient", fill)
+        fg.Color = ColorSequence.new(P.AccentSoft, P.AccentHi)
+
+        registerTheme(function()
+            tw(fill, 0.4, { BackgroundColor3 = P.Accent })
+            tw(fg, 0.4, { Color = ColorSequence.new(P.AccentSoft, P.AccentHi) })
+            tw(pctLbl, 0.4, { TextColor3 = P.AccentHi })
+        end)
+
+        local api = {}
+        function api:Set(value)
+            local p = clamp(value / 100, 0, 1)
+            fill:TweenSize(UDim2.new(p, 0, 1, 0), "Out", "Quart", 0.4, true)
+            pctLbl.Text = string.format("%d%%", math.floor(p * 100 + 0.5))
+        end
+        function api:SetInstant(value)
+            local p = clamp(value / 100, 0, 1)
+            fill.Size = UDim2.new(p, 0, 1, 0)
+            pctLbl.Text = string.format("%d%%", math.floor(p * 100 + 0.5))
+        end
+        api:Set(0)
+        return api
+    end
+
+    --=================================================================
+    -- COLOR PICKER
+    --=================================================================
     function Window:CreateColorPicker(tabName, colorConfig)
         colorConfig = colorConfig or {}
         local tab = pages[tabName]; if not tab then return end
 
         local current = colorConfig.Default or Color3.fromRGB(255, 60, 60)
         local h, s, v = Color3.toHSV(current)
-        local recentColors = {}
 
         local frame = Instance.new("Frame", tab)
-        frame.Size = UDim2.new(1, -20, 0, 44)
-        frame.Position = UDim2.new(0, 10, 0, 0)
+        frame.Size = UDim2.new(1, -8, 0, 46)
         frame.BackgroundColor3 = P.Surface
         frame.ClipsDescendants = true
         frame.BorderSizePixel = 0
+        frame.LayoutOrder = #tab:GetChildren()
         corner(frame, UDim.new(0, 10))
         local fStroke = stroke(frame, P.Border, 1, 0.5)
 
         local header = Instance.new("TextButton", frame)
-        header.Size = UDim2.new(1, 0, 0, 44)
+        header.Size = UDim2.new(1, 0, 0, 46)
         header.BackgroundTransparency = 1
         header.Text = ""
 
         local lbl = Instance.new("TextLabel", header)
-        lbl.Size = UDim2.new(1, -80, 0, 24)
-        lbl.Position = UDim2.new(0, 14, 0, 4)
+        lbl.Size = UDim2.new(1, -90, 0, 20)
+        lbl.Position = UDim2.new(0, 14, 0, 6)
         lbl.BackgroundTransparency = 1
         lbl.Text = colorConfig.Text or "Cor Personalizada"
         lbl.TextColor3 = P.Text
@@ -1348,8 +1764,8 @@ function NINOMAX:CreateWindow(config)
         lbl.TextXAlignment = Enum.TextXAlignment.Left
 
         local sub = Instance.new("TextLabel", header)
-        sub.Size = UDim2.new(1, -80, 0, 12)
-        sub.Position = UDim2.new(0, 14, 0, 26)
+        sub.Size = UDim2.new(1, -90, 0, 12)
+        sub.Position = UDim2.new(0, 14, 0, 28)
         sub.BackgroundTransparency = 1
         sub.Text = colorConfig.Description or "Clique para expandir"
         sub.TextColor3 = P.TextMute
@@ -1358,8 +1774,8 @@ function NINOMAX:CreateWindow(config)
         sub.TextXAlignment = Enum.TextXAlignment.Left
 
         local previewDot = Instance.new("Frame", header)
-        previewDot.Size = UDim2.new(0, 22, 0, 22)
-        previewDot.Position = UDim2.new(1, -60, 0.5, -11)
+        previewDot.Size = UDim2.new(0, 24, 0, 24)
+        previewDot.Position = UDim2.new(1, -62, 0.5, -12)
         previewDot.BackgroundColor3 = current
         previewDot.BorderSizePixel = 0
         corner(previewDot, UDim.new(0, 6))
@@ -1367,7 +1783,7 @@ function NINOMAX:CreateWindow(config)
 
         local arrow = Instance.new("TextLabel", header)
         arrow.Size = UDim2.new(0, 20, 0, 20)
-        arrow.Position = UDim2.new(1, -30, 0.5, -10)
+        arrow.Position = UDim2.new(1, -32, 0.5, -10)
         arrow.BackgroundTransparency = 1
         arrow.Text = "▼"
         arrow.TextColor3 = P.Text
@@ -1376,7 +1792,7 @@ function NINOMAX:CreateWindow(config)
 
         local body = Instance.new("Frame", frame)
         body.Size = UDim2.new(1, 0, 0, 0)
-        body.Position = UDim2.new(0, 0, 0, 44)
+        body.Position = UDim2.new(0, 0, 0, 46)
         body.BackgroundTransparency = 1
         body.ClipsDescendants = true
 
@@ -1395,7 +1811,6 @@ function NINOMAX:CreateWindow(config)
         satOv.BackgroundColor3 = Color3.new(1, 1, 1)
         satOv.BorderSizePixel = 0
         local satGrad = Instance.new("UIGradient", satOv)
-        satGrad.Color = ColorSequence.new(Color3.new(1,1,1), Color3.new(1,1,1))
         satGrad.Transparency = NumberSequence.new(0, 1)
 
         local valOv = Instance.new("Frame", pad)
@@ -1516,6 +1931,7 @@ function NINOMAX:CreateWindow(config)
         local gIn = makeRGB(current.G)
         local bIn = makeRGB(current.B)
 
+        -- Presets
         local presetsRow = Instance.new("Frame", body)
         presetsRow.Size = UDim2.new(1, -28, 0, 20)
         presetsRow.Position = UDim2.new(0, 14, 0, 12 + padSize + 12)
@@ -1531,6 +1947,22 @@ function NINOMAX:CreateWindow(config)
             Color3.fromRGB(160, 90, 255),  Color3.fromRGB(255, 90, 200),
             Color3.fromRGB(255, 255, 255), Color3.fromRGB(80, 80, 90),
         }
+
+        local function updateAll()
+            local color = Color3.fromHSV(h, s, v)
+            current = color
+            pad.BackgroundColor3 = Color3.fromHSV(h, 1, 1)
+            padMarker.Position = UDim2.new(s, 0, 1 - v, 0)
+            hueMarker.Position = UDim2.new(0.5, 0, h, 0)
+            preview.BackgroundColor3 = color
+            previewDot.BackgroundColor3 = color
+            hexBox.Text = colorToHex(color)
+            rIn.Text = tostring(math.floor(color.R * 255 + 0.5))
+            gIn.Text = tostring(math.floor(color.G * 255 + 0.5))
+            bIn.Text = tostring(math.floor(color.B * 255 + 0.5))
+            if colorConfig.Callback then pcall(colorConfig.Callback, color) end
+        end
+
         for _, pc in ipairs(presetColors) do
             local sw2 = Instance.new("TextButton", presetsRow)
             sw2.Size = UDim2.new(0, 20, 0, 20)
@@ -1546,6 +1978,7 @@ function NINOMAX:CreateWindow(config)
             end)
         end
 
+        -- Action row
         local actionRow = Instance.new("Frame", body)
         actionRow.Size = UDim2.new(1, -28, 0, 26)
         actionRow.Position = UDim2.new(0, 14, 0, 12 + padSize + 68)
@@ -1577,21 +2010,7 @@ function NINOMAX:CreateWindow(config)
 
         local cycling = false
 
-        local function updateAll()
-            local color = Color3.fromHSV(h, s, v)
-            current = color
-            pad.BackgroundColor3 = Color3.fromHSV(h, 1, 1)
-            padMarker.Position = UDim2.new(s, 0, 1 - v, 0)
-            hueMarker.Position = UDim2.new(0.5, 0, h, 0)
-            preview.BackgroundColor3 = color
-            previewDot.BackgroundColor3 = color
-            hexBox.Text = colorToHex(color)
-            rIn.Text = tostring(math.floor(color.R * 255 + 0.5))
-            gIn.Text = tostring(math.floor(color.G * 255 + 0.5))
-            bIn.Text = tostring(math.floor(color.B * 255 + 0.5))
-            if colorConfig.Callback then pcall(colorConfig.Callback, color) end
-        end
-
+        -- Pad drag
         local padDrag = false
         local function padUpdate(input)
             local px = clamp(input.Position.X - pad.AbsolutePosition.X, 0, pad.AbsoluteSize.X)
@@ -1603,12 +2022,13 @@ function NINOMAX:CreateWindow(config)
         pad.InputBegan:Connect(function(i)
             if i.UserInputType == Enum.UserInputType.MouseButton1
                or i.UserInputType == Enum.UserInputType.Touch then
-                padDrag = true; padUpdate(i)
+                padDrag = true
+                padUpdate(i)
             end
         end)
         UserInputService.InputChanged:Connect(function(i)
             if padDrag and (i.UserInputType == Enum.UserInputType.MouseMovement
-                            or i.UserInputType == Enum.UserInputType.Touch) then
+               or i.UserInputType == Enum.UserInputType.Touch) then
                 padUpdate(i)
             end
         end)
@@ -1619,6 +2039,7 @@ function NINOMAX:CreateWindow(config)
             end
         end)
 
+        -- Hue drag
         local hueDrag = false
         local function hueUpdate(input)
             local py = clamp(input.Position.Y - hueBar.AbsolutePosition.Y, 0, hueBar.AbsoluteSize.Y)
@@ -1628,12 +2049,13 @@ function NINOMAX:CreateWindow(config)
         hueBar.InputBegan:Connect(function(i)
             if i.UserInputType == Enum.UserInputType.MouseButton1
                or i.UserInputType == Enum.UserInputType.Touch then
-                hueDrag = true; hueUpdate(i)
+                hueDrag = true
+                hueUpdate(i)
             end
         end)
         UserInputService.InputChanged:Connect(function(i)
             if hueDrag and (i.UserInputType == Enum.UserInputType.MouseMovement
-                            or i.UserInputType == Enum.UserInputType.Touch) then
+               or i.UserInputType == Enum.UserInputType.Touch) then
                 hueUpdate(i)
             end
         end)
@@ -1698,295 +2120,17 @@ function NINOMAX:CreateWindow(config)
         local function setExpanded(v2)
             expanded = v2
             arrow.Text = expanded and "▲" or "▼"
-            local targetH = expanded and (44 + 12 + padSize + 12 + 20 + 8 + 20 + 8 + 26 + 12) or 44
-            tw(frame, 0.35, { Size = UDim2.new(1, -20, 0, targetH) }, Enum.EasingStyle.Back)
-            body.Size = UDim2.new(1, 0, 0, expanded and (targetH - 44) or 0)
+            local targetH = expanded and (46 + 12 + padSize + 12 + 20 + 8 + 20 + 8 + 26 + 12) or 46
+            tw(frame, 0.35, { Size = UDim2.new(1, -8, 0, targetH) }, Enum.EasingStyle.Back)
+            body.Size = UDim2.new(1, 0, 0, expanded and (targetH - 46) or 0)
         end
         header.MouseButton1Click:Connect(function() setExpanded(not expanded) end)
 
         updateAll()
     end
 
-    --[[ KEYBIND ]]--
-    function Window:CreateKeybind(tabName, cfg)
-        local tab = pages[tabName]; if not tab then return end
-        cfg = cfg or {}
-
-        local f = Instance.new("Frame", tab)
-        f.Size = UDim2.new(1, -20, 0, 44)
-        f.Position = UDim2.new(0, 10, 0, 0)
-        f.BackgroundColor3 = P.Surface
-        f.BorderSizePixel = 0
-        corner(f, UDim.new(0, 8))
-        local fStroke = stroke(f, P.Border, 1, 0.6)
-
-        local title = Instance.new("TextLabel", f)
-        title.Size = UDim2.new(1, -110, 1, 0)
-        title.Position = UDim2.new(0, 14, 0, 0)
-        title.BackgroundTransparency = 1
-        title.Text = cfg.Text or "Tecla"
-        title.TextColor3 = P.Text
-        title.Font = Enum.Font.GothamMedium
-        title.TextSize = 14
-        title.TextXAlignment = Enum.TextXAlignment.Left
-
-        local kbBtn = Instance.new("TextButton", f)
-        kbBtn.Size = UDim2.new(0, 90, 0, 26)
-        kbBtn.Position = UDim2.new(1, -102, 0.5, -13)
-        kbBtn.BackgroundColor3 = P.SurfaceHi
-        kbBtn.Text = cfg.Default or "Nenhuma"
-        kbBtn.TextColor3 = P.Text
-        kbBtn.Font = Enum.Font.Code
-        kbBtn.TextSize = 12
-        kbBtn.AutoButtonColor = false
-        corner(kbBtn, UDim.new(0, 6))
-        local kbStroke = stroke(kbBtn, P.Border, 1, 0.5)
-
-        local capturing = false
-        local currentKey = cfg.Default
-
-        kbBtn.MouseButton1Click:Connect(function()
-            capturing = not capturing
-            if capturing then
-                kbBtn.Text = "Pressione..."
-                kbBtn.TextColor3 = P.AccentHi
-                tw(kbStroke, 0.2, { Color = P.AccentHi, Transparency = 0 })
-            else
-                kbBtn.Text = currentKey or "Nenhuma"
-                kbBtn.TextColor3 = P.Text
-                tw(kbStroke, 0.2, { Color = P.Border, Transparency = 0.5 })
-            end
-        end)
-
-        UserInputService.InputBegan:Connect(function(input, gpe)
-            if gpe or not capturing then return end
-            if input.UserInputType == Enum.UserInputType.Keyboard then
-                currentKey = input.KeyCode.Name
-                kbBtn.Text = currentKey
-                kbBtn.TextColor3 = P.Text
-                capturing = false
-                tw(kbStroke, 0.2, { Color = P.Border, Transparency = 0.5 })
-                if cfg.Callback then pcall(cfg.Callback, input.KeyCode) end
-            end
-        end)
-    end
-
-    --[[ INPUT ]]--
-    function Window:CreateInput(tabName, cfg)
-        local tab = pages[tabName]; if not tab then return end
-        cfg = cfg or {}
-
-        local f = Instance.new("Frame", tab)
-        f.Size = UDim2.new(1, -20, 0, 44)
-        f.Position = UDim2.new(0, 10, 0, 0)
-        f.BackgroundColor3 = P.Surface
-        f.BorderSizePixel = 0
-        corner(f, UDim.new(0, 8))
-        local fStroke = stroke(f, P.Border, 1, 0.5)
-
-        local title = Instance.new("TextLabel", f)
-        title.Size = UDim2.new(1, -20, 0, 16)
-        title.Position = UDim2.new(0, 12, 0, 4)
-        title.BackgroundTransparency = 1
-        title.Text = cfg.Text or "Input"
-        title.TextColor3 = P.Text
-        title.Font = Enum.Font.GothamMedium
-        title.TextSize = 13
-        title.TextXAlignment = Enum.TextXAlignment.Left
-
-        local inputFrame = Instance.new("Frame", f)
-        inputFrame.Size = UDim2.new(1, -24, 0, 20)
-        inputFrame.Position = UDim2.new(0, 12, 0, 22)
-        inputFrame.BackgroundColor3 = P.SurfaceLow
-        inputFrame.BorderSizePixel = 0
-        corner(inputFrame, UDim.new(0, 5))
-        stroke(inputFrame, P.Border, 1, 0.5)
-
-        local textBox = Instance.new("TextBox", inputFrame)
-        textBox.Size = UDim2.new(1, -16, 1, 0)
-        textBox.Position = UDim2.new(0, 8, 0, 0)
-        textBox.BackgroundTransparency = 1
-        textBox.Text = cfg.Default or ""
-        textBox.PlaceholderText = cfg.Placeholder or "Digite..."
-        textBox.PlaceholderColor3 = P.TextMute
-        textBox.TextColor3 = P.Text
-        textBox.Font = Enum.Font.Gotham
-        textBox.TextSize = 12
-        textBox.TextXAlignment = Enum.TextXAlignment.Left
-        textBox.ClearTextOnFocus = false
-
-        textBox.FocusLost:Connect(function()
-            if cfg.Callback then pcall(cfg.Callback, textBox.Text) end
-        end)
-    end
-
-    --[[ LABEL ]]--
-    function Window:CreateLabel(tabName, text)
-        local tab = pages[tabName]; if not tab then return end
-        local label = Instance.new("TextLabel", tab)
-        label.Size = UDim2.new(1, -20, 0, 28)
-        label.Position = UDim2.new(0, 10, 0, 0)
-        label.Text = "  " .. string.upper(text or "")
-        label.Font = Enum.Font.GothamBold
-        label.TextSize = 15
-        label.TextColor3 = P.Text
-        label.BackgroundTransparency = 1
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.TextYAlignment = Enum.TextYAlignment.Center
-
-        local dot = Instance.new("Frame", label)
-        dot.Size = UDim2.new(0, 6, 0, 6)
-        dot.Position = UDim2.new(0, 0, 0.5, -3)
-        dot.BackgroundColor3 = P.AccentHi
-        dot.BorderSizePixel = 0
-        corner(dot, UDim.new(1, 0))
-        local dotGlow = stroke(dot, P.AccentHi, 2, 0.3)
-
-        registerTheme(function()
-            tw(dot, 0.4, { BackgroundColor3 = P.AccentHi })
-        end)
-
-        task.spawn(function()
-            while dot.Parent do
-                tw(dotGlow, 1.2, { Transparency = 0.9 }, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-                task.wait(1.2)
-                tw(dotGlow, 1.2, { Transparency = 0.2 }, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-                task.wait(1.2)
-            end
-        end)
-    end
-
-    --[[ SECTION ]]--
-    function Window:CreateSection(tabName, text)
-        local tab = pages[tabName]; if not tab then return end
-        local label = Instance.new("TextLabel", tab)
-        label.Size = UDim2.new(1, -20, 0, 24)
-        label.Position = UDim2.new(0, 10, 0, 0)
-        label.Text = text
-        label.Font = Enum.Font.GothamBold
-        label.TextSize = 14
-        label.TextColor3 = P.TextDim
-        label.BackgroundTransparency = 1
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.TextYAlignment = Enum.TextYAlignment.Center
-    end
-
-    --[[ DIVIDER ]]--
-    function Window:CreateDivider(tabName)
-        local tab = pages[tabName]; if not tab then return end
-        local divider = Instance.new("Frame", tab)
-        divider.Size = UDim2.new(1, -20, 0, 1)
-        divider.Position = UDim2.new(0, 10, 0, 0)
-        divider.BackgroundColor3 = P.Border
-        divider.BackgroundTransparency = 0.5
-        divider.BorderSizePixel = 0
-    end
-
-    --[[ PARAGRAPH ]]--
-    function Window:CreateParagraph(tabName, title, content)
-        local tab = pages[tabName]; if not tab then return end
-        local frame = Instance.new("Frame", tab)
-        frame.Size = UDim2.new(1, -20, 0, 60)
-        frame.Position = UDim2.new(0, 10, 0, 0)
-        frame.BackgroundColor3 = P.Surface
-        frame.BorderSizePixel = 0
-        corner(frame, UDim.new(0, 8))
-        stroke(frame, P.Border, 1, 0.5)
-
-        local t = Instance.new("TextLabel", frame)
-        t.Size = UDim2.new(1, -20, 0, 18)
-        t.Position = UDim2.new(0, 10, 0, 6)
-        t.BackgroundTransparency = 1
-        t.Text = title or "Paragraph"
-        t.TextColor3 = P.Text
-        t.Font = Enum.Font.GothamBold
-        t.TextSize = 14
-        t.TextXAlignment = Enum.TextXAlignment.Left
-
-        local c = Instance.new("TextLabel", frame)
-        c.Size = UDim2.new(1, -20, 0, 28)
-        c.Position = UDim2.new(0, 10, 0, 26)
-        c.BackgroundTransparency = 1
-        c.Text = content or ""
-        c.TextColor3 = P.TextMute
-        c.Font = Enum.Font.Gotham
-        c.TextSize = 12
-        c.TextWrapped = true
-        c.TextXAlignment = Enum.TextXAlignment.Left
-        c.TextYAlignment = Enum.TextYAlignment.Top
-    end
-
-    --[[ PROGRESS BAR ]]--
-    function Window:CreateProgressBar(tabName, cfg)
-        local tab = pages[tabName]; if not tab then return end
-        cfg = cfg or {}
-
-        local f = Instance.new("Frame", tab)
-        f.Size = UDim2.new(1, -20, 0, 46)
-        f.Position = UDim2.new(0, 10, 0, 0)
-        f.BackgroundColor3 = P.Surface
-        f.BorderSizePixel = 0
-        corner(f, UDim.new(0, 8))
-        stroke(f, P.Border, 1, 0.6)
-
-        local title = Instance.new("TextLabel", f)
-        title.Size = UDim2.new(1, -60, 0, 16)
-        title.Position = UDim2.new(0, 12, 0, 6)
-        title.BackgroundTransparency = 1
-        title.Text = cfg.Text or "Progresso"
-        title.TextColor3 = P.Text
-        title.Font = Enum.Font.GothamMedium
-        title.TextSize = 13
-        title.TextXAlignment = Enum.TextXAlignment.Left
-
-        local pctLbl = Instance.new("TextLabel", f)
-        pctLbl.Size = UDim2.new(0, 50, 0, 16)
-        pctLbl.Position = UDim2.new(1, -62, 0, 6)
-        pctLbl.BackgroundTransparency = 1
-        pctLbl.Text = "0%"
-        pctLbl.TextColor3 = P.AccentHi
-        pctLbl.Font = Enum.Font.GothamBold
-        pctLbl.TextSize = 13
-        pctLbl.TextXAlignment = Enum.TextXAlignment.Right
-
-        local bar = Instance.new("Frame", f)
-        bar.Size = UDim2.new(1, -24, 0, 8)
-        bar.Position = UDim2.new(0, 12, 0, 30)
-        bar.BackgroundColor3 = Color3.fromRGB(40, 40, 46)
-        bar.BorderSizePixel = 0
-        corner(bar, UDim.new(1, 0))
-
-        local fill = Instance.new("Frame", bar)
-        fill.Size = UDim2.new(0, 0, 1, 0)
-        fill.BackgroundColor3 = P.Accent
-        fill.BorderSizePixel = 0
-        corner(fill, UDim.new(1, 0))
-        local fg = Instance.new("UIGradient", fill)
-        fg.Color = ColorSequence.new(P.AccentSoft, P.AccentHi)
-
-        registerTheme(function()
-            tw(fill, 0.4, { BackgroundColor3 = P.Accent })
-            tw(fg, 0.4, { Color = ColorSequence.new(P.AccentSoft, P.AccentHi) })
-            tw(pctLbl, 0.4, { TextColor3 = P.AccentHi })
-        end)
-
-        local api = {}
-        function api:Set(value)
-            local p = clamp(value / 100, 0, 1)
-            fill:TweenSize(UDim2.new(p, 0, 1, 0), "Out", "Quart", 0.4, true)
-            pctLbl.Text = string.format("%d%%", math.floor(p * 100 + 0.5))
-        end
-        function api:SetInstant(value)
-            local p = clamp(value / 100, 0, 1)
-            fill.Size = UDim2.new(p, 0, 1, 0)
-            pctLbl.Text = string.format("%d%%", math.floor(p * 100 + 0.5))
-        end
-        api:Set(0)
-        return api
-    end
-
     --=================================================================
-    -- SISTEMA DE TEMAS
+    -- THEME BOXES
     --=================================================================
     function Window:CreateThemeBoxes(tabName)
         local tab = pages[tabName]; if not tab then return end
@@ -2013,9 +2157,9 @@ function NINOMAX:CreateWindow(config)
         }
 
         local container = Instance.new("Frame", tab)
-        container.Size = UDim2.new(1, -20, 0, 0)
-        container.Position = UDim2.new(0, 10, 0, 0)
+        container.Size = UDim2.new(1, -8, 0, 0)
         container.BackgroundTransparency = 1
+        container.LayoutOrder = #tab:GetChildren()
         container.AutomaticSize = Enum.AutomaticSize.Y
 
         local infoBox = Instance.new("Frame", container)
@@ -2023,8 +2167,7 @@ function NINOMAX:CreateWindow(config)
         infoBox.BackgroundColor3 = P.Surface
         infoBox.BorderSizePixel = 0
         corner(infoBox, UDim.new(0, 8))
-        local ibStroke = stroke(infoBox, P.Border, 1, 0.6)
-        registerTheme(function() tw(ibStroke, 0.4, { Color = P.BorderTint }) end)
+        stroke(infoBox, P.Border, 1, 0.6)
 
         local infoDot = Instance.new("Frame", infoBox)
         infoDot.Size = UDim2.new(0, 8, 0, 8)
@@ -2032,7 +2175,6 @@ function NINOMAX:CreateWindow(config)
         infoDot.BackgroundColor3 = P.Accent
         infoDot.BorderSizePixel = 0
         corner(infoDot, UDim.new(1, 0))
-        registerTheme(function() tw(infoDot, 0.4, { BackgroundColor3 = P.Accent }) end)
 
         local infoLbl = Instance.new("TextLabel", infoBox)
         infoLbl.Size = UDim2.new(1, -40, 1, 0)
@@ -2043,7 +2185,6 @@ function NINOMAX:CreateWindow(config)
         infoLbl.Font = Enum.Font.Gotham
         infoLbl.TextSize = 11
         infoLbl.TextXAlignment = Enum.TextXAlignment.Left
-        infoLbl.TextWrapped = true
 
         local grid = Instance.new("Frame", container)
         grid.Size = UDim2.new(1, 0, 0, 0)
@@ -2068,12 +2209,6 @@ function NINOMAX:CreateWindow(config)
                 tw(t._ui, 0.3, { Size = UDim2.new(0, 68, 0, 52) }, Enum.EasingStyle.Back)
                 lastSelected = t._ui
             end
-
-            Window:Notify({
-                Title = "TEMA APLICADO",
-                Content = t.name .. " aplicado com sucesso!",
-                Icon = "palette"
-            })
         end
 
         for i, t in ipairs(THEMES) do
@@ -2160,7 +2295,7 @@ function NINOMAX:CreateWindow(config)
         config = config or {}
         local title = config.Title or "Notificação"
         local content = config.Content or ""
-        local iconId = config.Icon or "info"
+        local iconId = config.Icon or 4483362458
 
         local sg = Instance.new("ScreenGui")
         sg.Name = "NINOMAX_Notify"
@@ -2229,6 +2364,7 @@ function NINOMAX:CreateWindow(config)
     -- HIDE / SHOW
     --=================================================================
     local isHidden = false
+
     local function doHide()
         if isHidden then return end
         isHidden = true
@@ -2248,6 +2384,7 @@ function NINOMAX:CreateWindow(config)
             tw(ballButton, 0.35, { Size = UDim2.new(0, 50, 0, 50) }, Enum.EasingStyle.Back)
         end)
     end
+
     local function doShow()
         if not isHidden then return end
         isHidden = false
@@ -2268,10 +2405,15 @@ function NINOMAX:CreateWindow(config)
 
     hideButton.MouseButton1Click:Connect(doHide)
     ballButton.MouseButton1Click:Connect(doShow)
+
     UserInputService.InputBegan:Connect(function(input, gpe)
         if gpe then return end
         if input.KeyCode == Enum.KeyCode.RightShift then
-            if isHidden then doShow() else doHide() end
+            if isHidden then
+                doShow()
+            else
+                doHide()
+            end
         end
     end)
 
@@ -2280,6 +2422,13 @@ function NINOMAX:CreateWindow(config)
     --=================================================================
     function Window:SetSubtitle(text)
         subtitle.Text = text
+    end
+
+    function Window:SetTitle(text)
+        -- Mantém NINO + MAX, mas permite customizar
+        -- Se passado "NINO" e "MAX", mantém padrão
+        titleNino.Text = "NINO"
+        titleMax.Text = "MAX"
     end
 
     function Window:Destroy()
