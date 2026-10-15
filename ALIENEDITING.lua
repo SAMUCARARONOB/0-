@@ -1,8 +1,9 @@
 --[[
     ╔══════════════════════════════════════════════════════════════════╗
-    ║  NINOMAX UI · v1.2.0 · FLAT + TAB API                            ║
-    ║  ✦ Dupla API: Window:CreateX e Tab:AddX                          ║
-    ║  ✦ Slider turbo · Dropdown premium · TextBox avançado            ║
+    ║  NINOMAX UI · v1.3.0 · RANOX FULL EDITION                        ║
+    ║  ✦ API pública 100% Create* (estilo RANOX)                       ║
+    ║  ✦ Ball button · Resize · ThemeBoxes · InfoBox · PromoBox        ║
+    ║  ✦ ColorPicker Pro · Save/Load · Mobile-first                    ║
     ╚══════════════════════════════════════════════════════════════════╝
 ]]
 
@@ -15,9 +16,12 @@ local CoreGui          = game:GetService("CoreGui")
 local player           = Players.LocalPlayer
 
 local NINOMAX = {}
-NINOMAX.Version = "1.2.0"
+NINOMAX.Version = "1.3.0"
 NINOMAX.Flags = {}
 
+-- ═══════════════════════════════════════════════════════════════════
+-- ICONS
+-- ═══════════════════════════════════════════════════════════════════
 NINOMAX.Icons = {
     activity="rbxassetid://10709752035", alertcircle="rbxassetid://10709752996",
     arrowright="rbxassetid://10709768347", award="rbxassetid://10709769406",
@@ -51,23 +55,29 @@ NINOMAX.Icons = {
     ball="rbxassetid://6337069410",
 }
 
+-- ═══════════════════════════════════════════════════════════════════
+-- THEMES
+-- ═══════════════════════════════════════════════════════════════════
 NINOMAX.Themes = {
-    Crimson={gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(28,12,14)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(38,16,20)),ColorSequenceKeypoint.new(1,Color3.fromRGB(28,12,14))}),bg=Color3.fromRGB(22,12,14),surface=Color3.fromRGB(34,18,22),surfaceHi=Color3.fromRGB(46,24,28),stroke=Color3.fromRGB(48,24,30),accent=Color3.fromRGB(220,30,55),accentHi=Color3.fromRGB(255,70,90),accentSoft=Color3.fromRGB(90,15,30),text=Color3.fromRGB(245,240,240),textDim=Color3.fromRGB(180,160,165)},
-    Neon={gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(10,22,22)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(14,32,32)),ColorSequenceKeypoint.new(1,Color3.fromRGB(10,22,22))}),bg=Color3.fromRGB(8,18,18),surface=Color3.fromRGB(18,30,30),surfaceHi=Color3.fromRGB(26,42,42),stroke=Color3.fromRGB(30,52,52),accent=Color3.fromRGB(0,220,200),accentHi=Color3.fromRGB(80,255,240),accentSoft=Color3.fromRGB(0,80,75),text=Color3.fromRGB(235,250,245),textDim=Color3.fromRGB(150,190,185)},
-    Ocean={gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(10,16,28)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(14,22,40)),ColorSequenceKeypoint.new(1,Color3.fromRGB(10,16,28))}),bg=Color3.fromRGB(8,12,22),surface=Color3.fromRGB(18,24,40),surfaceHi=Color3.fromRGB(26,34,54),stroke=Color3.fromRGB(30,42,68),accent=Color3.fromRGB(30,140,250),accentHi=Color3.fromRGB(90,180,255),accentSoft=Color3.fromRGB(15,55,120),text=Color3.fromRGB(240,245,255),textDim=Color3.fromRGB(160,180,210)},
-    Violet={gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(20,12,28)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(28,18,42)),ColorSequenceKeypoint.new(1,Color3.fromRGB(20,12,28))}),bg=Color3.fromRGB(14,8,22),surface=Color3.fromRGB(26,16,38),surfaceHi=Color3.fromRGB(38,24,54),stroke=Color3.fromRGB(46,30,68),accent=Color3.fromRGB(150,60,240),accentHi=Color3.fromRGB(200,120,255),accentSoft=Color3.fromRGB(70,20,120),text=Color3.fromRGB(245,240,255),textDim=Color3.fromRGB(180,165,205)},
-    Sunset={gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(28,16,8)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(42,22,12)),ColorSequenceKeypoint.new(1,Color3.fromRGB(28,16,8))}),bg=Color3.fromRGB(20,12,8),surface=Color3.fromRGB(38,22,14),surfaceHi=Color3.fromRGB(52,32,20),stroke=Color3.fromRGB(62,38,24),accent=Color3.fromRGB(255,130,40),accentHi=Color3.fromRGB(255,180,90),accentSoft=Color3.fromRGB(130,55,15),text=Color3.fromRGB(255,245,235),textDim=Color3.fromRGB(210,175,145)},
-    Toxic={gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(12,24,10)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(18,34,14)),ColorSequenceKeypoint.new(1,Color3.fromRGB(12,24,10))}),bg=Color3.fromRGB(10,18,8),surface=Color3.fromRGB(20,32,16),surfaceHi=Color3.fromRGB(30,46,24),stroke=Color3.fromRGB(40,60,32),accent=Color3.fromRGB(140,240,40),accentHi=Color3.fromRGB(180,255,90),accentSoft=Color3.fromRGB(55,110,15),text=Color3.fromRGB(240,250,235),textDim=Color3.fromRGB(175,205,160)},
-    Cyberpunk={gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(20,8,22)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(30,12,32)),ColorSequenceKeypoint.new(1,Color3.fromRGB(20,8,22))}),bg=Color3.fromRGB(14,6,16),surface=Color3.fromRGB(26,12,28),surfaceHi=Color3.fromRGB(40,18,44),stroke=Color3.fromRGB(48,22,52),accent=Color3.fromRGB(255,20,190),accentHi=Color3.fromRGB(255,90,220),accentSoft=Color3.fromRGB(110,10,80),text=Color3.fromRGB(250,240,255),textDim=Color3.fromRGB(200,160,220)},
-    Gold={gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(24,20,10)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(36,28,14)),ColorSequenceKeypoint.new(1,Color3.fromRGB(24,20,10))}),bg=Color3.fromRGB(18,14,6),surface=Color3.fromRGB(32,26,14),surfaceHi=Color3.fromRGB(46,36,20),stroke=Color3.fromRGB(58,46,24),accent=Color3.fromRGB(240,190,50),accentHi=Color3.fromRGB(255,220,100),accentSoft=Color3.fromRGB(110,80,20),text=Color3.fromRGB(255,250,235),textDim=Color3.fromRGB(200,180,140)},
-    Emerald={gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(10,24,16)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(14,34,22)),ColorSequenceKeypoint.new(1,Color3.fromRGB(10,24,16))}),bg=Color3.fromRGB(8,18,12),surface=Color3.fromRGB(18,32,22),surfaceHi=Color3.fromRGB(26,44,32),stroke=Color3.fromRGB(34,58,42),accent=Color3.fromRGB(40,210,130),accentHi=Color3.fromRGB(90,250,175),accentSoft=Color3.fromRGB(15,85,55),text=Color3.fromRGB(235,250,240),textDim=Color3.fromRGB(155,195,175)},
-    Blood={gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(20,6,8)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(30,10,14)),ColorSequenceKeypoint.new(1,Color3.fromRGB(20,6,8))}),bg=Color3.fromRGB(14,4,6),surface=Color3.fromRGB(26,10,14),surfaceHi=Color3.fromRGB(40,16,22),stroke=Color3.fromRGB(50,20,26),accent=Color3.fromRGB(180,10,20),accentHi=Color3.fromRGB(230,40,55),accentSoft=Color3.fromRGB(80,5,12),text=Color3.fromRGB(250,240,240),textDim=Color3.fromRGB(195,165,165)},
-    Midnight={gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(14,16,26)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(20,24,38)),ColorSequenceKeypoint.new(1,Color3.fromRGB(14,16,26))}),bg=Color3.fromRGB(10,12,20),surface=Color3.fromRGB(22,26,40),surfaceHi=Color3.fromRGB(32,38,54),stroke=Color3.fromRGB(40,48,66),accent=Color3.fromRGB(90,120,240),accentHi=Color3.fromRGB(130,160,255),accentSoft=Color3.fromRGB(35,48,110),text=Color3.fromRGB(240,242,250),textDim=Color3.fromRGB(160,170,195)},
+    Crimson = { gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(28,12,14)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(38,16,20)),ColorSequenceKeypoint.new(1,Color3.fromRGB(28,12,14))}), bg=Color3.fromRGB(22,12,14), surface=Color3.fromRGB(34,18,22), surfaceHi=Color3.fromRGB(46,24,28), stroke=Color3.fromRGB(48,24,30), accent=Color3.fromRGB(220,30,55), accentHi=Color3.fromRGB(255,70,90), accentSoft=Color3.fromRGB(90,15,30), text=Color3.fromRGB(245,240,240), textDim=Color3.fromRGB(180,160,165), success=Color3.fromRGB(0,220,130), danger=Color3.fromRGB(255,80,90) },
+    Neon = { gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(10,22,22)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(14,32,32)),ColorSequenceKeypoint.new(1,Color3.fromRGB(10,22,22))}), bg=Color3.fromRGB(8,18,18), surface=Color3.fromRGB(18,30,30), surfaceHi=Color3.fromRGB(26,42,42), stroke=Color3.fromRGB(30,52,52), accent=Color3.fromRGB(0,220,200), accentHi=Color3.fromRGB(80,255,240), accentSoft=Color3.fromRGB(0,80,75), text=Color3.fromRGB(235,250,245), textDim=Color3.fromRGB(150,190,185), success=Color3.fromRGB(0,220,130), danger=Color3.fromRGB(255,80,90) },
+    Ocean = { gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(10,16,28)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(14,22,40)),ColorSequenceKeypoint.new(1,Color3.fromRGB(10,16,28))}), bg=Color3.fromRGB(8,12,22), surface=Color3.fromRGB(18,24,40), surfaceHi=Color3.fromRGB(26,34,54), stroke=Color3.fromRGB(30,42,68), accent=Color3.fromRGB(30,140,250), accentHi=Color3.fromRGB(90,180,255), accentSoft=Color3.fromRGB(15,55,120), text=Color3.fromRGB(240,245,255), textDim=Color3.fromRGB(160,180,210), success=Color3.fromRGB(0,220,130), danger=Color3.fromRGB(255,80,90) },
+    Violet = { gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(20,12,28)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(28,18,42)),ColorSequenceKeypoint.new(1,Color3.fromRGB(20,12,28))}), bg=Color3.fromRGB(14,8,22), surface=Color3.fromRGB(26,16,38), surfaceHi=Color3.fromRGB(38,24,54), stroke=Color3.fromRGB(46,30,68), accent=Color3.fromRGB(150,60,240), accentHi=Color3.fromRGB(200,120,255), accentSoft=Color3.fromRGB(70,20,120), text=Color3.fromRGB(245,240,255), textDim=Color3.fromRGB(180,165,205), success=Color3.fromRGB(0,220,130), danger=Color3.fromRGB(255,80,90) },
+    Sunset = { gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(28,16,8)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(42,22,12)),ColorSequenceKeypoint.new(1,Color3.fromRGB(28,16,8))}), bg=Color3.fromRGB(20,12,8), surface=Color3.fromRGB(38,22,14), surfaceHi=Color3.fromRGB(52,32,20), stroke=Color3.fromRGB(62,38,24), accent=Color3.fromRGB(255,130,40), accentHi=Color3.fromRGB(255,180,90), accentSoft=Color3.fromRGB(130,55,15), text=Color3.fromRGB(255,245,235), textDim=Color3.fromRGB(210,175,145), success=Color3.fromRGB(0,220,130), danger=Color3.fromRGB(255,80,90) },
+    Toxic = { gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(12,24,10)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(18,34,14)),ColorSequenceKeypoint.new(1,Color3.fromRGB(12,24,10))}), bg=Color3.fromRGB(10,18,8), surface=Color3.fromRGB(20,32,16), surfaceHi=Color3.fromRGB(30,46,24), stroke=Color3.fromRGB(40,60,32), accent=Color3.fromRGB(140,240,40), accentHi=Color3.fromRGB(180,255,90), accentSoft=Color3.fromRGB(55,110,15), text=Color3.fromRGB(240,250,235), textDim=Color3.fromRGB(175,205,160), success=Color3.fromRGB(0,220,130), danger=Color3.fromRGB(255,80,90) },
+    Cyberpunk = { gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(20,8,22)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(30,12,32)),ColorSequenceKeypoint.new(1,Color3.fromRGB(20,8,22))}), bg=Color3.fromRGB(14,6,16), surface=Color3.fromRGB(26,12,28), surfaceHi=Color3.fromRGB(40,18,44), stroke=Color3.fromRGB(48,22,52), accent=Color3.fromRGB(255,20,190), accentHi=Color3.fromRGB(255,90,220), accentSoft=Color3.fromRGB(110,10,80), text=Color3.fromRGB(250,240,255), textDim=Color3.fromRGB(200,160,220), success=Color3.fromRGB(0,220,130), danger=Color3.fromRGB(255,80,90) },
+    Gold = { gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(24,20,10)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(36,28,14)),ColorSequenceKeypoint.new(1,Color3.fromRGB(24,20,10))}), bg=Color3.fromRGB(18,14,6), surface=Color3.fromRGB(32,26,14), surfaceHi=Color3.fromRGB(46,36,20), stroke=Color3.fromRGB(58,46,24), accent=Color3.fromRGB(240,190,50), accentHi=Color3.fromRGB(255,220,100), accentSoft=Color3.fromRGB(110,80,20), text=Color3.fromRGB(255,250,235), textDim=Color3.fromRGB(200,180,140), success=Color3.fromRGB(0,220,130), danger=Color3.fromRGB(255,80,90) },
+    Emerald = { gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(10,24,16)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(14,34,22)),ColorSequenceKeypoint.new(1,Color3.fromRGB(10,24,16))}), bg=Color3.fromRGB(8,18,12), surface=Color3.fromRGB(18,32,22), surfaceHi=Color3.fromRGB(26,44,32), stroke=Color3.fromRGB(34,58,42), accent=Color3.fromRGB(40,210,130), accentHi=Color3.fromRGB(90,250,175), accentSoft=Color3.fromRGB(15,85,55), text=Color3.fromRGB(235,250,240), textDim=Color3.fromRGB(155,195,175), success=Color3.fromRGB(0,220,130), danger=Color3.fromRGB(255,80,90) },
+    Blood = { gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(20,6,8)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(30,10,14)),ColorSequenceKeypoint.new(1,Color3.fromRGB(20,6,8))}), bg=Color3.fromRGB(14,4,6), surface=Color3.fromRGB(26,10,14), surfaceHi=Color3.fromRGB(40,16,22), stroke=Color3.fromRGB(50,20,26), accent=Color3.fromRGB(180,10,20), accentHi=Color3.fromRGB(230,40,55), accentSoft=Color3.fromRGB(80,5,12), text=Color3.fromRGB(250,240,240), textDim=Color3.fromRGB(195,165,165), success=Color3.fromRGB(0,220,130), danger=Color3.fromRGB(255,80,90) },
+    Midnight = { gradient=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(14,16,26)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(20,24,38)),ColorSequenceKeypoint.new(1,Color3.fromRGB(14,16,26))}), bg=Color3.fromRGB(10,12,20), surface=Color3.fromRGB(22,26,40), surfaceHi=Color3.fromRGB(32,38,54), stroke=Color3.fromRGB(40,48,66), accent=Color3.fromRGB(90,120,240), accentHi=Color3.fromRGB(130,160,255), accentSoft=Color3.fromRGB(35,48,110), text=Color3.fromRGB(240,242,250), textDim=Color3.fromRGB(160,170,195), success=Color3.fromRGB(0,220,130), danger=Color3.fromRGB(255,80,90) },
 }
 
 NINOMAX.CurrentTheme = "Crimson"
 local T = NINOMAX.Themes.Crimson
 
+-- ═══════════════════════════════════════════════════════════════════
+-- COLOR MATH
+-- ═══════════════════════════════════════════════════════════════════
 local function luminance(c) return 0.2126*c.R + 0.7152*c.G + 0.0722*c.B end
 local function contrastText(bg) return luminance(bg) > 0.55 and Color3.fromRGB(20,20,25) or Color3.fromRGB(245,245,250) end
 local function mix(a, b, t) return Color3.new(a.R+(b.R-a.R)*t, a.G+(b.G-a.G)*t, a.B+(b.B-a.B)*t) end
@@ -76,33 +86,50 @@ local function hexToColor(hex)
     hex = tostring(hex):gsub("#", ""):gsub("%s", "")
     if #hex == 3 then hex = hex:sub(1,1):rep(2)..hex:sub(2,2):rep(2)..hex:sub(3,3):rep(2) end
     if #hex ~= 6 then return nil end
-    local r = tonumber(hex:sub(1,2), 16); local g = tonumber(hex:sub(3,4), 16); local b = tonumber(hex:sub(5,6), 16)
+    local r = tonumber(hex:sub(1,2), 16)
+    local g = tonumber(hex:sub(3,4), 16)
+    local b = tonumber(hex:sub(5,6), 16)
     if not r or not g or not b then return nil end
     return Color3.fromRGB(r, g, b)
 end
-local function colorToHex(c) return string.format("#%02X%02X%02X", math.floor(c.R*255+0.5), math.floor(c.G*255+0.5), math.floor(c.B*255+0.5)) end
 
+local function colorToHex(c)
+    return string.format("#%02X%02X%02X", math.floor(c.R*255+0.5), math.floor(c.G*255+0.5), math.floor(c.B*255+0.5))
+end
+
+-- ═══════════════════════════════════════════════════════════════════
+-- UTILS
+-- ═══════════════════════════════════════════════════════════════════
 local function tw(inst, dur, props, style, dir)
     local t = TweenService:Create(inst, TweenInfo.new(dur or 0.25, style or Enum.EasingStyle.Quint, dir or Enum.EasingDirection.Out), props)
     t:Play(); return t
 end
-local function newCorner(p, r) local c = Instance.new("UICorner"); c.CornerRadius = r or UDim.new(0, 6); c.Parent = p; return c end
+local function newCorner(p, r)
+    local c = Instance.new("UICorner"); c.CornerRadius = r or UDim.new(0, 6); c.Parent = p; return c
+end
 local function newStroke(p, col, th, tr)
     local s = Instance.new("UIStroke")
-    s.Color = col or T.stroke; s.Thickness = th or 1; s.Transparency = tr or 0.5
-    s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border; s.Parent = p; return s
+    s.Color = col or T.stroke; s.Thickness = th or 1
+    s.Transparency = tr or 0.5
+    s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    s.Parent = p; return s
 end
 local function newPad(p, t, l, r, b)
     local u = Instance.new("UIPadding", p)
     u.PaddingTop = UDim.new(0, t or 0); u.PaddingLeft = UDim.new(0, l or 0)
-    u.PaddingRight = UDim.new(0, r or 0); u.PaddingBottom = UDim.new(0, b or 0); return u
+    u.PaddingRight = UDim.new(0, r or 0); u.PaddingBottom = UDim.new(0, b or 0)
+    return u
 end
+
+-- getIcon aceita número (rbxassetid) OU nome de ícone
 local function getIcon(name)
-    if not name or name == "" then return nil end
+    if not name then return nil end
+    if type(name) == "number" then return "rbxassetid://" .. name end
+    if name == "" then return nil end
     if name:find("rbxassetid://") or name:find("rbxthumb://") then return name end
-    if type(name) == "number" then return "rbxassetid://" .. tostring(name) end
     return NINOMAX.Icons[name:lower()] or nil
 end
+
 local function isMobile() return UIS.TouchEnabled and not UIS.KeyboardEnabled end
 local function draggable(frame, handle)
     handle = handle or frame
@@ -119,32 +146,48 @@ local function draggable(frame, handle)
         end
     end)
     UIS.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then dragging = false end
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+        end
     end)
 end
 
+-- ═══════════════════════════════════════════════════════════════════
+-- FLAGS / SAVE
+-- ═══════════════════════════════════════════════════════════════════
 function NINOMAX:GetFlag(name) return self.Flags[name] end
 function NINOMAX:SetFlag(name, value)
     self.Flags[name] = value
     if self._onFlagChange then self._onFlagChange(name, value) end
 end
+
 local function saveConfig(file)
     if not file then return end
-    pcall(function() if writefile then writefile(file, HttpService:JSONEncode(NINOMAX.Flags)) end end)
+    pcall(function()
+        if writefile then writefile(file, HttpService:JSONEncode(NINOMAX.Flags)) end
+    end)
 end
+
 local function loadConfig(file)
     if not file then return end
     pcall(function()
         if readfile and isfile and isfile(file) then
             local data = HttpService:JSONDecode(readfile(file))
-            if type(data) == "table" then for k, v in pairs(data) do NINOMAX.Flags[k] = v end end
+            if type(data) == "table" then
+                for k, v in pairs(data) do NINOMAX.Flags[k] = v end
+            end
         end
     end)
 end
 
+-- ═══════════════════════════════════════════════════════════════════
+-- THEME BINDING
+-- ═══════════════════════════════════════════════════════════════════
 local themeBindings = {}
 local function onTheme(fn) table.insert(themeBindings, fn) end
-local function broadcastTheme() for _, fn in ipairs(themeBindings) do pcall(fn) end end
+local function broadcastTheme()
+    for _, fn in ipairs(themeBindings) do pcall(fn) end
+end
 
 -- ═══════════════════════════════════════════════════════════════════
 -- CREATE WINDOW
@@ -154,10 +197,9 @@ function NINOMAX:CreateWindow(cfg)
     local Window = {}
     local SUBTITLE_TEXT = cfg.Subtitle or "v" .. self.Version
     local CONFIG_FILE = cfg.ConfigFile or "ninomax_config.json"
-    local SIZE = Vector2.new(580, 400)
     local MIN_SIZE = Vector2.new(440, 300)
     local MAX_SIZE = Vector2.new(1200, 900)
-    local currentSize = SIZE
+    local currentSize = Vector2.new(580, 400)
 
     loadConfig(CONFIG_FILE)
     self._onFlagChange = function() saveConfig(CONFIG_FILE) end
@@ -173,6 +215,7 @@ function NINOMAX:CreateWindow(cfg)
     local uiScale = Instance.new("UIScale", gui)
     uiScale.Scale = isMobile() and 1.05 or 1
 
+    -- SOMBRA
     local shadowHolder = Instance.new("Frame", gui)
     shadowHolder.BackgroundTransparency = 1
     shadowHolder.Size = UDim2.new(0, currentSize.X + 4, 0, currentSize.Y + 4)
@@ -188,6 +231,7 @@ function NINOMAX:CreateWindow(cfg)
     shadowImg.ScaleType = Enum.ScaleType.Slice
     shadowImg.SliceCenter = Rect.new(8, 8, 120, 120)
 
+    -- MAIN FRAME
     local mainFrame = Instance.new("ImageButton")
     mainFrame.Name = "MainFrame"
     mainFrame.Size = UDim2.new(0, 0, 0, 0)
@@ -206,6 +250,7 @@ function NINOMAX:CreateWindow(cfg)
     mainGrad.Rotation = 45
     mainGrad.Color = T.gradient
 
+    -- TOP BAR
     local topBar = Instance.new("Frame", mainFrame)
     topBar.Size = UDim2.new(1, 0, 0, 30)
     topBar.BackgroundTransparency = 1
@@ -226,6 +271,7 @@ function NINOMAX:CreateWindow(cfg)
 
     local ninoGlow = Instance.new("UIStroke", titleNino)
     ninoGlow.Color = Color3.fromRGB(255, 255, 255); ninoGlow.Thickness = 0; ninoGlow.Transparency = 1
+
     task.spawn(function()
         while titleNino.Parent do
             tw(ninoGlow, 2, { Transparency = 0.7, Thickness = 2 }, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
@@ -255,6 +301,7 @@ function NINOMAX:CreateWindow(cfg)
 
     local maxGlow = Instance.new("UIStroke", titleMax)
     maxGlow.Color = T.accentHi; maxGlow.Thickness = 1; maxGlow.Transparency = 0.4
+
     task.spawn(function()
         while titleMax.Parent do
             tw(maxGlow, 1.4, { Transparency = 0.9 }, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
@@ -316,6 +363,7 @@ function NINOMAX:CreateWindow(cfg)
     sepLine.BorderSizePixel = 0
     sepLine.ZIndex = 4
 
+    -- SIDEBAR
     local sidebar = Instance.new("ScrollingFrame", mainFrame)
     sidebar.Size = UDim2.new(0, 150, 1, -30)
     sidebar.Position = UDim2.new(0, 0, 0, 30)
@@ -334,13 +382,11 @@ function NINOMAX:CreateWindow(cfg)
     sideLay.SortOrder = Enum.SortOrder.LayoutOrder
     sideLay.Padding = UDim.new(0, 4)
 
-    -- SEARCH BOX (vazia por padrão!)
     local searchBox = Instance.new("TextBox", sidebar)
     searchBox.Size = UDim2.new(1, 0, 0, 22)
     searchBox.BackgroundColor3 = T.surface
     searchBox.BorderSizePixel = 0
-    searchBox.Text = ""  -- ← Garantido vazio
-    searchBox.PlaceholderText = "Buscar..."
+    searchBox.PlaceholderText = "🔍 Buscar..."
     searchBox.PlaceholderColor3 = T.textDim
     searchBox.TextColor3 = T.text
     searchBox.Font = Enum.Font.Gotham
@@ -353,7 +399,7 @@ function NINOMAX:CreateWindow(cfg)
     newPad(searchBox, 0, 6, 6, 0)
 
     local tabBtns, pages, selectedTab = {}, {}, nil
-    local tabsByName = {}  -- Registry para API flat
+    local windowTabs = {}  -- registry nome → objeto Tab
 
     searchBox:GetPropertyChangedSignal("Text"):Connect(function()
         local q = string.lower(searchBox.Text)
@@ -362,6 +408,7 @@ function NINOMAX:CreateWindow(cfg)
         end
     end)
 
+    -- CONTENT
     local contentHolder = Instance.new("ScrollingFrame", mainFrame)
     contentHolder.Position = UDim2.new(0, 154, 0, 34)
     contentHolder.Size = UDim2.new(1, -162, 1, -42)
@@ -374,6 +421,7 @@ function NINOMAX:CreateWindow(cfg)
     contentHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
     contentHolder.ZIndex = 2
 
+    -- RESIZE
     local resizeHandle = Instance.new("TextButton", mainFrame)
     resizeHandle.Size = UDim2.new(0, 18, 0, 18)
     resizeHandle.Position = UDim2.new(1, -22, 1, -22)
@@ -399,6 +447,7 @@ function NINOMAX:CreateWindow(cfg)
         tw(resizeHandle, 0.2, { BackgroundColor3 = T.surface, BackgroundTransparency = 0.35, Size = UDim2.new(0, 18, 0, 18), Position = UDim2.new(1, -22, 1, -22) }, Enum.EasingStyle.Back)
         tw(resizeStroke, 0.2, { Color = T.stroke, Transparency = 0.35 })
     end)
+
     task.spawn(function()
         while resizeHandle.Parent do
             if not hoveredResize then
@@ -406,7 +455,9 @@ function NINOMAX:CreateWindow(cfg)
                 task.wait(1.6)
                 tw(resizeStroke, 1.6, { Transparency = 0.35 }, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
                 task.wait(1.6)
-            else task.wait(0.4) end
+            else
+                task.wait(0.4)
+            end
         end
     end)
 
@@ -427,10 +478,13 @@ function NINOMAX:CreateWindow(cfg)
             end
         end)
         UIS.InputEnded:Connect(function(i)
-            if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then drag = false end
+            if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+                drag = false
+            end
         end)
     end
 
+    -- BALL BUTTON
     local ballButton = Instance.new("ImageButton")
     ballButton.Size = UDim2.new(0, 50, 0, 50)
     ballButton.Position = UDim2.new(0.1, 0, 0.9, -150)
@@ -471,21 +525,23 @@ function NINOMAX:CreateWindow(cfg)
         tw(contentHolder, 0.4, { ScrollBarImageColor3 = T.accent })
         tw(ballButton, 0.4, { BackgroundColor3 = T.accent })
         tw(ballStroke, 0.4, { Color = T.accentHi })
-        tw(searchBox, 0.4, { BackgroundColor3 = T.surface, TextColor3 = T.text, PlaceholderColor3 = T.textDim })
     end)
 
     task.spawn(function()
         mainFrame.Size = UDim2.new(0, 0, 0, 0)
         mainFrame.BackgroundTransparency = 1
         shadowImg.ImageTransparency = 1
+
         task.wait(0.05)
         mainFrame.Size = UDim2.new(0, currentSize.X - 30, 0, currentSize.Y - 18)
         tw(mainFrame, 0.5, { Size = UDim2.new(0, currentSize.X, 0, currentSize.Y) }, Enum.EasingStyle.Back)
         tw(mainFrame, 0.35, { BackgroundTransparency = 0.03 })
         tw(shadowImg, 0.45, { ImageTransparency = 0.5 })
+
         sidebar.Position = UDim2.new(0, -40, 0, 30)
         task.wait(0.12)
         tw(sidebar, 0.4, { Position = UDim2.new(0, 0, 0, 30) })
+
         titleNino.Position = UDim2.new(0, -50, 0.5, -1)
         tw(titleNino, 0.35, { Position = UDim2.new(0, 15, 0.5, -1) })
     end)
@@ -496,7 +552,8 @@ function NINOMAX:CreateWindow(cfg)
         isHidden = true
         local fs = mainFrame.AbsoluteSize
         currentSize = Vector2.new(fs.X, fs.Y)
-        tw(mainFrame, 0.22, { Size = UDim2.new(0, currentSize.X, 0, 8), BackgroundTransparency = 0.5 }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+        tw(mainFrame, 0.22, { Size = UDim2.new(0, currentSize.X, 0, 8), BackgroundTransparency = 0.5 },
+            Enum.EasingStyle.Back, Enum.EasingDirection.In)
         tw(shadowImg, 0.22, { ImageTransparency = 1 })
         task.delay(0.22, function()
             mainFrame.Visible = false
@@ -522,7 +579,9 @@ function NINOMAX:CreateWindow(cfg)
         end)
     end
 
-    btnMin.MouseButton1Click:Connect(function() if isHidden then doShow() else doHide() end end)
+    btnMin.MouseButton1Click:Connect(function()
+        if isHidden then doShow() else doHide() end
+    end)
     ballButton.MouseButton1Click:Connect(doShow)
     UIS.InputBegan:Connect(function(input, gpe)
         if gpe then return end
@@ -557,6 +616,7 @@ function NINOMAX:CreateWindow(cfg)
     -- ═══════════════════════════════════════════════════════════════
     function Window:CreateTab(tabName, iconName)
         local icon = getIcon(iconName)
+
         local tabBtn = Instance.new("TextButton", sidebar)
         tabBtn.Size = UDim2.new(1, 0, 0, 24)
         tabBtn.Text = ""
@@ -641,7 +701,10 @@ function NINOMAX:CreateWindow(cfg)
         newPad(page, 2, 2, 8, 2)
         pages[tabName] = page
 
-        tabBtn.MouseButton1Click:Connect(function() switchTab(tabName) end)
+        tabBtn.MouseButton1Click:Connect(function()
+            switchTab(tabName)
+        end)
+
         if not selectedTab then switchTab(tabName) end
 
         local Tab = {}
@@ -700,6 +763,7 @@ function NINOMAX:CreateWindow(cfg)
             return f, titleLbl, descLbl, fStroke
         end
 
+        -- ADD SECTION
         function Tab:AddSection(name)
             local s = Instance.new("Frame", page)
             s.Size = UDim2.new(1, 0, 0, 22)
@@ -727,6 +791,7 @@ function NINOMAX:CreateWindow(cfg)
             return { Set = function(_, v) lbl.Text = string.upper(v) end, Destroy = function() s:Destroy() end }
         end
 
+        -- ADD LABEL
         function Tab:AddLabel(text)
             local lbl = Instance.new("TextLabel", page)
             lbl.Size = UDim2.new(1, -8, 0, 16)
@@ -741,6 +806,7 @@ function NINOMAX:CreateWindow(cfg)
             return { Set = function(_, v) lbl.Text = tostring(v) end, Destroy = function() lbl:Destroy() end }
         end
 
+        -- ADD PARAGRAPH
         function Tab:AddParagraph(cfg)
             cfg = cfg or {}
             if type(cfg) == "string" then cfg = { Title = cfg } end
@@ -752,6 +818,7 @@ function NINOMAX:CreateWindow(cfg)
             }
         end
 
+        -- ADD LINE
         function Tab:AddLine(color)
             local l = Instance.new("Frame", page)
             l.Size = UDim2.new(1, -8, 0, 1)
@@ -764,11 +831,11 @@ function NINOMAX:CreateWindow(cfg)
             return { Destroy = function() l:Destroy() end }
         end
 
-        -- ═══ BUTTON ═══
+        -- ADD BUTTON
         function Tab:AddButton(cfg)
             cfg = cfg or {}
             if type(cfg) == "string" then cfg = { Title = cfg } end
-            local title = cfg.Title or cfg.Name or cfg.Text or "Button"
+            local title = cfg.Title or cfg.Name or "Button"
             local desc = cfg.Desc or cfg.Description or ""
             local cb = cfg.Callback or function() end
             local cooldown = cfg.Cooldown or 0.5
@@ -818,6 +885,7 @@ function NINOMAX:CreateWindow(cfg)
             btn.MouseButton1Click:Connect(function()
                 if cooling then return end
                 cooling = true
+
                 local mx = UIS:GetMouseLocation().X - f.AbsolutePosition.X
                 local my = UIS:GetMouseLocation().Y - f.AbsolutePosition.Y
                 local ripple = Instance.new("Frame", f)
@@ -843,7 +911,9 @@ function NINOMAX:CreateWindow(cfg)
                 task.delay(0.4, function() flash:Destroy() end)
 
                 tw(f, 0.06, { Size = UDim2.new(1, -4, 0, f.Size.Y.Offset) })
-                task.delay(0.06, function() tw(f, 0.15, { Size = UDim2.new(1, 0, 0, f.Size.Y.Offset) }, Enum.EasingStyle.Back) end)
+                task.delay(0.06, function()
+                    tw(f, 0.15, { Size = UDim2.new(1, 0, 0, f.Size.Y.Offset) }, Enum.EasingStyle.Back)
+                end)
 
                 pcall(cb)
                 task.delay(cooldown, function() cooling = false end)
@@ -852,11 +922,11 @@ function NINOMAX:CreateWindow(cfg)
             return { Set = function(_, v) tL.Text = tostring(v) end, Destroy = function() f:Destroy() end }
         end
 
-        -- ═══ TOGGLE ═══
+        -- ADD TOGGLE
         function Tab:AddToggle(cfg)
             cfg = cfg or {}
             if type(cfg) == "string" then cfg = { Title = cfg } end
-            local title = cfg.Title or cfg.Name or cfg.Text or "Toggle"
+            local title = cfg.Title or cfg.Name or "Toggle"
             local desc = cfg.Desc or cfg.Description or ""
             local cb = cfg.Callback or function() end
             local flag = cfg.Flag
@@ -905,6 +975,7 @@ function NINOMAX:CreateWindow(cfg)
                     pcall(cb, isOn)
                 end
             end
+
             apply(default, true)
 
             onTheme(function()
@@ -928,14 +999,18 @@ function NINOMAX:CreateWindow(cfg)
                 task.delay(0.2, function() cooling = false end)
             end)
 
-            return { Set = function(_, v) apply(v, false) end, Get = function() return isOn end, Destroy = function() f:Destroy() end }
+            return {
+                Set = function(_, v) apply(v, false) end,
+                Get = function() return isOn end,
+                Destroy = function() f:Destroy() end,
+            }
         end
 
-        -- ═══ CHECKBOX ═══
+        -- ADD CHECKBOX
         function Tab:AddCheckbox(cfg)
             cfg = cfg or {}
             if type(cfg) == "string" then cfg = { Title = cfg } end
-            local title = cfg.Title or cfg.Name or cfg.Text or "Checkbox"
+            local title = cfg.Title or cfg.Name or "Checkbox"
             local desc = cfg.Desc or cfg.Description or ""
             local cb = cfg.Callback or function() end
             local flag = cfg.Flag
@@ -970,6 +1045,7 @@ function NINOMAX:CreateWindow(cfg)
             btn.ZIndex = 10
 
             local toggled = default
+
             local function apply(v, silent)
                 toggled = v
                 chk.Visible = v
@@ -977,7 +1053,9 @@ function NINOMAX:CreateWindow(cfg)
                     tw(box, 0.2, { BackgroundColor3 = T.accent }, Enum.EasingStyle.Back)
                     tw(boxStroke, 0.2, { Color = T.accentHi, Transparency = 0 })
                     tw(box, 0.1, { Size = UDim2.new(0, 18, 0, 18), Position = UDim2.new(1, -11, 0.5, -9) })
-                    task.delay(0.1, function() tw(box, 0.15, { Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new(1, -10, 0.5, -8) }, Enum.EasingStyle.Back) end)
+                    task.delay(0.1, function()
+                        tw(box, 0.15, { Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new(1, -10, 0.5, -8) }, Enum.EasingStyle.Back)
+                    end)
                 else
                     tw(box, 0.2, { BackgroundColor3 = T.stroke }, Enum.EasingStyle.Back)
                     tw(boxStroke, 0.2, { Color = T.stroke, Transparency = 0.4 })
@@ -987,6 +1065,7 @@ function NINOMAX:CreateWindow(cfg)
                     pcall(cb, toggled)
                 end
             end
+
             apply(default, true)
 
             onTheme(function()
@@ -1010,20 +1089,26 @@ function NINOMAX:CreateWindow(cfg)
                 if not toggled then tw(boxStroke, 0.15, { Color = T.stroke, Transparency = 0.4 }) end
             end)
 
-            btn.MouseButton1Click:Connect(function() apply(not toggled) end)
+            btn.MouseButton1Click:Connect(function()
+                apply(not toggled)
+            end)
 
-            return { Set = function(_, v) apply(v, false) end, Get = function() return toggled end, Destroy = function() f:Destroy() end }
+            return {
+                Set = function(_, v) apply(v, false) end,
+                Get = function() return toggled end,
+                Destroy = function() f:Destroy() end,
+            }
         end
 
-        -- ═══ SWITCH ═══
+        -- ADD SWITCH
         function Tab:AddSwitch(cfg)
             cfg = cfg or {}
             if type(cfg) == "string" then cfg = { Title = cfg } end
-            local title = cfg.Title or cfg.Name or cfg.Text or "Switch"
+            local title = cfg.Title or cfg.Name or "Switch"
             local desc = cfg.Desc or cfg.Description or ""
             local cb = cfg.Callback or function() end
             local flag = cfg.Flag
-            local default = cfg.Default or cfg.State or false
+            local default = cfg.Default or false
             if flag and NINOMAX.Flags[flag] ~= nil then default = NINOMAX.Flags[flag] end
 
             local f, tL, dL, fS = makeRow(title, desc)
@@ -1053,6 +1138,7 @@ function NINOMAX:CreateWindow(cfg)
             btn.ZIndex = 10
 
             local state = default
+
             local function apply(v, silent)
                 state = v
                 if v then
@@ -1069,6 +1155,7 @@ function NINOMAX:CreateWindow(cfg)
                     pcall(cb, state)
                 end
             end
+
             apply(default, true)
 
             onTheme(function()
@@ -1089,16 +1176,21 @@ function NINOMAX:CreateWindow(cfg)
                 tw(fS, 0.15, { Color = T.stroke, Transparency = 0.7 })
             end)
 
-            btn.MouseButton1Click:Connect(function() apply(not state) end)
+            btn.MouseButton1Click:Connect(function()
+                apply(not state)
+            end)
 
-            return { Set = function(_, v) apply(v, false) end, Get = function() return state end, Destroy = function() f:Destroy() end }
+            return {
+                Set = function(_, v) apply(v, false) end,
+                Get = function() return state end,
+                Destroy = function() f:Destroy() end,
+            }
         end
 
-        -- ═══ SLIDER TURBO ═══
+        -- ADD SLIDER
         function Tab:AddSlider(cfg)
             cfg = cfg or {}
-            local title = cfg.Title or cfg.Name or cfg.Text or "Slider"
-            local desc = cfg.Desc or cfg.Description or ""
+            local title = cfg.Title or cfg.Name or "Slider"
             local min = cfg.Min or 0
             local max = cfg.Max or 100
             local default = cfg.Default or min
@@ -1108,20 +1200,15 @@ function NINOMAX:CreateWindow(cfg)
             if flag and NINOMAX.Flags[flag] ~= nil then default = NINOMAX.Flags[flag] end
 
             local holder = Instance.new("Frame", page)
-            holder.Size = UDim2.new(1, 0, 0, 0)
-            holder.BackgroundTransparency = 1
-            holder.AutomaticSize = Enum.AutomaticSize.Y
+            holder.Size = UDim2.new(1, 0, 0, 44)
+            holder.BackgroundColor3 = T.surface
+            holder.BackgroundTransparency = 0.05
+            holder.BorderSizePixel = 0
+            newCorner(holder, UDim.new(0, 5))
+            local bgS = newStroke(holder, T.stroke, 1, 0.7)
 
-            local bg = Instance.new("Frame", holder)
-            bg.Size = UDim2.new(1, 0, 0, 50)
-            bg.BackgroundColor3 = T.surface
-            bg.BackgroundTransparency = 0.05
-            bg.BorderSizePixel = 0
-            newCorner(bg, UDim.new(0, 5))
-            local bgS = newStroke(bg, T.stroke, 1, 0.7)
-
-            local t = Instance.new("TextLabel", bg)
-            t.Size = UDim2.new(1, -70, 0, 12)
+            local t = Instance.new("TextLabel", holder)
+            t.Size = UDim2.new(1, -60, 0, 12)
             t.Position = UDim2.new(0, 10, 0, 6)
             t.Text = title
             t.TextColor3 = T.text
@@ -1131,49 +1218,19 @@ function NINOMAX:CreateWindow(cfg)
             t.TextXAlignment = Enum.TextXAlignment.Left
             t.TextTruncate = Enum.TextTruncate.AtEnd
 
-            -- Value pill (estilo badge)
-            local valPill = Instance.new("Frame", bg)
-            valPill.Size = UDim2.new(0, 50, 0, 16)
-            valPill.Position = UDim2.new(1, -58, 0, 4)
-            valPill.BackgroundColor3 = T.accentSoft
-            valPill.BorderSizePixel = 0
-            newCorner(valPill, UDim.new(0, 4))
-
-            local vl = Instance.new("TextLabel", valPill)
-            vl.Size = UDim2.new(1, -4, 1, 0)
-            vl.Position = UDim2.new(0, 2, 0, 0)
+            local vl = Instance.new("TextLabel", holder)
+            vl.Size = UDim2.new(0, 50, 0, 12)
+            vl.Position = UDim2.new(1, -60, 0, 6)
             vl.Text = tostring(default) .. suffix
-            vl.TextColor3 = T.text
-            vl.TextSize = 10
+            vl.TextColor3 = T.accentHi
+            vl.TextSize = 11
             vl.Font = Enum.Font.GothamBold
             vl.BackgroundTransparency = 1
-            vl.TextXAlignment = Enum.TextXAlignment.Center
-            vl.TextScaled = false
+            vl.TextXAlignment = Enum.TextXAlignment.Right
 
-            -- Marcadores min/max
-            local minLbl = Instance.new("TextLabel", bg)
-            minLbl.Size = UDim2.new(0, 20, 0, 8)
-            minLbl.Position = UDim2.new(0, 10, 0, 36)
-            minLbl.Text = tostring(min)
-            minLbl.TextColor3 = T.textDim
-            minLbl.TextSize = 8
-            minLbl.Font = Enum.Font.Gotham
-            minLbl.BackgroundTransparency = 1
-            minLbl.TextXAlignment = Enum.TextXAlignment.Left
-
-            local maxLbl = Instance.new("TextLabel", bg)
-            maxLbl.Size = UDim2.new(0, 20, 0, 8)
-            maxLbl.Position = UDim2.new(1, -30, 0, 36)
-            maxLbl.Text = tostring(max)
-            maxLbl.TextColor3 = T.textDim
-            maxLbl.TextSize = 8
-            maxLbl.Font = Enum.Font.Gotham
-            maxLbl.BackgroundTransparency = 1
-            maxLbl.TextXAlignment = Enum.TextXAlignment.Right
-
-            local bar = Instance.new("Frame", bg)
+            local bar = Instance.new("Frame", holder)
             bar.Size = UDim2.new(1, -20, 0, 6)
-            bar.Position = UDim2.new(0, 10, 0, 24)
+            bar.Position = UDim2.new(0, 10, 0, 30)
             bar.BackgroundColor3 = T.stroke
             bar.BorderSizePixel = 0
             newCorner(bar, UDim.new(1, 0))
@@ -1186,43 +1243,25 @@ function NINOMAX:CreateWindow(cfg)
             local fg = Instance.new("UIGradient", fill)
             fg.Color = ColorSequence.new(T.accentSoft, T.accentHi)
 
-            -- Glow pulsante no fill
-            local fillGlow = newStroke(fill, T.accentHi, 2, 0.6)
-
             local knob = Instance.new("Frame", bar)
             knob.AnchorPoint = Vector2.new(0.5, 0.5)
             knob.Size = UDim2.new(0, 10, 0, 10)
             knob.Position = UDim2.new((default - min) / (max - min), 0, 0.5, 0)
             knob.BackgroundColor3 = Color3.new(1, 1, 1)
             knob.BorderSizePixel = 0
-            knob.ZIndex = 4
             newCorner(knob, UDim.new(1, 0))
-            local knobGlow = newStroke(knob, T.accentHi, 2, 0.2)
-
-            -- Pulse background animation
-            task.spawn(function()
-                while bg.Parent do
-                    tw(fillGlow, 1.6, { Transparency = 0.9 }, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-                    task.wait(1.6)
-                    tw(fillGlow, 1.6, { Transparency = 0.4 }, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-                    task.wait(1.6)
-                end
-            end)
 
             onTheme(function()
-                tw(bg, 0.35, { BackgroundColor3 = T.surface })
+                tw(holder, 0.35, { BackgroundColor3 = T.surface })
                 tw(bgS, 0.35, { Color = T.stroke })
                 tw(t, 0.35, { TextColor3 = T.text })
                 tw(fill, 0.35, { BackgroundColor3 = T.accent })
                 tw(fg, 0.35, { Color = ColorSequence.new(T.accentSoft, T.accentHi) })
-                tw(valPill, 0.35, { BackgroundColor3 = T.accentSoft })
-                tw(vl, 0.35, { TextColor3 = T.text })
+                tw(vl, 0.35, { TextColor3 = T.accentHi })
                 tw(bar, 0.35, { BackgroundColor3 = T.stroke })
-                tw(knobGlow, 0.35, { Color = T.accentHi })
-                tw(fillGlow, 0.35, { Color = T.accentHi })
             end)
 
-            local function update(x, isDragging)
+            local function update(x)
                 local bp = bar.AbsolutePosition.X
                 local bw = bar.AbsoluteSize.X
                 if bw <= 0 then return end
@@ -1240,23 +1279,19 @@ function NINOMAX:CreateWindow(cfg)
             bar.InputBegan:Connect(function(i)
                 if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
                     drag = true
-                    tw(knob, 0.12, { Size = UDim2.new(0, 14, 0, 14) }, Enum.EasingStyle.Back)
-                    tw(valPill, 0.12, { Size = UDim2.new(0, 58, 0, 18), Position = UDim2.new(1, -62, 0, 3) }, Enum.EasingStyle.Back)
-                    update(i.Position.X, true)
+                    tw(knob, 0.12, { Size = UDim2.new(0, 13, 0, 13) }, Enum.EasingStyle.Back)
+                    update(i.Position.X)
                 end
             end)
             UIS.InputChanged:Connect(function(i)
                 if drag and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
-                    update(i.Position.X, true)
+                    update(i.Position.X)
                 end
             end)
             UIS.InputEnded:Connect(function(i)
                 if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
-                    if drag then
-                        drag = false
-                        tw(knob, 0.15, { Size = UDim2.new(0, 10, 0, 10) }, Enum.EasingStyle.Back)
-                        tw(valPill, 0.15, { Size = UDim2.new(0, 50, 0, 16), Position = UDim2.new(1, -58, 0, 4) }, Enum.EasingStyle.Back)
-                    end
+                    drag = false
+                    tw(knob, 0.15, { Size = UDim2.new(0, 10, 0, 10) }, Enum.EasingStyle.Back)
                 end
             end)
 
@@ -1273,10 +1308,10 @@ function NINOMAX:CreateWindow(cfg)
             }
         end
 
-        -- ═══ DROPDOWN PREMIUM ═══
+        -- ADD DROPDOWN
         function Tab:AddDropdown(cfg)
             cfg = cfg or {}
-            local title = cfg.Title or cfg.Name or cfg.Text or "Dropdown"
+            local title = cfg.Title or cfg.Name or "Dropdown"
             local desc = cfg.Desc or cfg.Description or ""
             local options = cfg.Options or {}
             local default = cfg.Default
@@ -1344,7 +1379,6 @@ function NINOMAX:CreateWindow(cfg)
 
             local selected = default
             local optBtns = {}
-            local optIndex = {}
 
             local function updateLabel()
                 sel.Text = tostring(selected or "Selecionar")
@@ -1387,29 +1421,20 @@ function NINOMAX:CreateWindow(cfg)
                 ol.Size = UDim2.new(1, -22, 1, 0)
                 ol.TextTruncate = Enum.TextTruncate.AtEnd
 
-                -- Hover slide effect
                 o.MouseEnter:Connect(function()
-                    tw(o, 0.15, { BackgroundColor3 = T.surfaceHi, BackgroundTransparency = 0 }, Enum.EasingStyle.Quint)
-                    tw(ol, 0.15, { TextTransparency = 0, Position = UDim2.new(0, 22, 0, 0) }, Enum.EasingStyle.Back)
-                    tw(dot, 0.15, { Position = UDim2.new(0, 6, 0.5, -2.5), BackgroundColor3 = T.accentHi, BackgroundTransparency = 0 }, Enum.EasingStyle.Back)
+                    tw(o, 0.12, { BackgroundColor3 = T.surfaceHi, BackgroundTransparency = 0 })
+                    tw(ol, 0.12, { TextTransparency = 0 })
                 end)
                 o.MouseLeave:Connect(function()
-                    tw(o, 0.15, { BackgroundTransparency = 1 })
-                    if selected ~= opt then
-                        tw(ol, 0.15, { TextTransparency = 0.35, Position = UDim2.new(0, 18, 0, 0) })
-                        tw(dot, 0.15, { BackgroundTransparency = 1 })
-                    else
-                        tw(ol, 0.15, { Position = UDim2.new(0, 18, 0, 0) })
-                    end
+                    tw(o, 0.12, { BackgroundTransparency = 1 })
+                    if selected ~= opt then tw(ol, 0.12, { TextTransparency = 0.35 }) end
                 end)
                 o.MouseButton1Click:Connect(function()
                     for k, v in pairs(optBtns) do
                         v.dot.Visible = false
-                        tw(v.dot, 0.2, { BackgroundTransparency = 1 })
-                        tw(v.label, 0.2, { TextTransparency = 0.35, Position = UDim2.new(0, 18, 0, 0) })
+                        tw(v.label, 0.2, { TextTransparency = 0.35 })
                     end
                     dot.Visible = true
-                    tw(dot, 0.2, { BackgroundTransparency = 0 })
                     tw(ol, 0.2, { TextTransparency = 0 })
                     selected = opt
                     updateLabel()
@@ -1418,8 +1443,7 @@ function NINOMAX:CreateWindow(cfg)
                     closeList()
                 end)
 
-                optBtns[opt] = { btn = o, dot = dot, label = ol, index = i }
-                optIndex[i] = opt
+                optBtns[opt] = { btn = o, dot = dot, label = ol }
             end
 
             local function openList()
@@ -1430,28 +1454,7 @@ function NINOMAX:CreateWindow(cfg)
                 list.Position = UDim2.new(0, ap.X, 0, ap.Y + av.Y + 4)
                 local targetH = math.min(#options * 26 + 12, 220)
                 list.Size = UDim2.new(0, 180, 0, 0)
-
-                -- Stagger reveal
-                for _, v in pairs(optBtns) do
-                    v.btn.BackgroundTransparency = 1
-                    v.label.TextTransparency = 1
-                end
-
                 tw(list, 0.25, { Size = UDim2.new(0, 180, 0, targetH) }, Enum.EasingStyle.Back)
-
-                local idx = 0
-                for _, v in pairs(optBtns) do
-                    idx += 1
-                    task.delay(idx * 0.02, function()
-                        if v.btn.Parent then
-                            v.label.TextTransparency = (selected == v.btn.Text and 0) or 0.35
-                            if selected == optIndex[v.index] then
-                                v.dot.Visible = true
-                                tw(v.dot, 0.2, { BackgroundTransparency = 0 })
-                            end
-                        end
-                    end)
-                end
                 tw(arrow, 0.2, { Rotation = 180 })
             end
 
@@ -1495,133 +1498,50 @@ function NINOMAX:CreateWindow(cfg)
             }
         end
 
-        -- ═══ TEXTBOX AVANÇADO ═══
+        -- ADD TEXTBOX
         function Tab:AddTextBox(cfg)
             cfg = cfg or {}
             if type(cfg) == "string" then cfg = { Title = cfg } end
-            local title = cfg.Title or cfg.Name or ""
-            local placeholder = cfg.Placeholder or cfg.PlaceholderText or "Digite aqui..."
+            local title = cfg.Title or cfg.Name or "Input"
+            local placeholder = cfg.Placeholder or cfg.PlaceholderText or "Escreva..."
             local default = cfg.Default or ""
             local cb = cfg.Callback or function() end
             local flag = cfg.Flag
             if flag and NINOMAX.Flags[flag] ~= nil then default = NINOMAX.Flags[flag] end
 
-            local f = Instance.new("Frame", page)
-            f.Size = UDim2.new(1, 0, 0, 38)
-            f.BackgroundColor3 = T.surface
-            f.BackgroundTransparency = 0.05
-            f.BorderSizePixel = 0
-            newCorner(f, UDim.new(0, 5))
-            local fS = newStroke(f, T.stroke, 1, 0.7)
-
-            -- Label flutuante pequena (só aparece quando focado)
-            local floatLabel
-            if title ~= "" then
-                floatLabel = Instance.new("TextLabel", f)
-                floatLabel.BackgroundTransparency = 1
-                floatLabel.Text = title
-                floatLabel.Font = Enum.Font.GothamBold
-                floatLabel.TextSize = 9
-                floatLabel.TextColor3 = T.accentHi
-                floatLabel.Position = UDim2.new(0, 10, 0, 2)
-                floatLabel.Size = UDim2.new(1, -40, 0, 10)
-                floatLabel.TextXAlignment = Enum.TextXAlignment.Left
-                floatLabel.TextTransparency = 1
-                floatLabel.ZIndex = 12
-            end
+            local f, tL, dL, fS = makeRow(title, "")
+            f.Size = UDim2.new(1, 0, 0, 26)
 
             local box = Instance.new("TextBox", f)
-            box.Size = UDim2.new(1, -50, 0, 22)
-            box.Position = UDim2.new(0, 10, 0.5, -11 + (title ~= "" and 4 or 0))
-            box.BackgroundTransparency = 1
+            box.Size = UDim2.new(0.5, -20, 0, 20)
+            box.Position = UDim2.new(1, -12, 0.5, -10)
+            box.AnchorPoint = Vector2.new(1, 0)
+            box.BackgroundColor3 = T.surfaceHi
+            box.BorderSizePixel = 0
             box.Text = default
             box.PlaceholderText = placeholder
             box.PlaceholderColor3 = T.textDim
             box.TextColor3 = T.text
-            box.Font = Enum.Font.Gotham
+            box.Font = Enum.Font.GothamMedium
             box.TextSize = 10
             box.ClearTextOnFocus = false
             box.TextXAlignment = Enum.TextXAlignment.Left
             box.TextTruncate = Enum.TextTruncate.AtEnd
-            box.ZIndex = 11
-
-            -- Ícone de edit
-            local icon = Instance.new("ImageLabel", f)
-            icon.Size = UDim2.new(0, 12, 0, 12)
-            icon.Position = UDim2.new(1, -40, 0.5, -6)
-            icon.BackgroundTransparency = 1
-            icon.Image = "rbxassetid://10734883598"
-            icon.ImageColor3 = T.textDim
-            icon.ZIndex = 12
-
-            -- Botão limpar
-            local clearBtn = Instance.new("TextButton", f)
-            clearBtn.Size = UDim2.new(0, 16, 0, 16)
-            clearBtn.Position = UDim2.new(1, -20, 0.5, -8)
-            clearBtn.BackgroundTransparency = 1
-            clearBtn.Text = "✕"
-            clearBtn.TextColor3 = T.textDim
-            clearBtn.Font = Enum.Font.GothamBold
-            clearBtn.TextSize = 10
-            clearBtn.AutoButtonColor = false
-            clearBtn.Visible = (default ~= "")
-            clearBtn.ZIndex = 13
-
-            -- Barra highlight inferior
-            local hl = Instance.new("Frame", f)
-            hl.Size = UDim2.new(0, 0, 0, 2)
-            hl.Position = UDim2.new(0.5, 0, 1, -2)
-            hl.AnchorPoint = Vector2.new(0.5, 1)
-            hl.BackgroundColor3 = T.accentHi
-            hl.BorderSizePixel = 0
-            newCorner(hl, UDim.new(1, 0))
-            hl.ZIndex = 10
+            box.ZIndex = 10
+            newCorner(box, UDim.new(0, 4))
+            local boxS = newStroke(box, T.stroke, 1, 0.4)
+            newPad(box, 0, 6, 6, 0)
 
             onTheme(function()
-                tw(f, 0.35, { BackgroundColor3 = T.surface })
-                tw(fS, 0.35, { Color = T.stroke })
-                tw(box, 0.35, { TextColor3 = T.text, PlaceholderColor3 = T.textDim })
-                tw(icon, 0.35, { ImageColor3 = T.textDim })
-                tw(clearBtn, 0.35, { TextColor3 = T.textDim })
-                tw(hl, 0.35, { BackgroundColor3 = T.accentHi })
-                if floatLabel then tw(floatLabel, 0.35, { TextColor3 = T.accentHi }) end
-            end)
-
-            box:GetPropertyChangedSignal("Text"):Connect(function()
-                clearBtn.Visible = (box.Text ~= "")
-            end)
-
-            clearBtn.MouseEnter:Connect(function()
-                tw(clearBtn, 0.15, { TextColor3 = Color3.fromRGB(255, 90, 90), Rotation = 90 }, Enum.EasingStyle.Back)
-            end)
-            clearBtn.MouseLeave:Connect(function()
-                tw(clearBtn, 0.15, { TextColor3 = T.textDim, Rotation = 0 })
-            end)
-            clearBtn.MouseButton1Click:Connect(function()
-                box.Text = ""
-                if flag then NINOMAX:SetFlag(flag, "") end
-                pcall(cb, "")
-                tw(clearBtn, 0.1, { Size = UDim2.new(0, 12, 0, 12) })
-                task.delay(0.1, function() tw(clearBtn, 0.15, { Size = UDim2.new(0, 16, 0, 16) }, Enum.EasingStyle.Back) end)
+                tw(box, 0.35, { BackgroundColor3 = T.surfaceHi, TextColor3 = T.text, PlaceholderColor3 = T.textDim })
+                tw(boxS, 0.35, { Color = T.stroke })
             end)
 
             box.Focused:Connect(function()
-                tw(fS, 0.2, { Color = T.accentHi, Transparency = 0 })
-                tw(icon, 0.2, { ImageColor3 = T.accentHi, Rotation = 15 }, Enum.EasingStyle.Back)
-                tw(hl, 0.25, { Size = UDim2.new(1, -20, 0, 2) })
-                if floatLabel then
-                    tw(floatLabel, 0.2, { TextTransparency = 0 })
-                    tw(box, 0.2, { Position = UDim2.new(0, 10, 0.5, -11 + 6) })
-                end
+                tw(boxS, 0.2, { Color = T.accentHi, Transparency = 0 })
             end)
             box.FocusLost:Connect(function(enter)
-                tw(fS, 0.2, { Color = T.stroke, Transparency = 0.7 })
-                tw(icon, 0.2, { ImageColor3 = T.textDim, Rotation = 0 })
-                tw(hl, 0.25, { Size = UDim2.new(0, 0, 0, 2) })
-                if floatLabel and box.Text == "" then
-                    tw(floatLabel, 0.2, { TextTransparency = 1 })
-                    tw(box, 0.2, { Position = UDim2.new(0, 10, 0.5, -11 + (title ~= "" and 4 or 0)) })
-                end
+                tw(boxS, 0.2, { Color = T.stroke, Transparency = 0.4 })
                 if enter then
                     if flag then NINOMAX:SetFlag(flag, box.Text) end
                     pcall(cb, box.Text)
@@ -1635,10 +1555,10 @@ function NINOMAX:CreateWindow(cfg)
             }
         end
 
-        -- ═══ KEYBIND ═══
+        -- ADD KEYBIND
         function Tab:AddKeybind(cfg)
             cfg = cfg or {}
-            local title = cfg.Title or cfg.Name or cfg.Text or "Keybind"
+            local title = cfg.Title or cfg.Name or "Keybind"
             local default = cfg.Default or "Nenhuma"
             local cb = cfg.Callback or function() end
             local flag = cfg.Flag
@@ -1694,10 +1614,10 @@ function NINOMAX:CreateWindow(cfg)
             }
         end
 
-        -- ═══ COLOR PICKER ═══
+        -- ADD COLOR PICKER
         function Tab:AddColorPicker(cfg)
             cfg = cfg or {}
-            local title = cfg.Title or cfg.Name or cfg.Text or "Cor"
+            local title = cfg.Title or cfg.Name or "Cor"
             local default = cfg.Default or Color3.fromRGB(220, 30, 55)
             local cb = cfg.Callback or function() end
             local flag = cfg.Flag
@@ -1707,6 +1627,7 @@ function NINOMAX:CreateWindow(cfg)
 
             local current = default
             local h, s, v = Color3.toHSV(current)
+
             local frame = Instance.new("Frame", page)
             frame.Size = UDim2.new(1, 0, 0, 26)
             frame.BackgroundColor3 = T.surface
@@ -1881,10 +1802,10 @@ function NINOMAX:CreateWindow(cfg)
             presetsLay.Padding = UDim.new(0, 4)
 
             local presetColors = {
-                Color3.fromRGB(255, 60, 60), Color3.fromRGB(255, 140, 50),
-                Color3.fromRGB(255, 220, 60), Color3.fromRGB(120, 220, 90),
-                Color3.fromRGB(60, 200, 220), Color3.fromRGB(80, 120, 255),
-                Color3.fromRGB(160, 90, 255), Color3.fromRGB(255, 90, 200),
+                Color3.fromRGB(255, 60, 60),   Color3.fromRGB(255, 140, 50),
+                Color3.fromRGB(255, 220, 60),  Color3.fromRGB(120, 220, 90),
+                Color3.fromRGB(60, 200, 220),  Color3.fromRGB(80, 120, 255),
+                Color3.fromRGB(160, 90, 255),  Color3.fromRGB(255, 90, 200),
                 Color3.fromRGB(255, 255, 255), Color3.fromRGB(80, 80, 90),
             }
 
@@ -1892,11 +1813,28 @@ function NINOMAX:CreateWindow(cfg)
             local cycleBtn
 
             local function stopCycle()
-                if cycling and cycleBtn then
+                if cycling then
                     cycling = false
-                    cycleBtn.Text = "🌈 Ciclar"
-                    cycleBtn.TextColor3 = T.text
+                    if cycleBtn then
+                        cycleBtn.Text = "🌈 Ciclar"
+                        cycleBtn.TextColor3 = T.text
+                    end
                 end
+            end
+
+            local function updateAll()
+                local color = Color3.fromHSV(h, s, v)
+                current = color
+                pad.BackgroundColor3 = Color3.fromHSV(h, 1, 1)
+                padMarker.Position = UDim2.new(s, 0, 1 - v, 0)
+                hueMarker.Position = UDim2.new(0.5, 0, h, 0)
+                previewDot.BackgroundColor3 = color
+                hexBox.Text = colorToHex(color)
+                rIn.Text = tostring(math.floor(color.R * 255 + 0.5))
+                gIn.Text = tostring(math.floor(color.G * 255 + 0.5))
+                bIn.Text = tostring(math.floor(color.B * 255 + 0.5))
+                if flag then NINOMAX:SetFlag(flag, {math.floor(color.R*255), math.floor(color.G*255), math.floor(color.B*255)}) end
+                pcall(cb, color)
             end
 
             for _, pc in ipairs(presetColors) do
@@ -1944,25 +1882,6 @@ function NINOMAX:CreateWindow(cfg)
             cycleBtn.Text = "🌈 Ciclar"
             styleActionBtn(cycleBtn)
 
-            local updating = false
-            function updateAll()
-                if updating then return end
-                updating = true
-                local color = Color3.fromHSV(h, s, v)
-                current = color
-                pad.BackgroundColor3 = Color3.fromHSV(h, 1, 1)
-                padMarker.Position = UDim2.new(s, 0, 1 - v, 0)
-                hueMarker.Position = UDim2.new(0.5, 0, h, 0)
-                previewDot.BackgroundColor3 = color
-                hexBox.Text = colorToHex(color)
-                rIn.Text = tostring(math.floor(color.R * 255 + 0.5))
-                gIn.Text = tostring(math.floor(color.G * 255 + 0.5))
-                bIn.Text = tostring(math.floor(color.B * 255 + 0.5))
-                if flag then NINOMAX:SetFlag(flag, {math.floor(color.R*255), math.floor(color.G*255), math.floor(color.B*255)}) end
-                pcall(cb, color)
-                updating = false
-            end
-
             local padDrag = false
             pad.InputBegan:Connect(function(i)
                 if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
@@ -1984,7 +1903,9 @@ function NINOMAX:CreateWindow(cfg)
                 end
             end)
             UIS.InputEnded:Connect(function(i)
-                if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then padDrag = false end
+                if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+                    padDrag = false
+                end
             end)
 
             local hueDrag = false
@@ -2004,12 +1925,18 @@ function NINOMAX:CreateWindow(cfg)
                 end
             end)
             UIS.InputEnded:Connect(function(i)
-                if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then hueDrag = false end
+                if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+                    hueDrag = false
+                end
             end)
 
             hexBox.FocusLost:Connect(function()
                 local c = hexToColor(hexBox.Text)
-                if c then h, s, v = Color3.toHSV(c); updateAll(); return end
+                if c then
+                    h, s, v = Color3.toHSV(c)
+                    updateAll()
+                    return
+                end
                 hexBox.Text = colorToHex(current)
             end)
 
@@ -2081,10 +2008,10 @@ function NINOMAX:CreateWindow(cfg)
             }
         end
 
-        -- ═══ PROGRESS BAR ═══
+        -- ADD PROGRESSBAR
         function Tab:AddProgressBar(cfg)
             cfg = cfg or {}
-            local title = cfg.Title or cfg.Name or cfg.Text or "Progresso"
+            local title = cfg.Title or cfg.Name or "Progresso"
 
             local f = Instance.new("Frame", page)
             f.Size = UDim2.new(1, 0, 0, 36)
@@ -2148,7 +2075,7 @@ function NINOMAX:CreateWindow(cfg)
             }
         end
 
-        -- ═══ THEME BOXES ═══
+        -- ADD THEMEBOXES
         function Tab:AddThemeBoxes()
             local THEMES = {
                 { name = "Neon",      accent = Color3.fromRGB(0, 255, 200) },
@@ -2179,6 +2106,7 @@ function NINOMAX:CreateWindow(cfg)
             gridLay.SortOrder = Enum.SortOrder.LayoutOrder
 
             local lastSelected = nil
+
             for _, t in ipairs(THEMES) do
                 local card = Instance.new("TextButton", grid)
                 card.Size = UDim2.new(0, 62, 0, 26)
@@ -2233,14 +2161,14 @@ function NINOMAX:CreateWindow(cfg)
                     end
                     tw(card, 0.3, { Size = UDim2.new(0, 66, 0, 28) }, Enum.EasingStyle.Back)
                     lastSelected = card
-                    Window:Notify({ Title = "TEMA APLICADO", Text = t.name, Type = "success", Duration = 2 })
+                    Window:Notify({ Title = "TEMA APLICADO", Text = t.name .. " aplicado com sucesso!", Type = "success", Duration = 2 })
                 end)
             end
 
             return container
         end
 
-        -- ═══ INFO BOX ═══
+        -- ADD INFOBOX
         function Tab:AddInfoBox(title, infoList)
             local box = Instance.new("Frame", page)
             box.Size = UDim2.new(1, 0, 0, 0)
@@ -2317,7 +2245,7 @@ function NINOMAX:CreateWindow(cfg)
             return { MainFrame = box, TitleLabel = tl, ContentFrame = content }
         end
 
-        -- ═══ PROMO BOX ═══
+        -- ADD PROMOBOX
         function Tab:AddPromoBox(title, description, imageId, link, channelName)
             local box = Instance.new("Frame", page)
             box.Size = UDim2.new(1, 0, 0, 90)
@@ -2360,42 +2288,29 @@ function NINOMAX:CreateWindow(cfg)
             dl.TextXAlignment = Enum.TextXAlignment.Left
             dl.TextYAlignment = Enum.TextYAlignment.Top
 
-            local chBox = Instance.new("TextBox", box)
+            local chBox = Instance.new("TextButton", box)
             chBox.Size = UDim2.new(1, -90, 0, 20)
             chBox.Position = UDim2.new(0, 80, 0, 56)
             chBox.BackgroundColor3 = T.surfaceHi
-            chBox.Text = (channelName or "CANAL")
+            chBox.Text = (channelName or "CANAL") .. "  ·  COPIAR LINK"
             chBox.TextColor3 = T.text
             chBox.Font = Enum.Font.GothamBold
             chBox.TextSize = 9
-            chBox.TextEditable = false
-            chBox.ClearTextOnFocus = false
+            chBox.AutoButtonColor = false
             newCorner(chBox, UDim.new(0, 4))
             newStroke(chBox, T.accent, 1, 0.4)
 
-            local copyBtn = Instance.new("TextButton", box)
-            copyBtn.Size = UDim2.new(0, 80, 0, 20)
-            copyBtn.Position = UDim2.new(1, -90, 0, 56)
-            copyBtn.BackgroundColor3 = T.accentSoft
-            copyBtn.Text = "COPIAR LINK"
-            copyBtn.TextColor3 = T.text
-            copyBtn.Font = Enum.Font.GothamBold
-            copyBtn.TextSize = 9
-            copyBtn.AutoButtonColor = false
-            newCorner(copyBtn, UDim.new(0, 4))
-            newStroke(copyBtn, T.accent, 1, 0.3)
-
-            local fb = Instance.new("Frame", copyBtn)
+            local fb = Instance.new("Frame", chBox)
             fb.Size = UDim2.new(0, 0, 1, 0)
             fb.BackgroundColor3 = T.accentHi
             fb.BorderSizePixel = 0
             fb.ZIndex = 1
 
-            copyBtn.MouseButton1Click:Connect(function()
+            chBox.MouseButton1Click:Connect(function()
                 pcall(function() if setclipboard then setclipboard(link) end end)
                 fb.Size = UDim2.new(0, 0, 1, 0)
                 fb:TweenSize(UDim2.new(1, 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.4, true)
-                Window:Notify({ Title = "COPIADO!", Text = "Link copiado", Type = "success", Duration = 2 })
+                Window:Notify({ Title = "COPIADO!", Text = "Link copiado para a área de transferência", Type = "success", Duration = 2 })
             end)
 
             onTheme(function()
@@ -2404,112 +2319,88 @@ function NINOMAX:CreateWindow(cfg)
                 tw(ttl, 0.35, { TextColor3 = T.text })
                 tw(dl, 0.35, { TextColor3 = T.textDim })
                 tw(chBox, 0.35, { BackgroundColor3 = T.surfaceHi, TextColor3 = T.text })
-                tw(copyBtn, 0.35, { BackgroundColor3 = T.accentSoft, TextColor3 = T.text })
             end)
 
             return {
                 MainFrame = box,
                 ChannelBox = chBox,
                 DescriptionLabel = dl,
-                CopyButton = copyBtn,
+                CopyButton = chBox,
             }
         end
 
-        tabsByName[tabName] = Tab
+        -- ✅ REGISTRA A TAB NO REGISTRY
+        windowTabs[tabName] = Tab
+
         return Tab
     end
 
     -- ═══════════════════════════════════════════════════════════════
-    -- FLAT API (compatibilidade com estrutura antiga)
+    -- API PÚBLICA: Window:Create* (esconde os Add* internos)
     -- ═══════════════════════════════════════════════════════════════
-    function Window:CreateButton(tabName, text, callback, options)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddButton({ Title = text, Callback = callback })
+    local function _normalize(cfg)
+        cfg = cfg or {}
+        if type(cfg) == "string" then cfg = { Text = cfg } end
+        if cfg.Text and not cfg.Title then cfg.Title = cfg.Text end
+        if cfg.State ~= nil and cfg.Default == nil then cfg.Default = cfg.State end
+        if cfg.PlaceholderText and not cfg.Placeholder then cfg.Placeholder = cfg.PlaceholderText end
+        if cfg.Description and not cfg.Desc then cfg.Desc = cfg.Description end
+        return cfg
     end
 
     function Window:CreateToggle(tabName, cfg)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddToggle(cfg)
+        local t = windowTabs[tabName]; if t then return t:AddToggle(_normalize(cfg)) end
     end
-
     function Window:CreateCheckbox(tabName, cfg)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddCheckbox(cfg)
+        local t = windowTabs[tabName]; if t then return t:AddCheckbox(_normalize(cfg)) end
     end
-
     function Window:CreateSwitch(tabName, cfg)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddSwitch(cfg)
+        local t = windowTabs[tabName]; if t then return t:AddSwitch(_normalize(cfg)) end
     end
-
     function Window:CreateSlider(tabName, cfg)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddSlider(cfg)
+        local t = windowTabs[tabName]; if t then return t:AddSlider(_normalize(cfg)) end
     end
-
     function Window:CreateDropdown(tabName, cfg)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddDropdown(cfg)
+        local t = windowTabs[tabName]; if t then return t:AddDropdown(_normalize(cfg)) end
     end
-
-    function Window:CreateTextBox(tabName, placeholder, callback, options)
-        local tab = tabsByName[tabName]; if not tab then return end
-        local cfg = { Placeholder = placeholder, Callback = callback }
-        if type(placeholder) == "table" then cfg = placeholder end
-        if options then
-            for k, v in pairs(options) do cfg[k] = v end
-        end
-        return tab:AddTextBox(cfg)
-    end
-
     function Window:CreateKeybind(tabName, cfg)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddKeybind(cfg)
+        local t = windowTabs[tabName]; if t then return t:AddKeybind(_normalize(cfg)) end
     end
-
     function Window:CreateColorPicker(tabName, cfg)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddColorPicker(cfg)
+        local t = windowTabs[tabName]; if t then return t:AddColorPicker(_normalize(cfg)) end
     end
-
-    function Window:CreateLabel(tabName, text)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddLabel(text)
-    end
-
-    function Window:CreateLine(tabName, color)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddLine(color)
-    end
-
-    function Window:CreateSection(tabName, name)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddSection(name)
-    end
-
     function Window:CreateParagraph(tabName, cfg)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddParagraph(cfg)
+        local t = windowTabs[tabName]; if t then return t:AddParagraph(_normalize(cfg)) end
     end
-
-    function Window:CreateInfoBox(tabName, title, infoList)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddInfoBox(title, infoList)
-    end
-
-    function Window:CreatePromoBox(tabName, title, description, imageId, link, channelName)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddPromoBox(title, description, imageId, link, channelName)
-    end
-
-    function Window:CreateThemeBoxes(tabName)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddThemeBoxes()
-    end
-
     function Window:CreateProgressBar(tabName, cfg)
-        local tab = tabsByName[tabName]; if not tab then return end
-        return tab:AddProgressBar(cfg)
+        local t = windowTabs[tabName]; if t then return t:AddProgressBar(_normalize(cfg)) end
+    end
+    function Window:CreateButton(tabName, title, cb, desc)
+        local t = windowTabs[tabName]; if t then return t:AddButton({ Title = title, Desc = desc, Callback = cb }) end
+    end
+    function Window:CreateLabel(tabName, text)
+        local t = windowTabs[tabName]; if t then return t:AddLabel(text) end
+    end
+    function Window:CreateSection(tabName, sectionName)
+        local t = windowTabs[tabName]; if t then return t:AddSection(sectionName) end
+    end
+    function Window:CreateLine(tabName, color)
+        local t = windowTabs[tabName]; if t then return t:AddLine(color) end
+    end
+    function Window:CreateTextBox(tabName, placeholder, cb)
+        local t = windowTabs[tabName]; if t then return t:AddTextBox({ Title = placeholder, Placeholder = placeholder, Callback = cb }) end
+    end
+    function Window:CreateInfoBox(tabName, title, list)
+        local t = windowTabs[tabName]; if t then return t:AddInfoBox(title, list) end
+    end
+    function Window:CreatePromoBox(tabName, title, desc, img, link, channel)
+        local t = windowTabs[tabName]; if t then return t:AddPromoBox(title, desc, img, link, channel) end
+    end
+    function Window:CreateThemeBoxes(tabName)
+        local t = windowTabs[tabName]; if t then return t:AddThemeBoxes() end
+    end
+    function Window:NotifyCustom(title, text, icon)
+        self:Notify({ Title = title, Text = text, Type = "info", Duration = 3 })
     end
 
     -- ═══════════════════════════════════════════════════════════════
@@ -2522,7 +2413,6 @@ function NINOMAX:CreateWindow(cfg)
             broadcastTheme()
         end
     end
-
     function Window:GetTheme() return NINOMAX.CurrentTheme end
 
     function Window:SetSubtitle(text)
@@ -2545,13 +2435,9 @@ function NINOMAX:CreateWindow(cfg)
         end)
     end
 
+    -- NOTIFY
     local notifyQueue, notifying = {}, false
-
     function Window:Notify(cfg)
-        if type(cfg) == "string" then
-            local t = cfg
-            cfg = { Title = t, Text = select(1, ...) or "" }
-        end
         cfg = cfg or {}
         local title = cfg.Title or "Aviso"
         local text = cfg.Text or cfg.Description or ""
@@ -2645,16 +2531,7 @@ function NINOMAX:CreateWindow(cfg)
         end
     end
 
-    -- Compat com RANOX antigo: NotifyCustom(title, text, iconId)
-    function Window:NotifyCustom(title, text, iconId)
-        local type_ = "info"
-        local t = string.upper(tostring(title or ""))
-        if t:find("ATIV") or t:find("SUCESS") or t:find("OK") or t:find("ON") then type_ = "success" end
-        if t:find("DESATIV") or t:find("OFF") or t:find("ERROR") then type_ = "danger" end
-        if t:find("AVISO") or t:find("WARN") then type_ = "warning" end
-        self:Notify({ Title = title, Text = text, Type = type_, Duration = 3 })
-    end
-
+    -- DIALOG
     function Window:Dialog(cfg)
         cfg = cfg or {}
         local title = cfg.Title or "Dialog"
